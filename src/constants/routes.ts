@@ -1,0 +1,15 @@
+export const ROUTES = {
+  HOME: "/",
+  LOGIN: "/login",
+  REGISTER: "/register",
+  FIND_ID: "/find-id",
+  FIND_PASSWORD: "/find-password",
+  MYPAGE: "/mypage",
+  ADMIN: "/admin",
+  DOJANGS: "/dojangs",
+  COMPETITIONS: "/competitions",
+  COMMUNITY: "/community",
+  COMMUNITY_WRITE: "/community/write",
+  COMMUNITY_DETAIL: (id: string) => `/community/${id}`,
+  COMMUNITY_EDIT: (id: string) => `/community/${id}/edit`,
+} as const;
