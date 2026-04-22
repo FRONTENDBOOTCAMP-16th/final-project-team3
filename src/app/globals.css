@@ -46,6 +46,41 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* 텍스트 */
+  --color-state-manager-text: #1447e6; /* 도장 회원 텍스트*/
+  --color-state-basic-text: #4a5565; /* 일반 회원 텍스트 */
+  --color-btn-focus-text: #ffffff; /* 버튼 클릭 시 텍스트 색상 */
+  --color-btn-text: #4a5565; /* 버튼 기본 텍스트 및 기본 텍스트 색상 */
+  --color-input-text: #101828; /* 버튼 클릭 시 배경 */
+  --color-text-primary: #101828; /* 제목 텍스트, 주요 텍스트 */
+  --color-text-secondary: #6a7282; /* 부제목 텍스트*/
+
+  /* 배경 */
+  --color-bg-page: #f8f9fa; /* 전체 페이지 배경 */
+  --color-bg-white: #ffffff; /* 카드, 사이드바 배경 */
+  --color-table-top: #f3f4f6; /* 마이페이지 표 상단 배경 */
+
+  /* 버튼 */
+  --color-btn-bagic: #f3f4f6; /* 버튼 기본 상태 */
+  --color-btn-focus: #2c2c2c; /* 버튼 클릭 시 배경 */
+  --color-state-green-btn-fucus: #00a63e; /* 모집중 버튼 클릭 시*/
+  --color-state-yellow-btn-focus: #d08700; /* 마감임박 버튼 클릭 시 */
+  --color-state-red-btn-focus: #e7000b; /* 모집완료 버튼 클릭 시 */
+
+  /* 입력 */
+  --color-input-bg: #f3f4f6; /* 인풋 배경 */
+  --color-border: #2c2c2c; /* 카드, 인풋 테두리 */
+
+  /* 상태 */
+  --color-state-green-bg: #dcfce7; /* 모집중 상태 배경*/
+  --color-state-green-text: #008236; /* 모집중 상태 텍스트*/
+  --color-state-yellow: #d08700; /* 마감임박 상태 */
+  --color-state-manager-bg: #dbeafe; /* 도장 회원 */
+  --color-state-basic-bg: #f3f4f6; /* 일반 회원 */
+
+  /* 위험 */
+  --color-danger: #e7000b; /* 회원 탈퇴 버튼 */
 }
 
 :root {
