@@ -18,7 +18,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex flex-col w-50 min-h-screen bg-white border-r border-gray-200">
+    <aside className="flex flex-col w-[200px] min-h-screen bg-white border-r border-gray-200">
       {/* 로고 */}
       <Link href="/">
         <div className="flex items-center justify-center py-6">
@@ -36,7 +36,7 @@ export default function Sidebar() {
           return (
             <Link key={item.href} href={item.href}>
               <Button
-                className={`w-full h-50 justify-start gap-3 text-black bg-white hover:bg-gray-100
+                className={`w-full h-[48px] justify-start gap-3 text-black bg-white hover:bg-gray-100
                   ${isActive ? 'bg-[#2c2c2c] text-white hover:bg-[#2c2c2c]' : ''}`}
               >
                 <Image
@@ -58,7 +58,7 @@ export default function Sidebar() {
       {/* 로그인 버튼 */}
       <div className="px-3 py-4">
         <Link href="/login">
-          <Button className="w-full h-12">로그인</Button>
+          <Button className="w-full h-[48px]">로그인</Button>
         </Link>
       </div>
     </aside>
