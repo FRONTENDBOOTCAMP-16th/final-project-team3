@@ -1,0 +1,66 @@
+'use client';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Button } from '../ui/button';
+
+const navItems = [
+  { label: '커뮤니티', href: '/community', icon: '/whitebelt.svg' },
+  { label: '도장찾기', href: '/dojangs', icon: '/brownbelt.svg' },
+  {
+    label: '대회일정',
+    href: '/competitions',
+    icon: '/blackbeltcompetiton.svg',
+  },
+];
+
+export default function Sidebar() {
+  const pathname = usePathname();
+
+  return (
+    <aside className="flex flex-col w-[200px] min-h-screen bg-white border-r border-gray-200">
+      {/* 로고 */}
+      <Link href="/">
+        <div className="flex items-center justify-center py-6">
+          <Image src="/blackbelt.svg" alt="black-belt" width={95} height={37} />
+        </div>
+      </Link>
+
+      {/* 로고 아래 구분선 */}
+      <div className="border-t border-gray-200" />
+
+      {/* 네비게이션 */}
+      <nav className="flex flex-col gap-1 px-3 py-3 flex-1">
+        {navItems.map((item) => {
+          const isActive = pathname.startsWith(item.href);
+          return (
+            <Link key={item.href} href={item.href}>
+              <Button
+                className={`w-full h-[48px] justify-start gap-3 text-black bg-white hover:bg-gray-100
+                  ${isActive ? 'bg-[#2c2c2c] text-white hover:bg-[#2c2c2c]' : ''}`}
+              >
+                <Image
+                  src={item.icon}
+                  alt={item.label}
+                  width={44}
+                  height={17}
+                />
+                <span>{item.label}</span>
+              </Button>
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* 로그인 버튼 위 구분선 */}
+      <div className="border-t border-gray-200" />
+
+      {/* 로그인 버튼 */}
+      <div className="px-3 py-4">
+        <Link href="/login">
+          <Button className="w-full h-[48px]">로그인</Button>
+        </Link>
+      </div>
+    </aside>
+  );
+}
