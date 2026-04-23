@@ -1,8 +1,6 @@
-import type { Profile } from './user';
-
 export type PostCategory = '일반 게시글' | '도장 홍보';
 
-export type Post = {
+export interface Post {
   id: string;
   user_id: string;
   title: string;
@@ -13,14 +11,20 @@ export type Post = {
   report_count: number;
   created_at: string;
   updated_at?: string;
-  profiles?: Profile;
-};
+  // profiles join (flat)
+  nickname?: string;
+  avatar_url?: string;
+  belt_level?: string;
+}
 
-export type Comment = {
+export interface Comment {
   id: string;
   post_id: string;
   user_id: string;
   content: string;
   created_at: string;
-  profiles?: Profile;
-};
+  // profiles join (flat)
+  nickname?: string;
+  avatar_url?: string;
+  belt_level?: string;
+}

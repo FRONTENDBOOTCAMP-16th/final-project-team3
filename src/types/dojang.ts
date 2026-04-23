@@ -1,4 +1,4 @@
-export type Dojang = {
+export interface Dojang {
   id: string;
   name: string;
   address: string;
@@ -7,4 +7,4 @@ export type Dojang = {
   phone?: string;
   style_tags?: string[];
   created_at: string;
-};
+}
