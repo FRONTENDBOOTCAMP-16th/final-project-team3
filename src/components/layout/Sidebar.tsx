@@ -23,7 +23,7 @@ export default function Sidebar() {
       style={{ boxShadow: '4px 0 10px rgba(0,0,0,0.08)' }}
     >
       {/* 로고 */}
-      <Link href="/">
+      <Link href="/app">
         <div className="flex items-center justify-center py-6">
           <Image src="/blackbelt.svg" alt="black-belt" width={95} height={37} />
         </div>

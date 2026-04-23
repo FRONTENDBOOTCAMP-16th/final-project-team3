@@ -7,12 +7,13 @@ import Link from 'next/link';
 interface PageheaderProps {
   title: string;
   description: string;
-  tabs: string[];
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
+  tabs?: string[];
+  activeTab?: string;
+  setActiveTab?: (tab: string) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   writeLink?: string;
+  onSearch?: () => void; // 추가
 }
 
 export default function Pageheader({
@@ -24,6 +25,7 @@ export default function Pageheader({
   searchQuery,
   setSearchQuery,
   writeLink,
+  onSearch,
 }: PageheaderProps) {
   return (
     <div className="flex flex-col gap-5 bg-white z-10 py-6">
@@ -36,7 +38,7 @@ export default function Pageheader({
       {/* 검색창 + 글쓰기 버튼 */}
       <div className="flex items-center gap-2">
         <div className="flex-1 relative flex items-center">
-          <button className="absolute left-3 z-10">
+          <button className="absolute left-3 z-10" onClick={onSearch}>
             <Image src="/glasses.svg" alt="검색" width={18} height={18} />
           </button>
           <Input
@@ -57,21 +59,23 @@ export default function Pageheader({
       </div>
 
       {/* 탭 버튼 */}
-      <div className="flex gap-2">
-        {tabs.map((tab) => (
-          <Button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`${
-              activeTab === tab
-                ? 'bg-btn-focus text-btn-focus-text'
-                : 'bg-btn-basic text-btn-text'
-            } h-10 p-6`}
-          >
-            {tab}
-          </Button>
-        ))}
-      </div>
+      {tabs && tabs.length > 0 && (
+        <div className="flex gap-2">
+          {tabs.map((tab) => (
+            <Button
+              key={tab}
+              onClick={() => setActiveTab && setActiveTab(tab)}
+              className={`${
+                activeTab === tab
+                  ? 'bg-btn-focus text-btn-focus-text'
+                  : 'bg-btn-basic text-btn-text hover:bg-gray-200'
+              } h-10 p-6 transition-all duration-200`}
+            >
+              {tab}
+            </Button>
+          ))}
+        </div>
+      )}
 
       {/* 구분선 */}
     </div>
