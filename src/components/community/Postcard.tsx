@@ -18,7 +18,7 @@ interface PostCardProps {
 export default function PostCard({ post }: PostCardProps) {
   return (
     <Link href={`/community/${post.id}`}>
-      <div className="rounded-lg overflow-hidden border border-gray-200 flex flex-col">
+      <div className="rounded-lg h-97.5 overflow-hidden border border-gray-200 flex flex-col">
         {/* 썸네일 + 배지 */}
         <div className="relative">
           {post.image_url ? (
