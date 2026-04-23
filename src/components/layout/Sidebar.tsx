@@ -18,7 +18,10 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 flex flex-col w-[200px] h-screen bg-white border-r border-gray-200">
+    <aside
+      className="fixed left-0 top-0 flex flex-col border-r w-50 h-screen bg-white border-gray-200"
+      style={{ boxShadow: '4px 0 10px rgba(0,0,0,0.08)' }}
+    >
       {/* 로고 */}
       <Link href="/">
         <div className="flex items-center justify-center py-6">

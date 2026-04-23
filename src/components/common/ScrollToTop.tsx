@@ -22,7 +22,7 @@ export default function ScrollToTop() {
   return (
     <button
       onClick={scrollToTop}
-      className="fixed bottom-8 right-8 w-12 h-12 flex items-center justify-center z-50"
+      className="fixed bottom-8 right-8 w-12 h-12 flex items-center justify-center z-100 cursor-pointer"
     >
       <Image src="/scrollTop.svg" alt="scroll to top" width={48} height={48} />
     </button>

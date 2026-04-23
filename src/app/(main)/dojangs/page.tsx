@@ -1,5 +1,3 @@
-import Pageheader from '@/src/components/layout/PageHeader';
-
 export default function Page() {
   return (
     <div>
