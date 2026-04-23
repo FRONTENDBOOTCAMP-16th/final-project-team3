@@ -85,10 +85,13 @@
   /* 에러 페이지 */
   --color-error-not-found: #2c56e7; /* 404 숫자 */
   --color-error-runtime: rgb(231 0 11 / 0.28); /* ERROR 텍스트 */
-  --color-error-button-primary: #2c56e7; /* 주요 버튼 */
-  --color-error-button-hover: #2447bc; /* 에러 버튼 공통 hover */
   --color-error-button-border: #e7ebf0; /* 보조 버튼 테두리 */
   --color-error-button-secondary: #f5f7fa; /* 보조 버튼 배경 */
+  --color-error-button-secondary-hover: #e9edf2; /* 보조 버튼 hover */
+  --color-error-not-found-button: #2c56e7; /* 404 주요 버튼 */
+  --color-error-not-found-button-hover: #2447bc; /* 404 주요 버튼 hover */
+  --color-error-runtime-button: #e7000b; /* 에러 주요 버튼 */
+  --color-error-runtime-button-hover: #c70009; /* 에러 주요 버튼 hover */
 }
 
 :root {

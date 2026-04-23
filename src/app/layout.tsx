@@ -10,6 +10,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // throw Error('test');
+
   return (
     <html lang="ko">
       <body className="bg-bg-page">
