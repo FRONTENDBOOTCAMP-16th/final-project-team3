@@ -32,6 +32,9 @@ export default function CommunityPage() {
   return (
     <div className="w-full px-6 py-6">
       <Pageheader
+        title="커뮤니티"
+        description="주짓수에 대한 모든 이야기"
+        tabs={['전체', '도장 홍보', '일반 게시글']}
         activeTab={activeTab}
         setActiveTab={(tab) => {
           setActiveTab(tab);
@@ -42,6 +45,7 @@ export default function CommunityPage() {
           setSearchQuery(query);
           setPage(1);
         }}
+        writeLink="/community/write"
       />
 
       <div className="grid grid-cols-2 gap-4 mt-4">
