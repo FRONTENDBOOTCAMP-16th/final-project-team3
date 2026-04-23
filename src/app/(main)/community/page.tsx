@@ -49,9 +49,14 @@ export default function CommunityPage() {
       />
 
       <div className="grid grid-cols-2 gap-4 mt-4">
-        {visiblePosts.map((post) => (
-          <Postcard key={post.id} post={post} />
-        ))}
+        {visiblePosts.length > 0 ? (
+          visiblePosts.map((post) => <Postcard key={post.id} post={post} />)
+        ) : (
+          <div className="col-span-2 flex flex-col items-center justify-center py-20 text-gray-400">
+            <p className="text-lg">게시글이 없습니다</p>
+            <p className="text-sm mt-2">첫 번째 게시글을 작성해보세요!</p>
+          </div>
+        )}
       </div>
 
       {hasMore && <div ref={observerRef} className="h-10" />}
