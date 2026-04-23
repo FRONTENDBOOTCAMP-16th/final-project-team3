@@ -1,3 +1,10 @@
+import Pageheader from '@/src/components/layout/PageHeader';
+
 export default function Page() {
-  return <div>블벨</div>;
+  return (
+    <div>
+      <Pageheader />
+      <div>블벨</div>
+    </div>
+  );
 }

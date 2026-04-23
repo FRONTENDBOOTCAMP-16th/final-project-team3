@@ -62,7 +62,7 @@
   --color-table-top: #f3f4f6; /* 마이페이지 표 상단 배경 */
 
   /* 버튼 */
-  --color-btn-bagic: #f3f4f6; /* 버튼 기본 상태 */
+  --color-btn-basic: #f3f4f6; /* 버튼 기본 상태 */
   --color-btn-focus: #2c2c2c; /* 버튼 클릭 시 배경 */
   --color-state-green-btn-fucus: #00a63e; /* 모집중 버튼 클릭 시*/
   --color-state-yellow-btn-focus: #d08700; /* 마감임박 버튼 클릭 시 */
