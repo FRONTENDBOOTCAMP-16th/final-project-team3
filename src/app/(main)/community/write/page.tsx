@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 export default function WritePage() {
   const router = useRouter();
-  const [category, setCategory] = useState<PostCategory>('일반 게시글');
+  const [category, setCategory] = useState<PostCategory>('personal');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [preview, setPreview] = useState<string | null>(null);
@@ -33,7 +33,7 @@ export default function WritePage() {
       <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
         <p className="text-sm text-gray-500 mb-2">게시글 유형</p>
         <div className="flex gap-2">
-          {(['일반 게시글', '도장 홍보'] as PostCategory[]).map((type) => (
+          {(['personal', 'promo'] as PostCategory[]).map((type) => (
             <button
               key={type}
               onClick={() => setCategory(type)}
@@ -43,7 +43,7 @@ export default function WritePage() {
                   : 'bg-gray-100 text-gray-600'
               }`}
             >
-              {type}
+              {type === 'personal' ? '일반 게시글' : '도장 홍보'}
             </button>
           ))}
         </div>
