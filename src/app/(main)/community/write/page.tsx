@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PostCategory } from '@/src/types/community';
+import Image from 'next/image';
 
 export default function WritePage() {
   const router = useRouter();
@@ -68,11 +69,14 @@ export default function WritePage() {
         <p className="text-sm text-gray-500 mb-2">이미지 (선택)</p>
         <label className="block cursor-pointer">
           {preview ? (
-            <img
-              src={preview}
-              alt="preview"
-              className="w-full h-48 object-cover rounded-lg"
-            />
+            <div className="relative w-full h-48 rounded-lg overflow-hidden">
+              <Image
+                src={preview}
+                alt="preview"
+                fill={true}
+                className="object-cover"
+              />
+            </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-32 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
               <span className="text-2xl mb-1">↑</span>
@@ -110,7 +114,7 @@ export default function WritePage() {
         </button>
         <button
           onClick={handleSubmit}
-          className="flex-[3] py-3 rounded-xl bg-black text-white text-sm font-medium"
+          className="flex-3 py-3 rounded-xl bg-black text-white text-sm font-medium"
         >
           작성하기
         </button>
