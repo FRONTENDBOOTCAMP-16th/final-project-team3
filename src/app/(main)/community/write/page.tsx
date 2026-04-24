@@ -24,8 +24,8 @@ export default function WritePage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <div className="flex items-center mb-6">
+    <div className="max-w-5xl mx-auto p-6">
+      <div className=" w-full flex items-center mb-6">
         <h1 className="text-lg font-semibold mx-auto">게시글 작성</h1>
       </div>
 
@@ -37,7 +37,7 @@ export default function WritePage() {
             <button
               key={type}
               onClick={() => setCategory(type)}
-              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex-1 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors ${
                 category === type
                   ? 'bg-black text-white'
                   : 'bg-gray-100 text-gray-600'
@@ -105,13 +105,13 @@ export default function WritePage() {
       <div className="flex gap-3">
         <button
           onClick={() => router.back()}
-          className="flex-1 py-3 rounded-xl border-2 border-gray-500 text-sm text-gray-600 hover:bg-[var(--color-btn-focus)] hover:text-white"
+          className="flex-1 py-3 rounded-xl border-2 border-gray-500 text-sm text-gray-600 hover:bg-gray-500 hover:text-white cursor-pointer"
         >
           취소
         </button>
         <button
           onClick={handleSubmit}
-          className="flex-3 py-3 rounded-xl bg-black text-white text-sm font-medium"
+          className="flex-3 py-3 rounded-xl bg-black text-white text-sm font-medium cursor-pointer"
         >
           작성하기
         </button>
