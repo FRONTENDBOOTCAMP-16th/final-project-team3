@@ -1,4 +1,4 @@
-export type PostCategory = '일반 게시글' | '도장 홍보';
+export type PostCategory = 'promo' | 'personal';
 
 export interface Post {
   id: string;
