@@ -3,6 +3,8 @@ import Image from 'next/image';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/src/lib/supabase';
 
 interface PageheaderProps {
   title: string;
@@ -13,6 +15,7 @@ interface PageheaderProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   writeLink?: string;
+  writeLinkText?: string;
   onSearch?: () => void; // 추가
 }
 
@@ -26,7 +29,19 @@ export default function Pageheader({
   setSearchQuery,
   writeLink,
   onSearch,
+  writeLinkText,
 }: PageheaderProps) {
+  const router = useRouter();
+  const handleWriteClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+  };
   return (
     <div className="flex flex-col gap-5 bg-white z-10 py-6">
       {/* 타이틀 */}
@@ -43,6 +58,7 @@ export default function Pageheader({
           </button>
           <Input
             placeholder="   게시글 검색..."
+            aria-label="게시글 검색"
             className="pl-9 flex-1 h-12 bg-input-bg"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -50,9 +66,13 @@ export default function Pageheader({
         </div>
         {writeLink && (
           <Link href={writeLink}>
-            <Button className="bg-btn-focus text-btn-focus-text shrink-0 w-31 h-12 flex items-center gap-2">
+            <Button
+              className="bg-btn-focus text-btn-focus-text shrink-0 w-31 h-12 flex items-center gap-2"
+              onClick={handleWriteClick}
+              aria-label="새 게시글 작성"
+            >
               <Image src="/Plusicon.svg" alt="글쓰기" width={16} height={16} />
-              글쓰기
+              {writeLinkText ?? '글쓰기'}
             </Button>
           </Link>
         )}

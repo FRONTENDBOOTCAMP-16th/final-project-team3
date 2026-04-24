@@ -5,10 +5,12 @@ import Postcard from '../../../components/community/Postcard';
 import { dummyPosts } from '@/src/constants/dummyData';
 import { useInfiniteScroll } from '@/src/hooks/useInfiniteScroll';
 import { useDebounce } from '@/src/hooks/useDebounce';
+import LoadingSpinner from '@/src/components/common/LoadingSpinner';
 
 const PAGE_SIZE = 10;
 
 export default function CommunityPage() {
+  const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('전체');
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
@@ -38,7 +40,7 @@ export default function CommunityPage() {
   });
 
   return (
-    <div className="w-full min-h-screen">
+    <main className="w-full min-h-screen">
       {/* 헤더 fixed 고정 */}
       <div
         ref={headerRef}
@@ -71,7 +73,9 @@ export default function CommunityPage() {
       >
         <div className="w-full max-w-7xl px-6">
           <div className="grid grid-cols-2 gap-4">
-            {visiblePosts.length > 0 ? (
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : visiblePosts.length > 0 ? (
               visiblePosts.map((post) => <Postcard key={post.id} post={post} />)
             ) : (
               <div className="col-span-2 flex flex-col items-center justify-center py-20 text-gray-400">
@@ -83,6 +87,6 @@ export default function CommunityPage() {
           {hasMore && <div ref={observerRef} className="h-10" />}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

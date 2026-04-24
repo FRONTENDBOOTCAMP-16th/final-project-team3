@@ -4,6 +4,8 @@ import Pageheader from '@/src/components/layout/PageHeader';
 import CompetitionCard from '@/src/components/competition/CompetitionCard';
 import { dummyCompetitions } from '@/src/constants/dummyCompetitions';
 import { useDebounce } from '@/src/hooks/useDebounce';
+import { useUserRole } from '../../../hooks/useUserRole';
+import LoadingSpinner from '@/src/components/common/LoadingSpinner';
 
 export default function CompetitionsPage() {
   const [activeTab, setActiveTab] = useState('전체');
@@ -11,6 +13,9 @@ export default function CompetitionsPage() {
   const [headerHeight, setHeaderHeight] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
   const debouncedSearch = useDebounce(searchQuery, 300);
+  const [isLoading] = useState(false);
+  // const userRole = useUserRole();
+  const userRole: string = 'admin'; // 임시 테스트용
 
   useEffect(() => {
     if (headerRef.current) {
@@ -41,7 +46,12 @@ export default function CompetitionsPage() {
             setActiveTab={setActiveTab}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            writeLink="/community/write"
+            writeLink={
+              userRole === 'manager' || userRole === 'admin'
+                ? '/competitions/write'
+                : undefined
+            }
+            writeLinkText="일정추가"
           />
         </div>
       </div>
@@ -52,7 +62,9 @@ export default function CompetitionsPage() {
       >
         <div className="w-full max-w-7xl px-6">
           <div className="grid grid-cols-2 gap-4">
-            {filteredCompetitions.length > 0 ? (
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : filteredCompetitions.length > 0 ? (
               filteredCompetitions.map((competition) => (
                 <CompetitionCard
                   key={competition.id}
