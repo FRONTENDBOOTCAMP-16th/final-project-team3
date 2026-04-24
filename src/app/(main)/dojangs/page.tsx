@@ -147,7 +147,9 @@ export default function DojangsPage() {
 
             {/* 카드 리스트 - 하단 2열 */}
             {isLoading ? (
-              <p className="text-center text-gray-400 py-10">검색 중...</p>
+              <div className="flex items-center justify-center py-20">
+                <div className="w-8 h-8 border-4 border-gray-200 border-t-btn-focus rounded-full animate-spin" />
+              </div>
             ) : dojangs.length > 0 ? (
               <div className="grid grid-cols-2 gap-4">
                 {dojangs.map((dojang) => (
