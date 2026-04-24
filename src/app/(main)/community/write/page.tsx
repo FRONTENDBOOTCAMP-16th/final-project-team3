@@ -26,9 +26,6 @@ export default function WritePage() {
   return (
     <div className="max-w-2xl mx-auto p-6">
       <div className="flex items-center mb-6">
-        <button onClick={() => router.back()} className="text-sm text-gray-500">
-          ← 취소
-        </button>
         <h1 className="text-lg font-semibold mx-auto">게시글 작성</h1>
       </div>
 
@@ -108,7 +105,7 @@ export default function WritePage() {
       <div className="flex gap-3">
         <button
           onClick={() => router.back()}
-          className="flex-1 py-3 rounded-xl border border-gray-300 text-sm text-gray-600"
+          className="flex-1 py-3 rounded-xl border-2 border-gray-500 text-sm text-gray-600 hover:bg-[var(--color-btn-focus)] hover:text-white"
         >
           취소
         </button>
