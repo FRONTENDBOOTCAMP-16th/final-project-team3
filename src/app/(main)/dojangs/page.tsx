@@ -27,6 +27,7 @@ export default function DojangsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [dojangs, setDojangs] = useState<KakaoPlace[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [mapLoaded, setMapLoaded] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
   const [verifiedDojangs, setVerifiedDojangs] = useState<string[]>([]);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -41,7 +42,6 @@ export default function DojangsPage() {
     }
   }, []);
 
-  // 승인된 도장 목록 조회
   useEffect(() => {
     const fetchVerifiedDojangs = async () => {
       const { data } = await supabase.from('도장').select('name');
@@ -58,6 +58,7 @@ export default function DojangsPage() {
         center: new window.naver.maps.LatLng(37.5665, 126.978),
         zoom: 12,
       });
+      setMapLoaded(true);
     }
   };
 
@@ -140,10 +141,17 @@ export default function DojangsPage() {
         >
           <div className="w-full max-w-7xl px-6 flex flex-col gap-4">
             {/* 지도 - 상단 */}
-            <div
-              ref={mapRef}
-              className="w-full h-100 rounded-lg overflow-hidden border border-gray-200"
-            />
+            <div className="relative">
+              {!mapLoaded && (
+                <div className="absolute inset-0 bg-gray-100 rounded-lg flex items-center justify-center z-10">
+                  <div className="w-8 h-8 border-4 border-gray-200 border-t-btn-focus rounded-full animate-spin" />
+                </div>
+              )}
+              <div
+                ref={mapRef}
+                className="w-full h-100 rounded-lg overflow-hidden border border-gray-200"
+              />
+            </div>
 
             {/* 카드 리스트 - 하단 2열 */}
             {isLoading ? (

@@ -13,7 +13,7 @@ export default function CompetitionsPage() {
   const [headerHeight, setHeaderHeight] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
   const debouncedSearch = useDebounce(searchQuery, 300);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
   // const userRole = useUserRole();
   const userRole: string = 'admin'; // 임시 테스트용
 
