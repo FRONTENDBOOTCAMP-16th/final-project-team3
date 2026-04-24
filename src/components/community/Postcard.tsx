@@ -68,7 +68,7 @@ export default function PostCard({ post }: PostCardProps) {
           <div className="flex-1" />
 
           <div className="flex gap-3 text-xs text-gray-400">
-            <span>{post.created_at}</span>
+            <span>{new Date(post.created_at).toLocaleDateString('ko-KR')}</span>
             <span>조회 {post.view_count}</span>
           </div>
 
