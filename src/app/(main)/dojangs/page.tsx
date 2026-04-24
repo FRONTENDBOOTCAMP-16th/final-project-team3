@@ -62,6 +62,13 @@ export default function DojangsPage() {
     }
   };
 
+  // 이미 로드됐으면 바로 initMap
+  useEffect(() => {
+    if (window.naver && window.naver.maps) {
+      initMap();
+    }
+  }, []);
+
   const clearMarkers = () => {
     markersRef.current.forEach((marker) => marker.setMap(null));
     markersRef.current = [];
