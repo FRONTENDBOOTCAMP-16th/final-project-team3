@@ -1,23 +1,37 @@
 import { supabase } from '@/lib/supabase';
 import type { Post, Comment, PostCategory } from '@/types/community';
 
+// export async function getPosts() {
+//   const { data, error } = await supabase
+//     .from('posts')
+//     .select('*, profiles(nickname, avatar_url, belt_level)')
+//     .order('created_at', { ascending: false });
+//   console.log('data:', data);
+//   console.log('error:', error);
+
+//   if (error) throw error;
+
+//   return data.map((post: any) => ({
+//     ...post,
+//     nickname: post.profiles?.nickname,
+//     avatar_url: post.profiles?.avatar_url,
+//     belt_level: post.profiles?.belt_level,
+//     profiles: undefined,
+//   })) as Post[];
+// }
+
 export async function getPosts() {
   const { data, error } = await supabase
     .from('posts')
-    .select('*, profiles(nickname, avatar_url, belt_level)')
+    .select('*')
     .order('created_at', { ascending: false });
+
   console.log('data:', data);
   console.log('error:', error);
 
   if (error) throw error;
 
-  return data.map((post: any) => ({
-    ...post,
-    nickname: post.profiles?.nickname,
-    avatar_url: post.profiles?.avatar_url,
-    belt_level: post.profiles?.belt_level,
-    profiles: undefined,
-  })) as Post[];
+  return data as Post[];
 }
 
 export async function getPost(id: string) {

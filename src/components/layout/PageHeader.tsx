@@ -41,6 +41,10 @@ export default function Pageheader({
       router.push('/login');
       return;
     }
+    // 로그인 됐으면 writeLink로 이동
+    if (writeLink) {
+      router.push(writeLink);
+    }
   };
   return (
     <div className="flex flex-col gap-5 bg-white z-10 py-6">
