@@ -49,6 +49,7 @@ export default function CompetitionsPage() {
                 ? '/competitions/write'
                 : undefined
             }
+            writeLinkText="일정추가"
           />
         </div>
       </div>

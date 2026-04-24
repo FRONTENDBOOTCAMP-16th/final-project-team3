@@ -13,6 +13,7 @@ interface PageheaderProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   writeLink?: string;
+  writeLinkText?: string;
   onSearch?: () => void; // 추가
 }
 
@@ -26,6 +27,7 @@ export default function Pageheader({
   setSearchQuery,
   writeLink,
   onSearch,
+  writeLinkText,
 }: PageheaderProps) {
   return (
     <div className="flex flex-col gap-5 bg-white z-10 py-6">
@@ -52,7 +54,7 @@ export default function Pageheader({
           <Link href={writeLink}>
             <Button className="bg-btn-focus text-btn-focus-text shrink-0 w-31 h-12 flex items-center gap-2">
               <Image src="/Plusicon.svg" alt="글쓰기" width={16} height={16} />
-              글쓰기
+              {writeLinkText ?? '글쓰기'}
             </Button>
           </Link>
         )}
