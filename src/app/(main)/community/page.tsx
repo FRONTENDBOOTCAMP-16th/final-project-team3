@@ -1,10 +1,10 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import Pageheader from '@/src/components/layout/PageHeader';
+import Pageheader from '@/components/layout/PageHeader';
 import Postcard from '../../../components/community/Postcard';
-import { dummyPosts } from '@/src/constants/dummyData';
-import { useInfiniteScroll } from '@/src/hooks/useInfiniteScroll';
-import { useDebounce } from '@/src/hooks/useDebounce';
+import { dummyPosts } from '@/constants/dummyData';
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { useDebounce } from '@/hooks/useDebounce';
 
 const PAGE_SIZE = 10;
 

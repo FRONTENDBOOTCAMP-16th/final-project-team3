@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { PostCategory } from '@/src/types/community';
+import type { PostCategory } from '@/types/community';
 import Image from 'next/image';
 
 export default function WritePage() {

@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import Pageheader from '@/src/components/layout/PageHeader';
+import Pageheader from '@/components/layout/PageHeader';
 
 export default function CompetitionsPage() {
   const [activeTab, setActiveTab] = useState('전체');
