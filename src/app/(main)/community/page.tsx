@@ -2,18 +2,12 @@
 import { useState, useRef, useEffect } from 'react';
 import Pageheader from '@/components/layout/PageHeader';
 import Postcard from '../../../components/community/Postcard';
-<<<<<<< HEAD
 // import { dummyPosts } from '@/constants/dummyData';
-import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { useInfiniteScroll } from '@//hooks/useInfiniteScroll';
 import { useDebounce } from '@/hooks/useDebounce';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { getPosts } from '@/services/communityService';
 import type { Post } from '@/types/community';
-=======
-import { dummyPosts } from '@/src/constants/dummyData';
-import { useInfiniteScroll } from '@/src/hooks/useInfiniteScroll';
-import { useDebounce } from '@/src/hooks/useDebounce';
-import LoadingSpinner from '@/src/components/common/LoadingSpinner';
->>>>>>> origin/develop
 
 const PAGE_SIZE = 10;
 
@@ -26,7 +20,6 @@ export default function CommunityPage() {
   const headerRef = useRef<HTMLDivElement>(null);
   const debouncedSearch = useDebounce(searchQuery, 300);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (headerRef.current) {
@@ -42,7 +35,7 @@ export default function CommunityPage() {
       } catch (e) {
         console.error(e);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
     load();
@@ -65,13 +58,6 @@ export default function CommunityPage() {
   const observerRef = useInfiniteScroll(() => {
     if (hasMore) setPage((prev) => prev + 1);
   });
-
-  if (loading)
-    return (
-      <div className="flex justify-center items-center min-h-screen text-gray-400">
-        로딩 중...
-      </div>
-    );
 
   return (
     <main className="w-full min-h-screen">
@@ -107,8 +93,9 @@ export default function CommunityPage() {
       >
         <div className="w-full max-w-7xl px-6">
           <div className="grid grid-cols-2 gap-4">
-<<<<<<< HEAD
-            {visiblePosts.length > 0 ? (
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : visiblePosts.length > 0 ? (
               visiblePosts.map((post) => (
                 <Postcard
                   key={post.id}
@@ -120,12 +107,6 @@ export default function CommunityPage() {
                   }}
                 />
               ))
-=======
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : visiblePosts.length > 0 ? (
-              visiblePosts.map((post) => <Postcard key={post.id} post={post} />)
->>>>>>> origin/develop
             ) : (
               <div className="col-span-2 flex flex-col items-center justify-center py-20 text-gray-400">
                 <p className="text-lg">게시글이 없습니다</p>
