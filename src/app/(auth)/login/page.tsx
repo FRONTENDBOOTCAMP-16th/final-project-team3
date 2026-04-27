@@ -22,7 +22,7 @@ export default function LoginPage() {
           />
         </div>
         <p className="text-text-secondary text-sm font-medium text-center">
-          유도 & 주짓수 커뮤니티에 오신 것을 환영합니다
+          주짓수 커뮤니티에 오신 것을 환영합니다
         </p>
       </div>
 
@@ -61,6 +61,20 @@ export default function LoginPage() {
                 className="w-full bg-[#F1F3F5] border-none rounded-2xl py-4 pl-12 pr-4 text-base focus:ring-2 focus:ring-black outline-none transition-all"
               />
             </div>
+          </div>
+          {/* 로그인 상태 유지 */}
+          <div className="flex items-center">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={stayLoggedIn}
+                onChange={(e) => setStayLoggedIn(e.target.checked)}
+                className="w-4 h-4 rounded accent-black"
+              />
+              <span className="text-sm text-text-secondary">
+                로그인 상태 유지
+              </span>
+            </label>
           </div>
           <button className="w-full bg-[#1A1A1A] text-white py-4 rounded-2xl font-bold text-lg hover:bg-black transition-all mt-4">
             로그인
