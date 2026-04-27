@@ -27,7 +27,7 @@ export default function AdminTableToolbar({ filters }: AdminTableToolbarProps) {
                 type="button"
                 onClick={() => setActiveFilter(filter.value)}
                 className={cn(
-                  'rounded-md border px-4 py-2 text-sm font-medium transition-colors duration-200',
+                  'rounded-md border px-4 py-2 text-sm font-medium cursor-pointer transition-colors duration-200',
                   isActive
                     ? 'bg-[var(--color-btn-focus)] text-[var(--color-btn-focus-text)]'
                     : 'bg-[var(--color-btn-basic)] text-[var(--color-btn-text)] hover:bg-[var(--color-btn-focus)] hover:text-[var(--color-btn-focus-text)]',
