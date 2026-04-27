@@ -9,7 +9,7 @@ interface CompetitionCardProps {
     image_url: string;
     category: string;
     status: string;
-    event_date: string;
+    event_data: string;
     location: string;
     participants: number;
     apply_url: string;
@@ -72,11 +72,10 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
         <div className="flex-1" />
 
         {/* 날짜 + 장소 + 참가자 */}
-        {/* 날짜 + 장소 + 참가자 */}
         <div className="flex flex-col gap-1 text-xs text-gray-400">
           <div className="flex items-center gap-1">
             <Image src="/calendar.svg" alt="날짜" width={14} height={14} />
-            <span>{competition.event_date}</span>
+            <span>{competition.event_data}</span>
           </div>
           <div className="flex items-center gap-1">
             <Image src="/location.svg" alt="위치" width={14} height={14} />

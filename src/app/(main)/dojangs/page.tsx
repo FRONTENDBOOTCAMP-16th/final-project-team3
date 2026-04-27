@@ -6,6 +6,7 @@ import Pageheader from '@/src/components/layout/PageHeader';
 import { useDebounce } from '@/src/hooks/useDebounce';
 import { supabase } from '@/src/lib/supabase';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 declare global {
   interface Window {
     naver: any;
@@ -44,9 +45,9 @@ export default function DojangsPage() {
 
   useEffect(() => {
     const fetchVerifiedDojangs = async () => {
-      const { data } = await supabase.from('도장').select('name');
+      const { data } = await supabase.from('dojang').select('name');
       if (data) {
-        setVerifiedDojangs(data.map((d) => d.name));
+        setVerifiedDojangs(data.map((d: { name: string }) => d.name));
       }
     };
     fetchVerifiedDojangs();
@@ -62,7 +63,6 @@ export default function DojangsPage() {
     }
   };
 
-  // 이미 로드됐으면 바로 initMap
   useEffect(() => {
     if (window.naver && window.naver.maps) {
       initMap();
@@ -108,8 +108,8 @@ export default function DojangsPage() {
             markersRef.current.push(marker);
           });
         }
-      } catch (error) {
-        console.error('검색 실패:', error);
+      } catch {
+        // 검색 실패 시 무시
       } finally {
         setIsLoading(false);
       }
@@ -126,10 +126,9 @@ export default function DojangsPage() {
       />
 
       <div className="w-full min-h-screen">
-        {/* 헤더 fixed 고정 */}
         <div
           ref={headerRef}
-          className="fixed top-0 left-50 right-0 z-10 bg-white shadow-md flex justify-center"
+          className="fixed top-0 left-50 right-0 z-10 bg-bg-white shadow-md flex justify-center"
         >
           <div className="w-full max-w-7xl px-6">
             <Pageheader
@@ -141,16 +140,14 @@ export default function DojangsPage() {
           </div>
         </div>
 
-        {/* 메인 컨텐츠 */}
         <div
           style={{ paddingTop: `${headerHeight + 24}px` }}
           className="pb-6 flex justify-center"
         >
           <div className="w-full max-w-7xl px-6 flex flex-col gap-4">
-            {/* 지도 - 상단 */}
             <div className="relative">
               {!mapLoaded && (
-                <div className="absolute inset-0 bg-gray-100 rounded-lg flex items-center justify-center z-10">
+                <div className="absolute inset-0 bg-btn-basic rounded-lg flex items-center justify-center z-10">
                   <div className="w-8 h-8 border-4 border-gray-200 border-t-btn-focus rounded-full animate-spin" />
                 </div>
               )}
@@ -160,7 +157,6 @@ export default function DojangsPage() {
               />
             </div>
 
-            {/* 카드 리스트 - 하단 2열 */}
             {isLoading ? (
               <div className="flex items-center justify-center py-20">
                 <div className="w-8 h-8 border-4 border-gray-200 border-t-btn-focus rounded-full animate-spin" />
@@ -176,7 +172,7 @@ export default function DojangsPage() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+              <div className="flex flex-col items-center justify-center py-20 text-text-secondary">
                 <p className="text-lg">검색어를 입력해주세요</p>
                 <p className="text-sm mt-2">
                   지역명이나 도장 이름으로 검색해보세요

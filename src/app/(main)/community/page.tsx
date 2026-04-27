@@ -10,7 +10,7 @@ import LoadingSpinner from '@/src/components/common/LoadingSpinner';
 const PAGE_SIZE = 10;
 
 export default function CommunityPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('전체');
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
