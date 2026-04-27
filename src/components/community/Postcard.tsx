@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useLike } from '@/src/hooks/useLike';
+import { useAuth } from '@/src/hooks/useAuth';
+import { formatDate } from '@/src/utils/formatDate';
 
 interface PostCardProps {
   post: {
@@ -17,18 +19,13 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post }: PostCardProps) {
-  const [likeCount, setLikeCount] = useState(0);
-  const [liked, setLiked] = useState(false);
+  const { user } = useAuth();
+  const { likeCount, isLiked, toggle } = useLike(post.id, user?.id ?? '');
 
   const handleLike = (e: React.MouseEvent) => {
-    e.preventDefault(); // Link 이동 막기
-    if (liked) {
-      setLikeCount((prev) => prev - 1);
-      setLiked(false);
-    } else {
-      setLikeCount((prev) => prev + 1);
-      setLiked(true);
-    }
+    e.preventDefault();
+    if (!user) return; // 비로그인 시 무시
+    toggle();
   };
 
   return (
@@ -48,8 +45,8 @@ export default function PostCard({ post }: PostCardProps) {
               className="w-full h-50 object-cover"
             />
           ) : (
-            <div className="w-full h-50 bg-gray-100 flex items-center justify-center">
-              <span className="text-gray-400 text-sm">이미지 없음</span>
+            <div className="w-full h-50 bg-btn-basic flex items-center justify-center">
+              <span className="text-text-secondary text-sm">이미지 없음</span>
             </div>
           )}
           <span
@@ -63,12 +60,14 @@ export default function PostCard({ post }: PostCardProps) {
         {/* 카드 내용 */}
         <div className="p-4 flex flex-col gap-2 flex-1 overflow-hidden">
           <h2 className="font-bold text-base line-clamp-1">{post.title}</h2>
-          <p className="text-sm text-gray-500 line-clamp-2">{post.content}</p>
+          <p className="text-sm text-text-secondary line-clamp-2">
+            {post.content}
+          </p>
 
           <div className="flex-1" />
 
-          <div className="flex gap-3 text-xs text-gray-400">
-            <span>{post.created_at}</span>
+          <div className="flex gap-3 text-xs text-text-secondary">
+            <span>{formatDate(post.created_at)}</span>
             <span>조회 {post.view_count}</span>
           </div>
 
@@ -97,10 +96,10 @@ export default function PostCard({ post }: PostCardProps) {
                 alt="좋아요"
                 width={16}
                 height={16}
-                className={liked ? 'opacity-100' : 'opacity-40'}
+                className={isLiked ? 'opacity-100' : 'opacity-40'}
               />
               <span
-                className={`text-sm ${liked ? 'text-red-500' : 'text-gray-400'}`}
+                className={`text-sm ${isLiked ? 'text-danger' : 'text-text-secondary'}`}
               >
                 {likeCount}
               </span>
