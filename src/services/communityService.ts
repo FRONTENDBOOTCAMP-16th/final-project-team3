@@ -7,8 +7,6 @@ export async function getPosts() {
     // .select('*, profiles(nickname, avatar_url, belt_level)')
     .select('*')
     .order('created_at', { ascending: false });
-  console.log('data:', data);
-  console.log('error:', error);
 
   if (error) throw error;
   return data as Post[];
@@ -76,7 +74,8 @@ export async function deletePost(id: string) {
 }
 
 export async function uploadPostImage(file: File): Promise<string> {
-  const fileName = `${Date.now()}_${file.name}`;
+  const ext = file.name.split('.').pop();
+  const fileName = `${Date.now()}.${ext}`; // 한글 파일명 제거
   const { error } = await supabase.storage
     .from('post-images')
     .upload(fileName, file);

@@ -188,8 +188,7 @@ export default function PostDetailPage({
                 <Image src="/postEdit.svg" alt="수정" width={30} height={30} />
               </button>
               <button
-                // 클릭시 실제 supabase 데이터가 삭제됨으로 테스트를 위해 주석 처리
-                // onClick={handleDeletePost}
+                onClick={handleDeletePost}
                 className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors text-red-400 cursor-pointer"
                 title="삭제"
               >
