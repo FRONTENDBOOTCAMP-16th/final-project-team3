@@ -1,10 +1,10 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import Script from 'next/script';
-import DojangCard from '@/src/components/dojang/DojangCard';
-import Pageheader from '@/src/components/layout/PageHeader';
-import { useDebounce } from '@/src/hooks/useDebounce';
-import { supabase } from '@/src/lib/supabase';
+import DojangCard from '@/components/dojang/DojangCard';
+import Pageheader from '@/components/layout/PageHeader';
+import { useDebounce } from '@/hooks/useDebounce';
+import { supabase } from '@/lib/supabase';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare global {
