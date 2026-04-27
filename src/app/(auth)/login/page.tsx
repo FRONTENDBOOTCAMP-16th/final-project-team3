@@ -33,6 +33,7 @@ export default function LoginPage() {
 
         <form className="space-y-5">
           <div>
+            {/* 이메일 입력 */}
             <label className="block text-sm font-medium text-text-primary mb-2">
               이메일
             </label>
@@ -48,17 +49,18 @@ export default function LoginPage() {
             </div>
           </div>
           <div>
+            {/* 비밀번호 입력 */}
             <label className="block text-sm font-medium text-text-primary mb-2">
               비밀번호
             </label>
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
               <input
                 type="password"
                 placeholder="비밀번호를 입력하세요"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base focus:ring-2 focus:ring-black outline-none transition-all"
+                className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base focus:ring-2 focus:ring-btn-focus outline-none transition-all"
               />
             </div>
           </div>
@@ -71,18 +73,18 @@ export default function LoginPage() {
                 onChange={(e) => setStayLoggedIn(e.target.checked)}
                 className="w-4 h-4 rounded accent-black"
               />
-              <span className="text-sm text-text-secondary">
+              <span className="font-bold text-sm text-text-secondary">
                 로그인 상태 유지
               </span>
             </label>
             <a
               href="/forgot-password"
-              className="text-sm text-blue-500 font-medium hover:underline"
+              className="text-sm text-blue-500 font-bold hover:underline"
             >
               비밀번호 찾기
             </a>
           </div>
-          <button className="w-full bg-btn-focus text-white py-4 rounded-2xl font-bold text-lg hover:bg-black transition-all mt-4">
+          <button className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:bg-black transition-all mt-4">
             로그인
           </button>
           <p className="text-center text-sm text-text-secondary">
