@@ -37,7 +37,10 @@ export default function LoginPage() {
         <form className="space-y-5">
           <div>
             {/* 이메일 입력 */}
-            <label className="block text-sm font-medium text-text-primary mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-text-primary mb-2"
+            >
               이메일
             </label>
             <div className="relative">
