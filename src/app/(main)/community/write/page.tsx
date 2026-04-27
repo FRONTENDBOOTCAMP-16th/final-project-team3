@@ -26,7 +26,10 @@ export default function WritePage() {
   };
 
   const handleSubmit = async () => {
-    if (!title.trim() || !content.trim()) return;
+    if (!title.trim() || !content.trim()) {
+      alert('제목과 내용을 모두 입력해주세요.');
+      return;
+    }
     setIsLoading(true);
     try {
       // const {
