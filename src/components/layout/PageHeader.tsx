@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import SearchInput from '../common/SearchInput';
 
 interface PageheaderProps {
   title: string;
@@ -64,12 +64,10 @@ export default function Pageheader({
           <button className="absolute left-3 z-10" onClick={onSearch}>
             <Image src="/glasses.svg" alt="검색" width={18} height={18} />
           </button>
-          <Input
-            placeholder="   게시글 검색..."
-            aria-label="게시글 검색"
-            className="pl-9 flex-1 h-12 bg-input-bg"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+          <SearchInput
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            onSearch={onSearch}
           />
         </div>
         {writeLink && (
