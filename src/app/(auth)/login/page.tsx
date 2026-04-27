@@ -11,7 +11,8 @@ export default function LoginPage() {
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-bg-page px-10 py-6">
+    <>
+      {/* 로고 */}
       <div className="flex flex-col items-center mb-6">
         <div className="relative w-40 h-20 mb-3">
           <Image
@@ -27,6 +28,7 @@ export default function LoginPage() {
         </p>
       </div>
 
+      {/* 카드 */}
       <div className="max-w-[600px] w-full bg-bg-white rounded-[32px] p-8 shadow-sm border-none">
         <h2 className="text-2xl font-bold text-center text-text-primary mb-8">
           로그인
@@ -110,6 +112,6 @@ export default function LoginPage() {
           </p>
         </form>
       </div>
-    </div>
+    </>
   );
 }
