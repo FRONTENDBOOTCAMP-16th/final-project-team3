@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PostCategory } from '@/types/community';
 import Image from 'next/image';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 export default function WritePage() {
   const router = useRouter();
@@ -11,6 +12,7 @@ export default function WritePage() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [preview, setPreview] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -18,18 +20,24 @@ export default function WritePage() {
   };
 
   const handleSubmit = async () => {
-    // TODO: API 연동
-    console.log({ category, title, content });
-    router.push('/community/postdetail');
+    setIsLoading(true);
+    try {
+      // TODO: API 연동
+      console.log({ category, title, content });
+      router.push('/community');
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <div className="max-w-5xl mx-auto p-6">
-      <div className=" w-full flex items-center mb-6">
+      <div className="w-full flex items-center mb-6">
         <h1 className="text-lg font-semibold mx-auto">게시글 작성</h1>
       </div>
 
-      {/* 게시글 유형 */}
       <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
         <p className="text-sm text-gray-500 mb-2">게시글 유형</p>
         <div className="flex gap-2">
@@ -49,7 +57,6 @@ export default function WritePage() {
         </div>
       </div>
 
-      {/* 제목 */}
       <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
         <p className="text-sm text-gray-500 mb-2">제목</p>
         <input
@@ -61,7 +68,6 @@ export default function WritePage() {
         />
       </div>
 
-      {/* 이미지 */}
       <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
         <p className="text-sm text-gray-500 mb-2">이미지 (선택)</p>
         <label className="block cursor-pointer">
@@ -90,7 +96,6 @@ export default function WritePage() {
         </label>
       </div>
 
-      {/* 내용 */}
       <div className="bg-white rounded-xl p-4 mb-6 shadow-sm">
         <p className="text-sm text-gray-500 mb-2">내용</p>
         <textarea

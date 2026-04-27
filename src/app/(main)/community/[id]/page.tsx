@@ -12,6 +12,7 @@ import {
 import { supabase } from '@/lib/supabase';
 import type { Post, Comment } from '@/types/community';
 import Image from 'next/image';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -97,7 +98,9 @@ export default function PostDetailPage({
 
   if (loading)
     return (
-      <div className="flex justify-center p-20 text-gray-400">로딩 중...</div>
+      <div className="flex justify-center p-20">
+        <LoadingSpinner />
+      </div>
     );
   if (!post)
     return (

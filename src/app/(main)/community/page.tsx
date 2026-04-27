@@ -12,7 +12,7 @@ import type { Post } from '@/types/community';
 const PAGE_SIZE = 10;
 
 export default function CommunityPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('전체');
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
