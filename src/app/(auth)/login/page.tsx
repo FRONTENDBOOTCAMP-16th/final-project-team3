@@ -63,7 +63,7 @@ export default function LoginPage() {
             </div>
           </div>
           {/* 로그인 상태 유지 */}
-          <div className="flex items-center">
+          <div className="flex items-center justify-between">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -75,6 +75,12 @@ export default function LoginPage() {
                 로그인 상태 유지
               </span>
             </label>
+            <a
+              href="/forgot-password"
+              className="text-sm text-blue-500 font-medium hover:underline"
+            >
+              비밀번호 찾기
+            </a>
           </div>
           <button className="w-full bg-[#1A1A1A] text-white py-4 rounded-2xl font-bold text-lg hover:bg-black transition-all mt-4">
             로그인
