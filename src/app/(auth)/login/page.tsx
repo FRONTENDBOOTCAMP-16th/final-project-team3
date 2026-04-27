@@ -75,10 +75,14 @@ export default function LoginPage() {
               />
             </div>
           </div>
-          {/* 로그인 상태 유지 */}
+          {/* 로그인 상태 유지 체크박스*/}
           <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label
+              htmlFor="stayLoggedIn"
+              className="flex items-center gap-2 cursor-pointer"
+            >
               <input
+                id="stayLoggedIn"
                 type="checkbox"
                 checked={stayLoggedIn}
                 onChange={(e) => setStayLoggedIn(e.target.checked)}
@@ -91,7 +95,7 @@ export default function LoginPage() {
             {/* 비밀번호 찾기 - Next.js에서는 a태그 대신 Link 사용 권장*/}
             <Link
               href="/forgot-password"
-              className="text-sm font-medium hover:underline"
+              className="text-sm font-bold hover:underline"
               style={{ color: 'var(--color-auth-find-password)' }}
             >
               비밀번호 찾기
