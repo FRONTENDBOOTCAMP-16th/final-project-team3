@@ -109,14 +109,15 @@ export default function PostDetailPage({
       </div>
     );
 
-  const isOwner = userId === post.user_id;
+  const isOwner = true; // TODO: 개발 테스트용 - 배포 전 아래 코드로 교체
+  // const isOwner = userId === post.user_id;
 
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
       {/* 뒤로가기 */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+        className="flex items-center gap-2 px-2.5 py-2 border-2 border-(--color-btn-focus) text-black text-sm font-medium rounded-xl hover:bg-(--color-btn-focus) hover:text-white transition-colors duration-200 cursor-pointer"
       >
         <svg
           width="16"
@@ -181,28 +182,23 @@ export default function PostDetailPage({
             <div className="flex items-center gap-1">
               <button
                 onClick={() => router.push(`/community/${id}/edit`)}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500"
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500 cursor-pointer"
                 title="수정"
               >
-                <Image src="/postEdit.svg" alt="수정" width={18} height={18} />
+                <Image src="/postEdit.svg" alt="수정" width={30} height={30} />
               </button>
               <button
-                onClick={handleDeletePost}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors text-red-400"
+                // 클릭시 실제 supabase 데이터가 삭제됨으로 테스트를 위해 주석 처리
+                // onClick={handleDeletePost}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors text-red-400 cursor-pointer"
                 title="삭제"
               >
                 <Image
                   src="/postDelete.svg"
                   alt="삭제"
-                  width={18}
-                  height={18}
+                  width={32}
+                  height={32}
                 />
-              </button>
-              <button
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500"
-                title="공유"
-              >
-                <Image src="/postShare.svg" alt="공유" width={18} height={18} />
               </button>
             </div>
           )}
