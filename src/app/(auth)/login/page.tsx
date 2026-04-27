@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Mail, Lock } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -10,7 +11,7 @@ export default function LoginPage() {
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-bg-page p-6">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-bg-page px-10 py-6">
       <div className="flex flex-col items-center mb-6">
         <div className="relative w-40 h-20 mb-3">
           <Image
@@ -26,7 +27,7 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <div className="max-w-[480px] w-full bg-bg-white rounded-[32px] p-8 shadow-sm border-none">
+      <div className="max-w-[600px] w-full bg-bg-white rounded-[32px] p-8 shadow-sm border-none">
         <h2 className="text-2xl font-bold text-center text-text-primary mb-8">
           로그인
         </h2>
@@ -77,24 +78,24 @@ export default function LoginPage() {
                 로그인 상태 유지
               </span>
             </label>
-            <a
+            <Link
               href="/forgot-password"
-              className="text-sm text-blue-500 font-bold hover:underline"
+              className="text-sm text-text-primary font-medium hover:underline"
             >
               비밀번호 찾기
-            </a>
+            </Link>
           </div>
           <button className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:bg-black transition-all mt-4">
             로그인
           </button>
           <p className="text-center text-sm text-text-secondary">
             아직 회원이 아니신가요?{' '}
-            <a
+            <Link
               href="/signup"
-              className="font-bold text-blue-500 hover:underline"
+              className="font-bold text-text-primary hover:underline"
             >
               회원가입
-            </a>
+            </Link>
           </p>
         </form>
       </div>
