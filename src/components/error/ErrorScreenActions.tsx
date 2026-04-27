@@ -1,6 +1,5 @@
 'use client';
 
-import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, House, RefreshCw } from 'lucide-react';
@@ -9,28 +8,13 @@ import { ROUTES } from '@/src/constants/routes';
 import { cn } from '@/src/lib/utils';
 
 type ErrorScreenVariant = 'not-found' | 'error';
-
 interface Props {
   variant: ErrorScreenVariant;
   onRetry?: () => void;
 }
 
-interface ActionGroup {
-  primary: ReactNode;
-  secondary?: ReactNode;
-}
-
 const buttonBase =
-  'h-12 min-w-[136px] cursor-pointer rounded-2xl px-6 text-base font-semibold';
-
-const notFoundPrimaryButton =
-  '!bg-error-not-found-button !text-btn-focus-text hover:!bg-error-not-found-button-hover hover:!text-btn-focus-text';
-
-const runtimePrimaryButton =
-  '!bg-error-runtime-button !text-btn-focus-text hover:!bg-error-runtime-button-hover hover:!text-btn-focus-text';
-
-const neutralSecondaryButton =
-  '!border-error-button-border !bg-error-button-secondary !text-text-primary hover:!border-error-button-border hover:!bg-error-button-secondary-hover hover:!text-text-primary';
+  'h-12 min-w-[136px] cursor-pointer rounded-2xl px-6 font-semibold border-2 border-[var(--color-btn-focus)] bg-white text-black transition-colors duration-200 hover:text-white';
 
 export default function ErrorScreenActions({ variant, onRetry }: Props) {
   const router = useRouter();
@@ -44,106 +28,36 @@ export default function ErrorScreenActions({ variant, onRetry }: Props) {
     router.push(ROUTES.HOME);
   };
 
-  const getActions = (): ActionGroup => {
-    switch (variant) {
-      case 'error':
-        if (onRetry) {
-          return {
-            primary: (
-              <Button
-                type="button"
-                onClick={onRetry}
-                className={cn(buttonBase, runtimePrimaryButton)}
-              >
-                <RefreshCw className="size-[18px]" />
-                다시 시도
-              </Button>
-            ),
-            secondary: (
-              <Button
-                asChild
-                type="button"
-                variant="outline"
-                className={cn(buttonBase, neutralSecondaryButton)}
-              >
-                <Link href={ROUTES.HOME}>
-                  <House className="size-[18px]" />
-                  홈으로
-                </Link>
-              </Button>
-            ),
-          };
-        }
-
-        return {
-          primary: (
-              <Button
-                asChild
-                type="button"
-                className={cn(buttonBase, runtimePrimaryButton)}
-              >
-              <Link href={ROUTES.HOME}>
-                <House className="size-[18px]" />
-                홈으로
-              </Link>
-            </Button>
-          ),
-        };
-
-      case 'not-found':
-        return {
-          primary: (
-              <Button
-                asChild
-                type="button"
-                className={cn(buttonBase, notFoundPrimaryButton)}
-              >
-              <Link href={ROUTES.HOME}>
-                <House className="size-[18px]" />
-                홈으로
-              </Link>
-            </Button>
-          ),
-          secondary: (
-            <Button
-                type="button"
-                onClick={handleBack}
-                variant="outline"
-                className={cn(buttonBase, neutralSecondaryButton)}
-              >
-              <ArrowLeft className="size-[18px]" />
-              이전 페이지
-            </Button>
-          ),
-        };
-
-      default:
-        return {
-          primary: (
-              <Button
-                asChild
-                type="button"
-                className={cn(buttonBase, runtimePrimaryButton)}
-              >
-              <Link href={ROUTES.HOME}>
-                <House className="size-[18px]" />
-                홈으로
-              </Link>
-            </Button>
-          ),
-        };
-    }
-  };
-
-  const { primary, secondary } = getActions();
+  const isError = variant !== 'not-found';
+  const buttonHover =
+    variant === 'not-found'
+      ? 'hover:!bg-[var(--color-error-not-found)] hover:text-white'
+      : 'hover:!bg-[var(--color-error-runtime)] hover:text-white';
 
   return (
     <nav
       aria-label="오류 페이지 동작"
       className="mt-10 flex flex-wrap items-center justify-center gap-3"
     >
-      {primary}
-      {secondary}
+      <Button asChild type="button" className={cn(buttonBase, buttonHover)}>
+        <Link href={ROUTES.HOME}>
+          <House className="size-[18px]" />
+          홈으로
+        </Link>
+      </Button>
+
+      {/* 조건부 버튼 */}
+      {isError ? (
+        <Button onClick={onRetry} className={cn(buttonBase, buttonHover)}>
+          <RefreshCw className="size-[18px]" />
+          다시 시도
+        </Button>
+      ) : (
+        <Button onClick={handleBack} className={cn(buttonBase, buttonHover)}>
+          <ArrowLeft className="size-[18px]" />
+          이전 페이지
+        </Button>
+      )}
     </nav>
   );
 }
