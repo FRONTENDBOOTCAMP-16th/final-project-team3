@@ -35,7 +35,7 @@ export default function PostCard({ post }: PostCardProps) {
       href={`/community/${post.id}`}
       aria-label={`${post.title} 게시글 보기`}
     >
-      <div className="rounded-lg overflow-hidden border border-gray-200 flex flex-col h-97.5 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
+      <div className="rounded-lg overflow-hidden border bg-bg-white border-gray-200 flex flex-col h-97.5 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
         {/* 썸네일 + 배지 */}
         <div className="relative shrink-0">
           {post.image_url ? (
