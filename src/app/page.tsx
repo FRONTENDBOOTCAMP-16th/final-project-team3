@@ -47,7 +47,7 @@ export default function Home() {
       <div className="flex flex-wrap justify-center gap-3 mt-2">
         <Link
           href="/community"
-          className="flex items-center gap-2 px-5 py-2.5 border-2 border-[var(--color-btn-focus)] text-black text-sm font-medium rounded-xl hover:bg-[var(--color-btn-focus)] hover:text-white transition-colors duration-200"
+          className="flex items-center gap-2 px-5 py-2.5 border-2 border-(--color-btn-focus) text-black text-sm font-medium rounded-xl hover:bg-(--color-btn-focus) hover:text-white transition-colors duration-200"
         >
           <Image src="/whitebelt.svg" alt="흰 벨트" width={35} height={35} />
           <span>커뮤니티</span>
@@ -55,7 +55,7 @@ export default function Home() {
 
         <Link
           href="/dojangs"
-          className="flex items-center gap-2 px-5 py-2.5 border-2 border-[var(--color-btn-focus)] text-black text-sm font-medium rounded-xl hover:bg-[var(--color-btn-focus)] hover:text-white transition-colors duration-200"
+          className="flex items-center gap-2 px-5 py-2.5 border-2 border-(--color-btn-focus) text-black text-sm font-medium rounded-xl hover:bg-(--color-btn-focus) hover:text-white transition-colors duration-200"
         >
           <Image src="/brownbelt.svg" alt="흰 벨트" width={35} height={35} />
           <span>도장 찾기</span>
@@ -63,7 +63,7 @@ export default function Home() {
 
         <Link
           href="/competitions"
-          className="flex items-center gap-2 px-5 py-2.5 border-2 border-[var(--color-btn-focus)] text-black text-sm font-medium rounded-xl hover:bg-[var(--color-btn-focus)] hover:text-white transition-colors duration-200"
+          className="flex items-center gap-2 px-5 py-2.5 border-2 border-(--color-btn-focus) text-black text-sm font-medium rounded-xl hover:bg-(--color-btn-focus) hover:text-white transition-colors duration-200"
         >
           <Image
             src="/blackbeltcompetiton.svg"
@@ -76,7 +76,7 @@ export default function Home() {
 
         <Link
           href="/login"
-          className="flex items-center gap-2 px-5 py-2.5 border-2 border-[var(--color-btn-focus)] text-black text-sm font-medium rounded-xl hover:bg-[var(--color-btn-focus)] hover:text-white transition-colors duration-200"
+          className="flex items-center gap-2 px-5 py-2.5 border-2 border-(--color-btn-focus) text-black text-sm font-medium rounded-xl hover:bg-(--color-btn-focus) hover:text-white transition-colors duration-200"
         >
           <span>로그인</span>
         </Link>

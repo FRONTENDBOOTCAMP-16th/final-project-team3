@@ -3,8 +3,8 @@
 import { useEffect } from 'react';
 import type { ErrorInfo } from 'next/error';
 
-import ErrorScreen from '@/src/components/error/ErrorScreen';
-import '@/src/app/globals.css';
+import ErrorScreen from '@/components/error/ErrorScreen';
+import '@/app/globals.css';
 
 export default function GlobalErrorPage({ error, unstable_retry }: ErrorInfo) {
   useEffect(() => {

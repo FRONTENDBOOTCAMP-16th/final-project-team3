@@ -1,11 +1,11 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import Pageheader from '@/src/components/layout/PageHeader';
-import CompetitionCard from '@/src/components/competition/CompetitionCard';
-import { dummyCompetitions } from '@/src/constants/dummyCompetitions';
-import { useDebounce } from '@/src/hooks/useDebounce';
+import Pageheader from '@/components/layout/PageHeader';
+import CompetitionCard from '@/components/competition/CompetitionCard';
+import { dummyCompetitions } from '@/constants/dummyCompetitions';
+import { useDebounce } from '@/hooks/useDebounce';
 import { useUserRole } from '../../../hooks/useUserRole';
-import LoadingSpinner from '@/src/components/common/LoadingSpinner';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 export default function CompetitionsPage() {
   const [activeTab, setActiveTab] = useState('전체');

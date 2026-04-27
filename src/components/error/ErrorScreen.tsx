@@ -1,4 +1,4 @@
-import { cn } from '@/src/lib/utils';
+import { cn } from '@/lib/utils';
 import ErrorScreenActions from './ErrorScreenActions';
 
 type ErrorScreenVariant = 'not-found' | 'error';

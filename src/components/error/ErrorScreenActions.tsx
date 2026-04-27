@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, House, RefreshCw } from 'lucide-react';
-import { Button } from '@/src/components/ui/button';
-import { ROUTES } from '@/src/constants/routes';
-import { cn } from '@/src/lib/utils';
+import { Button } from '@/components/ui/button';
+import { ROUTES } from '@/constants/routes';
+import { cn } from '@/lib/utils';
 
 type ErrorScreenVariant = 'not-found' | 'error';
 interface Props {

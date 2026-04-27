@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import type { ErrorInfo } from 'next/error';
-import ErrorScreen from '@/src/components/error/ErrorScreen';
+import ErrorScreen from '@/components/error/ErrorScreen';
 
 export default function ErrorPage({ error, unstable_retry }: ErrorInfo) {
   useEffect(() => {
