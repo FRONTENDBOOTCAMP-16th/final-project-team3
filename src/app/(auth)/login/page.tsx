@@ -88,7 +88,8 @@ export default function LoginPage() {
             {/* 비밀번호 찾기 - Next.js에서는 a태그 대신 Link 사용 권장*/}
             <Link
               href="/forgot-password"
-              className="text-sm text-text-primary font-medium hover:underline"
+              className="text-sm font-medium hover:underline"
+              style={{ color: 'var(--color-auth-find-password)' }}
             >
               비밀번호 찾기
             </Link>
@@ -104,8 +105,9 @@ export default function LoginPage() {
             아직 회원이 아니신가요?{' '}
             {/* 회원가입 - Next.js에서는 a태그 대신 Link 사용 권장*/}
             <Link
-              href="/signup"
-              className="font-bold text-text-primary hover:underline"
+              href="/register"
+              className="font-bold hover:underline"
+              style={{ color: 'var(--color-auth-register)' }}
             >
               회원가입
             </Link>
