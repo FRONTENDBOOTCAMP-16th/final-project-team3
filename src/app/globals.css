@@ -81,6 +81,10 @@
 
   /* 위험 */
   --color-danger: #e7000b; /* 회원 탈퇴 버튼 */
+
+  /* 에러 페이지 */
+  --color-error-not-found: #2c56e7; /* not-found color */
+  --color-error-runtime: #e7000b; /* error color */
 }
 
 :root {
@@ -161,5 +165,7 @@
   }
   html {
     @apply font-sans;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
   }
 }
