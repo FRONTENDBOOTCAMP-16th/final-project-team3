@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   getPost,
@@ -22,7 +22,12 @@ function timeAgo(dateStr: string) {
   return `${Math.floor(hr / 24)}일 전`;
 }
 
-export default function PostDetailPage({ params }: { params: { id: string } }) {
+export default function PostDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const router = useRouter();
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -40,8 +45,8 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
             data: { user },
           },
         ] = await Promise.all([
-          getPost(params.id),
-          getComments(params.id),
+          getPost(id),
+          getComments(id),
           supabase.auth.getUser(),
         ]);
         setPost(postData);
@@ -54,13 +59,13 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
       }
     };
     load();
-  }, [params.id]);
+  }, [id]);
 
   const handleCommentSubmit = async () => {
     if (!comment.trim() || !userId) return;
     try {
       const newComment = await createComment({
-        post_id: params.id,
+        post_id: id,
         user_id: userId,
         content: comment,
       });
@@ -74,7 +79,7 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
   const handleDeletePost = async () => {
     if (!confirm('게시글을 삭제하시겠습니까?')) return;
     try {
-      await deletePost(params.id);
+      await deletePost(id);
       router.push('/community');
     } catch (e) {
       console.error(e);
@@ -120,6 +125,8 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
               <Image
                 src={post.avatar_url}
                 alt="avatar"
+                width={36}
+                height={36}
                 className="w-full h-full object-cover"
               />
             )}
@@ -141,7 +148,7 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
         {isOwner && (
           <div className="flex gap-2">
             <button
-              onClick={() => router.push(`/community/${params.id}/edit`)}
+              onClick={() => router.push(`/community/${id}/edit`)}
               className="text-sm text-gray-500"
             >
               ✏️
@@ -161,6 +168,8 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
         <Image
           src={post.image_url}
           alt="post"
+          width={800}
+          height={400}
           className="w-full rounded-xl mb-4 object-cover max-h-72"
         />
       )}
@@ -198,6 +207,8 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
                 <Image
                   src={c.avatar_url}
                   alt="avatar"
+                  width={32}
+                  height={32}
                   className="w-full h-full object-cover"
                 />
               )}

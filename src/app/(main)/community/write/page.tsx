@@ -20,7 +20,7 @@ export default function WritePage() {
   const handleSubmit = async () => {
     // TODO: API 연동
     console.log({ category, title, content });
-    router.push('/community');
+    router.push('/community/postdetail');
   };
 
   return (
@@ -105,7 +105,7 @@ export default function WritePage() {
       <div className="flex gap-3">
         <button
           onClick={() => router.back()}
-          className="flex-1 py-3 rounded-xl border-2 border-gray-500 text-sm text-gray-600 hover:bg-gray-500 hover:text-white cursor-pointer"
+          className="flex-1 py-3 rounded-xl border-2 border-(--color-btn-focus) text-black hover:bg-(--color-btn-focus) hover:text-white cursor-pointer"
         >
           취소
         </button>
