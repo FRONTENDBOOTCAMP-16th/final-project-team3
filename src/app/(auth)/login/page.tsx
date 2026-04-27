@@ -83,7 +83,7 @@ export default function LoginPage() {
                 로그인 상태 유지
               </span>
             </label>
-            {/* Next.js에서는 a태그 대신 Link 사용 권장 */}
+            {/* 비밀번호 찾기 - Next.js에서는 a태그 대신 Link 사용 권장*/}
             <Link
               href="/forgot-password"
               className="text-sm text-text-primary font-medium hover:underline"
@@ -91,12 +91,16 @@ export default function LoginPage() {
               비밀번호 찾기
             </Link>
           </div>
-          <button className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:bg-black transition-all mt-4">
+          {/* 로그인 버튼 */}
+          <button
+            type="submit"
+            className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all"
+          >
             로그인
           </button>
           <p className="text-center text-sm text-text-secondary">
             아직 회원이 아니신가요?{' '}
-            {/* Next.js에서는 a태그 대신 Link 사용 권장 */}
+            {/* 회원가입 - Next.js에서는 a태그 대신 Link 사용 권장*/}
             <Link
               href="/signup"
               className="font-bold text-text-primary hover:underline"
