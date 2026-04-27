@@ -1,9 +1,7 @@
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
-  // throw Error('test');
-
   return (
     <main className="min-h-screen bg-white flex flex-col items-center justify-center px-6 py-16 relative overflow-hidden">
       {/* 로고 */}
