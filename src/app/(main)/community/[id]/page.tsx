@@ -112,134 +112,254 @@ export default function PostDetailPage({
   const isOwner = userId === post.user_id;
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
+    <div className="max-w-2xl mx-auto p-4 space-y-4">
+      {/* 뒤로가기 */}
       <button
         onClick={() => router.back()}
-        className="text-sm text-gray-500 mb-4 block"
+        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
       >
-        ← 목록으로
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10 12L6 8L10 4"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        목록으로
       </button>
 
-      {/* 작성자 */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-full bg-gray-300 overflow-hidden">
-            {post.avatar_url && (
-              <Image
-                src={post.avatar_url}
-                alt="avatar"
-                width={36}
-                height={36}
-                className="w-full h-full object-cover"
-              />
-            )}
-          </div>
-          <div>
-            <div className="flex items-center gap-1">
-              <span className="text-sm font-semibold">
-                {post.nickname ?? '알 수 없음'}
-              </span>
-              {post.belt_level && (
-                <span className="text-xs bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded">
-                  {post.belt_level}
-                </span>
-              )}
-            </div>
-            <p className="text-xs text-gray-400">{timeAgo(post.created_at)}</p>
-          </div>
-        </div>
-        {isOwner && (
-          <div className="flex gap-2">
-            <button
-              onClick={() => router.push(`/community/${id}/edit`)}
-              className="text-sm text-gray-500"
-            >
-              ✏️
-            </button>
-            <button onClick={handleDeletePost} className="text-sm text-red-400">
-              🗑️
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* 제목 */}
-      <h1 className="text-xl font-bold mb-4">{post.title}</h1>
-
-      {/* 이미지 */}
-      {post.image_url && (
-        <Image
-          src={post.image_url}
-          alt="post"
-          width={800}
-          height={400}
-          className="w-full rounded-xl mb-4 object-cover max-h-72"
-        />
-      )}
-
-      {/* 본문 */}
-      <p className="text-sm text-gray-700 whitespace-pre-line mb-6">
-        {post.content}
-      </p>
-
-      {/* 댓글 */}
-      <div className="border-t pt-4">
-        <h2 className="text-sm font-semibold mb-4">댓글 {comments.length}</h2>
-
-        <div className="flex items-center gap-2 mb-4">
-          <input
-            type="text"
-            placeholder="댓글을 입력하세요..."
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleCommentSubmit()}
-            className="flex-1 bg-gray-50 rounded-xl px-4 py-2 text-sm outline-none"
-          />
-          <button
-            onClick={handleCommentSubmit}
-            className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center text-sm"
-          >
-            ➤
-          </button>
-        </div>
-
-        {comments.map((c) => (
-          <div key={c.id} className="flex gap-3 mb-4">
-            <div className="w-8 h-8 rounded-full bg-gray-300 shrink-0 overflow-hidden">
-              {c.avatar_url && (
+      {/* ── 게시글 카드 ── */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        {/* 작성자 헤더 */}
+        <div className="flex items-center justify-between px-5 pt-5 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden shrink-0">
+              {post.avatar_url && (
                 <Image
-                  src={c.avatar_url}
+                  src={post.avatar_url}
                   alt="avatar"
-                  width={32}
-                  height={32}
+                  width={40}
+                  height={40}
                   className="w-full h-full object-cover"
                 />
               )}
             </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-1 mb-0.5">
-                <span className="text-sm font-semibold">{c.nickname}</span>
-                {c.belt_level && (
-                  <span className="text-xs text-gray-400">{c.belt_level}</span>
-                )}
-              </div>
-              <p className="text-sm text-gray-700">{c.content}</p>
-              <div className="flex gap-3 mt-1">
-                <span className="text-xs text-gray-400">
-                  {timeAgo(c.created_at)}
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-semibold text-gray-900">
+                  {post.nickname ?? '알 수 없음'}
                 </span>
-                {userId === c.user_id && (
-                  <button
-                    onClick={() => handleDeleteComment(c.id)}
-                    className="text-xs text-red-400"
-                  >
-                    삭제
-                  </button>
+                {post.belt_level && (
+                  <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">
+                    {post.belt_level}
+                  </span>
                 )}
               </div>
+              <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
+                <Image
+                  src="/postTime.svg"
+                  alt="시간"
+                  width={11}
+                  height={11}
+                  className="opacity-50"
+                />
+                {timeAgo(post.created_at)}
+              </p>
             </div>
           </div>
-        ))}
+
+          {/* 오너 액션 버튼 */}
+          {isOwner && (
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => router.push(`/community/${id}/edit`)}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500"
+                title="수정"
+              >
+                <Image src="/postEdit.svg" alt="수정" width={18} height={18} />
+              </button>
+              <button
+                onClick={handleDeletePost}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors text-red-400"
+                title="삭제"
+              >
+                <Image
+                  src="/postDelete.svg"
+                  alt="삭제"
+                  width={18}
+                  height={18}
+                />
+              </button>
+              <button
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500"
+                title="공유"
+              >
+                <Image src="/postShare.svg" alt="공유" width={18} height={18} />
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* 제목 */}
+        <div className="px-5 pb-3">
+          <h1 className="text-lg font-bold text-gray-900">{post.title}</h1>
+        </div>
+
+        {/* 이미지 */}
+        {post.image_url && (
+          <div className="px-5 pb-4">
+            <div className="rounded-xl overflow-hidden">
+              <Image
+                src={post.image_url}
+                alt="post"
+                width={800}
+                height={400}
+                className="w-full object-cover max-h-72"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* 본문 */}
+        <div className="px-5 pb-5">
+          <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">
+            {post.content}
+          </p>
+        </div>
+
+        {/* 하단 액션 바 */}
+        <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
+          <button className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-red-500 transition-colors cursor-pointer">
+            <Image src="/like.svg" alt="좋아요" width={16} height={16} />
+            <span>좋아요</span>
+          </button>
+          <button className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-blue-500 transition-colors cursor-pointer">
+            <Image src="/postComment.svg" alt="댓글" width={16} height={16} />
+            <span>댓글 {comments.length}</span>
+          </button>
+          <button className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-green-500 transition-colors ml-auto cursor-pointer">
+            <Image src="/postShare.svg" alt="공유" width={16} height={16} />
+            <span>공유</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ── 댓글 카드 ── */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-5 pt-5 pb-3 flex items-center gap-2 border-b border-gray-100">
+          <Image
+            src="/postComment.svg"
+            alt="댓글"
+            width={16}
+            height={16}
+            className="opacity-40"
+          />
+          <h2 className="text-sm font-semibold text-gray-800">
+            댓글 {comments.length}
+          </h2>
+        </div>
+
+        {/* 댓글 입력 */}
+        <div className="px-5 py-4">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="댓글을 입력하세요..."
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleCommentSubmit()}
+              className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-gray-400 transition-colors placeholder:text-gray-400"
+            />
+            <button
+              onClick={handleCommentSubmit}
+              className="w-10 h-10 flex items-center justify-center shrink-0 transition-colors cursor-pointer"
+            >
+              <Image
+                src="/postCommentSubmit.svg"
+                alt="전송"
+                width={30}
+                height={30}
+              />
+            </button>
+          </div>
+        </div>
+
+        {/* 댓글 목록 */}
+        <div className="px-5 pb-5 space-y-4">
+          {comments.map((c, index) => (
+            <div key={c.id}>
+              {index > 0 && <div className="border-t border-gray-50 mb-4" />}
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded-full bg-gray-200 shrink-0 overflow-hidden">
+                  {c.avatar_url && (
+                    <Image
+                      src={c.avatar_url}
+                      alt="avatar"
+                      width={32}
+                      height={32}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span className="text-sm font-semibold text-gray-900">
+                      {c.nickname}
+                    </span>
+                    {c.belt_level && (
+                      <span className="text-xs text-gray-400">
+                        {c.belt_level}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    {c.content}
+                  </p>
+                  <div className="flex items-center gap-3 mt-1.5">
+                    <span className="flex items-center gap-1 text-xs text-gray-400">
+                      <Image
+                        src="/postTime.svg"
+                        alt="시간"
+                        width={11}
+                        height={11}
+                        className="opacity-50"
+                      />
+                      {timeAgo(c.created_at)}
+                    </span>
+                    {userId === c.user_id && (
+                      <button
+                        onClick={() => handleDeleteComment(c.id)}
+                        className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors"
+                      >
+                        <Image
+                          src="/postDelete.svg"
+                          alt="삭제"
+                          width={12}
+                          height={12}
+                        />
+                        삭제
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {comments.length === 0 && (
+            <p className="text-center text-sm text-gray-400 py-4">
+              첫 번째 댓글을 남겨보세요!
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
