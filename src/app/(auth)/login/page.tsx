@@ -26,7 +26,7 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <div className="max-w-[480px] w-full bg-bg-white rounded-[32px] p-8 shadow-sm border border-border">
+      <div className="max-w-[480px] w-full bg-bg-white rounded-[32px] p-8 shadow-sm border-none">
         <h2 className="text-2xl font-bold text-center text-text-primary mb-8">
           로그인
         </h2>
@@ -43,7 +43,7 @@ export default function LoginPage() {
                 placeholder="이메일을 입력하세요"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-[#F1F3F5] border-none rounded-2xl py-4 pl-12 pr-4 text-base focus:ring-2 focus:ring-black outline-none transition-all"
+                className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base focus:ring-2 focus:ring-black outline-none transition-all"
               />
             </div>
           </div>
@@ -58,7 +58,7 @@ export default function LoginPage() {
                 placeholder="비밀번호를 입력하세요"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-[#F1F3F5] border-none rounded-2xl py-4 pl-12 pr-4 text-base focus:ring-2 focus:ring-black outline-none transition-all"
+                className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base focus:ring-2 focus:ring-black outline-none transition-all"
               />
             </div>
           </div>
@@ -82,9 +82,18 @@ export default function LoginPage() {
               비밀번호 찾기
             </a>
           </div>
-          <button className="w-full bg-[#1A1A1A] text-white py-4 rounded-2xl font-bold text-lg hover:bg-black transition-all mt-4">
+          <button className="w-full bg-btn-focus text-white py-4 rounded-2xl font-bold text-lg hover:bg-black transition-all mt-4">
             로그인
           </button>
+          <p className="text-center text-sm text-text-secondary">
+            아직 회원이 아니신가요?{' '}
+            <a
+              href="/signup"
+              className="font-bold text-blue-500 hover:underline"
+            >
+              회원가입
+            </a>
+          </p>
         </form>
       </div>
     </div>
