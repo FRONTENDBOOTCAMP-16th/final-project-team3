@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { supabase } from '@/lib/supabase';
+import useAuthStore from '@/store/authStore';
 
 const loginSchema = z.object({
   email: z.string().email('올바른 이메일 형식으로 작성해주세요.'),
@@ -34,7 +35,7 @@ export default function LoginPage() {
     }
     setErrors({});
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error, data } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -46,6 +47,23 @@ export default function LoginPage() {
       }
       return;
     }
+
+    // profiles 테이블에서 user 정보 가져옴
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('nickname, role')
+      .eq('id', data.user.id)
+      .single();
+
+    // Zustand 전역 상태 저장
+    useAuthStore.getState().setUser({
+      id: data.user.id,
+      email: data.user.email ?? '',
+      nickname: profile?.nickname ?? '',
+      role: profile?.role ?? '',
+    });
+    console.log(useAuthStore.getState());
+
     router.push('/community');
   };
   return (
