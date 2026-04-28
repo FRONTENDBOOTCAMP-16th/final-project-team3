@@ -36,6 +36,8 @@ export default function PostDetailPage({
   const [comment, setComment] = useState('');
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editingContent, setEditingContent] = useState('');
 
   useEffect(() => {
     const load = async () => {
@@ -89,6 +91,25 @@ export default function PostDetailPage({
     }
   };
 
+  const handleEditComment = async (commentId: string) => {
+    if (!editingContent.trim()) return;
+    try {
+      await supabase
+        .from('comments')
+        .update({ content: editingContent })
+        .eq('id', commentId);
+      setComments((prev) =>
+        prev.map((c) =>
+          c.id === commentId ? { ...c, content: editingContent } : c,
+        ),
+      );
+      setEditingCommentId(null);
+      setEditingContent('');
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const handleDeleteComment = async (commentId: string) => {
     try {
       await deleteComment(commentId);
@@ -111,8 +132,7 @@ export default function PostDetailPage({
       </div>
     );
 
-  const isOwner = true; // TODO: 개발 테스트용 - 배포 전 아래 코드로 교체
-  // const isOwner = userId === post.user_id;
+  const isOwner = userId === post.user_id;
 
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
@@ -190,8 +210,7 @@ export default function PostDetailPage({
                 <Image src="/postEdit.svg" alt="수정" width={30} height={30} />
               </button>
               <button
-                // 클릭시 실제 supabase 데이터가 삭제됨으로 테스트를 위해 주석 처리
-                // onClick={handleDeletePost}
+                onClick={handleDeletePost}
                 className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors text-red-400 cursor-pointer"
                 title="삭제"
               >
@@ -318,9 +337,36 @@ export default function PostDetailPage({
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-700 leading-relaxed">
-                    {c.content}
-                  </p>
+                  {editingCommentId === c.id ? (
+                    <div className="flex items-center gap-2 mt-1">
+                      <input
+                        type="text"
+                        value={editingContent}
+                        onChange={(e) => setEditingContent(e.target.value)}
+                        onKeyDown={(e) =>
+                          e.key === 'Enter' && handleEditComment(c.id)
+                        }
+                        className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 text-sm outline-none focus:border-gray-400"
+                        autoFocus
+                      />
+                      <button
+                        onClick={() => handleEditComment(c.id)}
+                        className="text-xs text-blue-500 font-medium"
+                      >
+                        저장
+                      </button>
+                      <button
+                        onClick={() => setEditingCommentId(null)}
+                        className="text-xs text-gray-400"
+                      >
+                        취소
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      {c.content}
+                    </p>
+                  )}
                   <div className="flex items-center gap-3 mt-1.5">
                     <span className="flex items-center gap-1 text-xs text-gray-400">
                       <Image
@@ -333,25 +379,29 @@ export default function PostDetailPage({
                       {timeAgo(c.created_at)}
                     </span>
                     {userId === c.user_id && (
-                      <button
-                        onClick={() => handleDeleteComment(c.id)}
-                        className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors"
-                      >
-                        <Image
-                          src="/postDelete.svg"
-                          alt="삭제"
-                          width={12}
-                          height={12}
-                        />
-                        삭제
-                      </button>
+                      <>
+                        <button
+                          onClick={() => {
+                            setEditingCommentId(c.id);
+                            setEditingContent(c.content);
+                          }}
+                          className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                        >
+                          수정
+                        </button>
+                        <button
+                          onClick={() => handleDeleteComment(c.id)}
+                          className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors"
+                        >
+                          삭제
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
               </div>
             </div>
           ))}
-
           {comments.length === 0 && (
             <p className="text-center text-sm text-gray-400 py-4">
               첫 번째 댓글을 남겨보세요!
