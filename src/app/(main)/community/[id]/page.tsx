@@ -8,6 +8,7 @@ import {
   createComment,
   deletePost,
   deleteComment,
+  incrementViewCount,
 } from '@/services/communityService';
 import { supabase } from '@/lib/supabase';
 import type { Post, Comment } from '@/types/community';
@@ -53,6 +54,7 @@ export default function PostDetailPage({
         setPost(postData);
         setComments(commentsData);
         setUserId(user?.id ?? null);
+        await incrementViewCount(id);
       } catch (e) {
         console.error(e);
       } finally {
