@@ -175,8 +175,7 @@ export default function LoginPage() {
             </label>
             <Link
               href="/forgot-password"
-              className="text-sm font-bold hover:underline"
-              style={{ color: 'var(--color-auth-find-password)' }}
+              className="text-sm font-bold hover:underline text-[#4f74e8]"
             >
               비밀번호 찾기
             </Link>
