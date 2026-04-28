@@ -45,6 +45,8 @@ export default function LoginPage() {
     if (error) {
       if (error.message === 'Invalid login credentials') {
         setErrors({ server: '이메일 또는 비밀번호가 올바르지 않습니다.' });
+      } else if (error.message === 'Request rate limit reached') {
+        setErrors({ server: '잠시 후 다시 시도해주세요.' });
       } else {
         setErrors({
           server: '로그인 중 오류가 발생했습니다. 다시 시도해주세요.',
