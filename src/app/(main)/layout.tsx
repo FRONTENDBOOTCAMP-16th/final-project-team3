@@ -1,5 +1,5 @@
-import ScrollToTop from '@/src/components/common/ScrollToTop';
-import Sidebar from '@/src/components/layout/Sidebar';
+import ScrollToTop from '@/components/common/ScrollToTop';
+import Sidebar from '@/components/layout/Sidebar';
 
 export default function MainLayout({
   children,

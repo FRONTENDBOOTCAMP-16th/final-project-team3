@@ -1,11 +1,11 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import Pageheader from '@/src/components/layout/PageHeader';
-import CompetitionCard from '@/src/components/competition/CompetitionCard';
-import { dummyCompetitions } from '@/src/constants/dummyCompetitions';
-import { useDebounce } from '@/src/hooks/useDebounce';
+import Pageheader from '@/components/layout/PageHeader';
+import CompetitionCard from '@/components/competition/CompetitionCard';
+import { useDebounce } from '@/hooks/useDebounce';
 import { useUserRole } from '../../../hooks/useUserRole';
-import LoadingSpinner from '@/src/components/common/LoadingSpinner';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { useCompetiton } from '@/hooks/useCompetition';
 
 export default function CompetitionsPage() {
   const [activeTab, setActiveTab] = useState('전체');
@@ -13,9 +13,9 @@ export default function CompetitionsPage() {
   const [headerHeight, setHeaderHeight] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
   const debouncedSearch = useDebounce(searchQuery, 300);
-  const [isLoading] = useState(false);
   // const userRole = useUserRole();
   const userRole: string = 'admin'; // 임시 테스트용
+  const { data, isLoading } = useCompetiton();
 
   useEffect(() => {
     if (headerRef.current) {
@@ -23,7 +23,7 @@ export default function CompetitionsPage() {
     }
   }, []);
 
-  const filteredCompetitions = dummyCompetitions.filter((competition) => {
+  const filteredCompetitions = (data ?? []).filter((competition) => {
     const matchTab = activeTab === '전체' || competition.status === activeTab;
     const matchSearch = competition.name
       .toLowerCase()
