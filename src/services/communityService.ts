@@ -69,8 +69,7 @@ export async function deletePost(id: string) {
 }
 
 export async function uploadPostImage(file: File): Promise<string> {
-  const ext = file.name.split('.').pop();
-  const fileName = `${Date.now()}.${ext}`; // 한글 파일명 제거
+  const fileName = `${Date.now()}_${file.name}`;
   const { error } = await supabase.storage
     .from('post-images')
     .upload(fileName, file);
