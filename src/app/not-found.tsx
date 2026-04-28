@@ -1,4 +1,4 @@
-import ErrorScreen from '@/src/components/error/ErrorScreen';
+import ErrorScreen from '@/components/error/ErrorScreen';
 
 export default function NotFound() {
   return (
