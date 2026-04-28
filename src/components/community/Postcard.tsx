@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useLike } from '@/hooks/useLike';
+import { useAuth } from '@/hooks/useAuth';
+import { formatDate } from '@/utils/formatDate';
+import { Heart, MessageCircle } from 'lucide-react';
 
 interface PostCardProps {
   post: {
@@ -13,22 +16,18 @@ interface PostCardProps {
     image_url: string;
     view_count: number;
     created_at: string;
+    comment_count: number;
   };
 }
 
 export default function PostCard({ post }: PostCardProps) {
-  const [likeCount, setLikeCount] = useState(0);
-  const [liked, setLiked] = useState(false);
+  const { user } = useAuth();
+  const { likeCount, isLiked, toggle } = useLike(post.id, user?.id ?? '');
 
   const handleLike = (e: React.MouseEvent) => {
-    e.preventDefault(); // Link 이동 막기
-    if (liked) {
-      setLikeCount((prev) => prev - 1);
-      setLiked(false);
-    } else {
-      setLikeCount((prev) => prev + 1);
-      setLiked(true);
-    }
+    e.preventDefault();
+    if (!user) return;
+    toggle();
   };
 
   return (
@@ -36,7 +35,7 @@ export default function PostCard({ post }: PostCardProps) {
       href={`/community/${post.id}`}
       aria-label={`${post.title} 게시글 보기`}
     >
-      <div className="rounded-lg overflow-hidden border border-gray-200 flex flex-col h-97.5 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
+      <div className="rounded-lg overflow-hidden border bg-bg-white border-gray-200 flex flex-col h-97.5 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
         {/* 썸네일 + 배지 */}
         <div className="relative shrink-0">
           {post.image_url ? (
@@ -48,8 +47,8 @@ export default function PostCard({ post }: PostCardProps) {
               className="w-full h-50 object-cover"
             />
           ) : (
-            <div className="w-full h-50 bg-gray-100 flex items-center justify-center">
-              <span className="text-gray-400 text-sm">이미지 없음</span>
+            <div className="w-full h-50 bg-btn-basic flex items-center justify-center">
+              <span className="text-text-secondary text-sm">이미지 없음</span>
             </div>
           )}
           <span
@@ -63,13 +62,20 @@ export default function PostCard({ post }: PostCardProps) {
         {/* 카드 내용 */}
         <div className="p-4 flex flex-col gap-2 flex-1 overflow-hidden">
           <h2 className="font-bold text-base line-clamp-1">{post.title}</h2>
-          <p className="text-sm text-gray-500 line-clamp-2">{post.content}</p>
+          <p className="text-sm text-text-secondary line-clamp-2">
+            {post.content}
+          </p>
 
           <div className="flex-1" />
 
-          <div className="flex gap-3 text-xs text-gray-400">
-            <span>{new Date(post.created_at).toLocaleDateString('ko-KR')}</span>
+          {/* 날짜 + 조회수 + 댓글수 */}
+          <div className="flex gap-3 text-xs text-text-secondary items-center">
+            <span>{formatDate(post.created_at)}</span>
             <span>조회 {post.view_count}</span>
+            <span className="flex items-center gap-1">
+              <MessageCircle size={12} />
+              <span className="translate-y-px">{post.comment_count ?? 0}</span>
+            </span>
           </div>
 
           <div className="border-t border-gray-200" />
@@ -88,23 +94,24 @@ export default function PostCard({ post }: PostCardProps) {
             </div>
 
             {/* 좋아요 버튼 */}
-            <button
-              onClick={handleLike}
-              className="flex items-center gap-1 hover:scale-110 transition-all duration-200"
-            >
-              <Image
-                src="/like.svg"
-                alt="좋아요"
-                width={16}
-                height={16}
-                className={liked ? 'opacity-100' : 'opacity-40'}
-              />
-              <span
-                className={`text-sm ${liked ? 'text-red-500' : 'text-gray-400'}`}
+            <div className="w-12 flex items-center justify-end">
+              <button
+                onClick={handleLike}
+                className="flex items-center gap-1 transition-all duration-200"
               >
-                {likeCount}
-              </span>
-            </button>
+                <Heart
+                  size={16}
+                  className={
+                    isLiked ? 'fill-danger text-danger' : 'text-text-secondary'
+                  }
+                />
+                <span
+                  className={`text-sm w-2 text-right ${isLiked ? 'text-danger' : 'text-text-secondary'}`}
+                >
+                  {likeCount}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
