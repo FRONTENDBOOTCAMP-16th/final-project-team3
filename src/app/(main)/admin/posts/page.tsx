@@ -2,7 +2,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
 import AdminTableToolbar from '@/components/admin/AdminTableToolbar';
 import { ADMIN_POST_FILTERS } from '@/constants/adminPostFilters';
 import AdminDataTable from '@/components/admin/AdminDataTable';
-import { Eye, Pencil, Trash2 } from 'lucide-react';
+import AdminPostActions from '@/components/admin/AdminPostActions';
 
 type AdminPostRow = {
   id: string;
@@ -26,21 +26,7 @@ const postColumns = [
   {
     key: 'id',
     header: '관리',
-    render: (row) => (
-      <div className="flex gap-2">
-        <button type="button" aria-label={`${row.title} 상세보기`}>
-          <Eye size={16} />
-        </button>
-
-        <button type="button" aria-label={`${row.title} 수정`}>
-          <Pencil size={16} />
-        </button>
-
-        <button type="button" aria-label={`${row.title} 삭제`}>
-          <Trash2 size={16} />
-        </button>
-      </div>
-    ),
+    render: (row) => <AdminPostActions id={row.id} title={row.title} />,
   },
 ] satisfies {
   key: keyof AdminPostRow;
