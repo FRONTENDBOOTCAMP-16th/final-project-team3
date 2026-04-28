@@ -62,7 +62,6 @@ export default function LoginPage() {
       nickname: profile?.nickname ?? '',
       role: profile?.role ?? '',
     });
-    console.log(useAuthStore.getState());
 
     router.push('/community');
   };
