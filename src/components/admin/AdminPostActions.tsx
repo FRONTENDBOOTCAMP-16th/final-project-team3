@@ -1,6 +1,7 @@
 'use client';
 
 import { Eye, Pencil, Trash2 } from 'lucide-react';
+import { ROUTES } from '@/constants/routes';
 
 interface AdminPostActionsProps {
   id: string;
@@ -9,7 +10,7 @@ interface AdminPostActionsProps {
 
 export default function AdminPostActions({ id, title }: AdminPostActionsProps) {
   const handleView = () => {
-    console.log('상세', id);
+    window.open(ROUTES.COMMUNITY_DETAIL(id), '_blank');
   };
 
   const handleEdit = () => {

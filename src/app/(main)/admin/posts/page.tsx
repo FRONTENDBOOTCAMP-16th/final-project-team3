@@ -36,7 +36,7 @@ const postColumns = [
 
 const postData: AdminPostRow[] = [
   {
-    id: '1',
+    id: '0f5c5424-6287-44fc-aa14-3e894fbe629d',
     category: '일반',
     title: '첫 번째 게시글',
     author: '정론',
@@ -46,7 +46,7 @@ const postData: AdminPostRow[] = [
     updated_at: '2026-04-28',
   },
   {
-    id: '2',
+    id: '1245fc21-1089-4526-a1ec-a1467ac4eb78',
     category: '도장',
     title: '도장 홍보합니다',
     author: '민재',
@@ -56,7 +56,7 @@ const postData: AdminPostRow[] = [
     updated_at: '2026-04-27',
   },
   {
-    id: '3',
+    id: '5cc0e81d-6e92-4083-adb2-90f090fcb94a',
     category: '대회',
     title: '이번 주 대회 일정 공유',
     author: '지훈',
@@ -66,7 +66,7 @@ const postData: AdminPostRow[] = [
     updated_at: '2026-04-26',
   },
   {
-    id: '4',
+    id: '748b7cff-10ac-46af-9d0f-72dd975b75af',
     category: '일반',
     title: '주짓수 질문 있습니다',
     author: '수현',
