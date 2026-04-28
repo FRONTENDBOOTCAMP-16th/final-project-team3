@@ -1,6 +1,6 @@
 // src/hooks/useUserRole.ts
 import { useState, useEffect } from 'react';
-import { supabase } from '@/src/lib/supabase';
+import { supabase } from '@/lib/supabase';
 
 export function useUserRole() {
   const [userRole, setUserRole] = useState<string | null>(null);

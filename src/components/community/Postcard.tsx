@@ -54,9 +54,9 @@ export default function PostCard({ post }: PostCardProps) {
           )}
           <span
             className={`absolute top-2 right-2 px-2 py-1 text-xs text-white rounded-full
-              ${post.category === '도장 홍보' ? 'bg-[#155DFC]' : 'bg-[#364153]'}`}
+            ${post.category === 'promo' ? 'bg-[#155DFC]' : 'bg-[#364153]'}`}
           >
-            {post.category === '도장 홍보' ? '도장' : '일반'}
+            {post.category === 'promo' ? '도장' : '일반'}
           </span>
         </div>
 
@@ -68,7 +68,7 @@ export default function PostCard({ post }: PostCardProps) {
           <div className="flex-1" />
 
           <div className="flex gap-3 text-xs text-gray-400">
-            <span>{post.created_at}</span>
+            <span>{new Date(post.created_at).toLocaleDateString('ko-KR')}</span>
             <span>조회 {post.view_count}</span>
           </div>
 

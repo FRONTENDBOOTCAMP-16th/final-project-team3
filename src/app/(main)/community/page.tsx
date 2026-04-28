@@ -1,22 +1,25 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import Pageheader from '@/src/components/layout/PageHeader';
+import Pageheader from '@/components/layout/PageHeader';
 import Postcard from '../../../components/community/Postcard';
-import { dummyPosts } from '@/src/constants/dummyData';
-import { useInfiniteScroll } from '@/src/hooks/useInfiniteScroll';
-import { useDebounce } from '@/src/hooks/useDebounce';
-import LoadingSpinner from '@/src/components/common/LoadingSpinner';
+// import { dummyPosts } from '@/constants/dummyData';
+import { useInfiniteScroll } from '@//hooks/useInfiniteScroll';
+import { useDebounce } from '@/hooks/useDebounce';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { getPosts } from '@/services/communityService';
+import type { Post } from '@/types/community';
 
 const PAGE_SIZE = 10;
 
 export default function CommunityPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('전체');
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [headerHeight, setHeaderHeight] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
   const debouncedSearch = useDebounce(searchQuery, 300);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     if (headerRef.current) {
@@ -24,8 +27,25 @@ export default function CommunityPage() {
     }
   }, []);
 
-  const filteredPosts = dummyPosts.filter((post) => {
-    const matchTab = activeTab === '전체' || post.category === activeTab;
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await getPosts();
+        setPosts(data);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  const filteredPosts = posts.filter((post) => {
+    const matchTab =
+      activeTab === '전체' ||
+      (activeTab === '도장 홍보' && post.category === 'promo') ||
+      (activeTab === '일반 게시글' && post.category === 'personal');
     const matchSearch = post.title
       .toLowerCase()
       .includes(debouncedSearch.toLowerCase());
@@ -76,7 +96,17 @@ export default function CommunityPage() {
             {isLoading ? (
               <LoadingSpinner />
             ) : visiblePosts.length > 0 ? (
-              visiblePosts.map((post) => <Postcard key={post.id} post={post} />)
+              visiblePosts.map((post) => (
+                <Postcard
+                  key={post.id}
+                  post={{
+                    ...post,
+                    nickname: post.nickname ?? '알 수 없음',
+                    avatar_url: post.avatar_url ?? '',
+                    image_url: post.image_url ?? '',
+                  }}
+                />
+              ))
             ) : (
               <div className="col-span-2 flex flex-col items-center justify-center py-20 text-gray-400">
                 <p className="text-lg">게시글이 없습니다</p>
