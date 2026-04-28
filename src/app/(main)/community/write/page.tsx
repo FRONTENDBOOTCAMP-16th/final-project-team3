@@ -32,12 +32,10 @@ export default function WritePage() {
     }
     setIsLoading(true);
     try {
-      // const {
-      //   data: { user },
-      // } = await supabase.auth.getUser();
-      // if (!user) throw new Error('로그인이 필요합니다.');
-
-      const user = { id: 'a374f29b-158d-4835-b213-7df0d8915b4b' }; // TODO: 로그인 구현 후 제거
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error('로그인이 필요합니다.');
 
       let image_url: string | undefined;
       if (imageFile) {
