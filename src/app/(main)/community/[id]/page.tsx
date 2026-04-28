@@ -14,6 +14,8 @@ import { supabase } from '@/lib/supabase';
 import type { Post, Comment } from '@/types/community';
 import Image from 'next/image';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { useAuth } from '@/hooks/useAuth';
+import { useLike } from '@/hooks/useLike';
 
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -38,6 +40,8 @@ export default function PostDetailPage({
   const [loading, setLoading] = useState(true);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingContent, setEditingContent] = useState('');
+  const { user } = useAuth();
+  const { likeCount, isLiked, toggle } = useLike(id, user?.id ?? '');
 
   useEffect(() => {
     const load = async () => {
@@ -267,18 +271,20 @@ export default function PostDetailPage({
 
         {/* 하단 액션 바 */}
         <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
-          <button className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-red-500 transition-colors cursor-pointer">
+          <button
+            onClick={toggle}
+            className={`flex items-center gap-1.5 text-xs transition-colors cursor-pointer text-gray-500 hover:text-red-500`}
+          >
             <Image src="/like.svg" alt="좋아요" width={16} height={16} />
-            <span>좋아요</span>
+            <span>좋아요 {likeCount}</span>
           </button>
-          <button className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-blue-500 transition-colors cursor-pointer">
+          <div className="flex items-center gap-1.5 text-xs text-gray-500">
             <Image src="/postComment.svg" alt="댓글" width={16} height={16} />
             <span>댓글 {comments.length}</span>
-          </button>
-          <button className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-green-500 transition-colors ml-auto cursor-pointer">
-            <Image src="/postShare.svg" alt="공유" width={16} height={16} />
-            <span>공유</span>
-          </button>
+          </div>
+          <span className="flex items-center gap-1.5 text-xs text-gray-500">
+            조회 {post.view_count}
+          </span>
         </div>
       </div>
 
