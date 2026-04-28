@@ -81,7 +81,7 @@ export default function DojangsPage() {
       setIsLoading(true);
       try {
         const res = await fetch(
-          `https://dapi.kakao.com/v2/local/search/keyword.json?query=${debouncedSearch}&size=15`,
+          `https://dapi.kakao.com/v2/local/search/keyword.json?query=${debouncedSearch} 주짓수&size=15`,
           {
             headers: {
               Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_LOCAL_API_KEY}`,
@@ -136,6 +136,7 @@ export default function DojangsPage() {
               description="전국의 주짓수 도장"
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
+              searchPlaceholder="도장 이름이나 지역으로 검색..."
             />
           </div>
         </div>

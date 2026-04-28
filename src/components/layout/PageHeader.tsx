@@ -16,7 +16,8 @@ interface PageheaderProps {
   setSearchQuery: (query: string) => void;
   writeLink?: string;
   writeLinkText?: string;
-  onSearch?: () => void; // 추가
+  onSearch?: () => void;
+  searchPlaceholder?: string;
 }
 
 export default function Pageheader({
@@ -30,6 +31,7 @@ export default function Pageheader({
   writeLink,
   onSearch,
   writeLinkText,
+  searchPlaceholder,
 }: PageheaderProps) {
   const router = useRouter();
   const handleWriteClick = async (e: React.MouseEvent) => {
@@ -68,6 +70,7 @@ export default function Pageheader({
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             onSearch={onSearch}
+            placeholder={searchPlaceholder ?? '게시글 검색...'}
           />
         </div>
         {writeLink && (
