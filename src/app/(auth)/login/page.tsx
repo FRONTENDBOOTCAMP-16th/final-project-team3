@@ -4,12 +4,46 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Mail, Lock } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { z } from 'zod';
+import { supabase } from '@/lib/supabase';
+
+const loginSchema = z.object({
+  email: z.string().email('올바른 이메일 형식으로 작성해주세요.'),
+  password: z.string().min(1, '비밀번호를 입력해주세요.'),
+});
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {},
+  );
+  const router = useRouter();
 
+  const handleLogin = async () => {
+    const result = loginSchema.safeParse({ email, password });
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      setErrors({
+        email: fieldErrors.email?.[0],
+        password: fieldErrors.password?.[0],
+      });
+      return;
+    }
+    setErrors({});
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    router.push('/community');
+  };
   return (
     <>
       {/* 로고 */}
@@ -34,7 +68,13 @@ export default function LoginPage() {
           로그인
         </h2>
 
-        <form className="space-y-5">
+        <form
+          className="space-y-5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
+        >
           <div>
             {/* 이메일 입력 */}
             <label
