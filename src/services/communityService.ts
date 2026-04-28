@@ -132,3 +132,6 @@ export async function deleteComment(id: string) {
   const { error } = await supabase.from('comments').delete().eq('id', id);
   if (error) throw error;
 }
+export async function incrementViewCount(id: string) {
+  await supabase.rpc('increment_view_count', { post_id: id });
+}

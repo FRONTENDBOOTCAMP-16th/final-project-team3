@@ -3,9 +3,9 @@ import { useState, useRef, useEffect } from 'react';
 import Pageheader from '@/components/layout/PageHeader';
 import CompetitionCard from '@/components/competition/CompetitionCard';
 import { useDebounce } from '@/hooks/useDebounce';
-import { useUserRole } from '../../../hooks/useUserRole';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useCompetiton } from '@/hooks/useCompetition';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function CompetitionsPage() {
   const [activeTab, setActiveTab] = useState('전체');
@@ -13,9 +13,10 @@ export default function CompetitionsPage() {
   const [headerHeight, setHeaderHeight] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
   const debouncedSearch = useDebounce(searchQuery, 300);
-  // const userRole = useUserRole();
-  const userRole: string = 'admin'; // 임시 테스트용
   const { data, isLoading } = useCompetiton();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
+  const isManager = user?.role === 'manager';
 
   useEffect(() => {
     if (headerRef.current) {
@@ -46,11 +47,7 @@ export default function CompetitionsPage() {
             setActiveTab={setActiveTab}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            writeLink={
-              userRole === 'manager' || userRole === 'admin'
-                ? '/competitions/write'
-                : undefined
-            }
+            writeLink={isManager || isAdmin ? '/competitions/write' : undefined}
             writeLinkText="일정추가"
           />
         </div>
