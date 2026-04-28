@@ -70,7 +70,15 @@ export default function LoginPage() {
       role: profile?.role ?? '',
     });
 
-    router.push('/community');
+    // role에 따라 다른 페이지로 이동
+    const role = profile?.role ?? '';
+    if (role === 'admin') {
+      router.push('/admin');
+    } else if (role === 'manager') {
+      router.push('/community');
+    } else {
+      router.push('/community');
+    }
   };
   return (
     <>
