@@ -181,9 +181,21 @@ export default function PostDetailPage({
                 <span className="text-sm font-semibold text-gray-900">
                   {post.nickname ?? '알 수 없음'}
                 </span>
-                {post.belt_level && (
-                  <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">
-                    {post.belt_level}
+                {post.role && (
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                      post.role === 'manager'
+                        ? 'bg-blue-50 text-blue-600'
+                        : post.role === 'admin'
+                          ? 'bg-red-50 text-red-600'
+                          : 'bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    {post.role === 'manager'
+                      ? '도장'
+                      : post.role === 'admin'
+                        ? '관리자'
+                        : '일반'}
                   </span>
                 )}
               </div>

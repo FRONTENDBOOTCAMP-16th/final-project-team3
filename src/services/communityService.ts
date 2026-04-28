@@ -20,7 +20,7 @@ export async function getPosts() {
 export async function getPost(id: string) {
   const { data, error } = await supabase
     .from('posts')
-    .select('*, profiles!posts_user_id_fkey(nickname, avatar_url, belt_level)')
+    .select('*, profiles(nickname, avatar_url, belt_level, role)')
     .eq('id', id)
     .single();
   if (error) throw error;
@@ -30,6 +30,7 @@ export async function getPost(id: string) {
     nickname: data.profiles?.nickname,
     avatar_url: data.profiles?.avatar_url,
     belt_level: data.profiles?.belt_level,
+    role: data.profiles?.role,
     profiles: undefined,
   } as Post;
 }
