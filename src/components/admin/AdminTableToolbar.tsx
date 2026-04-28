@@ -1,7 +1,7 @@
 'use client';
 
-import type { AdminFilterOption } from '@/src/constants/adminPostFilters';
-import { cn } from '@/src/lib/utils';
+import type { AdminFilterOption } from '@/constants/adminPostFilters';
+import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
 interface AdminTableToolbarProps {

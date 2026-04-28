@@ -1,4 +1,4 @@
-import { ADMIN_META, type AdminPageKey } from '@/src/constants/adminMeta';
+import { ADMIN_META, type AdminPageKey } from '@/constants/adminMeta';
 
 interface AdminHeaderProps {
   page: AdminPageKey;

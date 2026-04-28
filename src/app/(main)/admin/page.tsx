@@ -1,6 +1,6 @@
-import AdminHeader from '@/src/components/admin/AdminHeader';
-import AdminTableToolbar from '@/src/components/admin/AdminTableToolbar';
-import { ADMIN_POST_FILTERS } from '@/src/constants/adminPostFilters';
+import AdminHeader from '@/components/admin/AdminHeader';
+import AdminTableToolbar from '@/components/admin/AdminTableToolbar';
+import { ADMIN_POST_FILTERS } from '@/constants/adminPostFilters';
 
 export default function AdminPostPage() {
   return (
