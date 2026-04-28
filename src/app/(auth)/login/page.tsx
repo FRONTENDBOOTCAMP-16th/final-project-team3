@@ -98,6 +98,10 @@ export default function LoginPage() {
                 className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
               />
             </div>
+            {/* 이메일 유효성 검사 */}
+            {errors.email && (
+              <p className="text-danger text-sm mt-1">{errors.email}</p>
+            )}
           </div>
           <div>
             {/* 비밀번호 입력 */}
@@ -118,6 +122,10 @@ export default function LoginPage() {
                 className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
               />
             </div>
+            {/* 비밀번호 유효성 검사 */}
+            {errors.password && (
+              <p className="text-danger text-sm mt-1">{errors.password}</p>
+            )}
           </div>
           {/* 로그인 상태 유지 체크박스*/}
           <div className="flex items-center justify-between">
