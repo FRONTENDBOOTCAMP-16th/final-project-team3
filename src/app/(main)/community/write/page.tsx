@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import type { PostCategory } from '@/types/community';
 import Image from 'next/image';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { supabase } from '@/lib/supabase';
+import { createPost, uploadPostImage } from '@/services/communityService';
 
 export default function WritePage() {
   const router = useRouter();
@@ -13,18 +15,44 @@ export default function WritePage() {
   const [content, setContent] = useState('');
   const [preview, setPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) setPreview(URL.createObjectURL(file));
+    if (file) {
+      setImageFile(file);
+      setPreview(URL.createObjectURL(file));
+    }
   };
 
   const handleSubmit = async () => {
+    if (!title.trim() || !content.trim()) {
+      alert('제목과 내용을 모두 입력해주세요.');
+      return;
+    }
     setIsLoading(true);
     try {
-      // TODO: API 연동
-      console.log({ category, title, content });
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error('로그인이 필요합니다.');
+
+      let image_url: string | undefined;
+      if (imageFile) {
+        image_url = await uploadPostImage(imageFile);
+      }
+
+      await createPost({
+        category,
+        title,
+        content,
+        image_url,
+        user_id: user.id,
+      });
       router.push('/community');
+    } catch (e) {
+      console.error(e);
+      alert('게시글 작성에 실패했습니다.');
     } finally {
       setIsLoading(false);
     }
@@ -45,7 +73,7 @@ export default function WritePage() {
             <button
               key={type}
               onClick={() => setCategory(type)}
-              className={`flex-1 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors ${
+              className={`flex-1 active:bg-gray-200 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors ${
                 category === type
                   ? 'bg-black text-white'
                   : 'bg-gray-100 text-gray-600'
@@ -110,7 +138,7 @@ export default function WritePage() {
       <div className="flex gap-3">
         <button
           onClick={() => router.back()}
-          className="flex-1 py-3 rounded-xl border-2 border-(--color-btn-focus) text-black hover:bg-(--color-btn-focus) hover:text-white cursor-pointer"
+          className="flex-1 py-3 rounded-xl bg-btn-basic border border-gray-300 text-black hover:bg-gray-200"
         >
           취소
         </button>

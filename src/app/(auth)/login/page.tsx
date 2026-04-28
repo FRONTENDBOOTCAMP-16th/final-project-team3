@@ -23,7 +23,6 @@ export default function LoginPage() {
     password?: string;
     server?: string;
   }>({});
-
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -174,7 +173,6 @@ export default function LoginPage() {
                 로그인 상태 유지
               </span>
             </label>
-            {/* 비밀번호 찾기 - Next.js에서는 a태그 대신 Link 사용 권장*/}
             <Link
               href="/forgot-password"
               className="text-sm font-bold hover:underline"
@@ -196,7 +194,6 @@ export default function LoginPage() {
           </button>
           <p className="text-center text-sm text-text-secondary">
             아직 회원이 아니신가요?{' '}
-            {/* 회원가입 - Next.js에서는 a태그 대신 Link 사용 권장*/}
             <Link
               href="/register"
               className="font-bold hover:underline"
