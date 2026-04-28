@@ -18,9 +18,12 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {},
-  );
+  const [errors, setErrors] = useState<{
+    email?: string;
+    password?: string;
+    server?: string;
+  }>({});
+
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -41,9 +44,11 @@ export default function LoginPage() {
     });
     if (error) {
       if (error.message === 'Invalid login credentials') {
-        alert('이메일 또는 비밀번호가 올바르지 않습니다.');
+        setErrors({ server: '이메일 또는 비밀번호가 올바르지 않습니다.' });
       } else {
-        alert('로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+        setErrors({
+          server: '로그인 중 오류가 발생했습니다. 다시 시도해주세요.',
+        });
       }
       return;
     }
@@ -170,6 +175,9 @@ export default function LoginPage() {
               비밀번호 찾기
             </Link>
           </div>
+          {errors.server && (
+            <p className="text-danger text-sm text-center">{errors.server}</p>
+          )}
           {/* 로그인 버튼 */}
           <button
             type="submit"
