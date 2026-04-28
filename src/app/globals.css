@@ -82,6 +82,10 @@
   /* 위험 */
   --color-danger: #e7000b; /* 회원 탈퇴 버튼 */
 
+  /* 인증 */
+  --color-auth-register: #4f74e8; /* 회원가입 관련 색상 */
+  --color-auth-find-password: #4f74e8; /* 비밀번호 찾기 관련 색상 */
+
   /* 에러 페이지 */
   --color-error-not-found: #2c56e7; /* not-found color */
   --color-error-runtime: #e7000b; /* error color */

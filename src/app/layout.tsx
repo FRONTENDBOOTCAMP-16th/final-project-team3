@@ -14,7 +14,7 @@ export default function RootLayout({
 
   return (
     <html lang="ko">
-      <body className="bg-bg-page Min-w-[1024px]">
+      <body className="bg-bg-page min-w-[1024px]">
         <QueryClientProvider client={queryClient}>
           {children}
           <Toaster position="top-center" />
