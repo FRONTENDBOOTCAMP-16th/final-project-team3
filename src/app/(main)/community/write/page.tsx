@@ -45,7 +45,7 @@ export default function WritePage() {
             <button
               key={type}
               onClick={() => setCategory(type)}
-              className={`flex-1 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors ${
+              className={`flex-1 active:bg-gray-200 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors ${
                 category === type
                   ? 'bg-black text-white'
                   : 'bg-gray-100 text-gray-600'
@@ -110,7 +110,7 @@ export default function WritePage() {
       <div className="flex gap-3">
         <button
           onClick={() => router.back()}
-          className="flex-1 py-3 rounded-xl border-2 border-(--color-btn-focus) text-black hover:bg-(--color-btn-focus) hover:text-white cursor-pointer"
+          className="flex-1 py-3 rounded-xl bg-btn-basic border border-gray-300 text-black hover:bg-gray-200"
         >
           취소
         </button>
