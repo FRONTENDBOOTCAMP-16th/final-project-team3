@@ -108,30 +108,32 @@ export default function Sidebar() {
           <div className="h-12" />
         ) : user ? (
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-3 px-2 py-1">
-              <div className="w-9 h-9 rounded-full bg-btn-basic flex items-center justify-center overflow-hidden shrink-0">
-                {user.image ? (
-                  <Image
-                    src={user.image}
-                    alt={user.name}
-                    width={36}
-                    height={36}
-                  />
-                ) : (
-                  <span className="text-sm font-medium text-btn-text">
-                    {user.name[0]}
+            <Link href="/mypage">
+              <div className="flex items-center gap-3 px-2 py-1 rounded-lg hover:bg-btn-basic transition-colors cursor-pointer">
+                <div className="w-9 h-9 rounded-full bg-btn-basic flex items-center justify-center overflow-hidden shrink-0">
+                  {user.image ? (
+                    <Image
+                      src={user.image}
+                      alt={user.name ?? '프로필 이미지'}
+                      width={36}
+                      height={36}
+                    />
+                  ) : (
+                    <span className="text-sm font-medium text-btn-text">
+                      {user.name?.[0] ?? '?'}
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-col overflow-hidden">
+                  <span className="text-sm font-medium text-text-primary truncate">
+                    {user.name ?? '이름 없음'}
                   </span>
-                )}
+                  <span className="text-xs text-text-secondary">
+                    {isAdmin ? 'Admin' : (user.belt ?? '')}
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-col overflow-hidden">
-                <span className="text-sm font-medium text-text-primary truncate">
-                  {user.name}
-                </span>
-                <span className="text-xs text-text-secondary">
-                  {isAdmin ? 'Admin' : user.belt}
-                </span>
-              </div>
-            </div>
+            </Link>
             <Button
               variant="ghost"
               className="w-full h-10 gap-2 text-text-secondary hover:text-text-primary"

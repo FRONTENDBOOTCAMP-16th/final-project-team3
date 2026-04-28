@@ -39,13 +39,16 @@ export default function PostCard({ post }: PostCardProps) {
         {/* 썸네일 + 배지 */}
         <div className="relative shrink-0">
           {post.image_url ? (
-            <Image
-              src={post.image_url}
-              alt={post.title}
-              width={400}
-              height={200}
-              className="w-full h-50 object-cover"
-            />
+            <div className="relative w-full h-50">
+              <Image
+                src={post.image_url}
+                alt={post.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                loading="eager"
+                className="object-cover"
+              />
+            </div>
           ) : (
             <div className="w-full h-50 bg-btn-basic flex items-center justify-center">
               <span className="text-text-secondary text-sm">이미지 없음</span>
@@ -83,13 +86,15 @@ export default function PostCard({ post }: PostCardProps) {
           {/* 프로필 + 좋아요 */}
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-2">
-              <Image
-                src={post.avatar_url || '/basic.svg'}
-                alt={post.nickname}
-                width={24}
-                height={24}
-                className="rounded-full object-cover"
-              />
+              <div className="relative w-6 h-6 shrink-0">
+                <Image
+                  src={post.avatar_url || '/basic.svg'}
+                  alt={post.nickname}
+                  fill
+                  sizes="24px"
+                  className="rounded-full object-cover"
+                />
+              </div>
               <span className="text-sm">{post.nickname}</span>
             </div>
 

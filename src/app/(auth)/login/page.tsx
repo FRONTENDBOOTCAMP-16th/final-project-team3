@@ -4,11 +4,27 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Mail, Lock } from 'lucide-react';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    router.back();
+  };
 
   return (
     <>
@@ -34,7 +50,7 @@ export default function LoginPage() {
           로그인
         </h2>
 
-        <form className="space-y-5">
+        <form className="space-y-5" onSubmit={handleSubmit}>
           <div>
             {/* 이메일 입력 */}
             <label
@@ -92,7 +108,6 @@ export default function LoginPage() {
                 로그인 상태 유지
               </span>
             </label>
-            {/* 비밀번호 찾기 - Next.js에서는 a태그 대신 Link 사용 권장*/}
             <Link
               href="/forgot-password"
               className="text-sm font-bold hover:underline"
@@ -110,7 +125,6 @@ export default function LoginPage() {
           </button>
           <p className="text-center text-sm text-text-secondary">
             아직 회원이 아니신가요?{' '}
-            {/* 회원가입 - Next.js에서는 a태그 대신 Link 사용 권장*/}
             <Link
               href="/register"
               className="font-bold hover:underline"
