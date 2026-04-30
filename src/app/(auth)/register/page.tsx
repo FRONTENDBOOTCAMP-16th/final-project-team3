@@ -159,6 +159,52 @@ function GeneralForm() {
   );
 }
 
+function DojangForm() {
+  return (
+    <form
+      className="space-y-5"
+      onSubmit={(e) => {
+        e.preventDefault();
+      }}
+    >
+      <Field label="이름" htmlFor="dojang-name">
+        <InputWithIcon
+          id="dojang-name"
+          icon={<User className="w-5 h-5" />}
+          placeholder="이름을 입력하세요"
+        />
+      </Field>
+      <Field label="이메일" htmlFor="dojang-email">
+        <InputWithIcon
+          id="dojang-email"
+          icon={<Mail className="w-5 h-5" />}
+          type="email"
+          placeholder="이메일을 입력하세요"
+        />
+      </Field>
+      <Field label="비밀번호" htmlFor="dojang-password">
+        <InputWithIcon
+          id="dojang-password"
+          icon={<Lock className="w-5 h-5" />}
+          type="password"
+          placeholder="비밀번호를 입력하세요"
+        />
+      </Field>
+      <Field label="비밀번호 확인" htmlFor="dojang-passwordConfirm">
+        <InputWithIcon
+          id="dojang-passwordConfirm"
+          icon={<Lock className="w-5 h-5" />}
+          type="password"
+          placeholder="비밀번호를 다시 입력하세요"
+        />
+      </Field>
+      <Field label="벨트" htmlFor="dojang-belt">
+        <BeltSelect />
+      </Field>
+    </form>
+  );
+}
+
 export default function RegisterPage() {
   const [tab, setTab] = useState<'general' | 'dojang'>('general');
 
@@ -191,7 +237,7 @@ export default function RegisterPage() {
       <h2 className="text-2xl font-bold text-center text-text-primary mb-15 mt-22">
         회원가입
       </h2>
-      {tab === 'general' ? <GeneralForm /> : <div />}
+      {tab === 'general' ? <GeneralForm /> : <DojangForm />}
     </>
   );
 }
