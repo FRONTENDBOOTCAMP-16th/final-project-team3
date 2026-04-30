@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { User, Mail, Lock } from 'lucide-react';
 import Link from 'next/link';
+import { User, Mail, Lock, Phone, MapPin, CreditCard } from 'lucide-react';
 
 const BELTS = [
   { value: 'white', label: 'White  (입문자)', color: '#e8e8e8' },
