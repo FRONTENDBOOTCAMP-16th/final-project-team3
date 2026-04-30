@@ -17,3 +17,17 @@ export function formatDate(dateString: string): string {
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}.${month}.${day}`;
 }
+
+export function getDday(eventDate: string): string {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const target = new Date(eventDate);
+  target.setHours(0, 0, 0, 0);
+  const diff = Math.ceil(
+    (target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
+  if (diff === 0) return 'D-DAY';
+  if (diff > 0) return `D-${diff}`;
+  return `D+${Math.abs(diff)}`;
+}

@@ -12,11 +12,19 @@ interface KakaoPlace {
 interface DojangCardProps {
   dojang: KakaoPlace;
   isVerified: boolean;
+  isSelected: boolean; // ✅ 추가
 }
 
-export default function DojangCard({ dojang, isVerified }: DojangCardProps) {
+export default function DojangCard({
+  dojang,
+  isVerified,
+  isSelected,
+}: DojangCardProps) {
   return (
-    <div className="p-4 border border-gray-200 rounded-lg bg-white hover:shadow-md transition-all cursor-pointer">
+    <div
+      className={`p-4 border rounded-lg bg-white hover:shadow-md transition-all cursor-pointer
+      ${isSelected ? 'border-btn-focus border-2 shadow-md' : 'border-gray-200'}`}
+    >
       {/* 도장 이름 + 인증 배지 */}
       <div className="flex items-center gap-2">
         <h3 className="font-bold text-base line-clamp-1">
