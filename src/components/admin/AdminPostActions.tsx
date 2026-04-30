@@ -18,13 +18,17 @@ export default function AdminPostActions({ id, title }: AdminPostActionsProps) {
   };
 
   const handleDelete = () => {
-    console.log('삭제', id);
+    const confirmed = window.confirm(`${title} 게시글을 삭제하시겠습니까?`);
+
+    if (!confirmed) return;
+
+    console.log('삭제할 게시글 id:', id);
   };
 
   const actionButtonClass =
-    'p-2 rounded-md cursor-pointer text-zinc-500 transition-colors duration-200 hover:bg-[var(--color-btn-focus)]';
+    'p-2 rounded-md cursor-pointer text-zinc-500 transition-colors duration-200';
   const actionIconClass =
-    'transition-colors group-hover:text-white hover:text-red-500';
+    'transition-colors hover:text-red-500';
 
   return (
     <div className="flex gap-3">

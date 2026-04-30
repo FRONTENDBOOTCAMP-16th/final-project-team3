@@ -43,12 +43,12 @@ export default function AdminDataTable<T>({
             data.map((row, rowIndex) => (
               <tr
                 key={rowIndex}
-                className="group transition-colors duration-200 hover:bg-[var(--color-btn-focus)]"
+                className="group transition-colors duration-200 hover:bg-[var(--color-table-top)]"
               >
                 {columns.map((column) => (
                   <td
                     key={String(column.key)}
-                    className="border-b px-4 py-3 text-sm text-zinc-700 group-hover:text-[var(--color-btn-focus-text)]"
+                    className="border-b px-4 py-3 text-sm text-zinc-700"
                   >
                     {column.render
                       ? column.render(row)
