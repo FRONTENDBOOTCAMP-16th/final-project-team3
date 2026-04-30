@@ -141,7 +141,8 @@ function GeneralForm() {
 
       <button
         type="submit"
-        className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all"
+        className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer"
+        // cursor-pointer ← 추가
       >
         가입하기
       </button>
@@ -286,7 +287,8 @@ function DojangForm() {
 
       <button
         type="submit"
-        className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all"
+        className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer"
+        // cursor-pointer ← 추가
       >
         가입하기
       </button>
