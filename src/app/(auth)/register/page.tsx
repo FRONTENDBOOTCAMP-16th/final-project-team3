@@ -5,7 +5,7 @@ import { User, Mail, Lock } from 'lucide-react';
 import Link from 'next/link';
 
 const BELTS = [
-  { value: 'white', label: 'White  (흰띠)', color: '#e8e8e8' },
+  { value: 'white', label: 'White  (입문자)', color: '#e8e8e8' },
   { value: 'yellow', label: 'Yellow (노란띠)', color: '#f5c842' },
   { value: 'green', label: 'Green  (초록띠)', color: '#3a9e4f' },
   { value: 'blue', label: 'Blue   (파란띠)', color: '#2e6fdb' },
@@ -20,23 +20,28 @@ function BeltSelect() {
   const selectedColor = BELTS.find((b) => b.value === belt)?.color;
 
   return (
-    <select
-      value={belt}
-      onChange={(e) => setBelt(e.target.value)}
-      className="w-full bg-input-bg border-none rounded-2xl py-4 pl-4 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all appearance-none"
-      style={
-        selectedColor
-          ? { borderLeft: `4px solid ${selectedColor}`, paddingLeft: '14px' }
-          : undefined
-      }
-    >
-      <option value="">벨트를 선택하세요</option>
-      {BELTS.map((b) => (
-        <option key={b.value} value={b.value}>
-          {b.label}
-        </option>
-      ))}
-    </select>
+    <div className="relative">
+      {selectedColor && (
+        <span
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full"
+          style={{ backgroundColor: selectedColor }}
+        />
+      )}
+      <select
+        id="belt"
+        value={belt}
+        onChange={(e) => setBelt(e.target.value)}
+        className="w-full bg-input-bg border-none rounded-2xl py-4 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all appearance-none"
+        style={{ paddingLeft: selectedColor ? '36px' : '16px' }}
+      >
+        <option value="">벨트를 선택하세요</option>
+        {BELTS.map((b) => (
+          <option key={b.value} value={b.value}>
+            {b.label}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }
 
