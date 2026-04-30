@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { User, Mail, Lock } from 'lucide-react';
+import Link from 'next/link';
 
 const BELTS = [
   { value: 'white', label: 'White  (흰띠)', color: '#e8e8e8' },
@@ -79,6 +81,67 @@ function InputWithIcon({
   );
 }
 
+function GeneralForm() {
+  return (
+    <form
+      className="space-y-5"
+      onSubmit={(e) => {
+        e.preventDefault();
+        // 나중에 handleRegister() 연결할 거예요
+      }}
+    >
+      <Field label="이름">
+        <InputWithIcon
+          icon={<User className="w-5 h-5" />}
+          placeholder="이름을 입력하세요"
+        />
+      </Field>
+      <Field label="이메일">
+        <InputWithIcon
+          icon={<Mail className="w-5 h-5" />}
+          type="email"
+          placeholder="이메일을 입력하세요"
+        />
+      </Field>
+      <Field label="비밀번호">
+        <InputWithIcon
+          icon={<Lock className="w-5 h-5" />}
+          type="password"
+          placeholder="비밀번호를 입력하세요"
+        />
+      </Field>
+      <Field label="비밀번호 확인">
+        <InputWithIcon
+          icon={<Lock className="w-5 h-5" />}
+          type="password"
+          placeholder="비밀번호를 다시 입력하세요"
+        />
+      </Field>
+      <Field label="벨트">
+        <BeltSelect />
+      </Field>
+
+      <button
+        type="submit"
+        className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all"
+      >
+        가입하기
+      </button>
+
+      <p className="text-center text-sm text-text-secondary">
+        이미 계정이 있으신가요?{' '}
+        <Link
+          href="/login"
+          className="font-bold hover:underline"
+          style={{ color: 'var(--color-auth-register)' }}
+        >
+          로그인
+        </Link>
+      </p>
+    </form>
+  );
+}
+
 export default function RegisterPage() {
   const [tab, setTab] = useState<'general' | 'dojang'>('general');
 
@@ -111,6 +174,7 @@ export default function RegisterPage() {
       <h2 className="text-2xl font-bold text-center text-text-primary mb-8">
         회원가입
       </h2>
+      {tab === 'general' ? <GeneralForm /> : <div />}
     </>
   );
 }
