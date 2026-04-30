@@ -1,4 +1,4 @@
-export type PostCategory = 'promo' | 'personal';
+export type PostCategory = 'personal' | 'promo' | 'notice';
 
 export interface Post {
   id: string;
