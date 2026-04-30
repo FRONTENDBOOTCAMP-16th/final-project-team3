@@ -176,7 +176,7 @@ export default function RegisterPage() {
         </button>
       </div>
 
-      <h2 className="text-2xl font-bold text-center text-text-primary mb-8">
+      <h2 className="text-2xl font-bold text-center text-text-primary mb-15 mt-22">
         회원가입
       </h2>
       {tab === 'general' ? <GeneralForm /> : <div />}
