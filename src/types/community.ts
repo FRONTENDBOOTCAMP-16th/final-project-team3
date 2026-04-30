@@ -1,4 +1,4 @@
-export type PostCategory = 'promo' | 'personal';
+export type PostCategory = 'personal' | 'promo' | 'notice';
 
 export interface Post {
   id: string;
@@ -15,6 +15,7 @@ export interface Post {
   nickname?: string;
   avatar_url?: string;
   belt_level?: string;
+  role?: string;
 }
 
 export interface Comment {
@@ -27,4 +28,5 @@ export interface Comment {
   nickname?: string;
   avatar_url?: string;
   belt_level?: string;
+  role?: string;
 }

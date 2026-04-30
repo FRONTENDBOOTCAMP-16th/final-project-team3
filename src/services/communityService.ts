@@ -4,33 +4,35 @@ import type { Post, Comment, PostCategory } from '@/types/community';
 export async function getPosts() {
   const { data, error } = await supabase
     .from('posts')
-    .select('*, comments(count)')
+    .select('*, comments(count), profiles(nickname, avatar_url)')
     .order('created_at', { ascending: false });
 
   if (error) throw error;
   return data.map((post: any) => ({
     ...post,
     comment_count: post.comments[0].count,
+    nickname: post.profiles?.nickname,
+    avatar_url: post.profiles?.avatar_url,
+    profiles: undefined,
   }));
 }
 
 export async function getPost(id: string) {
   const { data, error } = await supabase
     .from('posts')
-    // .select('*, profiles(nickname, avatar_url, belt_level)')
-    .select('*')
+    .select('*, profiles(nickname, avatar_url, belt_level, role)')
     .eq('id', id)
     .single();
   if (error) throw error;
-  return data as Post;
 
-  // return {
-  //   ...data,
-  //   nickname: data.profiles?.nickname,
-  //   avatar_url: data.profiles?.avatar_url,
-  //   belt_level: data.profiles?.belt_level,
-  //   profiles: undefined,
-  // } as Post;
+  return {
+    ...data,
+    nickname: data.profiles?.nickname,
+    avatar_url: data.profiles?.avatar_url,
+    belt_level: data.profiles?.belt_level,
+    role: data.profiles?.role,
+    profiles: undefined,
+  } as Post;
 }
 
 export async function createPost({
@@ -82,23 +84,20 @@ export async function uploadPostImage(file: File): Promise<string> {
 export async function getComments(postId: string) {
   const { data, error } = await supabase
     .from('comments')
-    // .select('*, profiles(nickname, avatar_url, belt_level)')
-    .select('*')
+    .select('*, profiles(nickname, avatar_url, belt_level, role)')
     .eq('post_id', postId)
     .order('created_at', { ascending: true });
-  console.log('comments data:', data);
-  console.log('comments error:', error);
 
   if (error) throw error;
-  return data as Comment[];
 
-  // return data.map((comment: any) => ({
-  //   ...comment,
-  //   nickname: comment.profiles?.nickname,
-  //   avatar_url: comment.profiles?.avatar_url,
-  //   belt_level: comment.profiles?.belt_level,
-  //   profiles: undefined,
-  // })) as Comment[];
+  return data.map((comment: any) => ({
+    ...comment,
+    nickname: comment.profiles?.nickname,
+    avatar_url: comment.profiles?.avatar_url,
+    belt_level: comment.profiles?.belt_level,
+    role: comment.profiles?.role,
+    profiles: undefined,
+  })) as Comment[];
 }
 
 export async function createComment({
@@ -113,19 +112,18 @@ export async function createComment({
   const { data, error } = await supabase
     .from('comments')
     .insert({ post_id, user_id, content })
-    // .select('*, profiles(nickname, avatar_url, belt_level)')
-    .select('*')
+    .select('*, profiles(nickname, avatar_url, belt_level, role)')
     .single();
   if (error) throw error;
-  return data as Comment;
 
-  // return {
-  //   ...data,
-  //   nickname: data.profiles?.nickname,
-  //   avatar_url: data.profiles?.avatar_url,
-  //   belt_level: data.profiles?.belt_level,
-  //   profiles: undefined,
-  // } as Comment;
+  return {
+    ...data,
+    nickname: data.profiles?.nickname,
+    avatar_url: data.profiles?.avatar_url,
+    belt_level: data.profiles?.belt_level,
+    role: data.profiles?.role,
+    profiles: undefined,
+  } as Comment;
 }
 
 export async function deleteComment(id: string) {

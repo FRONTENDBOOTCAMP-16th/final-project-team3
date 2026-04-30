@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLike } from '@/hooks/useLike';
-import { useAuth } from '@/hooks/useAuth';
 import { formatDate } from '@/utils/formatDate';
 import { Heart, MessageCircle } from 'lucide-react';
 
@@ -18,15 +17,23 @@ interface PostCardProps {
     created_at: string;
     comment_count: number;
   };
+  userId: string;
 }
 
-export default function PostCard({ post }: PostCardProps) {
-  const { user } = useAuth();
-  const { likeCount, isLiked, toggle } = useLike(post.id, user?.id ?? '');
+const categoryMap: Record<string, { label: string; color: string }> = {
+  promo: { label: '도장', color: 'bg-[#155DFC]' },
+  notice: { label: '공지', color: 'bg-[#e7000b]' },
+  personal: { label: '일반', color: 'bg-[#364153]' },
+};
+
+export default function PostCard({ post, userId }: PostCardProps) {
+  // const { user } = useAuth();
+  const { likeCount, isLiked, toggle } = useLike(post.id, userId);
+  const categoryInfo = categoryMap[post.category] ?? categoryMap.personal;
 
   const handleLike = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!userId) return;
     toggle();
   };
 
@@ -55,10 +62,9 @@ export default function PostCard({ post }: PostCardProps) {
             </div>
           )}
           <span
-            className={`absolute top-2 right-2 px-2 py-1 text-xs text-white rounded-full
-            ${post.category === 'promo' ? 'bg-[#155DFC]' : 'bg-[#364153]'}`}
+            className={`absolute top-2 right-2 px-2 py-1 text-xs text-white rounded-full ${categoryInfo.color}`}
           >
-            {post.category === 'promo' ? '도장' : '일반'}
+            {categoryInfo.label}
           </span>
         </div>
 

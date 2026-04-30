@@ -38,7 +38,6 @@ export default function Sidebar() {
 
   const handleLogout = async () => {
     await logout();
-    router.back();
   };
 
   return (
