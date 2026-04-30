@@ -200,6 +200,46 @@ function DojangForm() {
       </Field>
       <Field label="벨트" htmlFor="dojang-belt">
         <BeltSelect />
+        <hr className="border-gray-200" />
+
+        <Field label="사범자등록번호" htmlFor="licenseNumber">
+          <InputWithIcon
+            id="licenseNumber"
+            icon={<CreditCard className="w-5 h-5" />}
+            placeholder="사업자등록번호를 입력하세요"
+          />
+        </Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="기업명(도장명)" htmlFor="gymName">
+            <InputWithIcon
+              id="gymName"
+              icon={<CreditCard className="w-5 h-5" />}
+              placeholder="도장명"
+            />
+          </Field>
+          <Field label="대표자명" htmlFor="ownerName">
+            <InputWithIcon
+              id="ownerName"
+              icon={<User className="w-5 h-5" />}
+              placeholder="대표자명"
+            />
+          </Field>
+        </div>
+        <Field label="연락처" htmlFor="phone">
+          <InputWithIcon
+            id="phone"
+            icon={<Phone className="w-5 h-5" />}
+            type="tel"
+            placeholder="010-0000-0000"
+          />
+        </Field>
+        <Field label="주소" htmlFor="address">
+          <InputWithIcon
+            id="address"
+            icon={<MapPin className="w-5 h-5" />}
+            placeholder="주소를 입력하세요"
+          />
+        </Field>
       </Field>
     </form>
   );
