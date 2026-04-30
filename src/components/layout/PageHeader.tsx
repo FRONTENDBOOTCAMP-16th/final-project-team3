@@ -5,6 +5,7 @@ import { Input } from '../ui/input';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import SearchInput from '../common/SearchInput';
+import { supabase } from '@/lib/supabase';
 
 interface PageheaderProps {
   title: string;
@@ -36,21 +37,17 @@ export default function Pageheader({
   const router = useRouter();
   const handleWriteClick = async (e: React.MouseEvent) => {
     e.preventDefault();
-    // TODO: 로그인 체크 임시 bypass, 체크 완료시 삭제 및 아래 주석 풀기
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    // 로그인 됐으면 writeLink로 이동
     if (writeLink) {
       router.push(writeLink);
     }
-    // const {
-    //   data: { user },
-    // } = await supabase.auth.getUser();
-    // if (!user) {
-    //   router.push('/login');
-    //   return;
-    // }
-    // // 로그인 됐으면 writeLink로 이동
-    // if (writeLink) {
-    //   router.push(writeLink);
-    // }
   };
   return (
     <div className="flex flex-col gap-5 bg-white z-10 py-6">
