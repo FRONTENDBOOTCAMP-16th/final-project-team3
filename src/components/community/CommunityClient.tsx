@@ -23,7 +23,7 @@ export default function CommunityClient({
   const [headerHeight, setHeaderHeight] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
   const debouncedSearch = useDebounce(searchQuery, 300);
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   // const isAdmin = user?.role === 'admin';
 
   const { data: posts = initialPosts } = usePosts();
@@ -74,7 +74,9 @@ export default function CommunityClient({
               setSearchQuery(query);
               setPage(1);
             }}
-            writeLink="/community/write"
+            writeLink={
+              loading ? undefined : user ? '/community/write' : undefined
+            }
             // 관리자만 글쓰기 버튼 표시 - 필요시 주석 해제
             // writeLink={isAdmin ? '/community/write' : undefined}
           />
@@ -97,6 +99,7 @@ export default function CommunityClient({
                     avatar_url: post.avatar_url ?? '',
                     image_url: post.image_url ?? '',
                   }}
+                  userId={user?.id ?? ''}
                 />
               ))
             ) : (

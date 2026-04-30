@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLike } from '@/hooks/useLike';
-import { useAuth } from '@/hooks/useAuth';
 import { formatDate } from '@/utils/formatDate';
 import { Heart, MessageCircle } from 'lucide-react';
 
@@ -18,6 +17,7 @@ interface PostCardProps {
     created_at: string;
     comment_count: number;
   };
+  userId: string;
 }
 
 const categoryMap: Record<string, { label: string; color: string }> = {
@@ -26,14 +26,14 @@ const categoryMap: Record<string, { label: string; color: string }> = {
   personal: { label: '일반', color: 'bg-[#364153]' },
 };
 
-export default function PostCard({ post }: PostCardProps) {
-  const { user } = useAuth();
-  const { likeCount, isLiked, toggle } = useLike(post.id, user?.id ?? '');
+export default function PostCard({ post, userId }: PostCardProps) {
+  // const { user } = useAuth();
+  const { likeCount, isLiked, toggle } = useLike(post.id, userId);
   const categoryInfo = categoryMap[post.category] ?? categoryMap.personal;
 
   const handleLike = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!userId) return;
     toggle();
   };
 
