@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PostCategory } from '@/types/community';
 import Image from 'next/image';
@@ -16,13 +16,21 @@ export default function WritePage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const category: PostCategory =
     user?.role === 'manager'
       ? 'promo'
       : user?.role === 'admin'
         ? 'notice'
         : 'personal';
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
+
+  if (loading || isLoading) return <LoadingSpinner />;
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -64,8 +72,6 @@ export default function WritePage() {
       setIsLoading(false);
     }
   };
-
-  if (isLoading) return <LoadingSpinner />;
 
   return (
     <div className="max-w-5xl mx-auto p-6">
