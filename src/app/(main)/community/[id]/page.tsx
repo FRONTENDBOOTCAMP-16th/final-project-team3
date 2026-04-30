@@ -306,7 +306,7 @@ export default function PostDetailPage({
         {/* 하단 액션 바 */}
         <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
           <button
-            onClick={toggle}
+            onClick={() => toggle()}
             aria-pressed={isLiked}
             aria-label={`좋아요 ${likeCount}개, ${isLiked ? '좋아요 취소' : '좋아요'}`}
             className={`flex items-center gap-1.5 text-xs transition-colors cursor-pointer text-gray-500 hover:text-red-500`}
