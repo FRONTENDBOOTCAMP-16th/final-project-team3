@@ -7,15 +7,22 @@ import Image from 'next/image';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { supabase } from '@/lib/supabase';
 import { createPost, uploadPostImage } from '@/services/communityService';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function WritePage() {
   const router = useRouter();
-  const [category, setCategory] = useState<PostCategory>('personal');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [preview, setPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const { user } = useAuth();
+  const category: PostCategory =
+    user?.role === 'manager'
+      ? 'promo'
+      : user?.role === 'admin'
+        ? 'notice'
+        : 'personal';
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -68,20 +75,12 @@ export default function WritePage() {
 
       <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
         <p className="text-sm text-gray-500 mb-2">게시글 유형</p>
-        <div className="flex gap-2">
-          {(['personal', 'promo'] as PostCategory[]).map((type) => (
-            <button
-              key={type}
-              onClick={() => setCategory(type)}
-              className={`flex-1 active:bg-gray-200 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors ${
-                category === type
-                  ? 'bg-black text-white'
-                  : 'bg-gray-100 text-gray-600'
-              }`}
-            >
-              {type === 'personal' ? '일반 게시글' : '도장 홍보'}
-            </button>
-          ))}
+        <div className="py-2 px-3 rounded-lg text-sm font-medium bg-black text-white text-center">
+          {user?.role === 'manager'
+            ? '도장 홍보'
+            : user?.role === 'admin'
+              ? '공지'
+              : '일반 게시글'}
         </div>
       </div>
 
