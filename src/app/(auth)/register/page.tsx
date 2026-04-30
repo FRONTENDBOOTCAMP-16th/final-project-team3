@@ -16,7 +16,7 @@ const BELTS = [
   { value: 'black', label: 'Black  (검은띠)', color: '#1a1a1a' },
 ];
 
-function BeltSelect() {
+function BeltSelect({ id }: { id: string }) {
   const [belt, setBelt] = useState('');
   const selectedColor = BELTS.find((b) => b.value === belt)?.color;
 
@@ -29,7 +29,7 @@ function BeltSelect() {
         />
       )}
       <select
-        id="belt"
+        id={id}
         value={belt}
         onChange={(e) => setBelt(e.target.value)}
         className="w-full bg-input-bg border-none rounded-2xl py-4 pr-4 text-base text-text-secondary  focus:ring-2 focus:ring-btn-focus outline-none transition-all appearance-none"
@@ -199,8 +199,8 @@ function DojangForm() {
           placeholder="비밀번호를 다시 입력하세요"
         />
       </Field>
-      <Field label="벨트" htmlFor="belt" noError>
-        <BeltSelect id="belt" />
+      <Field label="벨트" htmlFor="dojang-belt">
+        <BeltSelect id="dojang-belt" />
       </Field>
       <Field label="사업자등록번호" htmlFor="licenseNumber">
         <InputWithIcon
@@ -249,7 +249,17 @@ function DojangForm() {
         >
           사업자등록증 첨부 (이미지/PDF)
         </label>
-        <label className="flex flex-col items-center justify-center bg-input-bg rounded-2xl py-6 cursor-pointer hover:opacity-80 transition-all">
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => document.getElementById('resume')?.click()}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              document.getElementById('resume')?.click();
+            }
+          }}
+          className="flex flex-col items-center justify-center bg-input-bg rounded-2xl py-6 cursor-pointer hover:opacity-80 transition-all"
+        >
           <svg
             viewBox="0 0 24 24"
             className="w-6 h-6 text-text-secondary mb-1"
@@ -271,7 +281,7 @@ function DojangForm() {
             accept=".jpg,.jpeg,.png,.gif,.pdf"
             className="hidden"
           />
-        </label>
+        </div>
       </div>
 
       <button
