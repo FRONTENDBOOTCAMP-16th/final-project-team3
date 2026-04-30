@@ -43,13 +43,21 @@ export default function CompetitionClient({
     }
   }, []);
 
-  const filteredCompetitions = data.filter((competition) => {
-    const matchTab = activeTab === '전체' || competition.status === activeTab;
-    const matchSearch = competition.name
-      .toLowerCase()
-      .includes(debouncedSearch.toLowerCase());
-    return matchTab && matchSearch;
-  });
+  const filteredCompetitions = data
+    .filter((competition) => {
+      const matchTab = activeTab === '전체' || competition.status === activeTab;
+      const matchSearch = competition.name
+        .toLowerCase()
+        .includes(debouncedSearch.toLowerCase());
+      return matchTab && matchSearch;
+    })
+    .sort((a, b) => {
+      const order = { 모집중: 1, 마감임박: 0, 모집완료: 2 };
+      return (
+        (order[a.status as keyof typeof order] ?? 3) -
+        (order[b.status as keyof typeof order] ?? 3)
+      );
+    });
 
   return (
     <div className="w-full min-h-screen">

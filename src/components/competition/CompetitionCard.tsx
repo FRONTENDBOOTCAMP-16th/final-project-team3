@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import { getDday } from '@/utils/formatDate';
 
 interface CompetitionCardProps {
   competition: {
@@ -23,7 +24,13 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
       마감임박: 'bg-orange-500',
       모집완료: 'bg-gray-400',
     }[competition.status] ?? 'bg-gray-400';
-
+  const dday = getDday(competition.event_data);
+  const ddayColor =
+    dday === 'D-DAY'
+      ? 'text-danger'
+      : dday.startsWith('D-')
+        ? 'text-blue-500'
+        : 'text-gray-400';
   return (
     <div className="rounded-lg overflow-hidden bg-bg-white border border-gray-200 flex flex-col min-h cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
       {/* 썸네일 + 배지 */}
@@ -76,6 +83,13 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
           <div className="flex items-center gap-1">
             <Image src="/calendar.svg" alt="날짜" width={14} height={14} />
             <span>{competition.event_data}</span>
+            <div className="flex items-center gap-1">
+              <Image src="/calendar.svg" alt="날짜" width={14} height={14} />
+              <span>{competition.event_data}</span>
+              {competition.status !== '모집완료' && (
+                <span className={`ml-1 font-bold ${ddayColor}`}>{dday}</span>
+              )}
+            </div>
           </div>
           <div className="flex items-center gap-1">
             <Image src="/location.svg" alt="위치" width={14} height={14} />
