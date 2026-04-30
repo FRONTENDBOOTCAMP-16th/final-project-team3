@@ -32,7 +32,7 @@ function BeltSelect() {
         id="belt"
         value={belt}
         onChange={(e) => setBelt(e.target.value)}
-        className="w-full bg-input-bg border-none rounded-2xl py-4 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all appearance-none"
+        className="w-full bg-input-bg border-none rounded-2xl py-4 pr-4 text-base text-text-secondary  focus:ring-2 focus:ring-btn-focus outline-none transition-all appearance-none"
         style={{ paddingLeft: selectedColor ? '36px' : '16px' }}
       >
         <option value="">벨트를 선택하세요</option>
@@ -136,7 +136,7 @@ function GeneralForm() {
         />
       </Field>
       <Field label="벨트" htmlFor="belt">
-        <BeltSelect />
+        <BeltSelect id="belt" />
       </Field>
 
       <button
@@ -199,9 +199,8 @@ function DojangForm() {
           placeholder="비밀번호를 다시 입력하세요"
         />
       </Field>
-      <Field label="벨트" htmlFor="dojang-belt">
-        <BeltSelect />
-        <hr className="border-gray-200" />
+      <Field label="벨트" htmlFor="belt" noError>
+        <BeltSelect id="belt" />
       </Field>
       <Field label="사업자등록번호" htmlFor="licenseNumber">
         <InputWithIcon
