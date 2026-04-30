@@ -314,7 +314,8 @@ export default function RegisterPage() {
       <div className="flex border-b border-gray-200 mb-6">
         <button
           onClick={() => setTab('general')}
-          className={`flex-1 pb-3 text-sm font-bold transition-all ${
+          className={`flex-1 pb-3 text-sm font-bold transition-all cursor-pointer ${
+            // cursor-pointer ← 추가
             tab === 'general'
               ? 'text-btn-focus border-b-2 border-btn-focus -mb-px'
               : 'text-text-secondary hover:text-text-primary'
@@ -324,7 +325,8 @@ export default function RegisterPage() {
         </button>
         <button
           onClick={() => setTab('dojang')}
-          className={`flex-1 pb-3 text-sm font-bold transition-all ${
+          className={`flex-1 pb-3 text-sm font-bold transition-all cursor-pointer ${
+            // cursor-pointer ← 추가
             tab === 'dojang'
               ? 'text-btn-focus border-b-2 border-btn-focus -mb-px'
               : 'text-text-secondary hover:text-text-primary'
