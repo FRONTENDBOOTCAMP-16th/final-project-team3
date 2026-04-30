@@ -217,38 +217,63 @@ export default function PostDetailPage({
           </div>
 
           {/* 오너 액션 버튼 */}
-          {isOwner && (
-            <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1">
+            {isOwner ? (
+              <>
+                <button
+                  onClick={() => router.push(`/community/${id}/edit`)}
+                  aria-label={`${post.nickname}의 게시글 수정`}
+                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500 cursor-pointer"
+                >
+                  <Image
+                    src="/postEdit.svg"
+                    alt=""
+                    width={30}
+                    height={30}
+                    aria-hidden="true"
+                  />
+                </button>
+                <button
+                  onClick={handleDeletePost}
+                  aria-label={`${post.nickname}의 게시글 삭제`}
+                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors text-red-400 cursor-pointer"
+                >
+                  <Image
+                    src="/postDelete.svg"
+                    alt=""
+                    width={32}
+                    height={32}
+                    aria-hidden="true"
+                  />
+                </button>
+              </>
+            ) : (
               <button
-                onClick={() => router.push(`/community/${id}/edit`)}
-                aria-label={`${post.nickname}의 게시글 수정`}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500 cursor-pointer"
-                title="수정"
+                aria-label={`${post.nickname}의 게시글 신고`}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400 cursor-pointer"
               >
                 <Image
-                  src="/postEdit.svg"
+                  src="/postReport.svg"
                   alt=""
-                  width={30}
-                  height={30}
+                  width={27}
+                  height={27}
                   aria-hidden="true"
                 />
               </button>
-              <button
-                onClick={handleDeletePost}
-                aria-label={`${post.nickname}의 게시글 삭제`}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors text-red-400 cursor-pointer"
-                title="삭제"
-              >
-                <Image
-                  src="/postDelete.svg"
-                  alt=""
-                  width={32}
-                  height={32}
-                  aria-hidden="true"
-                />
-              </button>
-            </div>
-          )}
+            )}
+            <button
+              aria-label={`${post.nickname}의 게시글 공유`}
+              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500 cursor-pointer"
+            >
+              <Image
+                src="/postShare.svg"
+                alt=""
+                width={18}
+                height={18}
+                aria-hidden="true"
+              />
+            </button>
+          </div>
         </div>
 
         {/* 제목 */}
