@@ -31,3 +31,17 @@ export function getDday(eventDate: string): string {
   if (diff > 0) return `D-${diff}`;
   return `D+${Math.abs(diff)}`;
 }
+
+export function getStatus(applyDeadline: string): string {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const deadline = new Date(applyDeadline);
+  deadline.setHours(0, 0, 0, 0);
+  const diff = Math.ceil(
+    (deadline.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
+  if (diff < 0) return '모집완료';
+  if (diff <= 7) return '마감임박';
+  return '모집중';
+}
