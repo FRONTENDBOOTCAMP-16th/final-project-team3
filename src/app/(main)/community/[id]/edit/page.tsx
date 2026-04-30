@@ -1,20 +1,47 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PostCategory } from '@/types/community';
 import Image from 'next/image';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { use } from 'react';
+import {
+  getPost,
+  updatePost,
+  uploadPostImage,
+} from '@/services/communityService';
 
-export default function EditPage() {
+export default function EditPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const router = useRouter();
-  // TODO: API 연결 시 실제 데이터로 교체
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [category, setCategory] = useState<PostCategory>('personal');
   const [preview, setPreview] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const category: PostCategory = 'personal'; // TODO: API 연결 시 실제 데이터로 교체
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const post = await getPost(id);
+        setTitle(post.title);
+        setContent(post.content);
+        setCategory(post.category);
+        if (post.image_url) setPreview(post.image_url);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    load();
+  }, [id]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -29,8 +56,20 @@ export default function EditPage() {
       alert('제목과 내용을 모두 입력해주세요.');
       return;
     }
-    // TODO: API 연결
-    console.log({ category, title, content, imageFile });
+    setIsLoading(true);
+    try {
+      let image_url: string | undefined;
+      if (imageFile) {
+        image_url = await uploadPostImage(imageFile);
+      }
+      await updatePost(id, { title, content, image_url });
+      router.push(`/community/${id}`);
+    } catch (e) {
+      console.error(e);
+      alert('게시글 수정에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isLoading) return <LoadingSpinner />;
