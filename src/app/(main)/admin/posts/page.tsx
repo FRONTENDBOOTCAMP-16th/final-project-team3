@@ -7,9 +7,9 @@ import AdminBadge from '@/components/admin/AdminBadge';
 import { supabase } from '@/lib/supabase';
 
 type AdminPostStatus = 'published' | 'hidden';
-type AdminPostCategory = '일반' | '도장홍보' | '대회' | '공지';
-type DbPostCategory = 'personal' | 'promo' | 'competition' | 'notice';
-type BadgeVariant = 'gray' | 'blue' | 'purple' | 'red' | 'green' | 'yellow';
+type AdminPostCategory = '일반' | '도장홍보' | '공지';
+type DbPostCategory = 'personal' | 'promo' | 'notice';
+type BadgeVariant = 'gray' | 'blue' | 'red' | 'green' | 'yellow';
 
 interface AdminPostRow {
   id: string;
@@ -42,14 +42,12 @@ type PostQueryRow = {
 const categoryLabelMap: Record<DbPostCategory, AdminPostCategory> = {
   personal: '일반',
   promo: '도장홍보',
-  competition: '대회',
   notice: '공지',
 };
 
 const categoryBadgeVariantMap: Record<AdminPostCategory, BadgeVariant> = {
   일반: 'gray',
   도장홍보: 'blue',
-  대회: 'purple',
   공지: 'red',
 };
 
