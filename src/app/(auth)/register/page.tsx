@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { User, Mail, Lock, Phone, MapPin, CreditCard } from 'lucide-react';
 
+// 벨트 종류
 const BELTS = [
   { value: 'white', label: 'White  (입문자)', color: '#e8e8e8' },
   { value: 'yellow', label: 'Yellow (노란띠)', color: '#f5c842' },
@@ -93,7 +94,7 @@ function InputWithIcon({
     </div>
   );
 }
-
+// 일반 회원가입 폼
 function GeneralForm() {
   return (
     <form
@@ -158,7 +159,7 @@ function GeneralForm() {
     </form>
   );
 }
-
+// 도장 회원가입 폼
 function DojangForm() {
   return (
     <form
@@ -201,96 +202,96 @@ function DojangForm() {
       <Field label="벨트" htmlFor="dojang-belt">
         <BeltSelect />
         <hr className="border-gray-200" />
-
-        <Field label="사업자등록번호" htmlFor="licenseNumber">
-          <InputWithIcon
-            id="licenseNumber"
-            icon={<CreditCard className="w-5 h-5" />}
-            placeholder="사업자등록번호를 입력하세요"
-          />
-        </Field>
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="기업명(도장명)" htmlFor="gymName">
-            <InputWithIcon
-              id="gymName"
-              icon={<CreditCard className="w-5 h-5" />}
-              placeholder="도장명"
-            />
-          </Field>
-          <Field label="대표자명" htmlFor="ownerName">
-            <InputWithIcon
-              id="ownerName"
-              icon={<User className="w-5 h-5" />}
-              placeholder="대표자명"
-            />
-          </Field>
-        </div>
-        <Field label="연락처" htmlFor="phone">
-          <InputWithIcon
-            id="phone"
-            icon={<Phone className="w-5 h-5" />}
-            type="tel"
-            placeholder="010-0000-0000"
-          />
-        </Field>
-        <Field label="주소" htmlFor="address">
-          <InputWithIcon
-            id="address"
-            icon={<MapPin className="w-5 h-5" />}
-            placeholder="주소를 입력하세요"
-          />
-        </Field>
-        {/* 파일 업로드 */}
-        <div>
-          <label
-            htmlFor="resume"
-            className="block text-sm font-medium text-text-primary mb-2"
-          >
-            사업자등록 이력서 첨부 (이미지/PDF)
-          </label>
-          <label className="flex flex-col items-center justify-center bg-input-bg rounded-2xl py-6 cursor-pointer hover:opacity-80 transition-all">
-            <svg
-              viewBox="0 0 24 24"
-              className="w-6 h-6 text-text-secondary mb-1"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            >
-              <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12M8 8l4-4 4 4" />
-            </svg>
-            <span className="text-sm text-text-secondary">
-              클릭하여 파일 업로드
-            </span>
-            <span className="text-xs text-text-secondary mt-1">
-              JPG, PNG, GIF, PDF (최대 10MB)
-            </span>
-            <input
-              id="resume"
-              type="file"
-              accept=".jpg,.jpeg,.png,.gif,.pdf"
-              className="hidden"
-            />
-          </label>
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all"
-        >
-          가입하기
-        </button>
-
-        <p className="text-center text-sm text-text-secondary">
-          이미 계정이 있으신가요?{' '}
-          <Link
-            href="/login"
-            className="font-bold hover:underline"
-            style={{ color: 'var(--color-auth-register)' }}
-          >
-            로그인
-          </Link>
-        </p>
       </Field>
+      <Field label="사업자등록번호" htmlFor="licenseNumber">
+        <InputWithIcon
+          id="licenseNumber"
+          icon={<CreditCard className="w-5 h-5" />}
+          placeholder="사업자등록번호를 입력하세요"
+        />
+      </Field>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="기업명(도장명)" htmlFor="gymName">
+          <InputWithIcon
+            id="gymName"
+            icon={<CreditCard className="w-5 h-5" />}
+            placeholder="도장명"
+          />
+        </Field>
+        <Field label="대표자명" htmlFor="ownerName">
+          <InputWithIcon
+            id="ownerName"
+            icon={<User className="w-5 h-5" />}
+            placeholder="대표자명"
+          />
+        </Field>
+      </div>
+      <Field label="연락처" htmlFor="phone">
+        <InputWithIcon
+          id="phone"
+          icon={<Phone className="w-5 h-5" />}
+          type="tel"
+          placeholder="010-0000-0000"
+        />
+      </Field>
+      <Field label="주소" htmlFor="address">
+        <InputWithIcon
+          id="address"
+          icon={<MapPin className="w-5 h-5" />}
+          placeholder="주소를 입력하세요"
+        />
+      </Field>
+
+      {/* 파일 업로드 */}
+      <div>
+        <label
+          htmlFor="resume"
+          className="block text-sm font-medium text-text-primary mb-2"
+        >
+          사업자등록증 첨부 (이미지/PDF)
+        </label>
+        <label className="flex flex-col items-center justify-center bg-input-bg rounded-2xl py-6 cursor-pointer hover:opacity-80 transition-all">
+          <svg
+            viewBox="0 0 24 24"
+            className="w-6 h-6 text-text-secondary mb-1"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
+            <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12M8 8l4-4 4 4" />
+          </svg>
+          <span className="text-sm text-text-secondary">
+            클릭하여 파일 업로드
+          </span>
+          <span className="text-xs text-text-secondary mt-1">
+            JPG, PNG, GIF, PDF (최대 10MB)
+          </span>
+          <input
+            id="resume"
+            type="file"
+            accept=".jpg,.jpeg,.png,.gif,.pdf"
+            className="hidden"
+          />
+        </label>
+      </div>
+
+      <button
+        type="submit"
+        className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all"
+      >
+        가입하기
+      </button>
+
+      <p className="text-center text-sm text-text-secondary">
+        이미 계정이 있으신가요?{' '}
+        <Link
+          href="/login"
+          className="font-bold hover:underline"
+          style={{ color: 'var(--color-auth-register)' }}
+        >
+          로그인
+        </Link>
+      </p>
     </form>
   );
 }
