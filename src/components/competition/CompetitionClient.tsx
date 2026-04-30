@@ -3,17 +3,18 @@ import { useState, useRef, useEffect } from 'react';
 import Pageheader from '@/components/layout/PageHeader';
 import CompetitionCard from '@/components/competition/CompetitionCard';
 import { useDebounce } from '@/hooks/useDebounce';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useCompetiton } from '@/hooks/useCompetition';
 import { useAuth } from '@/hooks/useAuth';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { getStatus } from '@/utils/formatDate';
 
 interface Competition {
   id: string;
   name: string;
   location: string;
   event_data: string;
+  apply_deadline: string;
   category: string;
-  status: string;
   description: string;
   image_url: string;
   participants: number;
@@ -43,13 +44,26 @@ export default function CompetitionClient({
     }
   }, []);
 
-  const filteredCompetitions = data.filter((competition) => {
-    const matchTab = activeTab === '전체' || competition.status === activeTab;
-    const matchSearch = competition.name
-      .toLowerCase()
-      .includes(debouncedSearch.toLowerCase());
-    return matchTab && matchSearch;
-  });
+  const filteredCompetitions = data
+    .filter((competition) => {
+      const matchTab =
+        activeTab === '전체' ||
+        getStatus(competition.apply_deadline) === activeTab;
+      const matchSearch = competition.name
+        .toLowerCase()
+        .includes(debouncedSearch.toLowerCase());
+      return matchTab && matchSearch;
+    })
+    .sort((a, b) => {
+      const statusA = getStatus(a.apply_deadline);
+      const statusB = getStatus(b.apply_deadline);
+      if (statusA === '모집완료' && statusB !== '모집완료') return 1;
+      if (statusA !== '모집완료' && statusB === '모집완료') return -1;
+      return (
+        new Date(a.apply_deadline).getTime() -
+        new Date(b.apply_deadline).getTime()
+      );
+    });
 
   return (
     <div className="w-full min-h-screen">

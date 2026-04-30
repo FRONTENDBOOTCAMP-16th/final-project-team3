@@ -98,7 +98,7 @@ export default function LoginPage() {
       </div>
 
       {/* 카드 */}
-      <div className="max-w-[600px] w-full bg-bg-white rounded-[32px] p-8 shadow-sm border-none">
+      <div className="max-w-150 w-full bg-bg-white rounded-[32px] p-8 shadow-sm border-none">
         <h2 className="text-2xl font-bold text-center text-text-primary mb-8">
           로그인
         </h2>

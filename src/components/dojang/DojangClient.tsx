@@ -4,7 +4,6 @@ import DojangCard from '@/components/dojang/DojangCard';
 import Pageheader from '@/components/layout/PageHeader';
 import { useDebounce } from '@/hooks/useDebounce';
 import Script from 'next/script';
-import { supabase } from '@/lib/supabase';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare global {
@@ -23,6 +22,7 @@ interface KakaoPlace {
   x: string;
   y: string;
 }
+
 interface DojangClientProps {
   initialVerifiedDojangs: string[];
 }
@@ -35,27 +35,18 @@ export default function DojangClient({
   const [isLoading, setIsLoading] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [verifiedDojangs, setVerifiedDojangs] = useState<string[]>([]);
+  const [selectedDojangId, setSelectedDojangId] = useState<string | null>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
+  const cardRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   useEffect(() => {
     if (headerRef.current) {
       setHeaderHeight(headerRef.current.offsetHeight);
     }
-  }, []);
-
-  useEffect(() => {
-    const fetchVerifiedDojangs = async () => {
-      const { data } = await supabase.from('dojang').select('name');
-      if (data) {
-        setVerifiedDojangs(data.map((d: { name: string }) => d.name));
-      }
-    };
-    fetchVerifiedDojangs();
   }, []);
 
   const initMap = () => {
@@ -95,6 +86,7 @@ export default function DojangClient({
         );
         const data = await res.json();
         setDojangs(data.documents);
+        setSelectedDojangId(null);
         clearMarkers();
 
         if (data.documents.length > 0 && mapInstance.current) {
@@ -110,6 +102,18 @@ export default function DojangClient({
               map: mapInstance.current,
               title: place.place_name,
             });
+
+            window.naver.maps.Event.addListener(marker, 'click', () => {
+              setSelectedDojangId(place.id);
+              const card = cardRefs.current[place.id];
+              if (card) {
+                window.scrollTo({
+                  top: card.offsetTop - headerHeight - 24,
+                  behavior: 'smooth',
+                });
+              }
+            });
+
             markersRef.current.push(marker);
           });
         }
@@ -170,11 +174,20 @@ export default function DojangClient({
             ) : dojangs.length > 0 ? (
               <div className="grid grid-cols-2 gap-4">
                 {dojangs.map((dojang) => (
-                  <DojangCard
+                  <div
                     key={dojang.id}
-                    dojang={dojang}
-                    isVerified={verifiedDojangs.includes(dojang.place_name)}
-                  />
+                    ref={(el) => {
+                      cardRefs.current[dojang.id] = el;
+                    }}
+                  >
+                    <DojangCard
+                      dojang={dojang}
+                      isVerified={initialVerifiedDojangs.includes(
+                        dojang.place_name,
+                      )}
+                      isSelected={selectedDojangId === dojang.id}
+                    />
+                  </div>
                 ))}
               </div>
             ) : (
