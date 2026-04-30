@@ -24,7 +24,7 @@ export default function RegisterLayout({
       </div>
 
       {/* 카드 — 로그인이랑 완전 동일 */}
-      <div className="max-w-[600px] w-full bg-bg-white rounded-[32px] p-8 shadow-sm border-none">
+      <div className="max-w-150 w-full bg-bg-white rounded-3xl p-8 shadow-sm border-none">
         {children}
       </div>
     </>
