@@ -2,6 +2,8 @@
 
 import { Eye, EyeOff, Trash2, RotateCcw } from 'lucide-react';
 import { ROUTES } from '@/constants/routes';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 interface AdminPostActionsProps {
   id: string;
@@ -16,48 +18,68 @@ export default function AdminPostActions({
   status,
   deleted_at,
 }: AdminPostActionsProps) {
+  const router = useRouter();
+
   const isDeleted = Boolean(deleted_at);
 
   const handleView = () => {
     window.open(ROUTES.COMMUNITY_DETAIL(id), '_blank');
   };
 
-  const handleToggleHidden = () => {
-    const next =
-      status === 'hidden' ? '게시' : '숨김';
+ const handleToggleHidden = async () => {
+  const nextStatus = status === 'hidden' ? 'published' : 'hidden';
 
-    const confirmed = window.confirm(
-      `${title} 게시글을 ${next} 처리하시겠습니까?`
-    );
+  const { error } = await supabase
+    .from('posts')
+    .update({ status: nextStatus })
+    .eq('id', id);
 
-    if (!confirmed) return;
+  if (error) {
+    alert('상태 변경에 실패했습니다.');
+    return;
+  }
 
-    console.log('상태 변경:', id, status);
-    // TODO: supabase update
+  router.refresh();
   };
 
-  const handleDelete = () => {
-    const confirmed = window.confirm(
-      `${title} 게시글을 삭제하시겠습니까?`
-    );
+  const handleDelete = async () => {
+  const confirmed = window.confirm(`${title} 게시글을 삭제하시겠습니까?`);
+  if (!confirmed) return;
 
-    if (!confirmed) return;
+  const { error } = await supabase
+    .from('posts')
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', id);
 
-    console.log('삭제:', id);
-    // TODO: deleted_at 업데이트
+  if (error) {
+    alert('삭제에 실패했습니다.');
+    return;
+  }
+
+  router.refresh();
   };
+  
 
-  const handleRestore = () => {
-    const confirmed = window.confirm(
-      `${title} 게시글을 복구하시겠습니까?`
-    );
+ const handleRestore = async () => {
+  const confirmed = window.confirm(`${title} 게시글을 복구하시겠습니까?`);
+  if (!confirmed) return;
 
-    if (!confirmed) return;
+  const { error } = await supabase
+    .from('posts')
+    .update({
+      deleted_at: null,
+      status: 'published',
+    })
+    .eq('id', id);
 
-    console.log('복구:', id);
-    // TODO: deleted_at null 처리
-  };
+  if (error) {
+    alert('복구에 실패했습니다.');
+    return;
+  }
 
+  router.refresh();
+ };
+  
   const actionButtonClass =
     'p-2 rounded-md cursor-pointer text-zinc-500 transition-colors duration-200 hover:bg-gray-100';
   const actionIconClass =
