@@ -2,6 +2,42 @@
 
 import { useState } from 'react';
 
+const BELTS = [
+  { value: 'white', label: 'White  (흰띠)', color: '#e8e8e8' },
+  { value: 'yellow', label: 'Yellow (노란띠)', color: '#f5c842' },
+  { value: 'green', label: 'Green  (초록띠)', color: '#3a9e4f' },
+  { value: 'blue', label: 'Blue   (파란띠)', color: '#2e6fdb' },
+  { value: 'purple', label: 'Purple (보라띠)', color: '#7c4ddb' },
+  { value: 'brown', label: 'Brown  (갈색띠)', color: '#8b5a2b' },
+  { value: 'red', label: 'Red    (빨간띠)', color: '#d63a2a' },
+  { value: 'black', label: 'Black  (검은띠)', color: '#1a1a1a' },
+];
+
+function BeltSelect() {
+  const [belt, setBelt] = useState('');
+  const selectedColor = BELTS.find((b) => b.value === belt)?.color;
+
+  return (
+    <select
+      value={belt}
+      onChange={(e) => setBelt(e.target.value)}
+      className="w-full bg-input-bg border-none rounded-2xl py-4 pl-4 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all appearance-none"
+      style={
+        selectedColor
+          ? { borderLeft: `4px solid ${selectedColor}`, paddingLeft: '14px' }
+          : undefined
+      }
+    >
+      <option value="">벨트를 선택하세요</option>
+      {BELTS.map((b) => (
+        <option key={b.value} value={b.value}>
+          {b.label}
+        </option>
+      ))}
+    </select>
+  );
+}
+
 function Field({
   label,
   children,
