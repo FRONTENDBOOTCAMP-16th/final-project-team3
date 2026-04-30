@@ -47,14 +47,19 @@ function BeltSelect() {
 
 function Field({
   label,
+  htmlFor,
   children,
 }: {
   label: string;
+  htmlFor: string;
   children: React.ReactNode;
 }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-text-primary mb-2">
+      <label
+        htmlFor={htmlFor}
+        className="block text-sm font-medium text-text-primary mb-2"
+      >
         {label}
       </label>
       {children}
@@ -64,10 +69,12 @@ function Field({
 }
 
 function InputWithIcon({
+  id,
   icon,
   type = 'text',
   placeholder,
 }: {
+  id: string;
   icon: React.ReactNode;
   type?: string;
   placeholder: string;
@@ -78,6 +85,7 @@ function InputWithIcon({
         {icon}
       </span>
       <input
+        id={id}
         type={type}
         placeholder={placeholder}
         className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
@@ -95,34 +103,38 @@ function GeneralForm() {
         // 나중에 handleRegister() 연결할 거예요
       }}
     >
-      <Field label="이름">
+      <Field label="이름" htmlFor="name">
         <InputWithIcon
+          id="name"
           icon={<User className="w-5 h-5" />}
           placeholder="이름을 입력하세요"
         />
       </Field>
-      <Field label="이메일">
+      <Field label="이메일" htmlFor="email">
         <InputWithIcon
+          id="email"
           icon={<Mail className="w-5 h-5" />}
           type="email"
           placeholder="이메일을 입력하세요"
         />
       </Field>
-      <Field label="비밀번호">
+      <Field label="비밀번호" htmlFor="password">
         <InputWithIcon
+          id="password"
           icon={<Lock className="w-5 h-5" />}
           type="password"
           placeholder="비밀번호를 입력하세요"
         />
       </Field>
-      <Field label="비밀번호 확인">
+      <Field label="비밀번호 확인" htmlFor="passwordCheck">
         <InputWithIcon
+          id="passwordCheck"
           icon={<Lock className="w-5 h-5" />}
           type="password"
           placeholder="비밀번호를 다시 입력하세요"
         />
       </Field>
-      <Field label="벨트">
+      <Field label="벨트" htmlFor="belt">
         <BeltSelect />
       </Field>
 
