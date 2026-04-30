@@ -4,20 +4,23 @@ import type { Post, Comment, PostCategory } from '@/types/community';
 export async function getPosts() {
   const { data, error } = await supabase
     .from('posts')
-    .select('*, comments(count)')
+    .select('*, comments(count), profiles(nickname, avatar_url)')
     .order('created_at', { ascending: false });
 
   if (error) throw error;
   return data.map((post: any) => ({
     ...post,
     comment_count: post.comments[0].count,
+    nickname: post.profiles?.nickname,
+    avatar_url: post.profiles?.avatar_url,
+    profiles: undefined,
   }));
 }
 
 export async function getPost(id: string) {
   const { data, error } = await supabase
     .from('posts')
-    .select('*, profiles!posts_user_id_fkey(nickname, avatar_url, belt_level)')
+    .select('*, profiles(nickname, avatar_url, belt_level, role)')
     .eq('id', id)
     .single();
   if (error) throw error;
@@ -27,6 +30,7 @@ export async function getPost(id: string) {
     nickname: data.profiles?.nickname,
     avatar_url: data.profiles?.avatar_url,
     belt_level: data.profiles?.belt_level,
+    role: data.profiles?.role,
     profiles: undefined,
   } as Post;
 }

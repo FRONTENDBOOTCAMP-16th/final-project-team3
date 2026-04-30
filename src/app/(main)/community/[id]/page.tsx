@@ -14,6 +14,8 @@ import { supabase } from '@/lib/supabase';
 import type { Post, Comment } from '@/types/community';
 import Image from 'next/image';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { useAuth } from '@/hooks/useAuth';
+import { useLike } from '@/hooks/useLike';
 
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -38,6 +40,8 @@ export default function PostDetailPage({
   const [loading, setLoading] = useState(true);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingContent, setEditingContent] = useState('');
+  const { user } = useAuth();
+  const { likeCount, isLiked, toggle } = useLike(id, user?.id ?? '');
 
   useEffect(() => {
     const load = async () => {
@@ -169,7 +173,7 @@ export default function PostDetailPage({
               {post.avatar_url && (
                 <Image
                   src={post.avatar_url}
-                  alt="avatar"
+                  alt={`${post.nickname} 프로필 이미지`}
                   width={40}
                   height={40}
                   className="w-full h-full object-cover"
@@ -181,9 +185,21 @@ export default function PostDetailPage({
                 <span className="text-sm font-semibold text-gray-900">
                   {post.nickname ?? '알 수 없음'}
                 </span>
-                {post.belt_level && (
-                  <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">
-                    {post.belt_level}
+                {post.role && (
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                      post.role === 'manager'
+                        ? 'bg-blue-50 text-blue-600'
+                        : post.role === 'admin'
+                          ? 'bg-red-50 text-red-600'
+                          : 'bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    {post.role === 'manager'
+                      ? '도장'
+                      : post.role === 'admin'
+                        ? '관리자'
+                        : '일반'}
                   </span>
                 )}
               </div>
@@ -201,29 +217,63 @@ export default function PostDetailPage({
           </div>
 
           {/* 오너 액션 버튼 */}
-          {isOwner && (
-            <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1">
+            {isOwner ? (
+              <>
+                <button
+                  onClick={() => router.push(`/community/${id}/edit`)}
+                  aria-label={`${post.nickname}의 게시글 수정`}
+                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500 cursor-pointer"
+                >
+                  <Image
+                    src="/postEdit.svg"
+                    alt=""
+                    width={30}
+                    height={30}
+                    aria-hidden="true"
+                  />
+                </button>
+                <button
+                  onClick={handleDeletePost}
+                  aria-label={`${post.nickname}의 게시글 삭제`}
+                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors text-red-400 cursor-pointer"
+                >
+                  <Image
+                    src="/postDelete.svg"
+                    alt=""
+                    width={32}
+                    height={32}
+                    aria-hidden="true"
+                  />
+                </button>
+              </>
+            ) : (
               <button
-                onClick={() => router.push(`/community/${id}/edit`)}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500 cursor-pointer"
-                title="수정"
-              >
-                <Image src="/postEdit.svg" alt="수정" width={30} height={30} />
-              </button>
-              <button
-                onClick={handleDeletePost}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors text-red-400 cursor-pointer"
-                title="삭제"
+                aria-label={`${post.nickname}의 게시글 신고`}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400 cursor-pointer"
               >
                 <Image
-                  src="/postDelete.svg"
-                  alt="삭제"
-                  width={32}
-                  height={32}
+                  src="/postReport.svg"
+                  alt=""
+                  width={27}
+                  height={27}
+                  aria-hidden="true"
                 />
               </button>
-            </div>
-          )}
+            )}
+            <button
+              aria-label={`${post.nickname}의 게시글 공유`}
+              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500 cursor-pointer"
+            >
+              <Image
+                src="/postShare.svg"
+                alt=""
+                width={18}
+                height={18}
+                aria-hidden="true"
+              />
+            </button>
+          </div>
         </div>
 
         {/* 제목 */}
@@ -237,7 +287,7 @@ export default function PostDetailPage({
             <div className="rounded-xl overflow-hidden">
               <Image
                 src={post.image_url}
-                alt="post"
+                alt={`${post.title} 게시글 이미지`}
                 width={800}
                 height={400}
                 className="w-full object-cover max-h-72"
@@ -255,18 +305,28 @@ export default function PostDetailPage({
 
         {/* 하단 액션 바 */}
         <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
-          <button className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-red-500 transition-colors cursor-pointer">
-            <Image src="/like.svg" alt="좋아요" width={16} height={16} />
-            <span>좋아요</span>
+          <button
+            onClick={() => toggle()}
+            aria-pressed={isLiked}
+            aria-label={`좋아요 ${likeCount}개, ${isLiked ? '좋아요 취소' : '좋아요'}`}
+            className={`flex items-center gap-1.5 text-xs transition-colors cursor-pointer text-gray-500 hover:text-red-500`}
+          >
+            <Image
+              src="/like.svg"
+              alt=""
+              width={16}
+              height={16}
+              aria-hidden="true"
+            />
+            <span>좋아요 {likeCount}</span>
           </button>
-          <button className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-blue-500 transition-colors cursor-pointer">
+          <div className="flex items-center gap-1.5 text-xs text-gray-500">
             <Image src="/postComment.svg" alt="댓글" width={16} height={16} />
             <span>댓글 {comments.length}</span>
-          </button>
-          <button className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-green-500 transition-colors ml-auto cursor-pointer">
-            <Image src="/postShare.svg" alt="공유" width={16} height={16} />
-            <span>공유</span>
-          </button>
+          </div>
+          <span className="flex items-center gap-1.5 text-xs text-gray-500">
+            조회 {post.view_count}
+          </span>
         </div>
       </div>
 
@@ -280,16 +340,18 @@ export default function PostDetailPage({
             height={16}
             className="opacity-40"
           />
-          <h2 className="text-sm font-semibold text-gray-800">
-            댓글 {comments.length}
-          </h2>
+          <h2 className="text-sm font-semibold text-gray-800">댓글</h2>
         </div>
 
         {/* 댓글 입력 */}
         <div className="px-5 py-4">
           <div className="flex items-center gap-2">
+            <label htmlFor="comment-input" className="sr-only">
+              댓글 입력
+            </label>
             <input
               type="text"
+              id="comment-input"
               placeholder="댓글을 입력하세요..."
               value={comment}
               onChange={(e) => setComment(e.target.value)}
@@ -320,7 +382,7 @@ export default function PostDetailPage({
                   {c.avatar_url && (
                     <Image
                       src={c.avatar_url}
-                      alt="avatar"
+                      alt={`${c.nickname} 프로필 이미지`}
                       width={32}
                       height={32}
                       className="w-full h-full object-cover"
@@ -340,7 +402,14 @@ export default function PostDetailPage({
                   </div>
                   {editingCommentId === c.id ? (
                     <div className="flex items-center gap-2 mt-1">
+                      <label
+                        htmlFor={`edit-comment-${c.id}`}
+                        className="sr-only"
+                      >
+                        댓글 수정 입력
+                      </label>
                       <input
+                        id={`edit-comment-${c.id}`}
                         type="text"
                         value={editingContent}
                         onChange={(e) => setEditingContent(e.target.value)}
@@ -372,7 +441,8 @@ export default function PostDetailPage({
                     <span className="flex items-center gap-1 text-xs text-gray-400">
                       <Image
                         src="/postTime.svg"
-                        alt="시간"
+                        alt=""
+                        aria-hidden="true"
                         width={11}
                         height={11}
                         className="opacity-50"
@@ -386,12 +456,14 @@ export default function PostDetailPage({
                             setEditingCommentId(c.id);
                             setEditingContent(c.content);
                           }}
+                          aria-label={`${c.nickname}의 댓글 수정`}
                           className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
                         >
                           수정
                         </button>
                         <button
                           onClick={() => handleDeleteComment(c.id)}
+                          aria-label={`${c.nickname}의 댓글 삭제`}
                           className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors"
                         >
                           삭제
