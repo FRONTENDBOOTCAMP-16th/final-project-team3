@@ -71,7 +71,7 @@ const postColumns = [
   {
     key: 'id',
     header: '관리',
-    render: (row) => <AdminPostActions id={row.id} title={row.title} />,
+    render: (row) => <AdminPostActions id={row.id} title={row.title} status={row.status} deleted_at={row.deleted_at}/>,
   },
 ] satisfies {
   key: keyof AdminPostRow;
