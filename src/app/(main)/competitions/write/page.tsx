@@ -22,6 +22,7 @@ export default function CompetitionWritePage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const today = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
     if (
@@ -131,6 +132,7 @@ export default function CompetitionWritePage() {
           <input
             type="date"
             value={eventDate}
+            min={today}
             onChange={(e) => setEventDate(e.target.value)}
             onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
             className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none text-gray-700 cursor-pointer"
@@ -148,6 +150,7 @@ export default function CompetitionWritePage() {
           <input
             type="date"
             value={applyDeadline}
+            min={today}
             onChange={(e) => setApplyDeadline(e.target.value)}
             onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
             className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none text-gray-700 cursor-pointer"
