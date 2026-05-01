@@ -5,6 +5,10 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useAuth } from '@/hooks/useAuth';
+import {
+  createCompetition,
+  uploadCompetitionImage,
+} from '@/services/competitionService';
 
 export default function CompetitionWritePage() {
   const router = useRouter();
@@ -41,16 +45,28 @@ export default function CompetitionWritePage() {
       alert('필수 항목을 모두 입력해주세요.');
       return;
     }
-    // TODO: API 연결
-    console.log({
-      name,
-      location,
-      eventDate,
-      applyDeadline,
-      applyUrl,
-      description,
-      imageFile,
-    });
+    setIsLoading(true);
+    try {
+      let image_url: string | undefined;
+      if (imageFile) {
+        image_url = await uploadCompetitionImage(imageFile);
+      }
+      await createCompetition({
+        name,
+        location,
+        event_data: eventDate,
+        apply_deadline: applyDeadline,
+        apply_url: applyUrl,
+        description,
+        image_url,
+      });
+      router.push('/competitions');
+    } catch (e) {
+      console.error(e);
+      alert('대회 추가에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (loading || isLoading) return <LoadingSpinner />;
