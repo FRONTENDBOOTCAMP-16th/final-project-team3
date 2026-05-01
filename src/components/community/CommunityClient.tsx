@@ -100,7 +100,7 @@ export default function CommunityClient({
     <main className="w-full min-h-screen">
       <div
         ref={headerRef}
-        className="fixed top-0 left-0 right-0 z-10 bg-white shadow-sm flex justify-center"
+        className="fixed top-0 left-50 right-0 z-10 bg-white shadow-sm flex justify-center"
       >
         <div className="w-full max-w-7xl px-6">
           <Pageheader
