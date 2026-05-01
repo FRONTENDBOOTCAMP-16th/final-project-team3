@@ -8,6 +8,7 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { supabase } from '@/lib/supabase';
 import { createPost, uploadPostImage } from '@/services/communityService';
 import { useAuth } from '@/hooks/useAuth';
+import { useQueryClient } from '@tanstack/react-query'; // 추가
 
 export default function WritePage() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function WritePage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const { user, loading } = useAuth();
   const [category, setCategory] = useState<PostCategory>('personal');
+  const queryClient = useQueryClient(); // 추가
 
   useEffect(() => {
     if (!loading && !user) {
@@ -59,6 +61,7 @@ export default function WritePage() {
         image_url,
         user_id: user.id,
       });
+      queryClient.invalidateQueries({ queryKey: ['posts'] }); // 추가
       router.push('/community');
     } catch (e) {
       console.error(e);

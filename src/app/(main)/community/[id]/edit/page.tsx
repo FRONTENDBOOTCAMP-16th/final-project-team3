@@ -1,5 +1,6 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query'; // 추가
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PostCategory } from '@/types/community';
@@ -25,6 +26,7 @@ export default function EditPage({
   const [preview, setPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const queryClient = useQueryClient(); // 추가
 
   useEffect(() => {
     const load = async () => {
@@ -63,6 +65,7 @@ export default function EditPage({
         image_url = await uploadPostImage(imageFile);
       }
       await updatePost(id, { title, content, image_url });
+      queryClient.invalidateQueries({ queryKey: ['posts'] }); // 추가
       router.push(`/community/${id}`);
     } catch (e) {
       console.error(e);
