@@ -9,6 +9,7 @@ import {
   createCompetition,
   uploadCompetitionImage,
 } from '@/services/competitionService';
+import { showErrorToast } from '@/lib/toast';
 
 export default function CompetitionWritePage() {
   const router = useRouter();
@@ -43,7 +44,7 @@ export default function CompetitionWritePage() {
 
   const handleSubmit = async () => {
     if (!name.trim() || !location.trim() || !eventDate || !applyDeadline) {
-      alert('필수 항목을 모두 입력해주세요.');
+      showErrorToast('필수 항목을 모두 입력해주세요.');
       return;
     }
     setIsLoading(true);
@@ -62,9 +63,8 @@ export default function CompetitionWritePage() {
         image_url,
       });
       router.push('/competitions');
-    } catch (e) {
-      console.error(e);
-      alert('대회 추가에 실패했습니다.');
+    } catch {
+      showErrorToast('대회 추가에 실패했습니다.');
     } finally {
       setIsLoading(false);
     }
