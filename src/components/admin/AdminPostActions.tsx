@@ -1,6 +1,6 @@
 'use client';
 
-import { Eye, EyeOff, Trash2, RotateCcw } from 'lucide-react';
+import { Eye, EyeOff, Trash2, RotateCcw, FileText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { AdminPostStatus } from '@/components/admin/post/types';
 import { ROUTES } from '@/constants/routes';
@@ -87,7 +87,7 @@ export default function AdminPostActions({
         title="상세보기"
         className={actionButtonClass}
       >
-        <Eye size={18} />
+        <FileText size={18} />
       </button>
 
       {isDeleted ? (
