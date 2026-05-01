@@ -1,15 +1,20 @@
 'use client';
 
-import type { AdminFilterOption } from '@/constants/adminPostFilters';
-import { cn } from '@/lib/utils';
+import type {
+  AdminPostFilterOption,
+  AdminPostFilterValue,
+} from '@/components/admin/post/types';
 import SearchInput from '@/components/common/SearchInput';
+import { cn } from '@/lib/utils';
 
 interface AdminTableToolbarProps {
-  filters: readonly AdminFilterOption[];
-  activeFilter: string;
-  onFilterChange: (value: string) => void;
+  filters: readonly AdminPostFilterOption[];
+  activeFilter: AdminPostFilterValue;
+  // eslint-disable-next-line no-unused-vars
+  onFilterChange: (_value: AdminPostFilterValue) => void;
   searchQuery: string;
-  onSearchQueryChange: (value: string) => void;
+  // eslint-disable-next-line no-unused-vars
+  onSearchQueryChange: (_value: string) => void;
 }
 
 export default function AdminTableToolbar({
@@ -35,10 +40,10 @@ export default function AdminTableToolbar({
                 type="button"
                 onClick={() => onFilterChange(filter.value)}
                 className={cn(
-                  'h-12 w-21 cursor-pointer rounded-md border px-4 py-2 text-sm font-medium transition-colors duration-200',
+                  'h-12 min-w-[84px] cursor-pointer rounded-md border px-4 py-2 text-sm font-medium transition-colors duration-200',
                   isActive
-                    ? 'bg-[var(--color-btn-focus)] text-[var(--color-btn-focus-text)]'
-                    : 'bg-[var(--color-btn-basic)] text-[var(--color-btn-text)] hover:bg-[var(--color-btn-focus)] hover:text-[var(--color-btn-focus-text)]',
+                    ? 'bg-btn-focus text-btn-focus-text'
+                    : 'bg-btn-bagic text-btn-text hover:bg-btn-focus hover:text-btn-focus-text',
                 )}
               >
                 {filter.label}

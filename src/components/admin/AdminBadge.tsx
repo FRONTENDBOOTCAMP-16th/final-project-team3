@@ -1,19 +1,14 @@
-type BadgeVariant =
-  | 'gray'
-  | 'blue'
-  | 'red'
-  | 'green'
-  | 'yellow';
+export type AdminBadgeVariant = 'gray' | 'blue' | 'red' | 'green' | 'yellow';
 
 interface AdminBadgeProps {
   label: string;
-  variant: BadgeVariant;
+  variant: AdminBadgeVariant;
 }
 
 const baseStyle =
   'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium';
 
-const variantStyleMap: Record<BadgeVariant, string> = {
+const variantStyleMap: Record<AdminBadgeVariant, string> = {
   gray: 'bg-gray-100 text-gray-800',
   blue: 'bg-blue-100 text-blue-700',
   red: 'bg-red-100 text-red-700',
@@ -23,8 +18,6 @@ const variantStyleMap: Record<BadgeVariant, string> = {
 
 export default function AdminBadge({ label, variant }: AdminBadgeProps) {
   return (
-    <span className={`${baseStyle} ${variantStyleMap[variant]}`}>
-      {label}
-    </span>
+    <span className={`${baseStyle} ${variantStyleMap[variant]}`}>{label}</span>
   );
 }
