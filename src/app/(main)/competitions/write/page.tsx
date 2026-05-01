@@ -132,7 +132,8 @@ export default function CompetitionWritePage() {
             type="date"
             value={eventDate}
             onChange={(e) => setEventDate(e.target.value)}
-            className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none text-gray-700"
+            onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+            className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none text-gray-700 cursor-pointer"
           />
         </div>
       </div>
@@ -148,7 +149,8 @@ export default function CompetitionWritePage() {
             type="date"
             value={applyDeadline}
             onChange={(e) => setApplyDeadline(e.target.value)}
-            className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none text-gray-700"
+            onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+            className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none text-gray-700 cursor-pointer"
           />
         </div>
       </div>
@@ -203,7 +205,7 @@ export default function CompetitionWritePage() {
       <div className="flex gap-3">
         <button
           onClick={() => router.back()}
-          className="flex-1 py-3 rounded-xl bg-btn-basic border border-gray-300 text-black hover:bg-gray-200"
+          className="flex-1 py-3 rounded-xl bg-btn-basic border border-gray-300 text-black hover:bg-gray-200 cursor-pointer"
         >
           취소
         </button>
