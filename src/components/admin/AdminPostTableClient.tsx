@@ -25,11 +25,13 @@ interface AdminPostTableClientProps {
 }
 
 const POST_COLUMNS: AdminTableColumn<AdminPostRow>[] = [
-  { key: 'title', header: '제목' },
-  { key: 'author', header: '작성자' },
+  { key: 'title', header: '제목', width: '25%', align: 'left' },
+  { key: 'author', header: '작성자', width: '13%', align: 'center' },
   {
     key: 'category',
     header: '구분',
+    width: '7%',
+    align: 'center',
     render: (row) => (
       <AdminBadge
         label={row.category}
@@ -40,18 +42,22 @@ const POST_COLUMNS: AdminTableColumn<AdminPostRow>[] = [
   {
     key: 'status',
     header: '상태',
+    width: '7%',
+    align: 'center',
     render: (row) => {
       const { label, variant } = getPostStatusBadge(row);
 
       return <AdminBadge label={label} variant={variant} />;
     },
   },
-  { key: 'view_count', header: '조회수' },
-  { key: 'report_count', header: '신고수' },
-  { key: 'created_at', header: '작성일' },
+  { key: 'view_count', header: '조회수', width: '10%', align: 'center'},
+  { key: 'report_count', header: '신고수', width: '8%', align: 'center'},
+  { key: 'created_at', header: '작성일', width: '8%', align: 'center'},
   {
     key: 'id',
     header: '관리',
+    width: '15%',
+    align: 'center',
     render: (row) => (
       <AdminPostActions
         id={row.id}

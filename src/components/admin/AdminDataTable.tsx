@@ -1,6 +1,10 @@
+import { cn } from "@/lib/utils";
+
 export interface AdminTableColumn<T> {
   key: keyof T;
   header: string;
+  width?: string;
+  align?: string;
   // eslint-disable-next-line no-unused-vars
   render?: (_row: T) => React.ReactNode;
 }
@@ -19,13 +23,18 @@ export default function AdminDataTable<T>({
 }: AdminDataTableProps<T>) {
   return (
     <section className="w-full max-w-7xl px-6 py-4 bg-white border rounded-md">
-      <table className="w-full border-collapse bg-white">
+      <table className="w-full table-fixed border-collapse bg-white">
         <thead>
           <tr>
             {columns.map((column) => (
               <th
                 key={String(column.key)}
-                className="border-b px-4 py-3 text-left text-sm font-semibold"
+                className={cn(
+                  'border-b px-4 py-3 text-sm font-semibold',
+                  column.align === 'center' && 'text-center',
+                  column.align === 'left' && 'text-left',
+                )}
+                style={{width: column.width}}
               >
                 {column.header}
               </th>
@@ -52,11 +61,15 @@ export default function AdminDataTable<T>({
                 {columns.map((column) => (
                   <td
                     key={String(column.key)}
-                    className="border-b px-4 py-3 text-sm text-zinc-700"
+                    className={cn(
+                      'border-b px-4 py-3 text-sm text-zinc-700',
+                      column.align === 'center' && 'text-center',
+                      column.align === 'left' && 'text-left',
+                    )}  
                   >
-                    {column.render
-                      ? column.render(row)
-                      : String(row[column.key])}
+                    <div className="truncate">
+                      {column.render ? column.render(row) : String(row[column.key])}
+                    </div>
                   </td>
                 ))}
               </tr>

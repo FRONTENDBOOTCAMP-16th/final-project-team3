@@ -80,7 +80,7 @@ export default function AdminPostActions({
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex justify-center gap-2">
       <button
         aria-label={`${title} 상세보기`}
         onClick={handleView}
