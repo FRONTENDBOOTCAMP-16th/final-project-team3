@@ -26,7 +26,7 @@ interface AdminPostTableClientProps {
 
 const POST_COLUMNS: AdminTableColumn<AdminPostRow>[] = [
   { key: 'title', header: '제목', width: '25%', align: 'left' },
-  { key: 'author', header: '작성자', width: '13%', align: 'center' },
+  { key: 'author', header: '작성자', width: '11%', align: 'center' },
   {
     key: 'category',
     header: '구분',
@@ -52,7 +52,7 @@ const POST_COLUMNS: AdminTableColumn<AdminPostRow>[] = [
   },
   { key: 'view_count', header: '조회수', width: '10%', align: 'center'},
   { key: 'report_count', header: '신고수', width: '8%', align: 'center'},
-  { key: 'created_at', header: '작성일', width: '8%', align: 'center'},
+  { key: 'created_at', header: '작성일', width: '10%', align: 'center'},
   {
     key: 'id',
     header: '관리',
