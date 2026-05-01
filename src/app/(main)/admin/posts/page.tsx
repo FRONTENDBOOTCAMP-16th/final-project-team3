@@ -50,7 +50,7 @@ export default async function AdminPostPage() {
   const postData = await getAdminPosts();
 
   return (
-    <main className="min-h-screen w-full space-y-2">
+    <main className="min-h-screen w-full pt-28 space-y-2">
       <AdminHeader page="post" />
       <AdminPostTableClient data={postData} />
     </main>
