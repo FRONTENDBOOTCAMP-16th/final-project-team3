@@ -16,7 +16,7 @@ import Image from 'next/image';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useAuth } from '@/hooks/useAuth';
 import { useLike } from '@/hooks/useLike';
-import toast from 'react-hot-toast';
+import { showErrorToast, showSuccessToast } from '@/lib/toast';
 
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -153,20 +153,9 @@ export default function PostDetailPage({
     } else {
       try {
         await navigator.clipboard.writeText(url);
-        toast.success('링크가 복사되었습니다!', {
-          duration: 2000,
-          position: 'bottom-center',
-          style: {
-            background: '#111',
-            color: '#fff',
-            fontWeight: '600',
-            borderRadius: '12px',
-            padding: '12px 20px',
-          },
-          icon: '🔗',
-        });
+        showSuccessToast('링크가 복사되었습니다!', '🔗');
       } catch {
-        toast.error('복사에 실패했습니다.');
+        showErrorToast('복사에 실패했습니다.');
       }
     }
   };
