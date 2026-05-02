@@ -8,7 +8,6 @@ interface CompetitionCardProps {
     name: string;
     description: string;
     image_url: string;
-    category: string;
     event_data: string;
     apply_deadline: string;
     location: string;
@@ -66,10 +65,6 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
           </div>
         )}
 
-        <span className="absolute bottom-10 left-2 px-2 py-1 text-xs text-white rounded-full bg-black/60">
-          {competition.category}
-        </span>
-
         <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/70 to-transparent p-3">
           <h2 className="font-bold text-white text-base line-clamp-1">
             {competition.name}
@@ -102,10 +97,7 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
               <span className={`ml-1 font-bold ${ddayColor}`}>{dday}</span>
             )}
           </div>
-          <div className="flex items-center gap-1">
-            <Image src="/calendar.svg" alt="마감" width={14} height={14} />
-            <span>신청마감 {competition.apply_deadline}</span>
-          </div>
+
           <div className="flex items-center gap-1">
             <Image src="/location.svg" alt="위치" width={14} height={14} />
             <span>{competition.location}</span>

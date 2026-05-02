@@ -164,6 +164,7 @@ export default function DojangClient({
               <div
                 ref={mapRef}
                 className="w-full h-100 rounded-lg overflow-hidden border border-gray-200"
+                style={{ zIndex: 0 }}
               />
             </div>
 

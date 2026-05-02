@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLike } from '@/hooks/useLike';
@@ -27,37 +29,32 @@ const categoryMap: Record<string, { label: string; color: string }> = {
 };
 
 export default function PostCard({ post, userId }: PostCardProps) {
-  // const { user } = useAuth();
   const { likeCount, isLiked, toggle } = useLike(post.id, userId);
   const categoryInfo = categoryMap[post.category] ?? categoryMap.personal;
 
   const handleLike = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!userId) return;
     toggle();
   };
 
   return (
-    <Link
-      href={`/community/${post.id}`}
-      aria-label={`${post.title} 게시글 보기`}
-    >
+    <Link href={`/community/${post.id}`} className="block w-full">
       <div className="rounded-lg overflow-hidden border bg-bg-white border-gray-200 flex flex-col h-97.5 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
-        {/* 썸네일 + 배지 */}
-        <div className="relative shrink-0">
+        {/* 이미지 영역 */}
+        <div className="relative w-full h-50 bg-btn-basic shrink-0">
           {post.image_url ? (
-            <div className="relative w-full h-50">
-              <Image
-                src={post.image_url}
-                alt={post.title}
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                loading="eager"
-                className="object-cover"
-              />
-            </div>
+            <Image
+              src={post.image_url}
+              alt={post.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              loading="eager"
+              className="object-cover"
+            />
           ) : (
-            <div className="w-full h-50 bg-btn-basic flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center">
               <span className="text-text-secondary text-sm">이미지 없음</span>
             </div>
           )}

@@ -5,6 +5,6 @@ export function usePosts() {
   return useQuery({
     queryKey: ['posts'],
     queryFn: getPosts,
-    staleTime: 0, // 항상 최신 데이터 가져오기
+    staleTime: 1000 * 30, // 30초
   });
 }

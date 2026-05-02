@@ -14,7 +14,6 @@ interface Competition {
   location: string;
   event_data: string;
   apply_deadline: string;
-  category: string;
   description: string;
   image_url: string;
   participants: number;

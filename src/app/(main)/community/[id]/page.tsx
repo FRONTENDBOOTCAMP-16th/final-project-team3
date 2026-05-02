@@ -1,5 +1,6 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query'; // 추가
 import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -43,6 +44,7 @@ export default function PostDetailPage({
   const [editingContent, setEditingContent] = useState('');
   const { user } = useAuth();
   const { likeCount, isLiked, toggle } = useLike(id, user?.id ?? '');
+  const queryClient = useQueryClient(); // 추가
 
   useEffect(() => {
     const load = async () => {
@@ -90,6 +92,7 @@ export default function PostDetailPage({
     if (!confirm('게시글을 삭제하시겠습니까?')) return;
     try {
       await deletePost(id);
+      queryClient.invalidateQueries({ queryKey: ['posts'] }); //  추가
       router.push('/community');
     } catch (e) {
       console.error(e);
