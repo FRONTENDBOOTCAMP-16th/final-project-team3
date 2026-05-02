@@ -81,21 +81,9 @@ export default function LoginPage() {
   };
   return (
     <>
-      {/* 로고 */}
-      <div className="flex flex-col items-center mb-6">
-        <div className="relative w-40 h-20 mb-3">
-          <Image
-            src="/blackbelt.svg"
-            alt="Black Belt Logo"
-            fill
-            className="object-contain"
-            priority
-          />
-        </div>
-        <p className="text-text-secondary text-sm font-medium text-center">
-          주짓수 커뮤니티에 오신 것을 환영합니다
-        </p>
-      </div>
+      <p className="text-text-secondary text-sm font-medium text-center mb-6">
+        주짓수 커뮤니티에 오신 것을 환영합니다
+      </p>
 
       {/* 카드 */}
       <div className="max-w-150 w-full bg-bg-white rounded-[32px] p-8 shadow-sm border-none">
