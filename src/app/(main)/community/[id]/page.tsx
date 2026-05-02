@@ -17,6 +17,7 @@ import Image from 'next/image';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useAuth } from '@/hooks/useAuth';
 import { useLike } from '@/hooks/useLike';
+import toast from 'react-hot-toast';
 
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -142,6 +143,37 @@ export default function PostDetailPage({
 
   const isOwner = userId === post.user_id;
 
+  const handleShare = async () => {
+    const url = window.location.href;
+    const title = post?.title ?? '';
+
+    if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
+      try {
+        await navigator.share({ title, url });
+      } catch {
+        // 취소 무시
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        toast.success('링크가 복사되었습니다!', {
+          duration: 2000,
+          position: 'bottom-center',
+          style: {
+            background: '#111',
+            color: '#fff',
+            fontWeight: '600',
+            borderRadius: '12px',
+            padding: '12px 20px',
+          },
+          icon: '🔗',
+        });
+      } catch {
+        toast.error('복사에 실패했습니다.');
+      }
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
       {/* 뒤로가기 */}
@@ -224,6 +256,7 @@ export default function PostDetailPage({
             {isOwner ? (
               <>
                 <button
+                  title="수정하기"
                   onClick={() => router.push(`/community/${id}/edit`)}
                   aria-label={`${post.nickname}의 게시글 수정`}
                   className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500 cursor-pointer"
@@ -237,6 +270,7 @@ export default function PostDetailPage({
                   />
                 </button>
                 <button
+                  title="삭제하기"
                   onClick={handleDeletePost}
                   aria-label={`${post.nickname}의 게시글 삭제`}
                   className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors text-red-400 cursor-pointer"
@@ -252,6 +286,7 @@ export default function PostDetailPage({
               </>
             ) : (
               <button
+                title="신고하기"
                 aria-label={`${post.nickname}의 게시글 신고`}
                 className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400 cursor-pointer"
               >
@@ -265,8 +300,10 @@ export default function PostDetailPage({
               </button>
             )}
             <button
+              title="공유하기"
+              onClick={handleShare}
               aria-label={`${post.nickname}의 게시글 공유`}
-              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500 cursor-pointer"
+              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500 cursor-pointer relative"
             >
               <Image
                 src="/postShare.svg"
