@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { User, Mail, Lock, Phone, MapPin, CreditCard } from 'lucide-react';
 import { z } from 'zod';
 
+// 일반 회원 zod 유효성 검사 스키마
 const generalSchema = z
   .object({
     name: z.string().min(1, '이름을 입력해주세요.'),
@@ -12,6 +13,25 @@ const generalSchema = z
     password: z.string().min(8, '비밀번호는 8자 이상이어야 합니다.'),
     passwordCheck: z.string().min(1, '비밀번호 확인을 입력해주세요.'),
     belt: z.string().min(1, '벨트를 선택해주세요.'),
+  })
+  .refine((data) => data.password === data.passwordCheck, {
+    message: '비밀번호가 일치하지 않습니다.',
+    path: ['passwordCheck'],
+  });
+
+// 도장 회원 zod 유효성 검사 스키마 추가
+const dojangSchema = z
+  .object({
+    name: z.string().min(1, '이름을 입력해주세요.'),
+    email: z.string().email('올바른 이메일 형식으로 입력해주세요.'),
+    password: z.string().min(8, '비밀번호는 8자 이상이어야 합니다.'),
+    passwordCheck: z.string().min(1, '비밀번호 확인을 입력해주세요.'),
+    belt: z.string().min(1, '벨트를 선택해주세요.'),
+    licenseNumber: z.string().min(1, '사업자등록번호를 입력해주세요.'),
+    gymName: z.string().min(1, '기업명(도장명)을 입력해주세요.'),
+    ownerName: z.string().min(1, '대표자명을 입력해주세요.'),
+    phone: z.string().min(1, '연락처를 입력해주세요.'),
+    address: z.string().min(1, '주소를 입력해주세요.'),
   })
   .refine((data) => data.password === data.passwordCheck, {
     message: '비밀번호가 일치하지 않습니다.',
