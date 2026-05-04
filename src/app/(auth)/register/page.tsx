@@ -278,6 +278,7 @@ function DojangForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState('');
+  const [businessFile, setBusinessFile] = useState<File | null>(null);
   const {
     register,
     handleSubmit,
@@ -484,6 +485,7 @@ function DojangForm() {
             type="file"
             accept=".jpg,.jpeg,.png,.gif,.pdf"
             className="hidden"
+            onChange={(e) => setBusinessFile(e.target.files?.[0] ?? null)}
           />
         </div>
       </div>
