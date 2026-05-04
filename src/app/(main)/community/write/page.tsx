@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase';
 import { createPost, uploadPostImage } from '@/services/communityService';
 import { useAuth } from '@/hooks/useAuth';
 import { useQueryClient } from '@tanstack/react-query'; // 추가
+import { showErrorToast } from '@/lib/toast';
 
 export default function WritePage() {
   const router = useRouter();
@@ -39,7 +40,7 @@ export default function WritePage() {
 
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {
-      alert('제목과 내용을 모두 입력해주세요.');
+      showErrorToast('제목과 내용을 모두 입력해주세요.');
       return;
     }
     setIsLoading(true);
@@ -63,9 +64,8 @@ export default function WritePage() {
       });
       queryClient.invalidateQueries({ queryKey: ['posts'] }); // 추가
       router.push('/community');
-    } catch (e) {
-      console.error(e);
-      alert('게시글 작성에 실패했습니다.');
+    } catch {
+      showErrorToast('게시글 작성에 실패했습니다.');
     } finally {
       setIsLoading(false);
     }

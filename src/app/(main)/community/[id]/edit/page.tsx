@@ -12,6 +12,7 @@ import {
   updatePost,
   uploadPostImage,
 } from '@/services/communityService';
+import { showErrorToast } from '@/lib/toast';
 
 export default function EditPage({
   params,
@@ -55,7 +56,7 @@ export default function EditPage({
 
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {
-      alert('제목과 내용을 모두 입력해주세요.');
+      showErrorToast('제목과 내용을 모두 입력해주세요.');
       return;
     }
     setIsLoading(true);
@@ -67,9 +68,8 @@ export default function EditPage({
       await updatePost(id, { title, content, image_url });
       queryClient.invalidateQueries({ queryKey: ['posts'] }); // 추가
       router.push(`/community/${id}`);
-    } catch (e) {
-      console.error(e);
-      alert('게시글 수정에 실패했습니다.');
+    } catch {
+      showErrorToast('게시글 수정에 실패했습니다.');
     } finally {
       setIsLoading(false);
     }
