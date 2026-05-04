@@ -78,6 +78,10 @@ export default function PostDetailPage({
   }, [id]);
 
   const handleCommentSubmit = async () => {
+    if (!userId) {
+      showErrorToast('로그인이 필요합니다.');
+      return;
+    }
     if (!comment.trim() || !userId) return;
     try {
       const newComment = await createComment({
