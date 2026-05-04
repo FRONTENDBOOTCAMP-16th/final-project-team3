@@ -8,7 +8,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { forwardRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { registerGeneral, registerDojang } from '@/services/authService';
+import {
+  registerGeneral,
+  registerDojang,
+  uploadBusinessFile,
+} from '@/services/authService';
 
 // 일반 회원 zod 유효성 검사 스키마
 const generalSchema = z
@@ -165,15 +169,27 @@ function GeneralForm() {
     },
   });
 
-  const onSubmit = async (data: GeneralFormType) => {
+  const onSubmit = async (data: DojangFormType) => {
     setIsLoading(true);
     setServerError('');
     try {
-      await registerGeneral({
+      // 파일 업로드 먼저 처리
+      let businessFileUrl: string | undefined;
+      if (businessFile) {
+        businessFileUrl = await uploadBusinessFile(businessFile);
+      }
+
+      await registerDojang({
         email: data.email,
         password: data.password,
         name: data.name,
         belt: data.belt,
+        licenseNumber: data.licenseNumber,
+        gymName: data.gymName,
+        ownerName: data.ownerName,
+        phone: data.phone,
+        address: data.address,
+        businessFileUrl, // 파일 업로드 URL 전달
       });
       router.push('/login');
     } catch (e) {
@@ -303,8 +319,13 @@ function DojangForm() {
     setIsLoading(true);
     setServerError('');
     try {
+      // 파일 업로드 먼저 처리
+      let businessFileUrl: string | undefined;
+      if (businessFile) {
+        businessFileUrl = await uploadBusinessFile(businessFile);
+      }
+
       await registerDojang({
-        // 파일 업로드(businessFileUrl)연동 예정
         email: data.email,
         password: data.password,
         name: data.name,
@@ -314,6 +335,7 @@ function DojangForm() {
         ownerName: data.ownerName,
         phone: data.phone,
         address: data.address,
+        businessFileUrl, // 파일 업로드 URL 전달
       });
       router.push('/login');
     } catch (e) {
