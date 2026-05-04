@@ -143,7 +143,7 @@ InputWithIcon.displayName = 'InputWithIcon';
 
 // 일반 회원가입 폼
 // react-hook-form + zod 유효성 검사 연결
-// onSubmit은 추후 supabase API 연동 시 handleRegister()로 교체 예정
+// onSubmit → supabase API 연동 완료
 type GeneralFormType = z.infer<typeof generalSchema>;
 
 function GeneralForm() {
@@ -246,7 +246,7 @@ function GeneralForm() {
       {serverError && (
         <p className="text-danger text-sm text-center">{serverError}</p>
       )}
-
+      {/* 로딩 중일 때 버튼 비활성화 */}
       <button
         type="submit"
         disabled={isLoading}
@@ -271,7 +271,7 @@ function GeneralForm() {
 
 // 도장 회원가입 폼
 // react-hook-form + zod 유효성 검사 연결
-// onSubmit은 추후 supabase API 연동 시 handleRegister()로 교체 예정
+// onSubmit → supabase API 연동 완료
 type DojangFormType = z.infer<typeof dojangSchema>;
 
 function DojangForm() {
@@ -303,6 +303,7 @@ function DojangForm() {
     setServerError('');
     try {
       await registerDojang({
+        // 파일 업로드(businessFileUrl)연동 예정
         email: data.email,
         password: data.password,
         name: data.name,
@@ -491,7 +492,7 @@ function DojangForm() {
       {serverError && (
         <p className="text-danger text-sm text-center">{serverError}</p>
       )}
-
+      {/* 로딩 중일 때 버튼 비활성화 */}
       <button
         type="submit"
         disabled={isLoading}
@@ -524,7 +525,6 @@ export default function RegisterPage() {
         <button
           onClick={() => setTab('general')}
           className={`flex-1 pb-3 text-sm font-bold transition-all cursor-pointer ${
-            // cursor-pointer ← 추가
             tab === 'general'
               ? 'text-btn-focus border-b-2 border-btn-focus -mb-px'
               : 'text-text-secondary hover:text-text-primary'
@@ -535,7 +535,6 @@ export default function RegisterPage() {
         <button
           onClick={() => setTab('dojang')}
           className={`flex-1 pb-3 text-sm font-bold transition-all cursor-pointer ${
-            // cursor-pointer ← 추가
             tab === 'dojang'
               ? 'text-btn-focus border-b-2 border-btn-focus -mb-px'
               : 'text-text-secondary hover:text-text-primary'
