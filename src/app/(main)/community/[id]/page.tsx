@@ -10,7 +10,7 @@ import {
   deleteComment,
   incrementViewCount,
 } from '@/services/communityService';
-import { reportPost } from '@/services/reportService';
+import { reportPost, ReportReason } from '@/services/reportService';
 import { supabase } from '@/lib/supabase';
 import type { Post, Comment } from '@/types/community';
 import Image from 'next/image';
@@ -130,7 +130,7 @@ export default function PostDetailPage({
   };
 
   // ── 신고 제출 핸들러 ──
-  const handleReportSubmit = async (reason: string) => {
+  const handleReportSubmit = async (reason: ReportReason) => {
     if (!userId) {
       showErrorToast('로그인이 필요합니다.');
       return;
