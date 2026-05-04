@@ -4,6 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { User, Mail, Lock, Phone, MapPin, CreditCard } from 'lucide-react';
 import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { forwardRef } from 'react';
 
 // 일반 회원 zod 유효성 검사 스키마
 const generalSchema = z
@@ -50,7 +53,10 @@ const BELTS = [
   { value: 'black', label: 'Black  (검은띠)', color: '#1a1a1a' },
 ];
 
-function BeltSelect({ id }: { id: string }) {
+const BeltSelect = forwardRef<
+  HTMLSelectElement,
+  { id: string } & React.SelectHTMLAttributes<HTMLSelectElement>
+>(({ id, ...rest }, ref) => {
   const [belt, setBelt] = useState('');
   const selectedColor = BELTS.find((b) => b.value === belt)?.color;
 
@@ -64,9 +70,11 @@ function BeltSelect({ id }: { id: string }) {
       )}
       <select
         id={id}
+        ref={ref}
+        {...rest}
         value={belt}
         onChange={(e) => setBelt(e.target.value)}
-        className="w-full bg-input-bg border-none rounded-2xl py-4 pr-4 text-base text-text-secondary  focus:ring-2 focus:ring-btn-focus outline-none transition-all appearance-none"
+        className="w-full bg-input-bg border-none rounded-2xl py-4 pr-4 text-base text-text-secondary focus:ring-2 focus:ring-btn-focus outline-none transition-all appearance-none"
         style={{ paddingLeft: selectedColor ? '36px' : '16px' }}
       >
         <option value="">벨트를 선택하세요</option>
@@ -78,7 +86,8 @@ function BeltSelect({ id }: { id: string }) {
       </select>
     </div>
   );
-}
+});
+BeltSelect.displayName = 'BeltSelect';
 
 function Field({
   label,
@@ -98,22 +107,20 @@ function Field({
         {label}
       </label>
       {children}
-      <p className="text-danger text-sm mt-1 h-5" />
+      {/* 빈 p 태그 제거! 에러는 GeneralForm에서 직접 표시 */}
     </div>
   );
 }
 
-function InputWithIcon({
-  id,
-  icon,
-  type = 'text',
-  placeholder,
-}: {
-  id: string;
-  icon: React.ReactNode;
-  type?: string;
-  placeholder: string;
-}) {
+const InputWithIcon = forwardRef<
+  HTMLInputElement,
+  {
+    id: string;
+    icon: React.ReactNode;
+    type?: string;
+    placeholder: string;
+  } & React.InputHTMLAttributes<HTMLInputElement>
+>(({ id, icon, type = 'text', placeholder, ...rest }, ref) => {
   return (
     <div className="relative">
       <span className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary flex items-center justify-center">
@@ -123,27 +130,51 @@ function InputWithIcon({
         id={id}
         type={type}
         placeholder={placeholder}
+        ref={ref}
+        {...rest}
         className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
       />
     </div>
   );
-}
+});
+InputWithIcon.displayName = 'InputWithIcon';
+
 // 일반 회원가입 폼
+type GeneralFormType = z.infer<typeof generalSchema>;
+
 function GeneralForm() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<GeneralFormType>({
+    resolver: zodResolver(generalSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      passwordCheck: '',
+      belt: '',
+    },
+  });
+
+  const onSubmit = (data: GeneralFormType) => {
+    console.log(data);
+    // 나중에 handleRegister() 연결할 거예요
+  };
+
   return (
-    <form
-      className="space-y-5"
-      onSubmit={(e) => {
-        e.preventDefault();
-        // 나중에 handleRegister() 연결할 거예요
-      }}
-    >
+    <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
       <Field label="이름" htmlFor="name">
         <InputWithIcon
           id="name"
           icon={<User className="w-5 h-5" />}
           placeholder="이름을 입력하세요"
+          {...register('name')}
         />
+        {errors.name && (
+          <p className="text-danger text-sm mt-1">{errors.name.message}</p>
+        )}
       </Field>
       <Field label="이메일" htmlFor="email">
         <InputWithIcon
@@ -151,7 +182,11 @@ function GeneralForm() {
           icon={<Mail className="w-5 h-5" />}
           type="email"
           placeholder="이메일을 입력하세요"
+          {...register('email')}
         />
+        {errors.email && (
+          <p className="text-danger text-sm mt-1">{errors.email.message}</p>
+        )}
       </Field>
       <Field label="비밀번호" htmlFor="password">
         <InputWithIcon
@@ -159,7 +194,11 @@ function GeneralForm() {
           icon={<Lock className="w-5 h-5" />}
           type="password"
           placeholder="비밀번호를 입력하세요"
+          {...register('password')}
         />
+        {errors.password && (
+          <p className="text-danger text-sm mt-1">{errors.password.message}</p>
+        )}
       </Field>
       <Field label="비밀번호 확인" htmlFor="passwordCheck">
         <InputWithIcon
@@ -167,16 +206,24 @@ function GeneralForm() {
           icon={<Lock className="w-5 h-5" />}
           type="password"
           placeholder="비밀번호를 다시 입력하세요"
+          {...register('passwordCheck')}
         />
+        {errors.passwordCheck && (
+          <p className="text-danger text-sm mt-1">
+            {errors.passwordCheck.message}
+          </p>
+        )}
       </Field>
       <Field label="벨트" htmlFor="belt">
-        <BeltSelect id="belt" />
+        <BeltSelect id="belt" {...register('belt')} />
+        {errors.belt && (
+          <p className="text-danger text-sm mt-1">{errors.belt.message}</p>
+        )}
       </Field>
 
       <button
         type="submit"
         className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer"
-        // cursor-pointer ← 추가
       >
         가입하기
       </button>
