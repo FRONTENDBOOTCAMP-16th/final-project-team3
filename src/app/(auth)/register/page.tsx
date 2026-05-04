@@ -140,6 +140,8 @@ const InputWithIcon = forwardRef<
 InputWithIcon.displayName = 'InputWithIcon';
 
 // 일반 회원가입 폼
+// react-hook-form + zod 유효성 검사 연결
+// onSubmit은 추후 supabase API 연동 시 handleRegister()로 교체 예정
 type GeneralFormType = z.infer<typeof generalSchema>;
 
 function GeneralForm() {
@@ -160,7 +162,6 @@ function GeneralForm() {
 
   const onSubmit = (data: GeneralFormType) => {
     console.log(data);
-    // 나중에 handleRegister() 연결할 거예요
   };
 
   return (
@@ -241,21 +242,49 @@ function GeneralForm() {
     </form>
   );
 }
+
 // 도장 회원가입 폼
+// react-hook-form + zod 유효성 검사 연결
+// onSubmit은 추후 supabase API 연동 시 handleRegister()로 교체 예정
+type DojangFormType = z.infer<typeof dojangSchema>;
+
 function DojangForm() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<DojangFormType>({
+    resolver: zodResolver(dojangSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      passwordCheck: '',
+      belt: '',
+      licenseNumber: '',
+      gymName: '',
+      ownerName: '',
+      phone: '',
+      address: '',
+    },
+  });
+
+  const onSubmit = (data: DojangFormType) => {
+    console.log(data);
+    // 나중에 handleRegister() 연결할 예정
+  };
   return (
-    <form
-      className="space-y-5"
-      onSubmit={(e) => {
-        e.preventDefault();
-      }}
-    >
+    <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
       <Field label="이름" htmlFor="dojang-name">
         <InputWithIcon
           id="dojang-name"
           icon={<User className="w-5 h-5" />}
           placeholder="이름을 입력하세요"
+          {...register('name')}
         />
+        {errors.name && (
+          <p className="text-danger text-sm mt-1">{errors.name.message}</p>
+        )}
       </Field>
       <Field label="이메일" htmlFor="dojang-email">
         <InputWithIcon
@@ -263,7 +292,11 @@ function DojangForm() {
           icon={<Mail className="w-5 h-5" />}
           type="email"
           placeholder="이메일을 입력하세요"
+          {...register('email')}
         />
+        {errors.email && (
+          <p className="text-danger text-sm mt-1">{errors.email.message}</p>
+        )}
       </Field>
       <Field label="비밀번호" htmlFor="dojang-password">
         <InputWithIcon
@@ -271,7 +304,11 @@ function DojangForm() {
           icon={<Lock className="w-5 h-5" />}
           type="password"
           placeholder="비밀번호를 입력하세요"
+          {...register('password')}
         />
+        {errors.password && (
+          <p className="text-danger text-sm mt-1">{errors.password.message}</p>
+        )}
       </Field>
       <Field label="비밀번호 확인" htmlFor="dojang-passwordConfirm">
         <InputWithIcon
@@ -279,17 +316,35 @@ function DojangForm() {
           icon={<Lock className="w-5 h-5" />}
           type="password"
           placeholder="비밀번호를 다시 입력하세요"
+          {...register('passwordCheck')}
         />
+        {errors.passwordCheck && (
+          <p className="text-danger text-sm mt-1">
+            {errors.passwordCheck.message}
+          </p>
+        )}
       </Field>
       <Field label="벨트" htmlFor="dojang-belt">
-        <BeltSelect id="dojang-belt" />
+        <BeltSelect id="dojang-belt" {...register('belt')} />
+        {errors.belt && (
+          <p className="text-danger text-sm mt-1">{errors.belt.message}</p>
+        )}
       </Field>
+
+      <hr className="border-gray-200" />
+
       <Field label="사업자등록번호" htmlFor="licenseNumber">
         <InputWithIcon
           id="licenseNumber"
           icon={<CreditCard className="w-5 h-5" />}
           placeholder="사업자등록번호를 입력하세요"
+          {...register('licenseNumber')}
         />
+        {errors.licenseNumber && (
+          <p className="text-danger text-sm mt-1">
+            {errors.licenseNumber.message}
+          </p>
+        )}
       </Field>
       <div className="grid grid-cols-2 gap-3">
         <Field label="기업명(도장명)" htmlFor="gymName">
@@ -297,14 +352,24 @@ function DojangForm() {
             id="gymName"
             icon={<CreditCard className="w-5 h-5" />}
             placeholder="도장명"
+            {...register('gymName')}
           />
+          {errors.gymName && (
+            <p className="text-danger text-sm mt-1">{errors.gymName.message}</p>
+          )}
         </Field>
         <Field label="대표자명" htmlFor="ownerName">
           <InputWithIcon
             id="ownerName"
             icon={<User className="w-5 h-5" />}
             placeholder="대표자명"
+            {...register('ownerName')}
           />
+          {errors.ownerName && (
+            <p className="text-danger text-sm mt-1">
+              {errors.ownerName.message}
+            </p>
+          )}
         </Field>
       </div>
       <Field label="연락처" htmlFor="phone">
@@ -313,14 +378,22 @@ function DojangForm() {
           icon={<Phone className="w-5 h-5" />}
           type="tel"
           placeholder="010-0000-0000"
+          {...register('phone')}
         />
+        {errors.phone && (
+          <p className="text-danger text-sm mt-1">{errors.phone.message}</p>
+        )}
       </Field>
       <Field label="주소" htmlFor="address">
         <InputWithIcon
           id="address"
           icon={<MapPin className="w-5 h-5" />}
           placeholder="주소를 입력하세요"
+          {...register('address')}
         />
+        {errors.address && (
+          <p className="text-danger text-sm mt-1">{errors.address.message}</p>
+        )}
       </Field>
 
       {/* 파일 업로드 */}
@@ -369,7 +442,6 @@ function DojangForm() {
       <button
         type="submit"
         className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer"
-        // cursor-pointer ← 추가
       >
         가입하기
       </button>
