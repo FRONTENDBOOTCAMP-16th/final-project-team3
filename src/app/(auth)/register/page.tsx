@@ -242,11 +242,17 @@ function GeneralForm() {
         )}
       </Field>
 
+      {/* 서버 에러 메시지 */}
+      {serverError && (
+        <p className="text-danger text-sm text-center">{serverError}</p>
+      )}
+
       <button
         type="submit"
-        className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer"
+        disabled={isLoading}
+        className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
       >
-        가입하기
+        {isLoading ? '가입 중...' : '가입하기'}
       </button>
 
       <p className="text-center text-sm text-text-secondary">
