@@ -10,11 +10,7 @@ import {
   deleteComment,
   incrementViewCount,
 } from '@/services/communityService';
-import {
-  reportPost,
-  reportComment,
-  ReportReason,
-} from '@/services/reportService';
+import { reportPost } from '@/services/reportService';
 import { supabase } from '@/lib/supabase';
 import type { Post, Comment } from '@/types/community';
 import Image from 'next/image';
@@ -50,12 +46,7 @@ export default function PostDetailPage({
   const { user } = useAuth();
   const { likeCount, isLiked, toggle } = useLike(id, user?.id ?? '');
 
-  // ── 신고 모달 상태 ──
-  const [reportModal, setReportModal] = useState<{
-    open: boolean;
-    target: '게시글' | '댓글';
-    commentId?: string;
-  }>({ open: false, target: '게시글' });
+  const [reportModalOpen, setReportModalOpen] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -139,23 +130,19 @@ export default function PostDetailPage({
   };
 
   // ── 신고 제출 핸들러 ──
-  const handleReportSubmit = async (reason: ReportReason) => {
+  const handleReportSubmit = async (reason: string) => {
     if (!userId) {
       showErrorToast('로그인이 필요합니다.');
       return;
     }
     try {
-      if (reportModal.target === '게시글') {
-        await reportPost(userId, id, reason);
-      } else if (reportModal.commentId) {
-        await reportComment(userId, reportModal.commentId, id, reason);
-      }
+      await reportPost(userId, id, reason);
       showSuccessToast('신고가 접수되었습니다.', '🚨');
-      setReportModal({ open: false, target: '게시글' });
+      setReportModalOpen(false);
     } catch (e: unknown) {
       if (e instanceof Error && e.message === 'ALREADY_REPORTED') {
         showErrorToast('이미 신고한 게시물입니다.');
-        setReportModal({ open: false, target: '게시글' });
+        setReportModalOpen(false);
       } else {
         showErrorToast('신고 처리 중 오류가 발생했습니다.');
       }
@@ -311,7 +298,7 @@ export default function PostDetailPage({
               // ── 신고 버튼 (게시글) ──
               <button
                 title="신고하기"
-                onClick={() => setReportModal({ open: true, target: '게시글' })}
+                onClick={() => setReportModalOpen(true)}
                 aria-label={`${post.nickname}의 게시글 신고`}
                 className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400 cursor-pointer"
               >
@@ -514,7 +501,7 @@ export default function PostDetailPage({
                       />
                       {timeAgo(c.created_at)}
                     </span>
-                    {userId === c.user_id ? (
+                    {userId === c.user_id && (
                       <>
                         <button
                           onClick={() => {
@@ -534,22 +521,7 @@ export default function PostDetailPage({
                           삭제
                         </button>
                       </>
-                    ) : userId ? (
-                      // ── 신고 버튼 (댓글) ──
-                      <button
-                        onClick={() =>
-                          setReportModal({
-                            open: true,
-                            target: '댓글',
-                            commentId: c.id,
-                          })
-                        }
-                        aria-label={`${c.nickname}의 댓글 신고`}
-                        className="text-xs text-gray-400 hover:text-red-400 transition-colors"
-                      >
-                        신고
-                      </button>
-                    ) : null}
+                    )}
                   </div>
                 </div>
               </div>
@@ -565,10 +537,9 @@ export default function PostDetailPage({
 
       {/* ── 신고 모달 ── */}
       <ReportModal
-        isOpen={reportModal.open}
-        onClose={() => setReportModal({ open: false, target: '게시글' })}
+        isOpen={reportModalOpen}
+        onClose={() => setReportModalOpen(false)}
         onSubmit={handleReportSubmit}
-        target={reportModal.target}
       />
     </div>
   );
