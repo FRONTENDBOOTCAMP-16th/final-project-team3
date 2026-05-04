@@ -3,6 +3,20 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { User, Mail, Lock, Phone, MapPin, CreditCard } from 'lucide-react';
+import { z } from 'zod';
+
+const generalSchema = z
+  .object({
+    name: z.string().min(1, '이름을 입력해주세요.'),
+    email: z.string().email('올바른 이메일 형식으로 입력해주세요.'),
+    password: z.string().min(8, '비밀번호는 8자 이상이어야 합니다.'),
+    passwordCheck: z.string().min(1, '비밀번호 확인을 입력해주세요.'),
+    belt: z.string().min(1, '벨트를 선택해주세요.'),
+  })
+  .refine((data) => data.password === data.passwordCheck, {
+    message: '비밀번호가 일치하지 않습니다.',
+    path: ['passwordCheck'],
+  });
 
 // 벨트 종류
 const BELTS = [
