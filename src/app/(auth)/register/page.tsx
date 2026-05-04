@@ -298,9 +298,28 @@ function DojangForm() {
     },
   });
 
-  const onSubmit = (data: DojangFormType) => {
-    console.log(data);
-    // 나중에 handleRegister() 연결할 예정
+  const onSubmit = async (data: DojangFormType) => {
+    setIsLoading(true);
+    setServerError('');
+    try {
+      await registerDojang({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        belt: data.belt,
+        licenseNumber: data.licenseNumber,
+        gymName: data.gymName,
+        ownerName: data.ownerName,
+        phone: data.phone,
+        address: data.address,
+      });
+      router.push('/login');
+    } catch (e) {
+      console.error(e);
+      setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
