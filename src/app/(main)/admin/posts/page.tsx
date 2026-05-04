@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
 import AdminHeader from '@/components/admin/AdminHeader';
-import AdminPostTableClient from '@/components/admin/AdminPostTableClient';
+import AdminPostTableClient from '@/components/admin/post/AdminPostTableClient';
 import type { PostQueryRow } from '@/components/admin/post/types';
 import { mapPostQueryRowsToAdminPostRows } from '@/components/admin/post/utils';
 
