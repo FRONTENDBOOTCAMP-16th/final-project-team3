@@ -2,12 +2,13 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
 import AdminHeader from '@/components/admin/AdminHeader';
-import AdminPostTableClient from '@/components/admin/post/AdminPostTableClient';
-import type { PostQueryRow } from '@/components/admin/post/types';
-import { mapPostQueryRowsToAdminPostRows } from '@/components/admin/post/utils';
+import AdminCompetitionsClient from '@/components/admin/competitions/AdminCompetitionsClient';
+import type { CompetitionQueryRow } from '@/components/admin/competitions/types';
+import { mapCompetitionQueryRowsToAdminCompetitionRows } from '@/components/admin/competitions/utils';
 
-async function getAdminPosts() {
+async function getAdminCompetitions() {
   const cookieStore = await cookies();
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -21,20 +22,16 @@ async function getAdminPosts() {
   );
 
   const { data, error } = await supabase
-    .from('posts')
+    .from('competition')
     .select(
       `
       id,
-      category,
-      title,
-      status,
-      deleted_at,
-      view_count,
-      report_count,
+      name,
+      location,
+      event_data,
+      apply_deadline,
       created_at,
-      profiles (
-        nickname
-      )
+      apply_url
     `,
     )
     .order('created_at', { ascending: false });
@@ -43,16 +40,18 @@ async function getAdminPosts() {
     throw new Error(error.message);
   }
 
-  return mapPostQueryRowsToAdminPostRows((data ?? []) as PostQueryRow[]);
+  return mapCompetitionQueryRowsToAdminCompetitionRows(
+    (data ?? []) as CompetitionQueryRow[],
+  );
 }
 
-export default async function AdminPostPage() {
-  const postData = await getAdminPosts();
+export default async function AdminCompetitionsPage() {
+  const data = await getAdminCompetitions();
 
   return (
     <main className="min-h-screen w-full pt-28 space-y-2">
-      <AdminHeader page="post" />
-      <AdminPostTableClient data={postData} />
+      <AdminHeader page="competitions" />
+      <AdminCompetitionsClient data={data} />
     </main>
   );
 }
