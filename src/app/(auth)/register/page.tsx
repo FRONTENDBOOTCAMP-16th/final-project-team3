@@ -169,27 +169,15 @@ function GeneralForm() {
     },
   });
 
-  const onSubmit = async (data: DojangFormType) => {
+  const onSubmit = async (data: GeneralFormType) => {
     setIsLoading(true);
     setServerError('');
     try {
-      // 파일 업로드 먼저 처리
-      let businessFileUrl: string | undefined;
-      if (businessFile) {
-        businessFileUrl = await uploadBusinessFile(businessFile);
-      }
-
-      await registerDojang({
+      await registerGeneral({
         email: data.email,
         password: data.password,
         name: data.name,
         belt: data.belt,
-        licenseNumber: data.licenseNumber,
-        gymName: data.gymName,
-        ownerName: data.ownerName,
-        phone: data.phone,
-        address: data.address,
-        businessFileUrl, // 파일 업로드 URL 전달
       });
       router.push('/login');
     } catch (e) {
@@ -316,15 +304,15 @@ function DojangForm() {
   });
 
   const onSubmit = async (data: DojangFormType) => {
+    // 파일 필수 체크
+    if (!businessFile) {
+      setServerError('사업자등록증을 첨부해주세요.');
+      return;
+    }
     setIsLoading(true);
     setServerError('');
     try {
-      // 파일 업로드 먼저 처리
-      let businessFileUrl: string | undefined;
-      if (businessFile) {
-        businessFileUrl = await uploadBusinessFile(businessFile);
-      }
-
+      const businessFileUrl = await uploadBusinessFile(businessFile);
       await registerDojang({
         email: data.email,
         password: data.password,
@@ -335,7 +323,7 @@ function DojangForm() {
         ownerName: data.ownerName,
         phone: data.phone,
         address: data.address,
-        businessFileUrl, // 파일 업로드 URL 전달
+        businessFileUrl,
       });
       router.push('/login');
     } catch (e) {
