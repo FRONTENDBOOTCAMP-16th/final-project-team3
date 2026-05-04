@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { forwardRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { registerGeneral } from '@/services/authService';
+import { registerGeneral, registerDojang } from '@/services/authService';
 
 // 일반 회원 zod 유효성 검사 스키마
 const generalSchema = z
