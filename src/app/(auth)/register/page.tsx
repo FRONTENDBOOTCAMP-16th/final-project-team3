@@ -147,6 +147,9 @@ InputWithIcon.displayName = 'InputWithIcon';
 type GeneralFormType = z.infer<typeof generalSchema>;
 
 function GeneralForm() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
   const {
     register,
     handleSubmit,
