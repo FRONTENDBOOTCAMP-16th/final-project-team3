@@ -78,6 +78,10 @@ export default function PostDetailPage({
   }, [id]);
 
   const handleCommentSubmit = async () => {
+    if (!userId) {
+      showErrorToast('로그인이 필요합니다.');
+      return;
+    }
     if (!comment.trim() || !userId) return;
     try {
       const newComment = await createComment({
@@ -96,7 +100,8 @@ export default function PostDetailPage({
     if (!confirm('게시글을 삭제하시겠습니까?')) return;
     try {
       await deletePost(id);
-      queryClient.invalidateQueries({ queryKey: ['posts'] }); //  추가
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      showSuccessToast('게시글이 삭제되었습니다.', '🗑️');
       router.push('/community');
     } catch (e) {
       console.error(e);
@@ -117,6 +122,7 @@ export default function PostDetailPage({
       );
       setEditingCommentId(null);
       setEditingContent('');
+      showSuccessToast('댓글이 수정되었습니다.', '✅');
     } catch (e) {
       console.error(e);
     }
@@ -127,6 +133,7 @@ export default function PostDetailPage({
     try {
       await deleteComment(commentId);
       setComments((prev) => prev.filter((c) => c.id !== commentId));
+      showSuccessToast('댓글이 삭제되었습니다.', '🗑️');
     } catch (e) {
       console.error(e);
     }
@@ -361,7 +368,13 @@ export default function PostDetailPage({
         {/* 하단 액션 바 */}
         <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
           <button
-            onClick={() => toggle()}
+            onClick={() => {
+              if (!userId) {
+                showErrorToast('로그인이 필요합니다.');
+                return;
+              }
+              toggle();
+            }}
             aria-pressed={isLiked}
             aria-label={`좋아요 ${likeCount}개, ${isLiked ? '좋아요 취소' : '좋아요'}`}
             className={`flex items-center gap-1.5 text-xs transition-colors cursor-pointer text-gray-500 hover:text-red-500`}
