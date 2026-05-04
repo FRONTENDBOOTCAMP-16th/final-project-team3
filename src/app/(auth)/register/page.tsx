@@ -165,8 +165,23 @@ function GeneralForm() {
     },
   });
 
-  const onSubmit = (data: GeneralFormType) => {
-    console.log(data);
+  const onSubmit = async (data: GeneralFormType) => {
+    setIsLoading(true);
+    setServerError('');
+    try {
+      await registerGeneral({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        belt: data.belt,
+      });
+      router.push('/login');
+    } catch (e) {
+      console.error(e);
+      setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
