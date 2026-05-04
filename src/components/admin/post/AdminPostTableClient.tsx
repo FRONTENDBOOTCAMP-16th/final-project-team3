@@ -5,7 +5,7 @@ import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
   type AdminTableColumn,
 } from '@/components/admin/AdminDataTable';
-import AdminPostActions from '@/components/admin/AdminPostActions';
+import AdminPostActions from '@/components/admin/post/AdminPostActions';
 import AdminTableToolbar from '@/components/admin/AdminTableToolbar';
 import {
   ADMIN_POST_FILTERS,
