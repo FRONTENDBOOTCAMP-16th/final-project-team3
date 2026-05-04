@@ -101,6 +101,7 @@ export default function PostDetailPage({
     try {
       await deletePost(id);
       queryClient.invalidateQueries({ queryKey: ['posts'] });
+      showSuccessToast('게시글이 삭제되었습니다.', '🗑️');
       router.push('/community');
     } catch (e) {
       console.error(e);
@@ -132,6 +133,7 @@ export default function PostDetailPage({
     try {
       await deleteComment(commentId);
       setComments((prev) => prev.filter((c) => c.id !== commentId));
+      showSuccessToast('댓글이 삭제되었습니다.', '🗑️');
     } catch (e) {
       console.error(e);
     }
