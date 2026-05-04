@@ -1,5 +1,6 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query'; // 추가
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PostCategory } from '@/types/community';
@@ -11,6 +12,7 @@ import {
   updatePost,
   uploadPostImage,
 } from '@/services/communityService';
+import { showErrorToast } from '@/lib/toast';
 
 export default function EditPage({
   params,
@@ -25,6 +27,7 @@ export default function EditPage({
   const [preview, setPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const queryClient = useQueryClient(); // 추가
 
   useEffect(() => {
     const load = async () => {
@@ -53,7 +56,7 @@ export default function EditPage({
 
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {
-      alert('제목과 내용을 모두 입력해주세요.');
+      showErrorToast('제목과 내용을 모두 입력해주세요.');
       return;
     }
     setIsLoading(true);
@@ -63,10 +66,10 @@ export default function EditPage({
         image_url = await uploadPostImage(imageFile);
       }
       await updatePost(id, { title, content, image_url });
+      queryClient.invalidateQueries({ queryKey: ['posts'] }); // 추가
       router.push(`/community/${id}`);
-    } catch (e) {
-      console.error(e);
-      alert('게시글 수정에 실패했습니다.');
+    } catch {
+      showErrorToast('게시글 수정에 실패했습니다.');
     } finally {
       setIsLoading(false);
     }
