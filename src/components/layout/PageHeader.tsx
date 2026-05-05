@@ -73,7 +73,7 @@ export default function Pageheader({
         {writeLink && (
           <Link href={writeLink}>
             <Button
-              className="bg-btn-focus text-btn-focus-text shrink-0 w-31 h-12 flex items-center gap-2"
+              className="bg-btn-focus text-btn-focus-text shrink-0 w-31 h-12 flex items-center gap-2 cursor-pointer"
               onClick={handleWriteClick}
               aria-label="새 게시글 작성"
             >
@@ -91,7 +91,7 @@ export default function Pageheader({
             <Button
               key={tab}
               onClick={() => setActiveTab && setActiveTab(tab)}
-              className={`${
+              className={`cursor-pointer ${
                 activeTab === tab
                   ? 'bg-btn-focus text-btn-focus-text'
                   : 'bg-btn-basic text-btn-text hover:bg-gray-200'

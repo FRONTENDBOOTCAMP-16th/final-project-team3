@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Button } from '../ui/button';
 import {
   LogOut,
@@ -34,7 +34,6 @@ const adminNavItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const router = useRouter();
   const { user, loading, logout } = useAuth();
   const isAdmin = user?.role === 'admin';
 
@@ -49,7 +48,7 @@ export default function Sidebar() {
     >
       {/* 로고 */}
       <Link href="/">
-        <div className="flex items-center justify-center py-6">
+        <div className="flex items-center justify-center py-6 cursor-pointer">
           <Image src="/blackbelt.svg" alt="black-belt" width={95} height={37} />
         </div>
       </Link>
@@ -59,11 +58,11 @@ export default function Sidebar() {
       {/* 공통 네비게이션 */}
       <nav className="flex flex-col gap-1 px-3 py-3 flex-1">
         {navItems.map((item) => {
-          const isActive = pathname.startsWith(item.href);
+          const isActive = pathname === item.href;
           return (
-            <Link key={item.href} href={item.href}>
+            <Link key={item.href} href={item.href} className="cursor-pointer">
               <Button
-                className={`w-full h-12 justify-start gap-3 bg-bg-white text-btn-text hover:bg-btn-basic
+                className={`w-full h-12 justify-start gap-3 bg-bg-white text-btn-text hover:bg-btn-basic cursor-pointer
                   ${isActive ? 'bg-btn-focus text-btn-focus-text hover:bg-btn-focus' : ''}`}
               >
                 <Image
@@ -87,12 +86,16 @@ export default function Sidebar() {
         {isAdmin && (
           <div className="flex flex-col gap-1 mb-2">
             {adminNavItems.map((item) => {
-              const isActive = pathname.startsWith(item.href);
+              const isActive = pathname === item.href; // ✅ startsWith → === 변경
               const Icon = item.icon;
               return (
-                <Link key={item.href} href={item.href}>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="cursor-pointer"
+                >
                   <Button
-                    className={`w-full h-12 justify-start gap-3 bg-bg-white text-btn-text hover:bg-btn-basic
+                    className={`w-full h-12 justify-start gap-3 cursor-pointer bg-bg-white text-btn-text hover:bg-btn-basic
                       ${isActive ? 'bg-btn-focus text-btn-focus-text hover:bg-btn-focus' : ''}`}
                   >
                     <Icon size={18} />
@@ -109,7 +112,7 @@ export default function Sidebar() {
           <div className="h-12" />
         ) : user ? (
           <div className="flex flex-col gap-2">
-            <Link href="/mypage">
+            <Link href="/mypage" className="cursor-pointer">
               <div className="flex items-center gap-3 px-2 py-1 rounded-lg hover:bg-btn-basic transition-colors cursor-pointer">
                 <div className="w-9 h-9 rounded-full bg-btn-basic flex items-center justify-center overflow-hidden shrink-0">
                   {user.image ? (
@@ -137,7 +140,7 @@ export default function Sidebar() {
             </Link>
             <Button
               variant="ghost"
-              className="w-full h-10 gap-2 text-text-secondary hover:text-text-primary"
+              className="w-full h-10 gap-2 text-text-secondary hover:text-text-primary cursor-pointer"
               onClick={handleLogout}
             >
               <LogOut size={15} />
@@ -145,8 +148,8 @@ export default function Sidebar() {
             </Button>
           </div>
         ) : (
-          <Link href="/login">
-            <Button className="w-full h-12 gap-2 bg-btn-focus text-btn-focus-text">
+          <Link href="/login" className="cursor-pointer">
+            <Button className="w-full h-12 gap-2 bg-btn-focus text-btn-focus-text cursor-pointer">
               <LogIn size={16} />
               로그인
             </Button>
