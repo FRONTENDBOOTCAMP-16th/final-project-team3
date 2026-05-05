@@ -5,7 +5,7 @@ import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
   type AdminTableColumn,
 } from '@/components/admin/AdminDataTable';
-import AdminPostActions from '@/components/admin/AdminPostActions';
+import AdminPostActions from '@/components/admin/post/AdminPostActions';
 import AdminTableToolbar from '@/components/admin/AdminTableToolbar';
 import {
   ADMIN_POST_FILTERS,
@@ -50,9 +50,9 @@ const POST_COLUMNS: AdminTableColumn<AdminPostRow>[] = [
       return <AdminBadge label={label} variant={variant} />;
     },
   },
-  { key: 'view_count', header: '조회수', width: '10%', align: 'center'},
-  { key: 'report_count', header: '신고수', width: '8%', align: 'center'},
-  { key: 'created_at', header: '작성일', width: '10%', align: 'center'},
+  { key: 'view_count', header: '조회수', width: '10%', align: 'center' },
+  { key: 'report_count', header: '신고수', width: '8%', align: 'center' },
+  { key: 'created_at', header: '작성일', width: '10%', align: 'center' },
   {
     key: 'id',
     header: '관리',

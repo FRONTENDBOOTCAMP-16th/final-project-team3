@@ -1,5 +1,6 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query'; // 추가
 import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -10,13 +11,15 @@ import {
   deleteComment,
   incrementViewCount,
 } from '@/services/communityService';
+import { reportPost, ReportReason } from '@/services/reportService';
 import { supabase } from '@/lib/supabase';
 import type { Post, Comment } from '@/types/community';
 import Image from 'next/image';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useAuth } from '@/hooks/useAuth';
 import { useLike } from '@/hooks/useLike';
-import toast from 'react-hot-toast';
+import { showErrorToast, showSuccessToast } from '@/lib/toast';
+import ReportModal from '@/components/community/ReportModal';
 
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -43,6 +46,9 @@ export default function PostDetailPage({
   const [editingContent, setEditingContent] = useState('');
   const { user } = useAuth();
   const { likeCount, isLiked, toggle } = useLike(id, user?.id ?? '');
+  const queryClient = useQueryClient(); // 추가
+
+  const [reportModalOpen, setReportModalOpen] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -72,6 +78,10 @@ export default function PostDetailPage({
   }, [id]);
 
   const handleCommentSubmit = async () => {
+    if (!userId) {
+      showErrorToast('로그인이 필요합니다.');
+      return;
+    }
     if (!comment.trim() || !userId) return;
     try {
       const newComment = await createComment({
@@ -90,6 +100,8 @@ export default function PostDetailPage({
     if (!confirm('게시글을 삭제하시겠습니까?')) return;
     try {
       await deletePost(id);
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      showSuccessToast('게시글이 삭제되었습니다.', '🗑️');
       router.push('/community');
     } catch (e) {
       console.error(e);
@@ -110,6 +122,7 @@ export default function PostDetailPage({
       );
       setEditingCommentId(null);
       setEditingContent('');
+      showSuccessToast('댓글이 수정되었습니다.', '✅');
     } catch (e) {
       console.error(e);
     }
@@ -120,8 +133,29 @@ export default function PostDetailPage({
     try {
       await deleteComment(commentId);
       setComments((prev) => prev.filter((c) => c.id !== commentId));
+      showSuccessToast('댓글이 삭제되었습니다.', '🗑️');
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  // ── 신고 제출 핸들러 ──
+  const handleReportSubmit = async (reason: ReportReason) => {
+    if (!userId) {
+      showErrorToast('로그인이 필요합니다.');
+      return;
+    }
+    try {
+      await reportPost(userId, id, reason);
+      showSuccessToast('신고가 접수되었습니다.', '🚨');
+      setReportModalOpen(false);
+    } catch (e: unknown) {
+      if (e instanceof Error && e.message === 'ALREADY_REPORTED') {
+        showErrorToast('이미 신고한 게시물입니다.');
+        setReportModalOpen(false);
+      } else {
+        showErrorToast('신고 처리 중 오류가 발생했습니다.');
+      }
     }
   };
 
@@ -153,20 +187,9 @@ export default function PostDetailPage({
     } else {
       try {
         await navigator.clipboard.writeText(url);
-        toast.success('링크가 복사되었습니다!', {
-          duration: 2000,
-          position: 'bottom-center',
-          style: {
-            background: '#111',
-            color: '#fff',
-            fontWeight: '600',
-            borderRadius: '12px',
-            padding: '12px 20px',
-          },
-          icon: '🔗',
-        });
+        showSuccessToast('링크가 복사되었습니다!', '🔗');
       } catch {
-        toast.error('복사에 실패했습니다.');
+        showErrorToast('복사에 실패했습니다.');
       }
     }
   };
@@ -282,8 +305,10 @@ export default function PostDetailPage({
                 </button>
               </>
             ) : (
+              // ── 신고 버튼 (게시글) ──
               <button
                 title="신고하기"
+                onClick={() => setReportModalOpen(true)}
                 aria-label={`${post.nickname}의 게시글 신고`}
                 className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400 cursor-pointer"
               >
@@ -343,7 +368,13 @@ export default function PostDetailPage({
         {/* 하단 액션 바 */}
         <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
           <button
-            onClick={() => toggle()}
+            onClick={() => {
+              if (!userId) {
+                showErrorToast('로그인이 필요합니다.');
+                return;
+              }
+              toggle();
+            }}
             aria-pressed={isLiked}
             aria-label={`좋아요 ${likeCount}개, ${isLiked ? '좋아요 취소' : '좋아요'}`}
             className={`flex items-center gap-1.5 text-xs transition-colors cursor-pointer text-gray-500 hover:text-red-500`}
@@ -519,6 +550,13 @@ export default function PostDetailPage({
           )}
         </div>
       </div>
+
+      {/* ── 신고 모달 ── */}
+      <ReportModal
+        isOpen={reportModalOpen}
+        onClose={() => setReportModalOpen(false)}
+        onSubmit={handleReportSubmit}
+      />
     </div>
   );
 }
