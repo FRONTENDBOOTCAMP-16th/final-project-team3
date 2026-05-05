@@ -78,75 +78,74 @@
 
 ## 📂 폴더 구조
 
+`## 📁 폴더 구조
+
 ```
 final-project-team3/
-├── .vscode/
-│ └── settings.json
 ├── public/
-│ ├── file.svg
-│ ├── globe.svg
-│ ├── next.svg
-│ ├── vercel.svg
-│ └── window.svg
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
 ├── src/
-│ ├── app/
-│ │ ├── (auth)/
-│ │ │ ├── find-id/
-│ │ │ │ └── page.tsx
-│ │ │ ├── find-password/
-│ │ │ │ └── page.tsx
-│ │ │ ├── login/
-│ │ │ │ └── page.tsx
-│ │ │ └── register/
-│ │ │ └── page.tsx
-│ │ ├── (main)/
-│ │ │ ├── admin/
-│ │ │ │ └── page.tsx
-│ │ │ ├── community/
-│ │ │ │ ├── [id]/
-│ │ │ │ │ ├── edit/
-│ │ │ │ │ │ └── page.tsx
-│ │ │ │ │ └── page.tsx
-│ │ │ │ ├── write/
-│ │ │ │ │ └── page.tsx
-│ │ │ │ └── page.tsx
-│ │ │ ├── competitions/
-│ │ │ │ └── page.tsx
-│ │ │ ├── dojangs/
-│ │ │ │ └── page.tsx
-│ │ │ ├── mypage/
-│ │ │ │ └── page.tsx
-│ │ │ └── service-info/
-│ │ │ └── page.tsx
-│ │ ├── favicon.ico
-│ │ ├── globals.css
-│ │ ├── layout.tsx
-│ │ └── page.tsx
-│ ├── components/
-│ │ ├── auth/
-│ │ ├── common/
-│ │ ├── community/
-│ │ ├── competition/
-│ │ ├── dojang/
-│ │ └── ui/
-│ │ ├── button.tsx
-│ │ ├── dialog.tsx
-│ │ ├── dropdown-menu.tsx
-│ │ ├── input.tsx
-│ │ ├── label.tsx
-│ │ ├── sonner.tsx
-│ │ └── textarea.tsx
-│ ├── constants/
-│ ├── hooks/
-│ ├── lib/
-│ │ └── utils.ts
-│ ├── services/
-│ ├── store/
-│ ├── types/
-│ └── utils/
+│   ├── app/
+│   │   ├── (auth)/                  # 인증 관련 페이지
+│   │   │   ├── find-id/
+│   │   │   │   └── page.tsx
+│   │   │   ├── find-password/
+│   │   │   │   └── page.tsx
+│   │   │   ├── login/
+│   │   │   │   └── page.tsx
+│   │   │   └── register/
+│   │   │       └── page.tsx
+│   │   ├── (main)/                  # 메인 레이아웃 페이지
+│   │   │   ├── admin/
+│   │   │   │   └── page.tsx
+│   │   │   ├── community/
+│   │   │   │   ├── [id]/
+│   │   │   │   │   ├── edit/
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── write/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── competitions/
+│   │   │   │   └── page.tsx
+│   │   │   ├── dojangs/
+│   │   │   │   └── page.tsx
+│   │   │   ├── mypage/
+│   │   │   │   └── page.tsx
+│   │   │   └── service-info/
+│   │   │       └── page.tsx
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components/
+│   │   ├── auth/                    # 인증 컴포넌트
+│   │   ├── common/                  # 공통 컴포넌트
+│   │   ├── community/               # 커뮤니티 컴포넌트
+│   │   ├── competition/             # 대회 컴포넌트
+│   │   ├── dojang/                  # 도장 컴포넌트
+│   │   └── ui/                      # shadcn/ui 컴포넌트
+│   │       ├── button.tsx
+│   │       ├── dialog.tsx
+│   │       ├── dropdown-menu.tsx
+│   │       ├── input.tsx
+│   │       ├── label.tsx
+│   │       ├── sonner.tsx
+│   │       └── textarea.tsx
+│   ├── constants/                   # 상수 정의
+│   ├── hooks/                       # 커스텀 훅
+│   ├── lib/
+│   │   └── utils.ts
+│   ├── services/                    # API 서비스
+│   ├── store/                       # Zustand 스토어
+│   ├── types/                       # TypeScript 타입
+│   └── utils/                       # 유틸 함수
 ├── .gitignore
 ├── .prettierrc
-├── bun.lock
 ├── components.json
 ├── eslint.config.mjs
 ├── next.config.ts
