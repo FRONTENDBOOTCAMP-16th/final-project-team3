@@ -1,4 +1,9 @@
-export type AdminPageKey = 'dashboard' | 'post' | 'user' | 'support';
+export type AdminPageKey =
+  | 'dashboard'
+  | 'post'
+  | 'user'
+  | 'support'
+  | 'competitions';
 
 interface AdminMeta {
   title: string;
@@ -21,5 +26,9 @@ export const ADMIN_META: Record<AdminPageKey, AdminMeta> = {
   support: {
     title: '고객지원',
     description: '도장 인증, 신고 내역, 문의 내역을 관리합니다',
+  },
+  competitions: {
+    title: '대회일정 관리',
+    description: '대회일정을 관리합니다.',
   },
 };

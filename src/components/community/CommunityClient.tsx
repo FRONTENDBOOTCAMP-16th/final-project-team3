@@ -21,13 +21,16 @@ export default function CommunityClient({
   // 1. 상태 선언 및 초기값 복원 (에러 해결 핵심: Lazy Initialization)
   const [activeTab, setActiveTab] = useState('전체');
   const [searchQuery, setSearchQuery] = useState('');
-  const [page, setPage] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = sessionStorage.getItem('communityPage');
-      return saved ? parseInt(saved) : 1;
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem('communityPage');
+    if (saved) {
+      startTransition(() => {
+        setPage(parseInt(saved));
+      });
     }
-    return 1;
-  });
+  }, []);
 
   const [headerHeight, setHeaderHeight] = useState(160);
   const headerRef = useRef<HTMLDivElement>(null);

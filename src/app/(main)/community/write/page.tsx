@@ -9,7 +9,7 @@ import { supabase } from '@/lib/supabase';
 import { createPost, uploadPostImage } from '@/services/communityService';
 import { useAuth } from '@/hooks/useAuth';
 import { useQueryClient } from '@tanstack/react-query'; // 추가
-import { showErrorToast } from '@/lib/toast';
+import { showErrorToast, showSuccessToast } from '@/lib/toast';
 
 export default function WritePage() {
   const router = useRouter();
@@ -62,7 +62,8 @@ export default function WritePage() {
         image_url,
         user_id: user.id,
       });
-      queryClient.invalidateQueries({ queryKey: ['posts'] }); // 추가
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      showSuccessToast('게시글이 업로드되었습니다.', '📝');
       router.push('/community');
     } catch {
       showErrorToast('게시글 작성에 실패했습니다.');
