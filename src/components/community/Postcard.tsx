@@ -1,128 +1,166 @@
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { useLike } from '@/hooks/useLike';
-import { formatDate } from '@/utils/formatDate';
-import { Heart, MessageCircle } from 'lucide-react';
+import { useState, useRef, useEffect, startTransition, useMemo } from 'react';
+import Pageheader from '@/components/layout/PageHeader';
+import Postcard from '@/components/community/Postcard';
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { useDebounce } from '@/hooks/useDebounce';
+import { usePosts } from '@/hooks/useCommunity';
+import { useAuth } from '@/hooks/useAuth';
+import type { Post } from '@/types/community';
 
-interface PostCardProps {
-  post: {
-    id: string;
-    title: string;
-    content: string;
-    category: string;
-    nickname: string;
-    avatar_url: string;
-    image_url: string;
-    view_count: number;
-    created_at: string;
-    comment_count: number;
-  };
-  userId: string;
+const PAGE_SIZE = 10;
+
+interface CommunityClientProps {
+  initialPosts: Post[];
 }
 
-const categoryMap: Record<string, { label: string; color: string }> = {
-  promo: { label: '도장', color: 'bg-[#155DFC]' },
-  notice: { label: '공지', color: 'bg-[#e7000b]' },
-  personal: { label: '일반', color: 'bg-[#364153]' },
-};
+export default function CommunityClient({
+  initialPosts,
+}: CommunityClientProps) {
+  const [activeTab, setActiveTab] = useState('전체');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
 
-export default function PostCard({ post, userId }: PostCardProps) {
-  const { likeCount, isLiked, toggle } = useLike(post.id, userId);
-  const categoryInfo = categoryMap[post.category] ?? categoryMap.personal;
+  useEffect(() => {
+    const saved = sessionStorage.getItem('communityPage');
+    if (saved) {
+      startTransition(() => {
+        setPage(parseInt(saved));
+      });
+    }
+  }, []);
 
-  const handleLike = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!userId) return;
-    toggle();
-  };
+  const [headerHeight, setHeaderHeight] = useState(160);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const isScrollRestoredRef = useRef(false);
+
+  const debouncedSearch = useDebounce(searchQuery, 300);
+  const { user, loading } = useAuth();
+  const { data: posts = initialPosts } = usePosts();
+
+  useEffect(() => {
+    if (headerRef.current) {
+      setHeaderHeight(headerRef.current.offsetHeight);
+    }
+  }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem('communityPage', page.toString());
+  }, [page]);
+
+  const filteredPosts = useMemo(() => {
+    return posts.filter((post) => {
+      const matchTab =
+        activeTab === '전체' ||
+        (activeTab === '공지' && post.category === 'notice') ||
+        (activeTab === '도장 홍보' && post.category === 'promo') ||
+        (activeTab === '일반 게시글' && post.category === 'personal');
+      const matchSearch = post.title
+        .toLowerCase()
+        .includes(debouncedSearch.toLowerCase());
+      return matchTab && matchSearch;
+    });
+  }, [posts, activeTab, debouncedSearch]);
+
+  const visiblePosts = filteredPosts.slice(0, page * PAGE_SIZE);
+  const hasMore = visiblePosts.length < filteredPosts.length;
+
+  useEffect(() => {
+    const lastPostId = sessionStorage.getItem('lastPostId');
+    if (isScrollRestoredRef.current || !lastPostId) return;
+    if (visiblePosts.length > 0) {
+      const timer = setTimeout(() => {
+        const el = document.getElementById(lastPostId);
+        if (el) {
+          el.scrollIntoView({ block: 'center', behavior: 'instant' });
+          sessionStorage.removeItem('lastPostId');
+          isScrollRestoredRef.current = true;
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [visiblePosts]);
+
+  const observerRef = useInfiniteScroll(() => {
+    if (hasMore) {
+      startTransition(() => {
+        setPage((prev) => prev + 1);
+      });
+    }
+  });
 
   return (
-    <Link href={`/community/${post.id}`} className="block w-full">
-      <div className="rounded-lg overflow-hidden border bg-bg-white border-gray-200 flex flex-col h-97.5 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
-        {/* 이미지 영역 */}
-        <div className="relative w-full h-50 bg-btn-basic shrink-0">
-          {post.image_url ? (
-            <Image
-              src={post.image_url}
-              alt={post.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              loading="eager"
-              className="object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <span className="text-text-secondary text-sm">이미지 없음</span>
-            </div>
-          )}
-          <span
-            className={`absolute top-2 right-2 px-2 py-1 text-xs text-white rounded-full ${categoryInfo.color}`}
-          >
-            {categoryInfo.label}
-          </span>
-        </div>
-
-        {/* 카드 내용 */}
-        <div className="p-4 flex flex-col gap-2 flex-1 overflow-hidden">
-          <h2 className="font-bold text-base line-clamp-1">{post.title}</h2>
-          <p className="text-sm text-text-secondary line-clamp-2">
-            {post.content}
-          </p>
-
-          <div className="flex-1" />
-
-          {/* 날짜 + 조회수 + 댓글수 */}
-          <div className="flex gap-3 text-xs text-text-secondary items-center">
-            <span>{formatDate(post.created_at)}</span>
-            <span>조회 {post.view_count}</span>
-            <span className="flex items-center gap-1">
-              <MessageCircle size={12} />
-              <span className="translate-y-px">{post.comment_count ?? 0}</span>
-            </span>
-          </div>
-
-          <div className="border-t border-gray-200" />
-
-          {/* 프로필 + 좋아요 */}
-          <div className="flex items-center justify-between pt-2">
-            <div className="flex items-center gap-2">
-              <div className="relative w-6 h-6 shrink-0">
-                <Image
-                  src={post.avatar_url || '/basic.svg'}
-                  alt={post.nickname}
-                  fill
-                  sizes="24px"
-                  className="rounded-full object-cover"
-                />
-              </div>
-              <span className="text-sm">{post.nickname}</span>
-            </div>
-
-            {/* 좋아요 버튼 */}
-            <div className="w-12 flex items-center justify-end">
-              <button
-                onClick={handleLike}
-                className="flex items-center gap-1 transition-all duration-200"
-              >
-                <Heart
-                  size={16}
-                  className={
-                    isLiked ? 'fill-danger text-danger' : 'text-text-secondary'
-                  }
-                />
-                <span
-                  className={`text-sm w-2 text-right ${isLiked ? 'text-danger' : 'text-text-secondary'}`}
-                >
-                  {likeCount}
-                </span>
-              </button>
-            </div>
-          </div>
+    <main className="w-full min-h-screen">
+      <div
+        ref={headerRef}
+        className="fixed top-0 left-50 right-0 z-10 bg-white shadow-sm flex justify-center"
+      >
+        <div className="w-full max-w-7xl px-6">
+          <Pageheader
+            title="커뮤니티"
+            description="주짓수에 대한 모든 이야기"
+            tabs={['전체', '공지', '도장 홍보', '일반 게시글']}
+            activeTab={activeTab}
+            setActiveTab={(tab) => {
+              setActiveTab(tab);
+              setPage(1);
+              window.scrollTo(0, 0);
+            }}
+            searchQuery={searchQuery}
+            setSearchQuery={(query) => {
+              setSearchQuery(query);
+              setPage(1);
+            }}
+            writeLink={
+              loading ? undefined : user ? '/community/write' : undefined
+            }
+          />
         </div>
       </div>
-    </Link>
+
+      <div
+        style={{ paddingTop: `${headerHeight + 24}px` }}
+        className="pb-20 flex justify-center"
+      >
+        <div className="w-full max-w-7xl px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {visiblePosts.length > 0 ? (
+              visiblePosts.map((post) => (
+                <div
+                  key={post.id}
+                  id={post.id}
+                  onClick={() => sessionStorage.setItem('lastPostId', post.id)}
+                >
+                  <Postcard
+                    post={{
+                      ...post,
+                      nickname: post.nickname ?? '알 수 없음',
+                      avatar_url: post.avatar_url ?? '',
+                      image_url: post.image_url ?? '',
+                    }}
+                    userId={user?.id ?? ''}
+                  />
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full flex flex-col items-center justify-center py-40 text-gray-400 font-light">
+                <p className="text-lg">조건에 맞는 게시글이 없습니다</p>
+                <p className="text-sm mt-2">새로운 소식을 들려주세요!</p>
+              </div>
+            )}
+          </div>
+
+          {hasMore && (
+            <div
+              ref={observerRef}
+              className="h-20 flex items-center justify-center"
+            >
+              <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+          )}
+        </div>
+      </div>
+    </main>
   );
 }

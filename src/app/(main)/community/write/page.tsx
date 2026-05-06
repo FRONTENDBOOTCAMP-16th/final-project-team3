@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PostCategory } from '@/types/community';
-import Image from 'next/image';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { supabase } from '@/lib/supabase';
 import { createPost, uploadPostImage } from '@/services/communityService';
@@ -12,6 +11,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ImageUpload from '@/components/community/ImageUpload';
 import PostFormActions from '@/components/community/PostFormActions';
+import PostCard from '@/components/community/Postcard';
 
 export default function WritePage() {
   const router = useRouter();
@@ -156,93 +156,28 @@ export default function WritePage() {
       )}
 
       {/* ✅ 미리보기 탭 */}
-      {tab === 'preview' && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6">
-          {!title && !content ? (
-            <div className="flex flex-col items-center justify-center py-16 text-gray-400">
-              <p className="text-sm">작성 탭에서 내용을 입력하면</p>
-              <p className="text-sm">여기서 미리볼 수 있어요.</p>
-            </div>
-          ) : (
-            <>
-              {/* 작성자 헤더 */}
-              <div className="flex items-center gap-3 px-5 pt-5 pb-4">
-                <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden shrink-0">
-                  {user?.image && (
-                    <Image
-                      src={user.image}
-                      alt="프로필"
-                      width={40}
-                      height={40}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                </div>
-                <div>
-                  {/* ✅ 닉네임 + role 뱃지 추가 */}
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-sm font-semibold text-gray-900">
-                      {user?.name ?? '알 수 없음'}
-                    </span>
-                    {user?.role && (
-                      <span
-                        className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                          category === 'promo'
-                            ? 'bg-blue-50 text-blue-600'
-                            : user?.role === 'admin'
-                              ? 'bg-red-50 text-red-600'
-                              : 'bg-gray-100 text-gray-600'
-                        }`}
-                      >
-                        {category === 'promo'
-                          ? '도장'
-                          : user?.role === 'admin'
-                            ? '공지'
-                            : '일반'}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-gray-400 mt-0.5">방금 전</p>
-                </div>
-              </div>
-
-              {/* 제목 */}
-              <div className="px-5 pb-3">
-                <h1 className="text-lg font-bold text-gray-900">{title}</h1>
-              </div>
-
-              {/* 이미지 */}
-              {preview && (
-                <div className="px-5 pb-4">
-                  <div className="rounded-xl overflow-hidden">
-                    <Image
-                      src={preview}
-                      alt="게시글 이미지"
-                      width={800}
-                      height={400}
-                      className="w-full object-cover max-h-72"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* 본문 */}
-              <div className="px-5 pb-5">
-                <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">
-                  {content}
-                </p>
-              </div>
-
-              {/* 하단 바 */}
-              <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
-                <span className="text-xs text-gray-400">좋아요 0</span>
-                <span className="text-xs text-gray-400">댓글 0</span>
-                <span className="text-xs text-gray-400">조회 0</span>
-              </div>
-            </>
-          )}
-        </div>
-      )}
+      {tab === 'preview' &&
+        (!title && !content ? (
+          <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+            <p className="text-sm">작성 탭에서 내용을 입력하면</p>
+            <p className="text-sm">여기서 미리볼 수 있어요.</p>
+          </div>
+        ) : (
+          <PostCard
+            post={{
+              nickname: user?.name ?? '알 수 없음',
+              avatar_url: user?.image ?? null,
+              role: category === 'promo' ? 'manager' : (user?.role ?? null),
+              created_at: new Date().toISOString(),
+              title,
+              image_url: preview,
+              content,
+              likeCount: 0,
+              commentCount: 0,
+              view_count: 0,
+            }}
+          />
+        ))}
 
       {/* 하단 버튼 */}
       <PostFormActions

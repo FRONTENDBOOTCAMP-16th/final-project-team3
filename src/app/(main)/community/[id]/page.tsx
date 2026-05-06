@@ -20,15 +20,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLike } from '@/hooks/useLike';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ReportModal from '@/components/community/ReportModal';
-
-function timeAgo(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const min = Math.floor(diff / 60000);
-  if (min < 60) return `${min}분 전`;
-  const hr = Math.floor(min / 60);
-  if (hr < 24) return `${hr}시간 전`;
-  return `${Math.floor(hr / 24)}일 전`;
-}
+import PostCard, { PostCardData } from '@/components/community/Postcard';
+import { timeAgo } from '@/utils/timeAgo';
 
 export default function PostDetailPage({
   params,
@@ -194,6 +187,19 @@ export default function PostDetailPage({
     }
   };
 
+  const postCardData: PostCardData = {
+    nickname: post.nickname ?? '알 수 없음',
+    avatar_url: post.avatar_url,
+    role: post.role,
+    created_at: post.created_at,
+    title: post.title,
+    image_url: post.image_url,
+    content: post.content,
+    likeCount: likeCount ?? 0,
+    commentCount: comments.length,
+    view_count: post.view_count,
+  };
+
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
       {/* 뒤로가기 */}
@@ -220,183 +226,41 @@ export default function PostDetailPage({
       </button>
 
       {/* ── 게시글 카드 ── */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        {/* 작성자 헤더 */}
-        <div className="flex items-center justify-between px-5 pt-5 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden shrink-0">
-              {post.avatar_url && (
-                <Image
-                  src={post.avatar_url}
-                  alt={`${post.nickname} 프로필 이미지`}
-                  width={40}
-                  height={40}
-                  className="w-full h-full object-cover"
-                />
-              )}
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-sm font-semibold text-gray-900">
-                  {post.nickname ?? '알 수 없음'}
-                </span>
-                {post.role && (
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      post.role === 'manager'
-                        ? 'bg-blue-50 text-blue-600'
-                        : post.role === 'admin'
-                          ? 'bg-red-50 text-red-600'
-                          : 'bg-gray-100 text-gray-600'
-                    }`}
-                  >
-                    {post.role === 'manager'
-                      ? '도장'
-                      : post.role === 'admin'
-                        ? '관리자'
-                        : '일반'}
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
-                <Image
-                  src="/postTime.svg"
-                  alt="시간"
-                  width={11}
-                  height={11}
-                  className="opacity-50"
-                />
-                {timeAgo(post.created_at)}
-              </p>
-            </div>
-          </div>
-
-          {/* 오너 액션 버튼 */}
-          <div className="flex items-center gap-1">
+      <PostCard
+        post={postCardData}
+        isLiked={isLiked}
+        onLike={() => {
+          if (!userId) {
+            showErrorToast('로그인이 필요합니다.');
+            return;
+          }
+          toggle();
+        }}
+        headerActions={
+          <>
             {isOwner ? (
               <>
                 <button
                   title="수정하기"
                   onClick={() => router.push(`/community/${id}/edit`)}
-                  aria-label={`${post.nickname}의 게시글 수정`}
-                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500 cursor-pointer"
                 >
-                  <Image
-                    src="/postEdit.svg"
-                    alt=""
-                    width={30}
-                    height={30}
-                    aria-hidden="true"
-                  />
+                  <Image src="/postEdit.svg" alt="" width={30} height={30} />
                 </button>
-                <button
-                  title="삭제하기"
-                  onClick={handleDeletePost}
-                  aria-label={`${post.nickname}의 게시글 삭제`}
-                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors text-red-400 cursor-pointer"
-                >
-                  <Image
-                    src="/postDelete.svg"
-                    alt=""
-                    width={32}
-                    height={32}
-                    aria-hidden="true"
-                  />
+                <button title="삭제하기" onClick={handleDeletePost}>
+                  <Image src="/postDelete.svg" alt="" width={32} height={32} />
                 </button>
               </>
             ) : (
-              // ── 신고 버튼 (게시글) ──
-              <button
-                title="신고하기"
-                onClick={() => setReportModalOpen(true)}
-                aria-label={`${post.nickname}의 게시글 신고`}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400 cursor-pointer"
-              >
-                <Image
-                  src="/postReport.svg"
-                  alt=""
-                  width={27}
-                  height={27}
-                  aria-hidden="true"
-                />
+              <button title="신고하기" onClick={() => setReportModalOpen(true)}>
+                <Image src="/postReport.svg" alt="" width={27} height={27} />
               </button>
             )}
-            <button
-              title="공유하기"
-              onClick={handleShare}
-              aria-label={`${post.nickname}의 게시글 공유`}
-              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500 cursor-pointer relative"
-            >
-              <Image
-                src="/postShare.svg"
-                alt=""
-                width={18}
-                height={18}
-                aria-hidden="true"
-              />
+            <button title="공유하기" onClick={handleShare}>
+              <Image src="/postShare.svg" alt="" width={18} height={18} />
             </button>
-          </div>
-        </div>
-
-        {/* 제목 */}
-        <div className="px-5 pb-3">
-          <h1 className="text-lg font-bold text-gray-900">{post.title}</h1>
-        </div>
-
-        {/* 이미지 */}
-        {post.image_url && (
-          <div className="px-5 pb-4">
-            <div className="rounded-xl overflow-hidden">
-              <Image
-                src={post.image_url}
-                alt={`${post.title} 게시글 이미지`}
-                width={800}
-                height={400}
-                className="w-full object-cover max-h-72"
-              />
-            </div>
-          </div>
-        )}
-
-        {/* 본문 */}
-        <div className="px-5 pb-5">
-          <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">
-            {post.content}
-          </p>
-        </div>
-
-        {/* 하단 액션 바 */}
-        <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
-          <button
-            onClick={() => {
-              if (!userId) {
-                showErrorToast('로그인이 필요합니다.');
-                return;
-              }
-              toggle();
-            }}
-            aria-pressed={isLiked}
-            aria-label={`좋아요 ${likeCount}개, ${isLiked ? '좋아요 취소' : '좋아요'}`}
-            className={`flex items-center gap-1.5 text-xs transition-colors cursor-pointer text-gray-500 hover:text-red-500`}
-          >
-            <Image
-              src="/like.svg"
-              alt=""
-              width={16}
-              height={16}
-              aria-hidden="true"
-            />
-            <span>좋아요 {likeCount}</span>
-          </button>
-          <div className="flex items-center gap-1.5 text-xs text-gray-500">
-            <Image src="/postComment.svg" alt="댓글" width={16} height={16} />
-            <span>댓글 {comments.length}</span>
-          </div>
-          <span className="flex items-center gap-1.5 text-xs text-gray-500">
-            조회 {post.view_count}
-          </span>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {/* ── 댓글 카드 ── */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
