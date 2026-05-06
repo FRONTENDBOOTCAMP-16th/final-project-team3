@@ -20,15 +20,13 @@ export async function registerGeneral({
   if (error) throw error;
 
   // 일반 - profiles 테이블에 추가 정보 저장
-  const { error: profileError } = await supabase
-    .from('profiles')
-    .update({
-      name,
-      belt_level: belt,
-      email_value: email,
-      role: 'user',
-    })
-    .eq('id', data.user!.id);
+  const { error: profileError } = await supabase.from('profiles').upsert({
+    id: data.user!.id,
+    name,
+    belt_level: belt,
+    email_value: email,
+    role: 'user',
+  });
   if (profileError) throw profileError;
 }
 
@@ -64,20 +62,18 @@ export async function registerDojang({
   if (error) throw error;
 
   // 도장 - profiles 테이블에 추가 정보 저장
-  const { error: profileError } = await supabase
-    .from('profiles')
-    .update({
-      name,
-      belt_level: belt,
-      email_value: email,
-      role: 'manager',
-      business_number: licenseNumber,
-      representative: ownerName,
-      phone_value: phone,
-      address,
-      business_file_url: businessFileUrl,
-    })
-    .eq('id', data.user!.id);
+  const { error: profileError } = await supabase.from('profiles').upsert({
+    id: data.user!.id,
+    name,
+    belt_level: belt,
+    email_value: email,
+    role: 'manager',
+    business_number: licenseNumber,
+    representative: ownerName,
+    phone_value: phone,
+    address,
+    business_file_url: businessFileUrl,
+  });
   if (profileError) throw profileError;
 }
 
