@@ -77,7 +77,10 @@ export default function PostDetailPage({
       showErrorToast('로그인이 필요합니다.');
       return;
     }
-    if (!comment.trim() || !userId) return;
+    if (!comment.trim()) {
+      showErrorToast('댓글을 입력해주세요.');
+      return;
+    }
     try {
       const newComment = await createComment({
         post_id: id,
@@ -253,11 +256,19 @@ export default function PostDetailPage({
                 </button>
               </>
             ) : (
-              <button title="신고하기" onClick={() => setReportModalOpen(true)}>
+              <button
+                title="신고하기"
+                onClick={() => setReportModalOpen(true)}
+                className="w-8 h-8 flex items-center justify-center"
+              >
                 <Image src="/postReport.svg" alt="" width={27} height={27} />
               </button>
             )}
-            <button title="공유하기" onClick={handleShare}>
+            <button
+              title="공유하기"
+              onClick={handleShare}
+              className="w-8 h-8 flex items-center justify-center"
+            >
               <Image src="/postShare.svg" alt="" width={18} height={18} />
             </button>
           </>
