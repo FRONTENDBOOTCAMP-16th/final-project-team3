@@ -1,8 +1,52 @@
 'use client';
 
+import Script from 'next/script';
 import { useState } from 'react';
 import Link from 'next/link';
 import { User, Mail, Lock, Phone, MapPin, CreditCard } from 'lucide-react';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { forwardRef } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  registerGeneral,
+  registerDojang,
+  uploadBusinessFile,
+} from '@/services/authService';
+
+// 일반 회원 zod 유효성 검사 스키마
+const generalSchema = z
+  .object({
+    name: z.string().min(1, '이름을 입력해주세요.'),
+    email: z.string().email('올바른 이메일 형식으로 입력해주세요.'),
+    password: z.string().min(8, '비밀번호는 8자 이상이어야 합니다.'),
+    passwordCheck: z.string().min(1, '비밀번호 확인을 입력해주세요.'),
+    belt: z.string().min(1, '벨트를 선택해주세요.'),
+  })
+  .refine((data) => data.password === data.passwordCheck, {
+    message: '비밀번호가 일치하지 않습니다.',
+    path: ['passwordCheck'],
+  });
+
+// 도장 회원 zod 유효성 검사 스키마 추가
+const dojangSchema = z
+  .object({
+    name: z.string().min(1, '이름을 입력해주세요.'),
+    email: z.string().email('올바른 이메일 형식으로 입력해주세요.'),
+    password: z.string().min(8, '비밀번호는 8자 이상이어야 합니다.'),
+    passwordCheck: z.string().min(1, '비밀번호 확인을 입력해주세요.'),
+    belt: z.string().min(1, '벨트를 선택해주세요.'),
+    licenseNumber: z.string().min(1, '사업자등록번호를 입력해주세요.'),
+    gymName: z.string().min(1, '기업명(도장명)을 입력해주세요.'),
+    ownerName: z.string().min(1, '대표자명을 입력해주세요.'),
+    phone: z.string().min(1, '연락처를 입력해주세요.'),
+    address: z.string().min(1, '주소를 입력해주세요.'),
+  })
+  .refine((data) => data.password === data.passwordCheck, {
+    message: '비밀번호가 일치하지 않습니다.',
+    path: ['passwordCheck'],
+  });
 
 // 벨트 종류
 const BELTS = [
@@ -16,7 +60,10 @@ const BELTS = [
   { value: 'black', label: 'Black  (검은띠)', color: '#1a1a1a' },
 ];
 
-function BeltSelect({ id }: { id: string }) {
+const BeltSelect = forwardRef<
+  HTMLSelectElement,
+  { id: string } & React.SelectHTMLAttributes<HTMLSelectElement>
+>(({ id, ...rest }, ref) => {
   const [belt, setBelt] = useState('');
   const selectedColor = BELTS.find((b) => b.value === belt)?.color;
 
@@ -30,9 +77,11 @@ function BeltSelect({ id }: { id: string }) {
       )}
       <select
         id={id}
+        ref={ref}
+        {...rest}
         value={belt}
         onChange={(e) => setBelt(e.target.value)}
-        className="w-full bg-input-bg border-none rounded-2xl py-4 pr-4 text-base text-text-secondary  focus:ring-2 focus:ring-btn-focus outline-none transition-all appearance-none"
+        className="w-full bg-input-bg border-none rounded-2xl py-4 pr-4 text-base text-text-secondary focus:ring-2 focus:ring-btn-focus outline-none transition-all appearance-none"
         style={{ paddingLeft: selectedColor ? '36px' : '16px' }}
       >
         <option value="">벨트를 선택하세요</option>
@@ -44,7 +93,8 @@ function BeltSelect({ id }: { id: string }) {
       </select>
     </div>
   );
-}
+});
+BeltSelect.displayName = 'BeltSelect';
 
 function Field({
   label,
@@ -64,22 +114,20 @@ function Field({
         {label}
       </label>
       {children}
-      <p className="text-danger text-sm mt-1 h-5" />
+      {/* 빈 p 태그 제거! 에러는 GeneralForm에서 직접 표시 */}
     </div>
   );
 }
 
-function InputWithIcon({
-  id,
-  icon,
-  type = 'text',
-  placeholder,
-}: {
-  id: string;
-  icon: React.ReactNode;
-  type?: string;
-  placeholder: string;
-}) {
+const InputWithIcon = forwardRef<
+  HTMLInputElement,
+  {
+    id: string;
+    icon: React.ReactNode;
+    type?: string;
+    placeholder: string;
+  } & React.InputHTMLAttributes<HTMLInputElement>
+>(({ id, icon, type = 'text', placeholder, ...rest }, ref) => {
   return (
     <div className="relative">
       <span className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary flex items-center justify-center">
@@ -89,27 +137,70 @@ function InputWithIcon({
         id={id}
         type={type}
         placeholder={placeholder}
+        ref={ref}
+        {...rest}
         className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
       />
     </div>
   );
-}
+});
+InputWithIcon.displayName = 'InputWithIcon';
+
 // 일반 회원가입 폼
+// react-hook-form + zod 유효성 검사 연결
+// onSubmit → supabase API 연동 완료
+type GeneralFormType = z.infer<typeof generalSchema>;
+
 function GeneralForm() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<GeneralFormType>({
+    resolver: zodResolver(generalSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      passwordCheck: '',
+      belt: '',
+    },
+  });
+
+  const onSubmit = async (data: GeneralFormType) => {
+    setIsLoading(true);
+    setServerError('');
+    try {
+      await registerGeneral({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        belt: data.belt,
+      });
+      router.push('/login');
+    } catch (e) {
+      console.error(e);
+      setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <form
-      className="space-y-5"
-      onSubmit={(e) => {
-        e.preventDefault();
-        // 나중에 handleRegister() 연결할 거예요
-      }}
-    >
+    <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
       <Field label="이름" htmlFor="name">
         <InputWithIcon
           id="name"
           icon={<User className="w-5 h-5" />}
           placeholder="이름을 입력하세요"
+          {...register('name')}
         />
+        {errors.name && (
+          <p className="text-danger text-sm mt-1">{errors.name.message}</p>
+        )}
       </Field>
       <Field label="이메일" htmlFor="email">
         <InputWithIcon
@@ -117,7 +208,11 @@ function GeneralForm() {
           icon={<Mail className="w-5 h-5" />}
           type="email"
           placeholder="이메일을 입력하세요"
+          {...register('email')}
         />
+        {errors.email && (
+          <p className="text-danger text-sm mt-1">{errors.email.message}</p>
+        )}
       </Field>
       <Field label="비밀번호" htmlFor="password">
         <InputWithIcon
@@ -125,7 +220,11 @@ function GeneralForm() {
           icon={<Lock className="w-5 h-5" />}
           type="password"
           placeholder="비밀번호를 입력하세요"
+          {...register('password')}
         />
+        {errors.password && (
+          <p className="text-danger text-sm mt-1">{errors.password.message}</p>
+        )}
       </Field>
       <Field label="비밀번호 확인" htmlFor="passwordCheck">
         <InputWithIcon
@@ -133,18 +232,32 @@ function GeneralForm() {
           icon={<Lock className="w-5 h-5" />}
           type="password"
           placeholder="비밀번호를 다시 입력하세요"
+          {...register('passwordCheck')}
         />
+        {errors.passwordCheck && (
+          <p className="text-danger text-sm mt-1">
+            {errors.passwordCheck.message}
+          </p>
+        )}
       </Field>
       <Field label="벨트" htmlFor="belt">
-        <BeltSelect id="belt" />
+        <BeltSelect id="belt" {...register('belt')} />
+        {errors.belt && (
+          <p className="text-danger text-sm mt-1">{errors.belt.message}</p>
+        )}
       </Field>
 
+      {/* 서버 에러 메시지 */}
+      {serverError && (
+        <p className="text-danger text-sm text-center">{serverError}</p>
+      )}
+      {/* 로딩 중일 때 버튼 비활성화 */}
       <button
         type="submit"
-        className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer"
-        // cursor-pointer ← 추가
+        disabled={isLoading}
+        className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
       >
-        가입하기
+        {isLoading ? '가입 중...' : '가입하기'}
       </button>
 
       <p className="text-center text-sm text-text-secondary">
@@ -160,150 +273,320 @@ function GeneralForm() {
     </form>
   );
 }
+
 // 도장 회원가입 폼
+// react-hook-form + zod 유효성 검사 연결
+// onSubmit → supabase API 연동 완료
+type DojangFormType = z.infer<typeof dojangSchema>;
+
 function DojangForm() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
+  const [businessFile, setBusinessFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<DojangFormType>({
+    resolver: zodResolver(dojangSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      passwordCheck: '',
+      belt: '',
+      licenseNumber: '',
+      gymName: '',
+      ownerName: '',
+      phone: '',
+      address: '',
+    },
+  });
+
+  const handleAddressSearch = () => {
+    new window.daum.Postcode({
+      oncomplete: (data: { address: string }) => {
+        console.log('선택한 주소:', data.address); // ← 추가
+        setValue('address', data.address, { shouldValidate: true });
+      },
+    }).open();
+  };
+
+  const onSubmit = async (data: DojangFormType) => {
+    if (!businessFile) {
+      setServerError('사업자등록증을 첨부해주세요.');
+      return;
+    }
+    setIsLoading(true);
+    setServerError('');
+    try {
+      setIsUploading(true);
+      const businessFileUrl = await uploadBusinessFile(businessFile);
+      setIsUploading(false);
+      await registerDojang({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        belt: data.belt,
+        licenseNumber: data.licenseNumber,
+        gymName: data.gymName,
+        ownerName: data.ownerName,
+        phone: data.phone,
+        address: data.address,
+        businessFileUrl,
+      });
+      router.push('/login');
+    } catch (e) {
+      console.error(e);
+      setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsLoading(false);
+      setIsUploading(false);
+    }
+  };
   return (
-    <form
-      className="space-y-5"
-      onSubmit={(e) => {
-        e.preventDefault();
-      }}
-    >
-      <Field label="이름" htmlFor="dojang-name">
-        <InputWithIcon
-          id="dojang-name"
-          icon={<User className="w-5 h-5" />}
-          placeholder="이름을 입력하세요"
-        />
-      </Field>
-      <Field label="이메일" htmlFor="dojang-email">
-        <InputWithIcon
-          id="dojang-email"
-          icon={<Mail className="w-5 h-5" />}
-          type="email"
-          placeholder="이메일을 입력하세요"
-        />
-      </Field>
-      <Field label="비밀번호" htmlFor="dojang-password">
-        <InputWithIcon
-          id="dojang-password"
-          icon={<Lock className="w-5 h-5" />}
-          type="password"
-          placeholder="비밀번호를 입력하세요"
-        />
-      </Field>
-      <Field label="비밀번호 확인" htmlFor="dojang-passwordConfirm">
-        <InputWithIcon
-          id="dojang-passwordConfirm"
-          icon={<Lock className="w-5 h-5" />}
-          type="password"
-          placeholder="비밀번호를 다시 입력하세요"
-        />
-      </Field>
-      <Field label="벨트" htmlFor="dojang-belt">
-        <BeltSelect id="dojang-belt" />
-      </Field>
-      <Field label="사업자등록번호" htmlFor="licenseNumber">
-        <InputWithIcon
-          id="licenseNumber"
-          icon={<CreditCard className="w-5 h-5" />}
-          placeholder="사업자등록번호를 입력하세요"
-        />
-      </Field>
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="기업명(도장명)" htmlFor="gymName">
+    <>
+      <Script
+        src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
+        strategy="lazyOnload"
+      />
+      <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+        <Field label="이름" htmlFor="dojang-name">
           <InputWithIcon
-            id="gymName"
-            icon={<CreditCard className="w-5 h-5" />}
-            placeholder="도장명"
-          />
-        </Field>
-        <Field label="대표자명" htmlFor="ownerName">
-          <InputWithIcon
-            id="ownerName"
+            id="dojang-name"
             icon={<User className="w-5 h-5" />}
-            placeholder="대표자명"
+            placeholder="이름을 입력하세요"
+            {...register('name')}
           />
+          {errors.name && (
+            <p className="text-danger text-sm mt-1">{errors.name.message}</p>
+          )}
         </Field>
-      </div>
-      <Field label="연락처" htmlFor="phone">
-        <InputWithIcon
-          id="phone"
-          icon={<Phone className="w-5 h-5" />}
-          type="tel"
-          placeholder="010-0000-0000"
-        />
-      </Field>
-      <Field label="주소" htmlFor="address">
-        <InputWithIcon
-          id="address"
-          icon={<MapPin className="w-5 h-5" />}
-          placeholder="주소를 입력하세요"
-        />
-      </Field>
-
-      {/* 파일 업로드 */}
-      <div>
-        <label
-          htmlFor="resume"
-          className="block text-sm font-medium text-text-primary mb-2"
-        >
-          사업자등록증 첨부 (이미지/PDF)
-        </label>
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => document.getElementById('resume')?.click()}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              document.getElementById('resume')?.click();
-            }
-          }}
-          className="flex flex-col items-center justify-center bg-input-bg rounded-2xl py-6 cursor-pointer hover:opacity-80 transition-all"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            className="w-6 h-6 text-text-secondary mb-1"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          >
-            <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12M8 8l4-4 4 4" />
-          </svg>
-          <span className="text-sm text-text-secondary">
-            클릭하여 파일 업로드
-          </span>
-          <span className="text-xs text-text-secondary mt-1">
-            JPG, PNG, GIF, PDF (최대 10MB)
-          </span>
-          <input
-            id="resume"
-            type="file"
-            accept=".jpg,.jpeg,.png,.gif,.pdf"
-            className="hidden"
+        <Field label="이메일" htmlFor="dojang-email">
+          <InputWithIcon
+            id="dojang-email"
+            icon={<Mail className="w-5 h-5" />}
+            type="email"
+            placeholder="이메일을 입력하세요"
+            {...register('email')}
           />
+          {errors.email && (
+            <p className="text-danger text-sm mt-1">{errors.email.message}</p>
+          )}
+        </Field>
+        <Field label="비밀번호" htmlFor="dojang-password">
+          <InputWithIcon
+            id="dojang-password"
+            icon={<Lock className="w-5 h-5" />}
+            type="password"
+            placeholder="비밀번호를 입력하세요"
+            {...register('password')}
+          />
+          {errors.password && (
+            <p className="text-danger text-sm mt-1">
+              {errors.password.message}
+            </p>
+          )}
+        </Field>
+        <Field label="비밀번호 확인" htmlFor="dojang-passwordConfirm">
+          <InputWithIcon
+            id="dojang-passwordConfirm"
+            icon={<Lock className="w-5 h-5" />}
+            type="password"
+            placeholder="비밀번호를 다시 입력하세요"
+            {...register('passwordCheck')}
+          />
+          {errors.passwordCheck && (
+            <p className="text-danger text-sm mt-1">
+              {errors.passwordCheck.message}
+            </p>
+          )}
+        </Field>
+        <Field label="벨트" htmlFor="dojang-belt">
+          <BeltSelect id="dojang-belt" {...register('belt')} />
+          {errors.belt && (
+            <p className="text-danger text-sm mt-1">{errors.belt.message}</p>
+          )}
+        </Field>
+        <Field label="사업자등록번호" htmlFor="licenseNumber">
+          <InputWithIcon
+            id="licenseNumber"
+            icon={<CreditCard className="w-5 h-5" />}
+            placeholder="사업자등록번호를 입력하세요"
+            {...register('licenseNumber')}
+          />
+          {errors.licenseNumber && (
+            <p className="text-danger text-sm mt-1">
+              {errors.licenseNumber.message}
+            </p>
+          )}
+        </Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="기업명(도장명)" htmlFor="gymName">
+            <InputWithIcon
+              id="gymName"
+              icon={<CreditCard className="w-5 h-5" />}
+              placeholder="도장명"
+              {...register('gymName')}
+            />
+            {errors.gymName && (
+              <p className="text-danger text-sm mt-1">
+                {errors.gymName.message}
+              </p>
+            )}
+          </Field>
+          <Field label="대표자명" htmlFor="ownerName">
+            <InputWithIcon
+              id="ownerName"
+              icon={<User className="w-5 h-5" />}
+              placeholder="대표자명"
+              {...register('ownerName')}
+            />
+            {errors.ownerName && (
+              <p className="text-danger text-sm mt-1">
+                {errors.ownerName.message}
+              </p>
+            )}
+          </Field>
         </div>
-      </div>
+        <Field label="연락처" htmlFor="phone">
+          <InputWithIcon
+            id="phone"
+            icon={<Phone className="w-5 h-5" />}
+            type="tel"
+            placeholder="010-0000-0000"
+            {...register('phone')}
+          />
+          {errors.phone && (
+            <p className="text-danger text-sm mt-1">{errors.phone.message}</p>
+          )}
+        </Field>
+        <Field label="주소" htmlFor="address">
+          <div className="flex gap-2">
+            <div className="flex-1" onClick={handleAddressSearch}>
+              <InputWithIcon
+                id="address"
+                icon={<MapPin className="w-5 h-5" />}
+                placeholder="주소를 검색하세요"
+                readOnly
+                {...register('address')}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleAddressSearch}
+              className="px-4 py-3 bg-btn-focus text-btn-focus-text rounded-2xl text-sm font-bold whitespace-nowrap hover:opacity-90 transition-all cursor-pointer"
+            >
+              주소 검색
+            </button>
+          </div>
+          {errors.address && (
+            <p className="text-danger text-sm mt-1">{errors.address.message}</p>
+          )}
+        </Field>
 
-      <button
-        type="submit"
-        className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer"
-        // cursor-pointer ← 추가
-      >
-        가입하기
-      </button>
+        {/* 파일 업로드 */}
+        <div>
+          <label
+            htmlFor="resume"
+            className="block text-sm font-medium text-text-primary mb-2"
+          >
+            사업자등록증 첨부 (이미지/PDF)
+          </label>
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => document.getElementById('resume')?.click()}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                document.getElementById('resume')?.click();
+              }
+            }}
+            className={`flex flex-col items-center justify-center rounded-2xl py-6 cursor-pointer hover:opacity-80 transition-all border-2 border-dashed ${
+              businessFile
+                ? 'bg-green-50 border-green-400'
+                : 'bg-input-bg border-transparent'
+            }`}
+          >
+            {businessFile ? (
+              <>
+                <svg
+                  viewBox="0 0 24 24"
+                  className="w-6 h-6 text-green-500 mb-1"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-sm text-green-600 font-medium">
+                  {businessFile.name}
+                </span>
+                <span className="text-xs text-green-400 mt-1">
+                  클릭하여 파일 변경
+                </span>
+              </>
+            ) : (
+              <>
+                <svg
+                  viewBox="0 0 24 24"
+                  className="w-6 h-6 text-text-secondary mb-1"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
+                  <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12M8 8l4-4 4 4" />
+                </svg>
+                <span className="text-sm text-text-secondary">
+                  클릭하여 파일 업로드
+                </span>
+                <span className="text-xs text-text-secondary mt-1">
+                  JPG, PNG, GIF, PDF (최대 10MB)
+                </span>
+              </>
+            )}
+            <input
+              id="resume"
+              type="file"
+              accept=".jpg,.jpeg,.png,.gif,.pdf"
+              className="hidden"
+              onChange={(e) => setBusinessFile(e.target.files?.[0] ?? null)}
+            />
+          </div>
+        </div>
 
-      <p className="text-center text-sm text-text-secondary">
-        이미 계정이 있으신가요?{' '}
-        <Link
-          href="/login"
-          className="font-bold hover:underline"
-          style={{ color: 'var(--color-auth-register)' }}
+        {/* 서버 에러 메시지 */}
+        {serverError && (
+          <p className="text-danger text-sm text-center">{serverError}</p>
+        )}
+        {/* 로딩 중일 때 버튼 비활성화 */}
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
         >
-          로그인
-        </Link>
-      </p>
-    </form>
+          {isUploading
+            ? '파일 업로드 중...'
+            : isLoading
+              ? '가입 중...'
+              : '가입하기'}
+        </button>
+
+        <p className="text-center text-sm text-text-secondary">
+          이미 계정이 있으신가요?{' '}
+          <Link
+            href="/login"
+            className="font-bold hover:underline"
+            style={{ color: 'var(--color-auth-register)' }}
+          >
+            로그인
+          </Link>
+        </p>
+      </form>
+    </>
   );
 }
 
@@ -317,7 +600,6 @@ export default function RegisterPage() {
         <button
           onClick={() => setTab('general')}
           className={`flex-1 pb-3 text-sm font-bold transition-all cursor-pointer ${
-            // cursor-pointer ← 추가
             tab === 'general'
               ? 'text-btn-focus border-b-2 border-btn-focus -mb-px'
               : 'text-text-secondary hover:text-text-primary'
@@ -328,7 +610,6 @@ export default function RegisterPage() {
         <button
           onClick={() => setTab('dojang')}
           className={`flex-1 pb-3 text-sm font-bold transition-all cursor-pointer ${
-            // cursor-pointer ← 추가
             tab === 'dojang'
               ? 'text-btn-focus border-b-2 border-btn-focus -mb-px'
               : 'text-text-secondary hover:text-text-primary'
