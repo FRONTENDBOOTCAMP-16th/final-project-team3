@@ -1,4 +1,5 @@
 import { timeAgo } from '@/utils/timeAgo';
+import { Heart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -114,16 +115,15 @@ export default function PostDetailCard({
             onClick={onLike}
             aria-pressed={isLiked}
             aria-label={`좋아요 ${post.likeCount}개`}
-            className="flex items-center gap-1.5 text-xs transition-colors cursor-pointer text-gray-500 hover:text-red-500"
+            className="flex items-center gap-1.5 text-xs transition-colors cursor-pointer"
           >
-            <Image
-              src="/like.svg"
-              alt=""
-              width={16}
-              height={16}
-              aria-hidden="true"
+            <Heart
+              size={16}
+              className={isLiked ? 'fill-danger text-danger' : 'text-gray-500'}
             />
-            <span>좋아요 {post.likeCount}</span>
+            <span className={isLiked ? 'text-danger' : 'text-gray-500'}>
+              좋아요 {post.likeCount}
+            </span>
           </button>
         ) : (
           <span className="text-xs text-gray-400">좋아요 {post.likeCount}</span>
