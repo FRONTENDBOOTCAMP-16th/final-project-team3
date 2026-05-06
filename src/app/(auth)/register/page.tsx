@@ -283,6 +283,7 @@ function DojangForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState('');
   const [businessFile, setBusinessFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -304,7 +305,6 @@ function DojangForm() {
   });
 
   const onSubmit = async (data: DojangFormType) => {
-    // 파일 필수 체크
     if (!businessFile) {
       setServerError('사업자등록증을 첨부해주세요.');
       return;
@@ -312,7 +312,9 @@ function DojangForm() {
     setIsLoading(true);
     setServerError('');
     try {
+      setIsUploading(true);
       const businessFileUrl = await uploadBusinessFile(businessFile);
+      setIsUploading(false);
       await registerDojang({
         email: data.email,
         password: data.password,
@@ -331,6 +333,7 @@ function DojangForm() {
       setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
     } finally {
       setIsLoading(false);
+      setIsUploading(false);
     }
   };
   return (
@@ -536,7 +539,11 @@ function DojangForm() {
         disabled={isLoading}
         className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
       >
-        {isLoading ? '가입 중...' : '가입하기'}
+        {isUploading
+          ? '파일 업로드 중...'
+          : isLoading
+            ? '가입 중...'
+            : '가입하기'}
       </button>
 
       <p className="text-center text-sm text-text-secondary">
