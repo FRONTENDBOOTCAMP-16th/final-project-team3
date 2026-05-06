@@ -1,3 +1,84 @@
-export default function Page() {
-  return <main className="w-full min-h-screen space-y-2">users</main>;
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+
+import AdminHeader from '@/components/admin/AdminHeader';
+import AdminUsersClient from '@/components/admin/users/AdminUsersClient';
+import type {
+  DojangQueryRow,
+  ProfileQueryRow,
+} from '@/components/admin/users/types';
+import { mapProfilesToAdminUserRows } from '@/components/admin/users/utils';
+
+async function getAdminUsers() {
+  const cookieStore = await cookies();
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+      },
+    },
+  );
+
+  const [profilesResult, dojangsResult] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select(
+        `
+        id,
+        nickname,
+        avatar_url,
+        bio,
+        belt_level,
+        created_at,
+        role,
+        email_value,
+        name,
+        account_status
+      `,
+      )
+      .order('created_at', { ascending: false }),
+    supabase.from('dojang').select(
+      `
+        id,
+        profile_id,
+        business_number,
+        representative,
+        phone_value,
+        address,
+        business_file_url,
+        dojang_status,
+        created_at,
+        updated_at
+      `,
+    ),
+  ]);
+
+  if (profilesResult.error) {
+    throw new Error(profilesResult.error.message);
+  }
+
+  if (dojangsResult.error) {
+    throw new Error(dojangsResult.error.message);
+  }
+
+  return mapProfilesToAdminUserRows(
+    (profilesResult.data ?? []) as ProfileQueryRow[],
+    (dojangsResult.data ?? []) as DojangQueryRow[],
+  );
+}
+
+export default async function AdminUsersPage() {
+  const data = await getAdminUsers();
+
+  return (
+    <main className="min-h-screen w-full pt-28 space-y-2">
+      <AdminHeader page="user" />
+      <AdminUsersClient data={data} />
+    </main>
+  );
 }

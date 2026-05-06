@@ -28,7 +28,7 @@ export default function AdminTableToolbar<TFilter extends string>({
   return (
     <section
       className="w-full max-w-7xl px-6 py-4"
-      aria-label="게시글 검색 및 필터"
+      aria-label="데이터 검색 및 필터"
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex gap-2">
