@@ -151,12 +151,24 @@ export default function CommunityClient({
             )}
           </div>
 
-          {hasMore && (
-            <div
-              ref={observerRef}
-              className="h-20 flex items-center justify-center"
-            >
-              <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+            {/* 좋아요 버튼 */}
+            <div className="w-12 flex items-center justify-end">
+              <button
+                onClick={handleLike}
+                className="flex items-center gap-1 transition-all duration-200"
+              >
+                <Heart
+                  size={16}
+                  className={
+                    isLiked ? 'fill-danger text-danger' : 'text-text-secondary'
+                  }
+                />
+                <span
+                  className={`text-sm w-2 text-right ${isLiked ? 'text-danger' : 'text-text-secondary'}`}
+                >
+                  {likeCount}
+                </span>
+              </button>
             </div>
           )}
         </div>

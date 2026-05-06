@@ -27,9 +27,9 @@ const navItems = [
 const adminNavItems = [
   { label: '대시 보드', href: '/admin', icon: LayoutDashboard },
   { label: '게시글 관리', href: '/admin/posts', icon: FileText },
+  { label: '대회일정 관리', href: '/admin/competitions', icon: Calendar },
   { label: '유저 관리', href: '/admin/users', icon: Users },
   { label: '고객 지원', href: '/admin/support', icon: HelpCircle },
-  { label: '대회일정 관리', href: '/admin/competitions', icon: Calendar },
 ];
 
 export default function Sidebar() {
