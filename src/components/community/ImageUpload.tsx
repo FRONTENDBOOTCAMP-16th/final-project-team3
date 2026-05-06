@@ -5,9 +5,14 @@ import Image from 'next/image';
 interface ImageUploadProps {
   preview: string | null;
   onChange: (file: File, previewUrl: string) => void;
+  label?: string;
 }
 
-export default function ImageUpload({ preview, onChange }: ImageUploadProps) {
+export default function ImageUpload({
+  preview,
+  onChange,
+  label = '이미지 (선택)',
+}: ImageUploadProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -17,7 +22,7 @@ export default function ImageUpload({ preview, onChange }: ImageUploadProps) {
 
   return (
     <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-      <p className="text-sm text-gray-500 mb-2">이미지 (선택)</p>
+      <p className="text-sm text-gray-500 mb-2">{label}</p>
       <label className="block cursor-pointer">
         {preview ? (
           <div className="relative w-full h-48 rounded-lg overflow-hidden">
