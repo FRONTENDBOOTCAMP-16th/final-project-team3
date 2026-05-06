@@ -110,24 +110,22 @@ export default function PostDetailCard({
       </div>
 
       <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
-        {onLike ? (
-          <button
-            onClick={onLike}
-            aria-pressed={isLiked}
-            aria-label={`좋아요 ${post.likeCount}개`}
-            className="flex items-center gap-1.5 text-xs transition-colors cursor-pointer"
-          >
-            <Heart
-              size={16}
-              className={isLiked ? 'fill-danger text-danger' : 'text-gray-500'}
-            />
-            <span className={isLiked ? 'text-danger' : 'text-gray-500'}>
-              좋아요 {post.likeCount}
-            </span>
-          </button>
-        ) : (
-          <span className="text-xs text-gray-400">좋아요 {post.likeCount}</span>
-        )}
+        <button
+          onClick={onLike}
+          disabled={!onLike}
+          aria-pressed={isLiked}
+          aria-label={`좋아요 ${post.likeCount}개`}
+          className="flex items-center gap-1.5 text-xs transition-colors cursor-pointer"
+        >
+          <Heart
+            size={16}
+            className={isLiked ? 'fill-danger text-danger' : 'text-gray-500'}
+          />
+          <span className={isLiked ? 'text-danger' : 'text-gray-500'}>
+            좋아요 {post.likeCount}
+          </span>
+        </button>
+
         <div className="flex items-center gap-1.5 text-xs text-gray-500">
           <Image src="/postComment.svg" alt="댓글" width={16} height={16} />
           <span>댓글 {post.commentCount}</span>
