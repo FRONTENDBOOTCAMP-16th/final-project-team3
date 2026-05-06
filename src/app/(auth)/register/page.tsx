@@ -1,5 +1,6 @@
 'use client';
 
+import Script from 'next/script';
 import { useState } from 'react';
 import Link from 'next/link';
 import { User, Mail, Lock, Phone, MapPin, CreditCard } from 'lucide-react';
@@ -287,6 +288,7 @@ function DojangForm() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<DojangFormType>({
     resolver: zodResolver(dojangSchema),
@@ -303,6 +305,15 @@ function DojangForm() {
       address: '',
     },
   });
+
+  const handleAddressSearch = () => {
+    new window.daum.Postcode({
+      oncomplete: (data: { address: string }) => {
+        console.log('선택한 주소:', data.address); // ← 추가
+        setValue('address', data.address, { shouldValidate: true });
+      },
+    }).open();
+  };
 
   const onSubmit = async (data: DojangFormType) => {
     if (!businessFile) {
@@ -337,226 +348,245 @@ function DojangForm() {
     }
   };
   return (
-    <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-      <Field label="이름" htmlFor="dojang-name">
-        <InputWithIcon
-          id="dojang-name"
-          icon={<User className="w-5 h-5" />}
-          placeholder="이름을 입력하세요"
-          {...register('name')}
-        />
-        {errors.name && (
-          <p className="text-danger text-sm mt-1">{errors.name.message}</p>
-        )}
-      </Field>
-      <Field label="이메일" htmlFor="dojang-email">
-        <InputWithIcon
-          id="dojang-email"
-          icon={<Mail className="w-5 h-5" />}
-          type="email"
-          placeholder="이메일을 입력하세요"
-          {...register('email')}
-        />
-        {errors.email && (
-          <p className="text-danger text-sm mt-1">{errors.email.message}</p>
-        )}
-      </Field>
-      <Field label="비밀번호" htmlFor="dojang-password">
-        <InputWithIcon
-          id="dojang-password"
-          icon={<Lock className="w-5 h-5" />}
-          type="password"
-          placeholder="비밀번호를 입력하세요"
-          {...register('password')}
-        />
-        {errors.password && (
-          <p className="text-danger text-sm mt-1">{errors.password.message}</p>
-        )}
-      </Field>
-      <Field label="비밀번호 확인" htmlFor="dojang-passwordConfirm">
-        <InputWithIcon
-          id="dojang-passwordConfirm"
-          icon={<Lock className="w-5 h-5" />}
-          type="password"
-          placeholder="비밀번호를 다시 입력하세요"
-          {...register('passwordCheck')}
-        />
-        {errors.passwordCheck && (
-          <p className="text-danger text-sm mt-1">
-            {errors.passwordCheck.message}
-          </p>
-        )}
-      </Field>
-      <Field label="벨트" htmlFor="dojang-belt">
-        <BeltSelect id="dojang-belt" {...register('belt')} />
-        {errors.belt && (
-          <p className="text-danger text-sm mt-1">{errors.belt.message}</p>
-        )}
-      </Field>
-
-      <hr className="border-gray-200" />
-
-      <Field label="사업자등록번호" htmlFor="licenseNumber">
-        <InputWithIcon
-          id="licenseNumber"
-          icon={<CreditCard className="w-5 h-5" />}
-          placeholder="사업자등록번호를 입력하세요"
-          {...register('licenseNumber')}
-        />
-        {errors.licenseNumber && (
-          <p className="text-danger text-sm mt-1">
-            {errors.licenseNumber.message}
-          </p>
-        )}
-      </Field>
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="기업명(도장명)" htmlFor="gymName">
+    <>
+      <Script
+        src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
+        strategy="lazyOnload"
+      />
+      <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+        <Field label="이름" htmlFor="dojang-name">
           <InputWithIcon
-            id="gymName"
-            icon={<CreditCard className="w-5 h-5" />}
-            placeholder="도장명"
-            {...register('gymName')}
+            id="dojang-name"
+            icon={<User className="w-5 h-5" />}
+            placeholder="이름을 입력하세요"
+            {...register('name')}
           />
-          {errors.gymName && (
-            <p className="text-danger text-sm mt-1">{errors.gymName.message}</p>
+          {errors.name && (
+            <p className="text-danger text-sm mt-1">{errors.name.message}</p>
           )}
         </Field>
-        <Field label="대표자명" htmlFor="ownerName">
+        <Field label="이메일" htmlFor="dojang-email">
           <InputWithIcon
-            id="ownerName"
-            icon={<User className="w-5 h-5" />}
-            placeholder="대표자명"
-            {...register('ownerName')}
+            id="dojang-email"
+            icon={<Mail className="w-5 h-5" />}
+            type="email"
+            placeholder="이메일을 입력하세요"
+            {...register('email')}
           />
-          {errors.ownerName && (
+          {errors.email && (
+            <p className="text-danger text-sm mt-1">{errors.email.message}</p>
+          )}
+        </Field>
+        <Field label="비밀번호" htmlFor="dojang-password">
+          <InputWithIcon
+            id="dojang-password"
+            icon={<Lock className="w-5 h-5" />}
+            type="password"
+            placeholder="비밀번호를 입력하세요"
+            {...register('password')}
+          />
+          {errors.password && (
             <p className="text-danger text-sm mt-1">
-              {errors.ownerName.message}
+              {errors.password.message}
             </p>
           )}
         </Field>
-      </div>
-      <Field label="연락처" htmlFor="phone">
-        <InputWithIcon
-          id="phone"
-          icon={<Phone className="w-5 h-5" />}
-          type="tel"
-          placeholder="010-0000-0000"
-          {...register('phone')}
-        />
-        {errors.phone && (
-          <p className="text-danger text-sm mt-1">{errors.phone.message}</p>
-        )}
-      </Field>
-      <Field label="주소" htmlFor="address">
-        <InputWithIcon
-          id="address"
-          icon={<MapPin className="w-5 h-5" />}
-          placeholder="주소를 입력하세요"
-          {...register('address')}
-        />
-        {errors.address && (
-          <p className="text-danger text-sm mt-1">{errors.address.message}</p>
-        )}
-      </Field>
-
-      {/* 파일 업로드 */}
-      <div>
-        <label
-          htmlFor="resume"
-          className="block text-sm font-medium text-text-primary mb-2"
-        >
-          사업자등록증 첨부 (이미지/PDF)
-        </label>
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => document.getElementById('resume')?.click()}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              document.getElementById('resume')?.click();
-            }
-          }}
-          className={`flex flex-col items-center justify-center rounded-2xl py-6 cursor-pointer hover:opacity-80 transition-all border-2 border-dashed ${
-            businessFile
-              ? 'bg-green-50 border-green-400'
-              : 'bg-input-bg border-transparent'
-          }`}
-        >
-          {businessFile ? (
-            <>
-              <svg
-                viewBox="0 0 24 24"
-                className="w-6 h-6 text-green-500 mb-1"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M5 13l4 4L19 7" />
-              </svg>
-              <span className="text-sm text-green-600 font-medium">
-                {businessFile.name}
-              </span>
-              <span className="text-xs text-green-400 mt-1">
-                클릭하여 파일 변경
-              </span>
-            </>
-          ) : (
-            <>
-              <svg
-                viewBox="0 0 24 24"
-                className="w-6 h-6 text-text-secondary mb-1"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12M8 8l4-4 4 4" />
-              </svg>
-              <span className="text-sm text-text-secondary">
-                클릭하여 파일 업로드
-              </span>
-              <span className="text-xs text-text-secondary mt-1">
-                JPG, PNG, GIF, PDF (최대 10MB)
-              </span>
-            </>
-          )}
-          <input
-            id="resume"
-            type="file"
-            accept=".jpg,.jpeg,.png,.gif,.pdf"
-            className="hidden"
-            onChange={(e) => setBusinessFile(e.target.files?.[0] ?? null)}
+        <Field label="비밀번호 확인" htmlFor="dojang-passwordConfirm">
+          <InputWithIcon
+            id="dojang-passwordConfirm"
+            icon={<Lock className="w-5 h-5" />}
+            type="password"
+            placeholder="비밀번호를 다시 입력하세요"
+            {...register('passwordCheck')}
           />
+          {errors.passwordCheck && (
+            <p className="text-danger text-sm mt-1">
+              {errors.passwordCheck.message}
+            </p>
+          )}
+        </Field>
+        <Field label="벨트" htmlFor="dojang-belt">
+          <BeltSelect id="dojang-belt" {...register('belt')} />
+          {errors.belt && (
+            <p className="text-danger text-sm mt-1">{errors.belt.message}</p>
+          )}
+        </Field>
+        <Field label="사업자등록번호" htmlFor="licenseNumber">
+          <InputWithIcon
+            id="licenseNumber"
+            icon={<CreditCard className="w-5 h-5" />}
+            placeholder="사업자등록번호를 입력하세요"
+            {...register('licenseNumber')}
+          />
+          {errors.licenseNumber && (
+            <p className="text-danger text-sm mt-1">
+              {errors.licenseNumber.message}
+            </p>
+          )}
+        </Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="기업명(도장명)" htmlFor="gymName">
+            <InputWithIcon
+              id="gymName"
+              icon={<CreditCard className="w-5 h-5" />}
+              placeholder="도장명"
+              {...register('gymName')}
+            />
+            {errors.gymName && (
+              <p className="text-danger text-sm mt-1">
+                {errors.gymName.message}
+              </p>
+            )}
+          </Field>
+          <Field label="대표자명" htmlFor="ownerName">
+            <InputWithIcon
+              id="ownerName"
+              icon={<User className="w-5 h-5" />}
+              placeholder="대표자명"
+              {...register('ownerName')}
+            />
+            {errors.ownerName && (
+              <p className="text-danger text-sm mt-1">
+                {errors.ownerName.message}
+              </p>
+            )}
+          </Field>
         </div>
-      </div>
+        <Field label="연락처" htmlFor="phone">
+          <InputWithIcon
+            id="phone"
+            icon={<Phone className="w-5 h-5" />}
+            type="tel"
+            placeholder="010-0000-0000"
+            {...register('phone')}
+          />
+          {errors.phone && (
+            <p className="text-danger text-sm mt-1">{errors.phone.message}</p>
+          )}
+        </Field>
+        <Field label="주소" htmlFor="address">
+          <div className="flex gap-2">
+            <div className="flex-1" onClick={handleAddressSearch}>
+              <InputWithIcon
+                id="address"
+                icon={<MapPin className="w-5 h-5" />}
+                placeholder="주소를 검색하세요"
+                readOnly
+                {...register('address')}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleAddressSearch}
+              className="px-4 py-3 bg-btn-focus text-btn-focus-text rounded-2xl text-sm font-bold whitespace-nowrap hover:opacity-90 transition-all cursor-pointer"
+            >
+              주소 검색
+            </button>
+          </div>
+          {errors.address && (
+            <p className="text-danger text-sm mt-1">{errors.address.message}</p>
+          )}
+        </Field>
 
-      {/* 서버 에러 메시지 */}
-      {serverError && (
-        <p className="text-danger text-sm text-center">{serverError}</p>
-      )}
-      {/* 로딩 중일 때 버튼 비활성화 */}
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
-      >
-        {isUploading
-          ? '파일 업로드 중...'
-          : isLoading
-            ? '가입 중...'
-            : '가입하기'}
-      </button>
+        {/* 파일 업로드 */}
+        <div>
+          <label
+            htmlFor="resume"
+            className="block text-sm font-medium text-text-primary mb-2"
+          >
+            사업자등록증 첨부 (이미지/PDF)
+          </label>
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => document.getElementById('resume')?.click()}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                document.getElementById('resume')?.click();
+              }
+            }}
+            className={`flex flex-col items-center justify-center rounded-2xl py-6 cursor-pointer hover:opacity-80 transition-all border-2 border-dashed ${
+              businessFile
+                ? 'bg-green-50 border-green-400'
+                : 'bg-input-bg border-transparent'
+            }`}
+          >
+            {businessFile ? (
+              <>
+                <svg
+                  viewBox="0 0 24 24"
+                  className="w-6 h-6 text-green-500 mb-1"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-sm text-green-600 font-medium">
+                  {businessFile.name}
+                </span>
+                <span className="text-xs text-green-400 mt-1">
+                  클릭하여 파일 변경
+                </span>
+              </>
+            ) : (
+              <>
+                <svg
+                  viewBox="0 0 24 24"
+                  className="w-6 h-6 text-text-secondary mb-1"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
+                  <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12M8 8l4-4 4 4" />
+                </svg>
+                <span className="text-sm text-text-secondary">
+                  클릭하여 파일 업로드
+                </span>
+                <span className="text-xs text-text-secondary mt-1">
+                  JPG, PNG, GIF, PDF (최대 10MB)
+                </span>
+              </>
+            )}
+            <input
+              id="resume"
+              type="file"
+              accept=".jpg,.jpeg,.png,.gif,.pdf"
+              className="hidden"
+              onChange={(e) => setBusinessFile(e.target.files?.[0] ?? null)}
+            />
+          </div>
+        </div>
 
-      <p className="text-center text-sm text-text-secondary">
-        이미 계정이 있으신가요?{' '}
-        <Link
-          href="/login"
-          className="font-bold hover:underline"
-          style={{ color: 'var(--color-auth-register)' }}
+        {/* 서버 에러 메시지 */}
+        {serverError && (
+          <p className="text-danger text-sm text-center">{serverError}</p>
+        )}
+        {/* 로딩 중일 때 버튼 비활성화 */}
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
         >
-          로그인
-        </Link>
-      </p>
-    </form>
+          {isUploading
+            ? '파일 업로드 중...'
+            : isLoading
+              ? '가입 중...'
+              : '가입하기'}
+        </button>
+
+        <p className="text-center text-sm text-text-secondary">
+          이미 계정이 있으신가요?{' '}
+          <Link
+            href="/login"
+            className="font-bold hover:underline"
+            style={{ color: 'var(--color-auth-register)' }}
+          >
+            로그인
+          </Link>
+        </p>
+      </form>
+    </>
   );
 }
 
