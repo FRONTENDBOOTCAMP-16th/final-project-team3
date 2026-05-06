@@ -473,23 +473,49 @@ function DojangForm() {
               document.getElementById('resume')?.click();
             }
           }}
-          className="flex flex-col items-center justify-center bg-input-bg rounded-2xl py-6 cursor-pointer hover:opacity-80 transition-all"
+          className={`flex flex-col items-center justify-center rounded-2xl py-6 cursor-pointer hover:opacity-80 transition-all border-2 border-dashed ${
+            businessFile
+              ? 'bg-green-50 border-green-400'
+              : 'bg-input-bg border-transparent'
+          }`}
         >
-          <svg
-            viewBox="0 0 24 24"
-            className="w-6 h-6 text-text-secondary mb-1"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          >
-            <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12M8 8l4-4 4 4" />
-          </svg>
-          <span className="text-sm text-text-secondary">
-            클릭하여 파일 업로드
-          </span>
-          <span className="text-xs text-text-secondary mt-1">
-            JPG, PNG, GIF, PDF (최대 10MB)
-          </span>
+          {businessFile ? (
+            <>
+              <svg
+                viewBox="0 0 24 24"
+                className="w-6 h-6 text-green-500 mb-1"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-sm text-green-600 font-medium">
+                {businessFile.name}
+              </span>
+              <span className="text-xs text-green-400 mt-1">
+                클릭하여 파일 변경
+              </span>
+            </>
+          ) : (
+            <>
+              <svg
+                viewBox="0 0 24 24"
+                className="w-6 h-6 text-text-secondary mb-1"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12M8 8l4-4 4 4" />
+              </svg>
+              <span className="text-sm text-text-secondary">
+                클릭하여 파일 업로드
+              </span>
+              <span className="text-xs text-text-secondary mt-1">
+                JPG, PNG, GIF, PDF (최대 10MB)
+              </span>
+            </>
+          )}
           <input
             id="resume"
             type="file"
