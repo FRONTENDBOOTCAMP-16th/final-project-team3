@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useLike } from '@/hooks/useLike';
 import { formatDate } from '@/utils/formatDate';
 import { Heart, MessageCircle } from 'lucide-react';
+import { showErrorToast } from '@/lib/toast';
 
 interface PostCardProps {
   post: {
@@ -35,7 +36,10 @@ export default function PostCard({ post, userId }: PostCardProps) {
   const handleLike = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!userId) return;
+    if (!userId) {
+      showErrorToast('로그인이 필요합니다');
+      return;
+    }
     toggle();
   };
 
