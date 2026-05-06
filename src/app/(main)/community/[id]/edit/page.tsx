@@ -12,7 +12,7 @@ import {
   updatePost,
   uploadPostImage,
 } from '@/services/communityService';
-import { showErrorToast } from '@/lib/toast';
+import { showErrorToast, showSuccessToast } from '@/lib/toast';
 
 export default function EditPage({
   params,
@@ -59,19 +59,17 @@ export default function EditPage({
       showErrorToast('제목과 내용을 모두 입력해주세요.');
       return;
     }
-    setIsLoading(true);
     try {
       let image_url: string | undefined;
       if (imageFile) {
         image_url = await uploadPostImage(imageFile);
       }
       await updatePost(id, { title, content, image_url });
-      queryClient.invalidateQueries({ queryKey: ['posts'] }); // 추가
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      showSuccessToast('게시글이 수정되었습니다.', '✅');
       router.push(`/community/${id}`);
     } catch {
       showErrorToast('게시글 수정에 실패했습니다.');
-    } finally {
-      setIsLoading(false);
     }
   };
 

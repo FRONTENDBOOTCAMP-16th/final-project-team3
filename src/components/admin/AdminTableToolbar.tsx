@@ -1,29 +1,30 @@
 'use client';
 
-import type {
-  AdminPostFilterOption,
-  AdminPostFilterValue,
-} from '@/components/admin/post/types';
 import SearchInput from '@/components/common/SearchInput';
 import { cn } from '@/lib/utils';
 
-interface AdminTableToolbarProps {
-  filters: readonly AdminPostFilterOption[];
-  activeFilter: AdminPostFilterValue;
+interface AdminTableToolbarProps<TFilter extends string> {
+  filters: readonly {
+    label: string;
+    value: TFilter;
+  }[];
+  activeFilter: TFilter;
   // eslint-disable-next-line no-unused-vars
-  onFilterChange: (_value: AdminPostFilterValue) => void;
+  onFilterChange: (_value: TFilter) => void;
   searchQuery: string;
   // eslint-disable-next-line no-unused-vars
   onSearchQueryChange: (_value: string) => void;
+  searchPlaceholder?: string;
 }
 
-export default function AdminTableToolbar({
+export default function AdminTableToolbar<TFilter extends string>({
   filters,
   activeFilter,
   onFilterChange,
   searchQuery,
   onSearchQueryChange,
-}: AdminTableToolbarProps) {
+  searchPlaceholder,
+}: AdminTableToolbarProps<TFilter>) {
   return (
     <section
       className="w-full max-w-7xl px-6 py-4"
@@ -55,6 +56,7 @@ export default function AdminTableToolbar({
         <SearchInput
           searchQuery={searchQuery}
           setSearchQuery={onSearchQueryChange}
+          placeholder={searchPlaceholder}
         />
       </div>
     </section>
