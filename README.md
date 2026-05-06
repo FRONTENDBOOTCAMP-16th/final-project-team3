@@ -2,7 +2,7 @@
 
 주짓수 수련자와 도장, 코치를 연결하는 커뮤니티 플랫폼 블랙벨트(Black-Belt)
 
-🔗 **배포 링크:** []
+🔗 **배포 링크:** [https://final-project-team3.vercel.app/]
 
 ---
 
@@ -12,7 +12,7 @@
 - **팀명:** 블랙벨트(Black-Belt)
 - **개발 기간:** 2026. 04. 16 ~ 2026. 05. 20
 - **소개:**  
-  블랙벨트(Black-Belt) 플랫폼은 주짓수 수련자, 도장, 코치를 하나의 공간에서 연결하는 커뮤니티 서비스입니다.
+  블랙벨트(Black-Belt) 플랫폼은 주짓수 수련자, 도장, 코치를 하나의 공간에서 연결하는 커뮤니티 서비스입니다.<br>
   사용자는 기술 공유, 매칭 요청, 수련 경험을 기록할 수 있으며, 도장과 코치는 공지 및 홍보를 통해 수련자들과 직접 소통할 수 있는 커뮤니티 플랫폼입니다.
 
 ---
@@ -72,81 +72,80 @@
 | 사민재 | 환경설정, db 구성, 기획, 커뮤니티, 대회일정, 도장찾기, 사이드바, 헤더 | [https://github.com/smj123432-lab] |
 | 문유정 | 피그마 목업 제작, 발표, 기획, 게시글, 공유, 댓글                      | [https://github.com/myj9713-dev]   |
 | 이정론 | 기획, 관리자 페이지(유저, 도장, 일정)                                 | [https://github.com/holymolyRon]   |
-| 이찬미 | 기획, 로그인, 아이디, 비밀번호 찾기, 마이페이지                       | [https://github.com/ruiwaa]        |
+| 이찬미 | 기획, 로그인, 아이디, 비밀번호 찾기, 마이페이지                       | [https://github.com/lcmbook55]     |
 
 ---
 
 ## 📂 폴더 구조
 
+`## 📁 폴더 구조
+
 ```
 final-project-team3/
-├── .vscode/
-│ └── settings.json
 ├── public/
-│ ├── file.svg
-│ ├── globe.svg
-│ ├── next.svg
-│ ├── vercel.svg
-│ └── window.svg
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
 ├── src/
-│ ├── app/
-│ │ ├── (auth)/
-│ │ │ ├── find-id/
-│ │ │ │ └── page.tsx
-│ │ │ ├── find-password/
-│ │ │ │ └── page.tsx
-│ │ │ ├── login/
-│ │ │ │ └── page.tsx
-│ │ │ └── register/
-│ │ │ └── page.tsx
-│ │ ├── (main)/
-│ │ │ ├── admin/
-│ │ │ │ └── page.tsx
-│ │ │ ├── community/
-│ │ │ │ ├── [id]/
-│ │ │ │ │ ├── edit/
-│ │ │ │ │ │ └── page.tsx
-│ │ │ │ │ └── page.tsx
-│ │ │ │ ├── write/
-│ │ │ │ │ └── page.tsx
-│ │ │ │ └── page.tsx
-│ │ │ ├── competitions/
-│ │ │ │ └── page.tsx
-│ │ │ ├── dojangs/
-│ │ │ │ └── page.tsx
-│ │ │ ├── mypage/
-│ │ │ │ └── page.tsx
-│ │ │ └── service-info/
-│ │ │ └── page.tsx
-│ │ ├── favicon.ico
-│ │ ├── globals.css
-│ │ ├── layout.tsx
-│ │ └── page.tsx
-│ ├── components/
-│ │ ├── auth/
-│ │ ├── common/
-│ │ ├── community/
-│ │ ├── competition/
-│ │ ├── dojang/
-│ │ └── ui/
-│ │ ├── button.tsx
-│ │ ├── dialog.tsx
-│ │ ├── dropdown-menu.tsx
-│ │ ├── input.tsx
-│ │ ├── label.tsx
-│ │ ├── sonner.tsx
-│ │ └── textarea.tsx
-│ ├── constants/
-│ ├── hooks/
-│ ├── lib/
-│ │ └── utils.ts
-│ ├── services/
-│ ├── store/
-│ ├── types/
-│ └── utils/
+│   ├── app/
+│   │   ├── (auth)/                  # 인증 관련 페이지
+│   │   │   ├── find-id/
+│   │   │   │   └── page.tsx
+│   │   │   ├── find-password/
+│   │   │   │   └── page.tsx
+│   │   │   ├── login/
+│   │   │   │   └── page.tsx
+│   │   │   └── register/
+│   │   │       └── page.tsx
+│   │   ├── (main)/                  # 메인 레이아웃 페이지
+│   │   │   ├── admin/
+│   │   │   │   └── page.tsx
+│   │   │   ├── community/
+│   │   │   │   ├── [id]/
+│   │   │   │   │   ├── edit/
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── write/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── competitions/
+│   │   │   │   └── page.tsx
+│   │   │   ├── dojangs/
+│   │   │   │   └── page.tsx
+│   │   │   ├── mypage/
+│   │   │   │   └── page.tsx
+│   │   │   └── service-info/
+│   │   │       └── page.tsx
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components/
+│   │   ├── auth/                    # 인증 컴포넌트
+│   │   ├── common/                  # 공통 컴포넌트
+│   │   ├── community/               # 커뮤니티 컴포넌트
+│   │   ├── competition/             # 대회 컴포넌트
+│   │   ├── dojang/                  # 도장 컴포넌트
+│   │   └── ui/                      # shadcn/ui 컴포넌트
+│   │       ├── button.tsx
+│   │       ├── dialog.tsx
+│   │       ├── dropdown-menu.tsx
+│   │       ├── input.tsx
+│   │       ├── label.tsx
+│   │       ├── sonner.tsx
+│   │       └── textarea.tsx
+│   ├── constants/                   # 상수 정의
+│   ├── hooks/                       # 커스텀 훅
+│   ├── lib/
+│   │   └── utils.ts
+│   ├── services/                    # API 서비스
+│   ├── store/                       # Zustand 스토어
+│   ├── types/                       # TypeScript 타입
+│   └── utils/                       # 유틸 함수
 ├── .gitignore
 ├── .prettierrc
-├── bun.lock
 ├── components.json
 ├── eslint.config.mjs
 ├── next.config.ts
