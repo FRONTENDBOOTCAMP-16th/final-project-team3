@@ -9,6 +9,7 @@ export interface AdminTableColumn<T> {
   header: string;
   width?: string;
   align?: 'left' | 'center';
+  truncate?: boolean;
   // eslint-disable-next-line no-unused-vars
   render?: (_row: T) => React.ReactNode;
 }
@@ -96,7 +97,13 @@ export default function AdminDataTable<T>({
                         column.align === 'left' && 'text-left',
                       )}
                     >
-                      <div className="truncate">
+                      <div
+                        className={
+                          column.truncate === false
+                            ? 'whitespace-normal'
+                            : 'truncate'
+                        }
+                      >
                         {column.render
                           ? column.render(row)
                           : String(row[column.key])}
