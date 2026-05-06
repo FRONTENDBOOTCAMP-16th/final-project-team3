@@ -11,11 +11,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ImageUpload from '@/components/community/ImageUpload';
 import PostFormActions from '@/components/community/PostFormActions';
-import PostCard from '@/components/community/Postcard';
+import PostDetailCard from '@/components/community/PostDetailCard';
 
 export default function WritePage() {
   const router = useRouter();
-  const [tab, setTab] = useState<'write' | 'preview'>('write'); // ✅ 추가
+  const [tab, setTab] = useState<'write' | 'preview'>('write');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [preview, setPreview] = useState<string | null>(null);
@@ -158,25 +158,27 @@ export default function WritePage() {
       {/* ✅ 미리보기 탭 */}
       {tab === 'preview' &&
         (!title && !content ? (
-          <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+          <div className="flex flex-col items-center justify-center py-16 text-gray-400 mb-6">
             <p className="text-sm">작성 탭에서 내용을 입력하면</p>
             <p className="text-sm">여기서 미리볼 수 있어요.</p>
           </div>
         ) : (
-          <PostCard
-            post={{
-              nickname: user?.name ?? '알 수 없음',
-              avatar_url: user?.image ?? null,
-              role: category === 'promo' ? 'manager' : (user?.role ?? null),
-              created_at: new Date().toISOString(),
-              title,
-              image_url: preview,
-              content,
-              likeCount: 0,
-              commentCount: 0,
-              view_count: 0,
-            }}
-          />
+          <div className="mb-6">
+            <PostDetailCard
+              post={{
+                nickname: user?.name ?? '알 수 없음',
+                avatar_url: user?.image ?? null,
+                role: category === 'promo' ? 'manager' : (user?.role ?? null),
+                created_at: new Date().toISOString(),
+                title,
+                image_url: preview,
+                content,
+                likeCount: 0,
+                commentCount: 0,
+                view_count: 0,
+              }}
+            />
+          </div>
         ))}
 
       {/* 하단 버튼 */}

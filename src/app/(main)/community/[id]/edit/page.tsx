@@ -1,6 +1,6 @@
 'use client';
 
-import { useQueryClient } from '@tanstack/react-query'; // 추가
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PostCategory } from '@/types/community';
@@ -28,7 +28,7 @@ export default function EditPage({
   const [preview, setPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const queryClient = useQueryClient(); // 추가
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const load = async () => {

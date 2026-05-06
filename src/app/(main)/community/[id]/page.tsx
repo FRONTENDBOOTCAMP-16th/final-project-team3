@@ -1,6 +1,6 @@
 'use client';
 
-import { useQueryClient } from '@tanstack/react-query'; // 추가
+import { useQueryClient } from '@tanstack/react-query';
 import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -20,7 +20,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLike } from '@/hooks/useLike';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ReportModal from '@/components/community/ReportModal';
-import PostCard, { PostCardData } from '@/components/community/Postcard';
+import PostDetailCard, {
+  PostDetailCardData,
+} from '@/components/community/PostDetailCard';
 import { timeAgo } from '@/utils/timeAgo';
 
 export default function PostDetailPage({
@@ -39,7 +41,7 @@ export default function PostDetailPage({
   const [editingContent, setEditingContent] = useState('');
   const { user } = useAuth();
   const { likeCount, isLiked, toggle } = useLike(id, user?.id ?? '');
-  const queryClient = useQueryClient(); // 추가
+  const queryClient = useQueryClient();
 
   const [reportModalOpen, setReportModalOpen] = useState(false);
 
@@ -187,7 +189,7 @@ export default function PostDetailPage({
     }
   };
 
-  const postCardData: PostCardData = {
+  const postDetailCardData: PostDetailCardData = {
     nickname: post.nickname ?? '알 수 없음',
     avatar_url: post.avatar_url,
     role: post.role,
@@ -226,8 +228,8 @@ export default function PostDetailPage({
       </button>
 
       {/* ── 게시글 카드 ── */}
-      <PostCard
-        post={postCardData}
+      <PostDetailCard
+        post={postDetailCardData}
         isLiked={isLiked}
         onLike={() => {
           if (!userId) {
