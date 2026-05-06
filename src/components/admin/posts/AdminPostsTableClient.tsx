@@ -5,20 +5,20 @@ import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
   type AdminTableColumn,
 } from '@/components/admin/AdminDataTable';
-import AdminPostActions from '@/components/admin/post/AdminPostActions';
+import AdminPostActions from '@/components/admin/posts/AdminPostsActions';
 import AdminTableToolbar from '@/components/admin/AdminTableToolbar';
 import {
   ADMIN_POST_FILTERS,
   CATEGORY_BADGE_VARIANT_MAP,
-} from '@/components/admin/post/constants';
+} from '@/components/admin/posts/constants';
 import type {
   AdminPostFilterValue,
   AdminPostRow,
-} from '@/components/admin/post/types';
+} from '@/components/admin/posts/types';
 import {
   filterAdminPosts,
   getPostStatusBadge,
-} from '@/components/admin/post/utils';
+} from '@/components/admin/posts/utils';
 
 interface AdminPostTableClientProps {
   data: AdminPostRow[];
