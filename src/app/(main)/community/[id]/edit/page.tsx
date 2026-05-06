@@ -59,7 +59,6 @@ export default function EditPage({
       showErrorToast('제목과 내용을 모두 입력해주세요.');
       return;
     }
-    setIsLoading(true);
     try {
       let image_url: string | undefined;
       if (imageFile) {
@@ -71,8 +70,6 @@ export default function EditPage({
       router.push(`/community/${id}`);
     } catch {
       showErrorToast('게시글 수정에 실패했습니다.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
