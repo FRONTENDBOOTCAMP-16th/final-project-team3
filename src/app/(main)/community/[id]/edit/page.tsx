@@ -13,6 +13,7 @@ import {
 } from '@/services/communityService';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ImageUpload from '@/components/community/ImageUpload';
+import PostFormActions from '@/components/community/PostFormActions';
 
 export default function EditPage({
   params,
@@ -114,20 +115,11 @@ export default function EditPage({
         />
       </div>
 
-      <div className="flex gap-3">
-        <button
-          onClick={() => router.back()}
-          className="flex-1 py-3 rounded-xl bg-btn-basic border border-gray-300 text-black hover:bg-gray-200"
-        >
-          취소
-        </button>
-        <button
-          onClick={handleSubmit}
-          className="flex-3 py-3 rounded-xl bg-black text-white text-sm font-medium cursor-pointer"
-        >
-          수정하기
-        </button>
-      </div>
+      <PostFormActions
+        onCancel={() => router.back()}
+        onSubmit={handleSubmit}
+        submitLabel="수정하기"
+      />
     </div>
   );
 }

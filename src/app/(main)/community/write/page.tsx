@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useQueryClient } from '@tanstack/react-query';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ImageUpload from '@/components/community/ImageUpload';
+import PostFormActions from '@/components/community/PostFormActions';
 
 export default function WritePage() {
   const router = useRouter();
@@ -243,21 +244,12 @@ export default function WritePage() {
         </div>
       )}
 
-      {/* 기존 하단 버튼 (그대로 유지) */}
-      <div className="flex gap-3">
-        <button
-          onClick={() => router.back()}
-          className="flex-1 py-3 rounded-xl bg-btn-basic border border-gray-300 text-black hover:bg-gray-200 cursor-pointer"
-        >
-          취소
-        </button>
-        <button
-          onClick={handleSubmit}
-          className="flex-3 py-3 rounded-xl bg-black text-white text-sm font-medium cursor-pointer"
-        >
-          작성하기
-        </button>
-      </div>
+      {/* 하단 버튼 */}
+      <PostFormActions
+        onCancel={() => router.back()}
+        onSubmit={handleSubmit}
+        submitLabel="작성하기"
+      />
     </div>
   );
 }
