@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useUpdateMyProfile, useDeleteMyAccount } from '@/hooks/useMyPage';
 import { Profile, BeltLevel } from '@/types/user';
+import { Pencil } from 'lucide-react';
 
 interface SettingsTabProps {
   profile: Profile;
@@ -47,9 +48,10 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           <button
             onClick={handleUpdate}
             disabled={isUpdating}
-            className="flex items-center gap-1 px-3 py-1.5 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all disabled:opacity-50 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all disabled:opacity-50 cursor-pointer"
           >
-            ✏️ {isUpdating ? '저장 중...' : '수정'}
+            <Pencil className="w-4 h-4" />
+            {isUpdating ? '저장 중...' : '수정'}
           </button>
         </div>
 
@@ -129,24 +131,26 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.
         </p>
         {!showDeleteConfirm ? (
-          <button
-            onClick={() => setShowDeleteConfirm(true)}
-            className="w-fit bg-danger text-btn-focus-text px-6 py-2 rounded-full text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
-          >
-            회원탈퇴하기
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="w-fit bg-danger text-btn-focus-text px-10 py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
+            >
+              회원탈퇴하기
+            </button>
+          </div>
         ) : (
           <div className="flex gap-2">
             <button
               onClick={() => setShowDeleteConfirm(false)}
-              className="px-6 py-2 bg-btn-basic text-btn-text rounded-full text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
+              className="w-fit px-10 py-3 bg-btn-basic text-btn-text rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
             >
               취소
             </button>
             <button
               onClick={() => deleteAccount()}
               disabled={isDeleting}
-              className="px-6 py-2 bg-danger text-btn-focus-text rounded-full text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50 cursor-pointer"
+              className="w-fit px-10 py-3 bg-danger text-btn-focus-text rounded-xl text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50 cursor-pointer"
             >
               {isDeleting ? '탈퇴 중...' : '확인'}
             </button>
