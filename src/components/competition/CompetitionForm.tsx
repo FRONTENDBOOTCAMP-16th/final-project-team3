@@ -74,28 +74,6 @@ export default function CompetitionForm({
         <h1 className="text-lg font-semibold">{title}</h1>
       </div>
 
-      {/* 탭 */}
-      <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
-        <button
-          onClick={() => setTab('write')}
-          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-            tab === 'write' ? 'bg-white text-black shadow-sm' : 'text-gray-500'
-          }`}
-        >
-          작성
-        </button>
-        <button
-          onClick={() => setTab('preview')}
-          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-            tab === 'preview'
-              ? 'bg-white text-black shadow-sm'
-              : 'text-gray-500'
-          }`}
-        >
-          미리보기
-        </button>
-      </div>
-
       {/* 작성 탭 */}
       {tab === 'write' && (
         <>
@@ -214,28 +192,6 @@ export default function CompetitionForm({
           </div>
         </>
       )}
-
-      {/* 미리보기 탭 */}
-      {tab === 'preview' &&
-        (!name && !description ? (
-          <div className="flex flex-col items-center justify-center py-16 text-gray-400 mb-6">
-            <p className="text-sm">작성 탭에서 내용을 입력하면</p>
-            <p className="text-sm">여기서 미리볼 수 있어요.</p>
-          </div>
-        ) : (
-          <div className="mb-6">
-            <CompetitionDetailCard
-              data={{
-                name,
-                image_url: preview,
-                description,
-                event_data: eventDate,
-                location,
-                apply_deadline: applyDeadline,
-              }}
-            />
-          </div>
-        ))}
 
       <PostFormActions
         onCancel={onCancel}

@@ -129,10 +129,15 @@ export default function CompetitionDetailPage({
                 <button
                   title="수정하기"
                   onClick={() => router.push(`/competitions/${id}/edit`)}
+                  className="cursor-pointer"
                 >
                   <Image src="/postEdit.svg" alt="" width={30} height={30} />
                 </button>
-                <button title="삭제하기" onClick={handleDeletePost}>
+                <button
+                  title="삭제하기"
+                  onClick={handleDeletePost}
+                  className="cursor-pointer"
+                >
                   <Image src="/postDelete.svg" alt="" width={32} height={32} />
                 </button>
               </>
@@ -142,7 +147,7 @@ export default function CompetitionDetailPage({
               onClick={() => {
                 handleShare(competition.name);
               }}
-              className="w-8 h-8 flex items-center justify-center"
+              className="w-8 h-8 flex items-center justify-center cursor-pointer"
             >
               <Image src="/postShare.svg" alt="" width={18} height={18} />
             </button>
