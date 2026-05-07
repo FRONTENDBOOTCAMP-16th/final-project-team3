@@ -47,14 +47,39 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
   const { data, error } = await supabase
     .from('posts')
     .select(
-      'id, title, content, category, nickname, avatar_url, image_url, view_count, created_at, comment_count',
+      `
+      id,
+      title,
+      content,
+      category,
+      image_url,
+      view_count,
+      created_at,
+      profiles (
+        nickname,
+        avatar_url
+      ),
+      comments (count)
+    `,
     )
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .range(from, to);
 
   if (error) throw error;
-  return data ?? [];
+
+  return (data ?? []).map((post) => ({
+    id: post.id,
+    title: post.title,
+    content: post.content,
+    category: post.category,
+    image_url: post.image_url,
+    view_count: post.view_count,
+    created_at: post.created_at,
+    nickname: (post.profiles as any)?.nickname ?? '',
+    avatar_url: (post.profiles as any)?.avatar_url ?? '',
+    comment_count: (post.comments as any)?.[0]?.count ?? 0,
+  }));
 }
 
 // 회원 탈퇴
