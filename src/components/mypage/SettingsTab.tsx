@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useUpdateMyProfile, useDeleteMyAccount } from '@/hooks/useMyPage';
 import { Profile, BeltLevel } from '@/types/user';
 import { Pencil, User, Mail } from 'lucide-react';
-import { toast } from 'sonner';
+import { showErrorToast, showSuccessToast } from '@/lib/toast';
 
 interface SettingsTabProps {
   profile: Profile;
@@ -36,15 +36,14 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
       {
         nickname,
         bio,
-        belt_level: beltLevel,
         avatar_url: profile.avatar_url ?? null,
       },
       {
         onSuccess: () => {
-          toast.success('프로필이 수정되었습니다.');
+          showSuccessToast('프로필이 수정되었습니다.');
         },
         onError: () => {
-          toast.error('수정에 실패했습니다. 다시 시도해주세요.');
+          showErrorToast('수정에 실패했습니다. 다시 시도해주세요.');
         },
       },
     );
