@@ -1,10 +1,9 @@
 'use client';
 
-import { useQueryClient } from '@tanstack/react-query'; // 추가
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PostCategory } from '@/types/community';
-import Image from 'next/image';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { use } from 'react';
 import {
@@ -13,6 +12,8 @@ import {
   uploadPostImage,
 } from '@/services/communityService';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
+import ImageUpload from '@/components/community/ImageUpload';
+import PostFormActions from '@/components/community/PostFormActions';
 
 export default function EditPage({
   params,
@@ -27,7 +28,7 @@ export default function EditPage({
   const [preview, setPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const queryClient = useQueryClient(); // 추가
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const load = async () => {
@@ -45,14 +46,6 @@ export default function EditPage({
     };
     load();
   }, [id]);
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      setPreview(URL.createObjectURL(file));
-    }
-  };
 
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {
@@ -103,33 +96,13 @@ export default function EditPage({
         />
       </div>
 
-      <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-        <p className="text-sm text-gray-500 mb-2">이미지 (선택)</p>
-        <label className="block cursor-pointer">
-          {preview ? (
-            <div className="relative w-full h-48 rounded-lg overflow-hidden">
-              <Image
-                src={preview}
-                alt="preview"
-                fill={true}
-                className="object-cover"
-              />
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center h-32 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
-              <span className="text-2xl mb-1">↑</span>
-              <p className="text-sm text-gray-500">클릭하여 이미지 업로드</p>
-              <p className="text-xs text-gray-400">JPG, PNG, GIF (최대 10MB)</p>
-            </div>
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleImageChange}
-          />
-        </label>
-      </div>
+      <ImageUpload
+        preview={preview}
+        onChange={(file, previewUrl) => {
+          setImageFile(file);
+          setPreview(previewUrl);
+        }}
+      />
 
       <div className="bg-white rounded-xl p-4 mb-6 shadow-sm">
         <p className="text-sm text-gray-500 mb-2">내용</p>
@@ -142,20 +115,11 @@ export default function EditPage({
         />
       </div>
 
-      <div className="flex gap-3">
-        <button
-          onClick={() => router.back()}
-          className="flex-1 py-3 rounded-xl bg-btn-basic border border-gray-300 text-black hover:bg-gray-200"
-        >
-          취소
-        </button>
-        <button
-          onClick={handleSubmit}
-          className="flex-3 py-3 rounded-xl bg-black text-white text-sm font-medium cursor-pointer"
-        >
-          수정하기
-        </button>
-      </div>
+      <PostFormActions
+        onCancel={() => router.back()}
+        onSubmit={handleSubmit}
+        submitLabel="수정하기"
+      />
     </div>
   );
 }
