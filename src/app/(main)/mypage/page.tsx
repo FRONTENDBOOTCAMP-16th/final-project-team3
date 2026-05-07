@@ -1,24 +1,28 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMyProfile } from '@/hooks/useMyPage';
 import ProfileCard from '@/components/mypage/ProfileCard';
 import PostList from '@/components/mypage/PostList';
 import SettingsTab from '@/components/mypage/SettingsTab';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import useAuthStore from '@/store/authStore';
 
 export default function MyPage() {
-  const router = useRouter();
   const [tab, setTab] = useState<'posts' | 'settings'>('posts');
   const { data: profile, isLoading } = useMyProfile();
+  const router = useRouter();
+  const authUser = useAuthStore((state) => state.user);
 
   useEffect(() => {
     if (!isLoading && !profile) {
       router.push('/login');
     }
-  }, [isLoading, profile, router]);
+    if (!isLoading && authUser?.role === 'admin') {
+      router.push('/admin');
+    }
+  }, [isLoading, profile, authUser, router]);
 
   if (isLoading) return <LoadingSpinner />;
   if (!profile) return null;

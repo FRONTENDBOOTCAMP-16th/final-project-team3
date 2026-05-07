@@ -39,8 +39,8 @@ export default function ProfileCard({
         <h2 className="text-2xl font-bold text-text-primary">
           {profile.nickname ?? '닉네임 없음'}
         </h2>
-        {/* 벨트 */}
-        {profile.belt_level && (
+        {/* 벨트 - 관리자는 표시 안 함 */}
+        {profile.belt_level && profile.role !== 'admin' && (
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-btn-basic rounded-full mt-1">
             <span
               className="w-3 h-3 rounded-full shrink-0"
