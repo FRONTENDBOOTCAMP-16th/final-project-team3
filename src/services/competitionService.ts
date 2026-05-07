@@ -68,3 +68,22 @@ export async function getCompetition(id: string): Promise<Competition> {
     profiles: undefined,
   } as Competition;
 }
+export async function updateCompetition(
+  id: string,
+  fields: {
+    name: string;
+    location: string;
+    event_data: string;
+    apply_deadline: string;
+    apply_url?: string;
+    description?: string;
+    image_url?: string;
+    participants?: number;
+  },
+) {
+  const { error } = await supabase
+    .from('competition')
+    .update(fields)
+    .eq('id', id);
+  if (error) throw error;
+}

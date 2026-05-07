@@ -99,11 +99,6 @@ export default function CompetitionDetailCard({
             fill
             className="object-cover"
           />
-          <span
-            className={`absolute top-3 left-3 px-2.5 py-1 text-xs text-white rounded-full ${statusColor}`}
-          >
-            {status}
-          </span>
         </div>
       )}
 
