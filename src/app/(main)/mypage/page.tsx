@@ -6,10 +6,19 @@ import ProfileCard from '@/components/mypage/ProfileCard';
 import PostList from '@/components/mypage/PostList';
 import SettingsTab from '@/components/mypage/SettingsTab';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function MyPage() {
+  const router = useRouter();
   const [tab, setTab] = useState<'posts' | 'settings'>('posts');
   const { data: profile, isLoading } = useMyProfile();
+
+  useEffect(() => {
+    if (!isLoading && !profile) {
+      router.push('/login');
+    }
+  }, [isLoading, profile, router]);
 
   if (isLoading) return <LoadingSpinner />;
   if (!profile) return null;
