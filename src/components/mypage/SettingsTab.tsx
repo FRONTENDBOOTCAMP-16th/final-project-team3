@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useUpdateMyProfile, useDeleteMyAccount } from '@/hooks/useMyPage';
 import { Profile, BeltLevel } from '@/types/user';
-import { Pencil } from 'lucide-react';
+import { Pencil, User, Mail } from 'lucide-react';
 
 interface SettingsTabProps {
   profile: Profile;
@@ -55,16 +55,32 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           </button>
         </div>
 
-        {/* 이름 */}
+        {/* 닉네임 */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-text-primary">이름</label>
+          <label className="text-sm font-medium text-text-primary">
+            닉네임
+          </label>
           <div className="flex items-center gap-2 bg-input-bg rounded-xl px-4 py-3">
-            <span className="text-text-secondary">👤</span>
+            <User className="w-4 h-4 text-text-secondary" />
             <input
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               className="flex-1 bg-transparent text-sm text-input-text outline-none"
+            />
+          </div>
+        </div>
+
+        {/* 이름 */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-text-primary">이름</label>
+          <div className="flex items-center gap-2 bg-input-bg rounded-xl px-4 py-3">
+            <User className="w-4 h-4 text-text-secondary" />
+            <input
+              type="text"
+              value={profile.name ?? ''}
+              readOnly
+              className="flex-1 bg-transparent text-sm text-text-secondary outline-none cursor-not-allowed"
             />
           </div>
         </div>
@@ -75,7 +91,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             이메일
           </label>
           <div className="flex items-center gap-2 bg-input-bg rounded-xl px-4 py-3">
-            <span className="text-text-secondary">✉️</span>
+            <Mail className="w-4 h-4 text-text-secondary" />
             <input
               type="email"
               value={profile.email_value ?? ''}

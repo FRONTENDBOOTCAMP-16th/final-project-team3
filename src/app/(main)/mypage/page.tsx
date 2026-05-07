@@ -17,14 +17,14 @@ export default function MyPage() {
   return (
     <div className="flex flex-col">
       {/* 헤더 */}
-      <div className="px-6 py-4 border-b border-gray-100">
-        <h1 className="text-xl font-bold">마이페이지</h1>
-        <p className="text-sm text-gray-400">내 프로필과 활동 내역</p>
+      <div className="flex flex-col gap-1 px-6 py-6 bg-white z-10 shadow-md">
+        <h1 className="text-4xl font-bold text-text-primary">마이페이지</h1>
+        <p className="text-sm text-text-secondary">내 프로필과 활동 내역</p>
       </div>
 
       <div className="flex gap-6 p-6">
         {/* 프로필 카드 */}
-        <div className="w-72 shrink-0">
+        <div className="w-96 shrink-0">
           <ProfileCard profile={profile} />
         </div>
 
