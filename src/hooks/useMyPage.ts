@@ -9,6 +9,8 @@ import {
   updateMyProfile,
   deleteMyAccount,
   fetchMyPosts,
+  fetchMyPostCount,
+  fetchMyCommentCount,
 } from '@/services/userService';
 import { ProfileUpdateForm } from '@/types/mypage';
 
@@ -52,5 +54,21 @@ export const useMyPosts = () => {
 export const useDeleteMyAccount = () => {
   return useMutation({
     mutationFn: deleteMyAccount,
+  });
+};
+
+// 내 게시글 수 조회
+export const useMyPostCount = () => {
+  return useQuery({
+    queryKey: ['mypage', 'postCount'],
+    queryFn: fetchMyPostCount,
+  });
+};
+
+// 내 댓글 수 조회
+export const useMyCommentCount = () => {
+  return useQuery({
+    queryKey: ['mypage', 'commentCount'],
+    queryFn: fetchMyCommentCount,
   });
 };

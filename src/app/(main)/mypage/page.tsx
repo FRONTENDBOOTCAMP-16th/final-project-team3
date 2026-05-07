@@ -8,12 +8,15 @@ import SettingsTab from '@/components/mypage/SettingsTab';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useRouter } from 'next/navigation';
 import useAuthStore from '@/store/authStore';
+import { useMyPostCount, useMyCommentCount } from '@/hooks/useMyPage';
 
 export default function MyPage() {
   const [tab, setTab] = useState<'posts' | 'settings'>('posts');
   const { data: profile, isLoading } = useMyProfile();
   const router = useRouter();
   const authUser = useAuthStore((state) => state.user);
+  const { data: postCount = 0 } = useMyPostCount();
+  const { data: commentCount = 0 } = useMyCommentCount();
 
   useEffect(() => {
     if (!isLoading && !profile) {
@@ -38,7 +41,12 @@ export default function MyPage() {
       <div className="flex gap-6 p-6">
         {/* 프로필 카드 */}
         <div className="w-96 shrink-0">
-          <ProfileCard profile={profile} />
+          <ProfileCard
+            profile={profile}
+            postCount={postCount}
+            commentCount={commentCount}
+          />
+          ;
         </div>
 
         {/* 오른쪽 컨텐츠 */}

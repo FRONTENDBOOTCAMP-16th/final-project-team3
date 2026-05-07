@@ -62,3 +62,33 @@ export async function deleteMyAccount(): Promise<void> {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
 }
+
+// 내 게시글 수 조회
+export async function fetchMyPostCount(): Promise<number> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return 0;
+
+  const { count } = await supabase
+    .from('posts')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', user.id);
+
+  return count ?? 0;
+}
+
+// 내 댓글 수 조회
+export async function fetchMyCommentCount(): Promise<number> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return 0;
+
+  const { count } = await supabase
+    .from('comments')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', user.id);
+
+  return count ?? 0;
+}
