@@ -119,27 +119,31 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           </div>
         </div>
 
-        {/* 벨트 */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-text-primary">벨트</label>
-          <div className="relative flex items-center bg-input-bg rounded-xl px-4 py-3">
-            <span
-              className="w-3 h-3 rounded-full mr-2 shrink-0"
-              style={{ backgroundColor: BELT_COLORS[beltLevel] }}
-            />
-            <select
-              value={beltLevel}
-              onChange={(e) => setBeltLevel(e.target.value as BeltLevel)}
-              className="flex-1 bg-transparent text-sm text-input-text outline-none appearance-none cursor-pointer"
-            >
-              {BELTS.map((belt) => (
-                <option key={belt} value={belt}>
-                  {belt}
-                </option>
-              ))}
-            </select>
+        {/* 벨트 - 관리자는 표시 안 함 */}
+        {profile.role !== 'admin' && (
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-text-primary">
+              벨트
+            </label>
+            <div className="relative flex items-center bg-input-bg rounded-xl px-4 py-3">
+              <span
+                className="w-3 h-3 rounded-full mr-2 shrink-0"
+                style={{ backgroundColor: BELT_COLORS[beltLevel] }}
+              />
+              <select
+                value={beltLevel}
+                onChange={(e) => setBeltLevel(e.target.value as BeltLevel)}
+                className="flex-1 bg-transparent text-sm text-input-text outline-none appearance-none cursor-pointer"
+              >
+                {BELTS.map((belt) => (
+                  <option key={belt} value={belt}>
+                    {belt}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 소개 */}
         <div className="flex flex-col gap-2">
