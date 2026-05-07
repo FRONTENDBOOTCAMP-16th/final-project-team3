@@ -15,40 +15,45 @@ export default function MyPage() {
   if (!profile) return null;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 flex flex-col gap-6">
-      {/* 프로필 카드 */}
-      <ProfileCard profile={profile} />
-
-      {/* 탭 */}
-      <div className="flex border-b border-gray-200">
-        <button
-          onClick={() => setTab('posts')}
-          className={`flex-1 pb-3 text-sm font-bold transition-all cursor-pointer ${
-            tab === 'posts'
-              ? 'text-btn-focus border-b-2 border-btn-focus -mb-px'
-              : 'text-gray-400 hover:text-gray-600'
-          }`}
-        >
-          게시글
-        </button>
-        <button
-          onClick={() => setTab('settings')}
-          className={`flex-1 pb-3 text-sm font-bold transition-all cursor-pointer ${
-            tab === 'settings'
-              ? 'text-btn-focus border-b-2 border-btn-focus -mb-px'
-              : 'text-gray-400 hover:text-gray-600'
-          }`}
-        >
-          설정
-        </button>
+    <div className="flex gap-6 p-6">
+      {/* 프로필 카드 (고정) */}
+      <div className="w-56 shrink-0">
+        <ProfileCard profile={profile} />
       </div>
 
-      {/* 탭 컨텐츠 */}
-      {tab === 'posts' ? (
-        <PostList userId={profile.id} />
-      ) : (
-        <SettingsTab profile={profile} />
-      )}
+      {/* 오른쪽 컨텐츠 */}
+      <div className="flex-1 flex flex-col gap-4">
+        {/* 탭 */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => setTab('posts')}
+            className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all ${
+              tab === 'posts'
+                ? 'bg-black text-white'
+                : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+            }`}
+          >
+            게시글
+          </button>
+          <button
+            onClick={() => setTab('settings')}
+            className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all ${
+              tab === 'settings'
+                ? 'bg-black text-white'
+                : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+            }`}
+          >
+            설정
+          </button>
+        </div>
+
+        {/* 탭 컨텐츠 */}
+        {tab === 'posts' ? (
+          <PostList userId={profile.id} />
+        ) : (
+          <SettingsTab profile={profile} />
+        )}
+      </div>
     </div>
   );
 }
