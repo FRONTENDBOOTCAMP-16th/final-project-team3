@@ -4,8 +4,16 @@ export interface Competition {
   id: string;
   name: string;
   location: string;
-  event_date: string;
-  category?: string;
-  status: CompetitionStatus;
+  event_data: string;
+  apply_deadline: string;
+  apply_url?: string;
+  description?: string;
+  image_url?: string;
+  user_id?: string;
+  view_count?: number;
   created_at: string;
+  participants?: number;
+  nickname?: string;
+  avatar_url?: string;
+  role?: string;
 }
