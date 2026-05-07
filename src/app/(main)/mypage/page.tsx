@@ -33,7 +33,7 @@ export default function MyPage() {
   return (
     <div className="flex flex-col">
       {/* 헤더 */}
-      <div className="flex flex-col gap-1 px-6 py-6 bg-white z-10 shadow-md">
+      <div className="flex flex-col gap-1 px-6 py-6 bg-white z-10 shadow-md sticky top-0">
         <h1 className="text-4xl font-bold text-text-primary">마이페이지</h1>
         <p className="text-sm text-text-secondary">내 프로필과 활동 내역</p>
       </div>
