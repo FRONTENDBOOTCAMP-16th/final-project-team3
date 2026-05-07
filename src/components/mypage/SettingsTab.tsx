@@ -30,7 +30,8 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
 
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateMyProfile();
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteMyAccount();
-
+  const isChanged =
+    nickname !== (profile.nickname ?? '') || bio !== (profile.bio ?? '');
   const handleUpdate = () => {
     updateProfile(
       {
@@ -57,7 +58,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           <h3 className="text-lg font-bold text-text-primary">프로필 설정</h3>
           <button
             onClick={handleUpdate}
-            disabled={isUpdating}
+            disabled={isUpdating || !isChanged}
             className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all disabled:opacity-50 cursor-pointer"
           >
             <Pencil className="w-4 h-4" />
