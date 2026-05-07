@@ -5,6 +5,13 @@ import { useUpdateMyProfile, useDeleteMyAccount } from '@/hooks/useMyPage';
 import { Profile, BeltLevel } from '@/types/user';
 import { Pencil, User, Mail } from 'lucide-react';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 
 interface SettingsTabProps {
   profile: Profile;
@@ -157,32 +164,40 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
         <p className="text-sm text-text-secondary">
           계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.
         </p>
-        {!showDeleteConfirm ? (
-          <div className="flex gap-2">
-            <button
-              onClick={() => setShowDeleteConfirm(true)}
-              className="w-fit bg-danger text-btn-focus-text px-10 py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
-            >
-              회원탈퇴하기
-            </button>
-          </div>
-        ) : (
-          <div className="flex gap-2">
-            <button
-              onClick={() => setShowDeleteConfirm(false)}
-              className="w-fit px-10 py-3 bg-btn-basic text-btn-text rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
-            >
-              취소
-            </button>
-            <button
-              onClick={() => deleteAccount()}
-              disabled={isDeleting}
-              className="w-fit px-10 py-3 bg-danger text-btn-focus-text rounded-xl text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50 cursor-pointer"
-            >
-              {isDeleting ? '탈퇴 중...' : '확인'}
-            </button>
-          </div>
-        )}
+        <button
+          onClick={() => setShowDeleteConfirm(true)}
+          className="w-fit bg-danger text-btn-focus-text px-10 py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
+        >
+          회원탈퇴하기
+        </button>
+
+        {/* 탈퇴 확인 Dialog */}
+        <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>정말 탈퇴하시겠습니까?</DialogTitle>
+              <DialogDescription>
+                계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수
+                없습니다.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1 px-6 py-3 bg-btn-basic text-btn-text rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
+              >
+                취소
+              </button>
+              <button
+                onClick={() => deleteAccount()}
+                disabled={isDeleting}
+                className="flex-1 px-6 py-3 bg-danger text-btn-focus-text rounded-xl text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50 cursor-pointer"
+              >
+                {isDeleting ? '탈퇴 중...' : '확인'}
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
