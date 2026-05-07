@@ -104,7 +104,7 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
           </div>
           <div className="flex items-center gap-1">
             <Image src="/person.svg" alt="참가자" width={14} height={14} />
-            <span>{competition.participants}명 참가 예정</span>
+            <span>모집인원 {competition.participants}명</span>
           </div>
         </div>
 
