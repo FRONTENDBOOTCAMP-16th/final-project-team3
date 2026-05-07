@@ -2,14 +2,21 @@
 
 import { useState } from 'react';
 import { useUpdateMyProfile, useDeleteMyAccount } from '@/hooks/useMyPage';
-import { Profile } from '@/types/user';
-import { BeltLevel } from '@/types/user';
+import { Profile, BeltLevel } from '@/types/user';
 
 interface SettingsTabProps {
   profile: Profile;
 }
 
 const BELTS: BeltLevel[] = ['White', 'Blue', 'Purple', 'Brown', 'Black'];
+
+const BELT_COLORS: Record<BeltLevel, string> = {
+  White: '#e8e8e8',
+  Blue: '#2e6fdb',
+  Purple: '#7c4ddb',
+  Brown: '#8b5a2b',
+  Black: '#1a1a1a',
+};
 
 export default function SettingsTab({ profile }: SettingsTabProps) {
   const [nickname, setNickname] = useState(profile.nickname ?? '');
@@ -32,79 +39,99 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
   };
 
   return (
-    <div className="flex flex-col gap-6 p-6 bg-white rounded-2xl shadow-sm">
-      <h3 className="text-lg font-bold">프로필 설정</h3>
+    <div className="flex flex-col gap-4">
+      {/* 프로필 설정 */}
+      <div className="flex flex-col gap-4 p-6 bg-bg-white rounded-2xl shadow-sm">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-bold text-text-primary">프로필 설정</h3>
+          <button
+            onClick={handleUpdate}
+            disabled={isUpdating}
+            className="flex items-center gap-1 px-3 py-1.5 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all disabled:opacity-50 cursor-pointer"
+          >
+            ✏️ {isUpdating ? '저장 중...' : '수정'}
+          </button>
+        </div>
 
-      {/* 닉네임 */}
-      <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-gray-700">이름</label>
-        <input
-          type="text"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-          className="w-full bg-gray-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        {/* 이름 */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-text-primary">이름</label>
+          <div className="flex items-center gap-2 bg-input-bg rounded-xl px-4 py-3">
+            <span className="text-text-secondary">👤</span>
+            <input
+              type="text"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              className="flex-1 bg-transparent text-sm text-input-text outline-none"
+            />
+          </div>
+        </div>
+
+        {/* 이메일 */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-text-primary">
+            이메일
+          </label>
+          <div className="flex items-center gap-2 bg-input-bg rounded-xl px-4 py-3">
+            <span className="text-text-secondary">✉️</span>
+            <input
+              type="email"
+              value={profile.email_value ?? ''}
+              readOnly
+              className="flex-1 bg-transparent text-sm text-text-secondary outline-none cursor-not-allowed"
+            />
+          </div>
+        </div>
+
+        {/* 벨트 */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-text-primary">벨트</label>
+          <div className="relative flex items-center bg-input-bg rounded-xl px-4 py-3">
+            <span
+              className="w-3 h-3 rounded-full mr-2 shrink-0"
+              style={{ backgroundColor: BELT_COLORS[beltLevel] }}
+            />
+            <select
+              value={beltLevel}
+              onChange={(e) => setBeltLevel(e.target.value as BeltLevel)}
+              className="flex-1 bg-transparent text-sm text-input-text outline-none appearance-none cursor-pointer"
+            >
+              {BELTS.map((belt) => (
+                <option key={belt} value={belt}>
+                  {belt}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* 소개 */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-text-primary">소개</label>
+          <textarea
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            rows={4}
+            className="w-full bg-input-bg rounded-xl px-4 py-3 text-sm text-input-text outline-none resize-none"
+          />
+        </div>
       </div>
-
-      {/* 이메일 (수정 불가) */}
-      <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-gray-700">이메일</label>
-        <input
-          type="email"
-          value={profile.email_value ?? ''}
-          readOnly
-          className="w-full bg-gray-100 rounded-xl px-4 py-3 text-sm text-gray-400 outline-none cursor-not-allowed"
-        />
-      </div>
-
-      {/* 벨트 */}
-      <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-gray-700">벨트</label>
-        <select
-          value={beltLevel}
-          onChange={(e) => setBeltLevel(e.target.value as BeltLevel)}
-          className="w-full bg-gray-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {BELTS.map((belt) => (
-            <option key={belt} value={belt}>
-              {belt}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* 소개 */}
-      <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-gray-700">소개</label>
-        <textarea
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          rows={4}
-          className="w-full bg-gray-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-        />
-      </div>
-
-      {/* 정보 수정 버튼 */}
-      <button
-        onClick={handleUpdate}
-        disabled={isUpdating}
-        className="w-full bg-btn-focus text-btn-focus-text py-3 rounded-xl font-bold hover:opacity-90 transition-all disabled:opacity-50"
-      >
-        {isUpdating ? '저장 중...' : '정보 수정'}
-      </button>
 
       {/* 회원 탈퇴 */}
-      <div className="flex flex-col gap-3 p-4 bg-red-50 rounded-xl border border-red-100">
+      <div className="flex flex-col gap-3 p-6 bg-bg-white rounded-2xl shadow-sm">
         <div className="flex items-center gap-2">
-          <span className="text-red-500 text-sm font-medium">⚠️ 회원 탈퇴</span>
+          <span className="text-danger">⚠️</span>
+          <span className="text-base font-bold text-text-primary">
+            회원 탈퇴
+          </span>
         </div>
-        <p className="text-xs text-red-400">
+        <p className="text-sm text-text-secondary">
           계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.
         </p>
         {!showDeleteConfirm ? (
           <button
             onClick={() => setShowDeleteConfirm(true)}
-            className="w-full bg-red-500 text-white py-2 rounded-xl text-sm font-bold hover:opacity-90 transition-all"
+            className="w-fit bg-danger text-btn-focus-text px-6 py-2 rounded-full text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
           >
             회원탈퇴하기
           </button>
@@ -112,14 +139,14 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           <div className="flex gap-2">
             <button
               onClick={() => setShowDeleteConfirm(false)}
-              className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-sm font-bold hover:opacity-90 transition-all"
+              className="px-6 py-2 bg-btn-basic text-btn-text rounded-full text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
             >
               취소
             </button>
             <button
               onClick={() => deleteAccount()}
               disabled={isDeleting}
-              className="flex-1 bg-red-500 text-white py-2 rounded-xl text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50"
+              className="px-6 py-2 bg-danger text-btn-focus-text rounded-full text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50 cursor-pointer"
             >
               {isDeleting ? '탈퇴 중...' : '확인'}
             </button>
