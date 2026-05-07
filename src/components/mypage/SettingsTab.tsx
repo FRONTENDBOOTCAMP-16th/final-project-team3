@@ -162,17 +162,19 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
         <div className="flex items-center gap-2">
           <span className="text-danger">⚠️</span>
           <span className="text-base font-bold text-text-primary">
-            회원 탈퇴
+            {profile.role === 'admin' ? '관리자 계정 삭제' : '회원 탈퇴'}
           </span>
         </div>
         <p className="text-sm text-text-secondary">
-          계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.
+          {profile.role === 'admin'
+            ? '관리자 계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.'
+            : '계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.'}
         </p>
         <button
           onClick={() => setShowDeleteConfirm(true)}
           className="w-fit bg-danger text-btn-focus-text px-10 py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
         >
-          회원탈퇴하기
+          {profile.role === 'admin' ? '관리자 계정 삭제하기' : '회원탈퇴하기'}
         </button>
 
         {/* 탈퇴 확인 Dialog */}
