@@ -1,5 +1,6 @@
 import ScrollToTop from '@/components/common/ScrollToTop';
 import Sidebar from '@/components/layout/Sidebar';
+import { Toaster } from 'sonner';
 
 export default function MainLayout({
   children,
@@ -14,6 +15,7 @@ export default function MainLayout({
         <div className="w-full max-w-7xl">{children}</div>
       </main>
       <ScrollToTop />
+      <Toaster position="bottom-center" />
     </div>
   );
 }

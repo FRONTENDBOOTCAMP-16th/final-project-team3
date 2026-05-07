@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useUpdateMyProfile, useDeleteMyAccount } from '@/hooks/useMyPage';
 import { Profile, BeltLevel } from '@/types/user';
 import { Pencil, User, Mail } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface SettingsTabProps {
   profile: Profile;
@@ -31,12 +32,22 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteMyAccount();
 
   const handleUpdate = () => {
-    updateProfile({
-      nickname,
-      bio,
-      belt_level: beltLevel,
-      avatar_url: profile.avatar_url ?? null,
-    });
+    updateProfile(
+      {
+        nickname,
+        bio,
+        belt_level: beltLevel,
+        avatar_url: profile.avatar_url ?? null,
+      },
+      {
+        onSuccess: () => {
+          toast.success('프로필이 수정되었습니다.');
+        },
+        onError: () => {
+          toast.error('수정에 실패했습니다. 다시 시도해주세요.');
+        },
+      },
+    );
   };
 
   return (
