@@ -2,6 +2,8 @@ import CompetitionClient from '@/components/competition/CompetitionClient';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
+export const revalidate = 0; // 추가 — 캐시 안 씀
+
 export default async function CompetitionsPage() {
   const cookieStore = await cookies();
   const supabase = createServerClient(

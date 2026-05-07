@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useAuth } from '@/hooks/useAuth';
 import {
-  createCompetition,
+  getCompetition,
+  updateCompetition,
   uploadCompetitionImage,
 } from '@/services/competitionService';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
@@ -14,7 +15,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import CompetitionForm, {
   CompetitionFormValues,
 } from '@/components/competition/CompetitionForm';
-import CompetitionDetailCard from '@/components/competition/CompetitionDetailCard';
 
 const defaultValues: CompetitionFormValues = {
   name: '',
@@ -28,13 +28,18 @@ const defaultValues: CompetitionFormValues = {
   imageFile: null,
 };
 
-export default function CompetitionWritePage() {
+export default function CompetitionEditPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const queryClient = useQueryClient();
   const router = useRouter();
   const { user, loading } = useAuth();
-  const [tab, setTab] = useState<'write' | 'preview'>('write');
   const [values, setValues] = useState<CompetitionFormValues>(defaultValues);
   const [isLoading, setIsLoading] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   useEffect(() => {
     if (
@@ -44,6 +49,29 @@ export default function CompetitionWritePage() {
       router.push('/competitions');
     }
   }, [user, loading, router]);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await getCompetition(id);
+        setValues({
+          name: data.name ?? '',
+          location: data.location ?? '',
+          eventDate: data.event_data ?? '',
+          applyDeadline: data.apply_deadline ?? '',
+          applyUrl: data.apply_url ?? '',
+          description: data.description ?? '',
+          participants: data.participants ? String(data.participants) : '',
+          preview: data.image_url ?? null,
+          imageFile: null,
+        });
+        setDataLoaded(true);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    load();
+  }, [id]);
 
   const handleSubmit = async () => {
     if (
@@ -57,11 +85,11 @@ export default function CompetitionWritePage() {
     }
     setIsLoading(true);
     try {
-      let image_url: string | undefined;
+      let image_url: string | undefined = values.preview ?? undefined;
       if (values.imageFile) {
         image_url = await uploadCompetitionImage(values.imageFile);
       }
-      await createCompetition({
+      await updateCompetition(id, {
         name: values.name,
         location: values.location,
         event_data: values.eventDate,
@@ -72,79 +100,31 @@ export default function CompetitionWritePage() {
         description: values.description,
         image_url,
         participants: values.participants ? Number(values.participants) : 0,
-        user_id: user?.id,
       });
-      showSuccessToast('대회일정이 추가되었습니다.', '🏆');
+      showSuccessToast('대회일정이 수정되었습니다.', '✅');
       await queryClient.invalidateQueries({ queryKey: ['competition'] });
-      router.push('/competitions');
+      router.push(`/competitions/${id}`);
     } catch {
-      showErrorToast('대회 추가에 실패했습니다.');
+      showErrorToast('대회 수정에 실패했습니다.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (loading || isLoading) return <LoadingSpinner />;
+  if (loading || isLoading || !dataLoaded) return <LoadingSpinner />;
 
   return (
     <div className="max-w-2xl mx-auto p-6">
       <div className="relative w-full flex items-center justify-center mb-6">
-        <h1 className="text-lg font-semibold">대회 추가</h1>
+        <h1 className="text-lg font-semibold">대회 수정</h1>
       </div>
 
-      {/* 탭 */}
-      <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
-        <button
-          onClick={() => setTab('write')}
-          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-            tab === 'write' ? 'bg-white text-black shadow-sm' : 'text-gray-500'
-          }`}
-        >
-          작성
-        </button>
-        <button
-          onClick={() => setTab('preview')}
-          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-            tab === 'preview'
-              ? 'bg-white text-black shadow-sm'
-              : 'text-gray-500'
-          }`}
-        >
-          미리보기
-        </button>
-      </div>
-
-      {/* 작성 탭 */}
-      {tab === 'write' && (
-        <CompetitionForm values={values} onChange={setValues} />
-      )}
-
-      {/* 미리보기 탭 */}
-      {tab === 'preview' &&
-        (!values.name && !values.description ? (
-          <div className="flex flex-col items-center justify-center py-16 text-gray-400 mb-6">
-            <p className="text-sm">작성 탭에서 내용을 입력하면</p>
-            <p className="text-sm">여기서 미리볼 수 있어요.</p>
-          </div>
-        ) : (
-          <div className="mb-6">
-            <CompetitionDetailCard
-              data={{
-                name: values.name,
-                image_url: values.preview,
-                description: values.description,
-                event_data: values.eventDate,
-                location: values.location,
-                apply_deadline: values.applyDeadline,
-              }}
-            />
-          </div>
-        ))}
+      <CompetitionForm values={values} onChange={setValues} />
 
       <PostFormActions
         onCancel={() => router.back()}
         onSubmit={handleSubmit}
-        submitLabel="추가하기"
+        submitLabel="수정하기"
       />
     </div>
   );
