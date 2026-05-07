@@ -11,9 +11,11 @@ import {
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ImageUpload from '@/components/community/ImageUpload';
 import PostFormActions from '@/components/community/PostFormActions';
-import CompetitionCard from '@/components/competition/CompetitionCard';
+import { useQueryClient } from '@tanstack/react-query';
+import CompetitionDetailCard from '@/components/competition/CompetitionDetailCard';
 
 export default function CompetitionWritePage() {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { user, loading } = useAuth();
   const [tab, setTab] = useState<'write' | 'preview'>('write');
@@ -27,6 +29,7 @@ export default function CompetitionWritePage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const today = new Date().toISOString().split('T')[0];
+  const [participants, setParticipants] = useState('');
 
   useEffect(() => {
     if (
@@ -53,11 +56,15 @@ export default function CompetitionWritePage() {
         location,
         event_data: eventDate,
         apply_deadline: applyDeadline,
-        apply_url: applyUrl,
+        apply_url: applyUrl.startsWith('http')
+          ? applyUrl
+          : `https://${applyUrl}`,
         description,
         image_url,
+        participants: participants ? Number(participants) : 0,
       });
       showSuccessToast('대회일정이 추가되었습니다.', '🏆');
+      await queryClient.invalidateQueries({ queryKey: ['competition'] }); // 추가
       router.push('/competitions');
     } catch {
       showErrorToast('대회 추가에 실패했습니다.');
@@ -174,7 +181,23 @@ export default function CompetitionWritePage() {
               />
             </div>
           </div>
-
+          {/* 모집 인원 */}
+          <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
+            <p className="text-sm text-gray-500 mb-2">모집 인원</p>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                👥
+              </span>
+              <input
+                type="number"
+                placeholder="예: 100"
+                value={participants}
+                onChange={(e) => setParticipants(e.target.value)}
+                className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none"
+                min={1}
+              />
+            </div>
+          </div>
           {/* 참가 신청 링크 */}
           <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
             <p className="text-sm text-gray-500 mb-2">참가 신청 링크</p>
@@ -215,17 +238,14 @@ export default function CompetitionWritePage() {
           </div>
         ) : (
           <div className="mb-6">
-            <CompetitionCard
-              competition={{
-                id: 'preview',
+            <CompetitionDetailCard
+              data={{
                 name,
+                image_url: preview,
                 description,
-                image_url: preview ?? '',
                 event_data: eventDate,
-                apply_deadline: applyDeadline,
                 location,
-                participants: 0,
-                apply_url: applyUrl,
+                apply_deadline: applyDeadline,
               }}
             />
           </div>
