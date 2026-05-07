@@ -1,5 +1,15 @@
 import Image from 'next/image';
 import { Profile } from '@/types/user';
+import { Profile } from '@/types/user';
+import { BeltLevel } from '@/types/user';
+
+const BELT_COLORS: Record<BeltLevel, string> = {
+  White: '#e8e8e8',
+  Blue: '#2e6fdb',
+  Purple: '#7c4ddb',
+  Brown: '#8b5a2b',
+  Black: '#1a1a1a',
+};
 
 interface ProfileCardProps {
   profile: Profile;
@@ -24,20 +34,22 @@ export default function ProfileCard({
         />
       </div>
 
-      {/* 닉네임 + 이름 */}
+      {/* 닉네임 */}
       <div className="text-center">
         <h2 className="text-2xl font-bold text-text-primary">
           {profile.nickname ?? '닉네임 없음'}
-          {profile.name && (
-            <span className="text-lg font-medium text-text-secondary ml-2">
-              ({profile.name})
-            </span>
-          )}
         </h2>
+        {/* 벨트 */}
         {profile.belt_level && (
-          <span className="inline-block mt-1 px-3 py-1 bg-btn-basic rounded-full text-sm text-btn-text">
-            {profile.belt_level}
-          </span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-btn-basic rounded-full mt-1">
+            <span
+              className="w-3 h-3 rounded-full shrink-0"
+              style={{
+                backgroundColor: BELT_COLORS[profile.belt_level as BeltLevel],
+              }}
+            />
+            <span className="text-sm text-btn-text">{profile.belt_level}</span>
+          </div>
         )}
       </div>
 
