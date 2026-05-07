@@ -10,10 +10,23 @@ import {
   uploadCompetitionImage,
 } from '@/services/competitionService';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
+import PostFormActions from '@/components/community/PostFormActions';
 import { useQueryClient } from '@tanstack/react-query';
 import CompetitionForm, {
   CompetitionFormValues,
 } from '@/components/competition/CompetitionForm';
+
+const defaultValues: CompetitionFormValues = {
+  name: '',
+  location: '',
+  eventDate: '',
+  applyDeadline: '',
+  applyUrl: '',
+  description: '',
+  participants: '',
+  preview: null,
+  imageFile: null,
+};
 
 export default function CompetitionEditPage({
   params,
@@ -24,8 +37,9 @@ export default function CompetitionEditPage({
   const queryClient = useQueryClient();
   const router = useRouter();
   const { user, loading } = useAuth();
-  const [initialValues, setInitialValues] =
-    useState<Partial<CompetitionFormValues> | null>(null);
+  const [values, setValues] = useState<CompetitionFormValues>(defaultValues);
+  const [isLoading, setIsLoading] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   useEffect(() => {
     if (
@@ -40,7 +54,7 @@ export default function CompetitionEditPage({
     const load = async () => {
       try {
         const data = await getCompetition(id);
-        setInitialValues({
+        setValues({
           name: data.name ?? '',
           location: data.location ?? '',
           eventDate: data.event_data ?? '',
@@ -49,7 +63,9 @@ export default function CompetitionEditPage({
           description: data.description ?? '',
           participants: data.participants ? String(data.participants) : '',
           preview: data.image_url ?? null,
+          imageFile: null,
         });
+        setDataLoaded(true);
       } catch (e) {
         console.error(e);
       }
@@ -57,9 +73,7 @@ export default function CompetitionEditPage({
     load();
   }, [id]);
 
-  if (loading || !initialValues) return <LoadingSpinner />;
-
-  const handleSubmit = async (values: CompetitionFormValues) => {
+  const handleSubmit = async () => {
     if (
       !values.name.trim() ||
       !values.location.trim() ||
@@ -69,6 +83,7 @@ export default function CompetitionEditPage({
       showErrorToast('필수 항목을 모두 입력해주세요.');
       return;
     }
+    setIsLoading(true);
     try {
       let image_url: string | undefined = values.preview ?? undefined;
       if (values.imageFile) {
@@ -91,16 +106,26 @@ export default function CompetitionEditPage({
       router.push(`/competitions/${id}`);
     } catch {
       showErrorToast('대회 수정에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  if (loading || isLoading || !dataLoaded) return <LoadingSpinner />;
+
   return (
-    <CompetitionForm
-      title="대회 수정"
-      submitLabel="수정하기"
-      initialValues={initialValues}
-      onCancel={() => router.back()}
-      onSubmit={handleSubmit}
-    />
+    <div className="max-w-2xl mx-auto p-6">
+      <div className="relative w-full flex items-center justify-center mb-6">
+        <h1 className="text-lg font-semibold">대회 수정</h1>
+      </div>
+
+      <CompetitionForm values={values} onChange={setValues} />
+
+      <PostFormActions
+        onCancel={() => router.back()}
+        onSubmit={handleSubmit}
+        submitLabel="수정하기"
+      />
+    </div>
   );
 }
