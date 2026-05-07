@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, ExternalLink, RotateCcw, X } from 'lucide-react';
+import { Check, ExternalLink, FileText, RotateCcw, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import AdminBadge from '@/components/admin/AdminBadge';
@@ -27,7 +27,7 @@ interface DetailItemProps {
 }
 
 const actionButtonClass =
-  'inline-flex h-8 items-center justify-center gap-1 rounded-md border px-2 text-xs font-medium transition-colors duration-200 cursor-pointer';
+  'rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
 
 function DetailItem({ label, value }: DetailItemProps) {
   return (
@@ -73,9 +73,11 @@ export default function AdminSupportDojangActions({
         <DialogTrigger asChild>
           <button
             type="button"
-            className={`${actionButtonClass} border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-100`}
+            aria-label={`${row.dojang_name} 상세보기`}
+            title="상세보기"
+            className={actionButtonClass}
           >
-            상세보기
+            <FileText size={18} />
           </button>
         </DialogTrigger>
 
@@ -140,10 +142,11 @@ export default function AdminSupportDojangActions({
                 '도장 승인에 실패했습니다.',
               )
             }
-            className={`${actionButtonClass} border-green-200 bg-green-50 text-green-700 hover:bg-green-100`}
+            aria-label={`${row.dojang_name} 승인`}
+            title="승인"
+            className={actionButtonClass}
           >
-            <Check className="size-4" />
-            승인
+            <Check size={18} className="text-green-600" />
           </button>
 
           <button
@@ -155,10 +158,11 @@ export default function AdminSupportDojangActions({
                 '도장 거부 처리에 실패했습니다.',
               )
             }
-            className={`${actionButtonClass} border-red-200 bg-red-50 text-red-600 hover:bg-red-100`}
+            aria-label={`${row.dojang_name} 거부`}
+            title="거부"
+            className={actionButtonClass}
           >
-            <X className="size-4" />
-            거부
+            <X size={18} className="text-red-500" />
           </button>
         </>
       ) : null}
@@ -174,10 +178,11 @@ export default function AdminSupportDojangActions({
                 '승인 취소에 실패했습니다.',
               )
             }
-            className={`${actionButtonClass} border-zinc-200 bg-zinc-50 text-zinc-700 hover:bg-zinc-100`}
+            aria-label={`${row.dojang_name} 승인취소`}
+            title="승인취소"
+            className={actionButtonClass}
           >
-            <RotateCcw className="size-4" />
-            승인취소
+            <RotateCcw size={18} className="text-amber-600" />
           </button>
 
           <button
@@ -189,10 +194,11 @@ export default function AdminSupportDojangActions({
                 '도장 거부 처리에 실패했습니다.',
               )
             }
-            className={`${actionButtonClass} border-red-200 bg-red-50 text-red-600 hover:bg-red-100`}
+            aria-label={`${row.dojang_name} 거부`}
+            title="거부"
+            className={actionButtonClass}
           >
-            <X className="size-4" />
-            거부
+            <X size={18} className="text-red-500" />
           </button>
         </>
       ) : null}
@@ -208,10 +214,11 @@ export default function AdminSupportDojangActions({
                 '재검토 처리에 실패했습니다.',
               )
             }
-            className={`${actionButtonClass} border-zinc-200 bg-zinc-50 text-zinc-700 hover:bg-zinc-100`}
+            aria-label={`${row.dojang_name} 재검토`}
+            title="재검토"
+            className={actionButtonClass}
           >
-            <RotateCcw className="size-4" />
-            재검토
+            <RotateCcw size={18} className="text-blue-500" />
           </button>
 
           <button
@@ -223,10 +230,11 @@ export default function AdminSupportDojangActions({
                 '도장 승인에 실패했습니다.',
               )
             }
-            className={`${actionButtonClass} border-green-200 bg-green-50 text-green-700 hover:bg-green-100`}
+            aria-label={`${row.dojang_name} 승인`}
+            title="승인"
+            className={actionButtonClass}
           >
-            <Check className="size-4" />
-            승인
+            <Check size={18} className="text-green-600" />
           </button>
         </>
       ) : null}

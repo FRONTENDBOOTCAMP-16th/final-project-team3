@@ -1,6 +1,6 @@
 'use client';
 
-import { Eye, ShieldAlert } from 'lucide-react';
+import { FileText, ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -31,7 +31,7 @@ interface DetailItemProps {
 }
 
 const actionButtonClass =
-  'inline-flex h-8 items-center justify-center gap-1 rounded-md border px-2 text-xs font-medium transition-colors duration-200 cursor-pointer';
+  'rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
 
 function DetailItem({ label, value }: DetailItemProps) {
   return (
@@ -132,20 +132,25 @@ export default function AdminSupportReportActions({
       <button
         type="button"
         onClick={handleViewDetail}
-        className={`${actionButtonClass} border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-100`}
+        aria-label={`${row.post_title} 상세보기`}
+        title="상세보기"
+        className={actionButtonClass}
       >
-        <Eye className="size-4" />
-        상세보기
+        <FileText size={18} />
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <button
             type="button"
-            className={`${actionButtonClass} border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100`}
+            aria-label={`${row.post_title} ${isPending ? '처리하기' : '처리내역'}`}
+            title={isPending ? '처리하기' : '처리내역'}
+            className={actionButtonClass}
           >
-            <ShieldAlert className="size-4" />
-            {isPending ? '처리하기' : '처리내역'}
+            <ShieldAlert
+              size={18}
+              className={isPending ? 'text-red-500' : 'text-blue-500'}
+            />
           </button>
         </DialogTrigger>
 
