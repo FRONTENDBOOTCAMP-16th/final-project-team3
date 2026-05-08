@@ -35,6 +35,10 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
     profile.belt_level ?? 'White',
   );
   const [isEditing, setIsEditing] = useState(false);
+  const isChanged =
+    nickname !== (profile.nickname ?? '') ||
+    bio !== (profile.bio ?? '') ||
+    beltLevel !== (profile.belt_level ?? 'White');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const router = useRouter();
@@ -82,7 +86,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
                 </button>
                 <button
                   onClick={handleUpdate}
-                  disabled={isUpdating}
+                  disabled={isUpdating || !isChanged}
                   className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all disabled:opacity-50 cursor-pointer"
                 >
                   <Pencil className="w-4 h-4" />
