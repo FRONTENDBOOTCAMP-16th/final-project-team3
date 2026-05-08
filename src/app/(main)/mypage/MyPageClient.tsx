@@ -34,9 +34,6 @@ export default function MyPageClient() {
     if (!isLoading && !profile) {
       router.push('/login');
     }
-    if (!isLoading && authUser?.role === 'admin') {
-      router.push('/admin');
-    }
   }, [isLoading, profile, authUser, router]);
 
   if (isLoading) return <LoadingSpinner />;
