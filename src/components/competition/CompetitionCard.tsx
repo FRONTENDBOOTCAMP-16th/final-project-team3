@@ -37,23 +37,32 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
         : 'text-gray-400';
 
   return (
-    <div className="rounded-lg overflow-hidden bg-bg-white border border-gray-200 flex flex-col cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
+    <article
+      className="rounded-lg overflow-hidden bg-bg-white border border-gray-200 flex flex-col cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+      aria-label={`${competition.name} 대회`}
+    >
       <Link
         href={`/competitions/${competition.id}`}
         className="flex flex-col flex-1"
+        aria-label={`${competition.name} 대회 상세보기`}
       >
         <div className="relative shrink-0">
           {competition.image_url ? (
             <Image
               src={competition.image_url}
-              alt={competition.name}
+              alt={`${competition.name} 대회 이미지`}
               width={400}
               height={200}
               className="w-full h-50 object-cover"
             />
           ) : (
-            <div className="w-full h-50 bg-gray-100 flex items-center justify-center">
-              <span className="text-gray-400 text-sm">이미지 없음</span>
+            <div
+              className="w-full h-50 bg-gray-100 flex items-center justify-center"
+              aria-label="이미지 없음"
+            >
+              <span className="text-gray-400 text-sm" aria-hidden="true">
+                이미지 없음
+              </span>
             </div>
           )}
 
@@ -65,6 +74,7 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
 
           <span
             className={`absolute top-2 right-2 px-2 py-1 text-xs text-white rounded-full ${statusColor}`}
+            aria-label={`모집 상태: ${actualStatus}`}
           >
             {actualStatus}
           </span>
@@ -77,36 +87,78 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
 
           <div className="flex-1" />
 
-          <div className="flex flex-col gap-1 text-xs text-gray-400">
+          <dl className="flex flex-col gap-1 text-xs text-gray-400">
             <div className="flex items-center gap-1">
-              <Image src="/calendar.svg" alt="날짜" width={14} height={14} />
-              <span>대회 {competition.event_data}</span>
+              <Image
+                src="/calendar.svg"
+                alt=""
+                width={14}
+                height={14}
+                aria-hidden="true"
+              />
+              <dt className="sr-only">대회 날짜</dt>
+              <dd>대회 {competition.event_data}</dd>
             </div>
             <div className="flex items-center gap-1">
-              <Image src="/calendar.svg" alt="마감" width={14} height={14} />
-              <span>신청마감 {competition.apply_deadline}</span>
-              {actualStatus !== '모집완료' && (
-                <span className={`ml-1 font-bold ${ddayColor}`}>{dday}</span>
-              )}
+              <Image
+                src="/calendar.svg"
+                alt=""
+                width={14}
+                height={14}
+                aria-hidden="true"
+              />
+              <dt className="sr-only">신청 마감</dt>
+              <dd className="flex items-center gap-1">
+                신청마감 {competition.apply_deadline}
+                {actualStatus !== '모집완료' && (
+                  <span
+                    className={`ml-1 font-bold ${ddayColor}`}
+                    aria-label={`마감까지 ${dday}`}
+                  >
+                    {dday}
+                  </span>
+                )}
+              </dd>
             </div>
             <div className="flex items-center gap-1">
-              <Image src="/location.svg" alt="위치" width={14} height={14} />
-              <span>{competition.location}</span>
+              <Image
+                src="/location.svg"
+                alt=""
+                width={14}
+                height={14}
+                aria-hidden="true"
+              />
+              <dt className="sr-only">위치</dt>
+              <dd>{competition.location}</dd>
             </div>
             <div className="flex items-center gap-1">
-              <Image src="/person.svg" alt="참가자" width={14} height={14} />
-              <span>모집인원 {competition.participants}명</span>
+              <Image
+                src="/person.svg"
+                alt=""
+                width={14}
+                height={14}
+                aria-hidden="true"
+              />
+              <dt className="sr-only">모집 인원</dt>
+              <dd>모집인원 {competition.participants}명</dd>
             </div>
-          </div>
+          </dl>
         </div>
       </Link>
 
       <div className="px-4 pb-4">
-        <div className="border-t border-gray-200 mb-3" />
+        <div className="border-t border-gray-200 mb-3" aria-hidden="true" />
+
         <a
           href={competition.apply_url}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={
+            actualStatus === '모집완료'
+              ? `${competition.name} 모집 완료`
+              : `${competition.name} 신청하기`
+          }
+          aria-disabled={actualStatus === '모집완료'}
           className={`w-full py-2 text-sm font-bold text-white text-center rounded-lg transition-all block
             ${
               actualStatus === '모집완료'
@@ -117,6 +169,6 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
           {actualStatus === '모집완료' ? '모집 완료' : '신청하기'}
         </a>
       </div>
-    </div>
+    </article>
   );
 }

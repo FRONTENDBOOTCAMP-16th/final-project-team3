@@ -2,9 +2,9 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
 import AdminHeader from '@/components/admin/AdminHeader';
-import AdminPostTableClient from '@/components/admin/post/AdminPostTableClient';
-import type { PostQueryRow } from '@/components/admin/post/types';
-import { mapPostQueryRowsToAdminPostRows } from '@/components/admin/post/utils';
+import AdminPostTableClient from '@/components/admin/posts/AdminPostsTableClient';
+import type { PostQueryRow } from '@/components/admin/posts/types';
+import { mapPostQueryRowsToAdminPostRows } from '@/components/admin/posts/utils';
 
 async function getAdminPosts() {
   const cookieStore = await cookies();
@@ -51,7 +51,7 @@ export default async function AdminPostPage() {
 
   return (
     <main className="min-h-screen w-full pt-28 space-y-2">
-      <AdminHeader page="post" />
+      <AdminHeader page="posts" />
       <AdminPostTableClient data={postData} />
     </main>
   );

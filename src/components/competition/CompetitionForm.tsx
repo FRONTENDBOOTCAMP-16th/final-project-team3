@@ -33,14 +33,25 @@ export default function CompetitionForm({
   };
 
   return (
-    <>
+    <div role="form" aria-label="대회 정보 입력 폼">
       <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-        <p className="text-sm text-gray-500 mb-2">대회 제목</p>
+        <label
+          htmlFor="competition-name"
+          className="text-sm text-gray-500 mb-2 block"
+        >
+          대회 제목{' '}
+          <span aria-hidden="true" className="text-red-400">
+            *
+          </span>
+          <span className="sr-only">(필수)</span>
+        </label>
         <input
+          id="competition-name"
           type="text"
           placeholder="예: 2026 서울 주짓수 챔피언십"
           value={values.name}
           onChange={(e) => update('name', e.target.value)}
+          aria-required="true"
           className="w-full bg-gray-50 rounded-lg px-3 py-2 text-sm outline-none"
         />
       </div>
@@ -54,79 +65,136 @@ export default function CompetitionForm({
       />
 
       <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-        <p className="text-sm text-gray-500 mb-2">대회 날짜</p>
+        <label
+          htmlFor="event-date"
+          className="text-sm text-gray-500 mb-2 block"
+        >
+          대회 날짜{' '}
+          <span aria-hidden="true" className="text-red-400">
+            *
+          </span>
+          <span className="sr-only">(필수)</span>
+        </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+          <span
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            aria-hidden="true"
+          >
             📅
           </span>
           <input
+            id="event-date"
             type="date"
             value={values.eventDate}
             min={today}
             onChange={(e) => update('eventDate', e.target.value)}
             onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+            aria-required="true"
             className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none text-gray-700 cursor-pointer"
           />
         </div>
       </div>
 
       <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-        <p className="text-sm text-gray-500 mb-2">신청 마감 날짜</p>
+        <label
+          htmlFor="apply-deadline"
+          className="text-sm text-gray-500 mb-2 block"
+        >
+          신청 마감 날짜{' '}
+          <span aria-hidden="true" className="text-red-400">
+            *
+          </span>
+          <span className="sr-only">(필수)</span>
+        </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+          <span
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            aria-hidden="true"
+          >
             📅
           </span>
           <input
+            id="apply-deadline"
             type="date"
             value={values.applyDeadline}
             min={today}
             onChange={(e) => update('applyDeadline', e.target.value)}
             onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+            aria-required="true"
             className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none text-gray-700 cursor-pointer"
           />
         </div>
       </div>
 
       <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-        <p className="text-sm text-gray-500 mb-2">대회 장소</p>
+        <label
+          htmlFor="competition-location"
+          className="text-sm text-gray-500 mb-2 block"
+        >
+          대회 장소{' '}
+          <span aria-hidden="true" className="text-red-400">
+            *
+          </span>
+          <span className="sr-only">(필수)</span>
+        </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+          <span
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            aria-hidden="true"
+          >
             📍
           </span>
           <input
+            id="competition-location"
             type="text"
             placeholder="예: 잠실 체육관"
             value={values.location}
             onChange={(e) => update('location', e.target.value)}
+            aria-required="true"
             className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none"
           />
         </div>
       </div>
 
       <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-        <p className="text-sm text-gray-500 mb-2">모집 인원</p>
+        <label
+          htmlFor="competition-participants"
+          className="text-sm text-gray-500 mb-2 block"
+        >
+          모집 인원
+        </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+          <span
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            aria-hidden="true"
+          >
             👥
           </span>
           <input
+            id="competition-participants"
             type="number"
             placeholder="예: 100"
             value={values.participants}
             onChange={(e) => update('participants', e.target.value)}
-            className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none"
             min={1}
+            className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none"
           />
         </div>
       </div>
 
       <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-        <p className="text-sm text-gray-500 mb-2">참가 신청 링크</p>
+        <label htmlFor="apply-url" className="text-sm text-gray-500 mb-2 block">
+          참가 신청 링크
+        </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+          <span
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            aria-hidden="true"
+          >
             🔗
           </span>
           <input
+            id="apply-url"
             type="url"
             placeholder="https://example.com/register"
             value={values.applyUrl}
@@ -137,8 +205,14 @@ export default function CompetitionForm({
       </div>
 
       <div className="bg-white rounded-xl p-4 mb-6 shadow-sm">
-        <p className="text-sm text-gray-500 mb-2">대회 설명</p>
+        <label
+          htmlFor="competition-description"
+          className="text-sm text-gray-500 mb-2 block"
+        >
+          대회 설명
+        </label>
         <textarea
+          id="competition-description"
           placeholder="대회에 대한 상세 설명을 입력하세요"
           value={values.description}
           onChange={(e) => update('description', e.target.value)}
@@ -146,6 +220,6 @@ export default function CompetitionForm({
           className="w-full bg-gray-50 rounded-lg px-3 py-2 text-sm outline-none resize-none"
         />
       </div>
-    </>
+    </div>
   );
 }
