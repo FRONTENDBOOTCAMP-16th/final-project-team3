@@ -1,4 +1,3 @@
-// components/competition/CompetitionDetailClient.tsx
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -40,13 +39,23 @@ export default function CompetitionDetailClient({
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4 space-y-4">
+    <main
+      className="max-w-2xl mx-auto p-4 space-y-4"
+      aria-label={`${competition.name} 대회 상세`}
+    >
       {/* 뒤로가기 */}
       <button
         onClick={() => router.push('/competitions')}
+        aria-label="대회일정 목록으로 돌아가기"
         className="flex items-center gap-2 px-2.5 py-2 border-2 border-white bg-white text-black text-sm font-medium rounded-xl hover:bg-(--color-btn-focus) hover:text-white transition-colors duration-200 cursor-pointer"
       >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          aria-hidden="true"
+        >
           <path
             d="M10 12L6 8L10 4"
             stroke="currentColor"
@@ -79,26 +88,47 @@ export default function CompetitionDetailClient({
               <>
                 <button
                   title="수정하기"
+                  aria-label="대회 게시글 수정하기"
                   onClick={() => router.push(`/competitions/${id}/edit`)}
                   className="cursor-pointer"
                 >
-                  <Image src="/postEdit.svg" alt="" width={30} height={30} />
+                  <Image
+                    src="/postEdit.svg"
+                    alt=""
+                    width={30}
+                    height={30}
+                    aria-hidden="true"
+                  />
                 </button>
                 <button
                   title="삭제하기"
+                  aria-label="대회 게시글 삭제하기"
                   onClick={handleDeletePost}
                   className="cursor-pointer"
                 >
-                  <Image src="/postDelete.svg" alt="" width={32} height={32} />
+                  <Image
+                    src="/postDelete.svg"
+                    alt=""
+                    width={32}
+                    height={32}
+                    aria-hidden="true"
+                  />
                 </button>
               </>
             )}
             <button
               title="공유하기"
+              aria-label="대회 게시글 링크 공유하기"
               onClick={() => handleShare()}
               className="w-8 h-8 flex items-center justify-center cursor-pointer"
             >
-              <Image src="/postShare.svg" alt="" width={18} height={18} />
+              <Image
+                src="/postShare.svg"
+                alt=""
+                width={18}
+                height={18}
+                aria-hidden="true"
+              />
             </button>
           </>
         }
@@ -114,6 +144,12 @@ export default function CompetitionDetailClient({
         }
         target="_blank"
         rel="noopener noreferrer"
+        aria-label={
+          status === '모집완료'
+            ? `${competition.name} 모집 완료`
+            : `${competition.name} 대회 신청하기`
+        }
+        aria-disabled={status === '모집완료'}
         className={`block w-full py-4 text-center text-sm font-bold text-white rounded-2xl transition-all
           ${
             status === '모집완료'
@@ -123,6 +159,6 @@ export default function CompetitionDetailClient({
       >
         {status === '모집완료' ? '모집 완료' : '대회 신청하기'}
       </a>
-    </div>
+    </main>
   );
 }

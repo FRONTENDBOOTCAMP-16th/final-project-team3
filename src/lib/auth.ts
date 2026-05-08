@@ -18,7 +18,7 @@ export async function getCurrentUser(): Promise<AuthUser> {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('name, role, belt_level, avatar_url')
+    .select('name, role, belt_level, avatar_url, nickname')
     .eq('id', user.id)
     .single();
 
@@ -26,7 +26,7 @@ export async function getCurrentUser(): Promise<AuthUser> {
 
   return {
     id: user.id,
-    name: profile.name,
+    name: profile.nickname ?? profile.name,
     role: profile.role,
     belt: profile.belt_level,
     image: profile.avatar_url,
