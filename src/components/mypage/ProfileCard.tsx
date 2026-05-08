@@ -1,7 +1,5 @@
 import Image from 'next/image';
-import { Profile } from '@/types/user';
-import { Profile } from '@/types/user';
-import { BeltLevel } from '@/types/user';
+import { Profile, BeltLevel } from '@/types/user';
 
 const BELT_COLORS: Record<BeltLevel, string> = {
   White: '#e8e8e8',
