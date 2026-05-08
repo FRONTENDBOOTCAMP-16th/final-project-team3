@@ -13,7 +13,7 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useSearchParams, useRouter } from 'next/navigation';
 import useAuthStore from '@/store/authStore';
 
-export default function MyPage() {
+export default function MyPageClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialTab =
@@ -43,14 +43,17 @@ export default function MyPage() {
   if (!profile) return null;
 
   return (
-    <div className="flex flex-col">
+    <main className="w-full min-h-screen">
       {/* 헤더 */}
-      <div className="flex flex-col gap-1 px-6 py-6 bg-white z-10 shadow-md sticky top-0">
-        <h1 className="text-4xl font-bold text-text-primary">마이페이지</h1>
-        <p className="text-sm text-text-secondary">내 프로필과 활동 내역</p>
+      <div className="fixed top-0 left-50 right-0 z-10 bg-white shadow-sm flex justify-center">
+        <div className="w-full max-w-7xl px-6 py-6">
+          <h1 className="text-4xl font-bold text-text-primary">마이페이지</h1>
+          <p className="text-sm text-text-secondary">내 프로필과 활동 내역</p>
+        </div>
       </div>
 
-      <div className="flex gap-6 p-6">
+      {/* 컨텐츠 */}
+      <div className="flex gap-6 p-6 pt-32">
         {/* 프로필 카드 */}
         <div className="w-96 shrink-0">
           <ProfileCard
@@ -94,6 +97,6 @@ export default function MyPage() {
           )}
         </div>
       </div>
-    </div>
+    </main>
   );
 }
