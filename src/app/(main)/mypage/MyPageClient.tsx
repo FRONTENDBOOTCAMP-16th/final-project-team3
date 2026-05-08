@@ -45,7 +45,9 @@ export default function MyPageClient() {
       <div className="fixed top-0 left-50 right-0 z-10 bg-white shadow-sm flex justify-center">
         <div className="w-full max-w-7xl px-6 py-6">
           <h1 className="text-4xl font-bold text-text-primary">마이페이지</h1>
-          <p className="text-sm text-text-secondary">내 프로필과 활동 내역</p>
+          <p className="text-sm text-text-secondary mt-2">
+            내 프로필과 활동 내역
+          </p>
         </div>
       </div>
 
