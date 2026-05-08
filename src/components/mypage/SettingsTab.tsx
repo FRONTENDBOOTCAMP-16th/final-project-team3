@@ -181,10 +181,15 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
         <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>정말 탈퇴하시겠습니까?</DialogTitle>
+              <DialogTitle>
+                {profile.role === 'admin'
+                  ? '정말 관리자 계정을 삭제하시겠습니까?'
+                  : '정말 탈퇴하시겠습니까?'}
+              </DialogTitle>
               <DialogDescription>
-                계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수
-                없습니다.
+                {profile.role === 'admin'
+                  ? '관리자 계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.'
+                  : '계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.'}
               </DialogDescription>
             </DialogHeader>
             <div className="flex gap-2 mt-4">
@@ -199,7 +204,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
                 disabled={isDeleting}
                 className="flex-1 px-6 py-3 bg-danger text-btn-focus-text rounded-xl text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50 cursor-pointer"
               >
-                {isDeleting ? '탈퇴 중...' : '확인'}
+                {isDeleting ? '삭제 중...' : '확인'}
               </button>
             </div>
           </DialogContent>
