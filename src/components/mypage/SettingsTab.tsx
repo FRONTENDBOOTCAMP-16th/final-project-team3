@@ -38,13 +38,16 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateMyProfile();
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteMyAccount();
   const isChanged =
-    nickname !== (profile.nickname ?? '') || bio !== (profile.bio ?? '');
+    nickname !== (profile.nickname ?? '') ||
+    bio !== (profile.bio ?? '') ||
+    beltLevel !== (profile.belt_level ?? 'White');
   const handleUpdate = () => {
     updateProfile(
       {
         nickname,
         bio,
         avatar_url: profile.avatar_url ?? null,
+        belt_level: profile.belt_level,
       },
       {
         onSuccess: () => {
