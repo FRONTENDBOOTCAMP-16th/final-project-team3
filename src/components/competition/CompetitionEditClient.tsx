@@ -1,4 +1,3 @@
-// components/competition/CompetitionEditClient.tsx
 'use client';
 
 import { useState } from 'react';
@@ -81,18 +80,16 @@ export default function CompetitionEditClient({
   if (isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
+    <main className="max-w-2xl mx-auto p-6" aria-label="대회 수정">
       <div className="relative w-full flex items-center justify-center mb-6">
         <h1 className="text-lg font-semibold">대회 수정</h1>
       </div>
-
       <CompetitionForm values={values} onChange={setValues} />
-
       <PostFormActions
         onCancel={() => router.back()}
         onSubmit={handleSubmit}
         submitLabel="수정하기"
       />
-    </div>
+    </main>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 import Image from 'next/image';
 import { Button } from '../ui/button';
-import { Input } from '../ui/input';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import SearchInput from '../common/SearchInput';
@@ -35,6 +34,7 @@ export default function Pageheader({
   searchPlaceholder,
 }: PageheaderProps) {
   const router = useRouter();
+
   const handleWriteClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     const {
@@ -44,24 +44,36 @@ export default function Pageheader({
       router.push('/login');
       return;
     }
-    // 로그인 됐으면 writeLink로 이동
     if (writeLink) {
       router.push(writeLink);
     }
   };
+
   return (
     <div className="flex flex-col gap-5 bg-white z-10 py-6">
       {/* 타이틀 */}
       <div className="flex flex-col gap-1">
         <h1 className="text-4xl font-bold text-text-primary">{title}</h1>
-        <p className="text-sm text-text-secondary">{description}</p>
+        <p className="text-sm text-text-secondary" aria-label={description}>
+          {description}
+        </p>
       </div>
 
       {/* 검색창 + 글쓰기 버튼 */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2" role="search">
         <div className="flex-1 relative flex items-center">
-          <button className="absolute left-3 z-10" onClick={onSearch}>
-            <Image src="/glasses.svg" alt="검색" width={18} height={18} />
+          <button
+            className="absolute left-3 z-10"
+            onClick={onSearch}
+            aria-label="검색"
+          >
+            <Image
+              src="/glasses.svg"
+              alt=""
+              width={18}
+              height={18}
+              aria-hidden="true"
+            />
           </button>
           <SearchInput
             searchQuery={searchQuery}
@@ -75,9 +87,15 @@ export default function Pageheader({
             <Button
               className="bg-btn-focus text-btn-focus-text shrink-0 w-31 h-12 flex items-center gap-2 cursor-pointer"
               onClick={handleWriteClick}
-              aria-label="새 게시글 작성"
+              aria-label={`${writeLinkText ?? '글쓰기'} 페이지로 이동`}
             >
-              <Image src="/Plusicon.svg" alt="글쓰기" width={16} height={16} />
+              <Image
+                src="/Plusicon.svg"
+                alt=""
+                width={16}
+                height={16}
+                aria-hidden="true"
+              />
               {writeLinkText ?? '글쓰기'}
             </Button>
           </Link>
@@ -86,10 +104,17 @@ export default function Pageheader({
 
       {/* 탭 버튼 */}
       {tabs && tabs.length > 0 && (
-        <div className="flex gap-2">
+        <div
+          className="flex gap-2"
+          role="tablist"
+          aria-label={`${title} 카테고리 탭`}
+        >
           {tabs.map((tab) => (
             <Button
               key={tab}
+              role="tab"
+              aria-selected={activeTab === tab}
+              aria-controls={`tabpanel-${tab}`}
               onClick={() => setActiveTab && setActiveTab(tab)}
               className={`cursor-pointer ${
                 activeTab === tab
@@ -102,8 +127,6 @@ export default function Pageheader({
           ))}
         </div>
       )}
-
-      {/* 구분선 */}
     </div>
   );
 }

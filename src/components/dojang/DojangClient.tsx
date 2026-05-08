@@ -40,7 +40,7 @@ export default function DojangClient({
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
-  const cardRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const cardRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   useEffect(() => {
@@ -60,9 +60,7 @@ export default function DojangClient({
   };
 
   useEffect(() => {
-    if (window.naver && window.naver.maps) {
-      initMap();
-    }
+    if (window.naver && window.naver.maps) initMap();
   }, []);
 
   const clearMarkers = () => {
@@ -125,7 +123,7 @@ export default function DojangClient({
     };
 
     fetchDojangs();
-  }, [debouncedSearch]);
+  }, [debouncedSearch, headerHeight]);
 
   return (
     <>
@@ -150,32 +148,52 @@ export default function DojangClient({
           </div>
         </div>
 
-        <div
+        <main
           style={{ paddingTop: `${headerHeight + 24}px` }}
           className="pb-6 flex justify-center"
+          aria-label="도장 찾기"
         >
           <div className="w-full max-w-7xl px-6 flex flex-col gap-4">
+            {/* 지도 */}
             <div className="relative">
               {!mapLoaded && (
-                <div className="absolute inset-0 bg-btn-basic rounded-lg flex items-center justify-center z-10">
-                  <div className="w-8 h-8 border-4 border-gray-200 border-t-btn-focus rounded-full animate-spin" />
+                <div
+                  className="absolute inset-0 bg-btn-basic rounded-lg flex items-center justify-center z-10"
+                  role="status"
+                  aria-label="지도 불러오는 중"
+                >
+                  <div
+                    className="w-8 h-8 border-4 border-gray-200 border-t-btn-focus rounded-full animate-spin"
+                    aria-hidden="true"
+                  />
                 </div>
               )}
               <div
                 ref={mapRef}
                 className="w-full h-100 rounded-lg overflow-hidden border border-gray-200"
                 style={{ zIndex: 0 }}
+                role="application"
+                aria-label="도장 위치 지도"
               />
             </div>
 
+            {/* 도장 목록 */}
             {isLoading ? (
-              <div className="flex items-center justify-center py-20">
-                <div className="w-8 h-8 border-4 border-gray-200 border-t-btn-focus rounded-full animate-spin" />
+              <div role="status" aria-label="도장 검색 중">
+                <div className="flex items-center justify-center py-20">
+                  <div
+                    className="w-8 h-8 border-4 border-gray-200 border-t-btn-focus rounded-full animate-spin"
+                    aria-hidden="true"
+                  />
+                </div>
               </div>
             ) : dojangs.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4">
+              <ul
+                className="grid grid-cols-2 gap-4"
+                aria-label={`검색 결과 ${dojangs.length}개`}
+              >
                 {dojangs.map((dojang) => (
-                  <div
+                  <li
                     key={dojang.id}
                     ref={(el) => {
                       cardRefs.current[dojang.id] = el;
@@ -188,11 +206,14 @@ export default function DojangClient({
                       )}
                       isSelected={selectedDojangId === dojang.id}
                     />
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             ) : (
-              <div className="flex flex-col items-center justify-center py-20 text-text-secondary">
+              <div
+                className="flex flex-col items-center justify-center py-20 text-text-secondary"
+                aria-live="polite"
+              >
                 <p className="text-lg">검색어를 입력해주세요</p>
                 <p className="text-sm mt-2">
                   지역명이나 도장 이름으로 검색해보세요
@@ -200,7 +221,7 @@ export default function DojangClient({
               </div>
             )}
           </div>
-        </div>
+        </main>
       </div>
     </>
   );
