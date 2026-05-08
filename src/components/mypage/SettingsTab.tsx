@@ -73,7 +73,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             {isEditing ? (
               <div className="flex gap-2">
                 <button
-                  onClick={handleCancel}
+                  onClick={() => setIsEditing(false)}
                   className="px-4 py-2 bg-btn-basic text-btn-text rounded-lg text-sm font-bold hover:opacity-80 transition-all cursor-pointer"
                 >
                   취소
@@ -107,9 +107,16 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
 
         {/* 닉네임 */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-text-primary">
-            닉네임
-          </label>
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-text-primary">
+              닉네임
+            </label>
+            {isEditing && (
+              <p className="text-xs text-text-secondary">
+                {nickname.length}/10
+              </p>
+            )}
+          </div>
           <div
             className={`flex items-center gap-2 rounded-xl px-4 py-3 ${isEditing ? 'bg-white border border-btn-focus' : 'bg-input-bg'}`}
           >
@@ -119,6 +126,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
+              maxLength={10}
               className="flex-1 bg-transparent text-sm text-input-text outline-none"
             />
           </div>
@@ -185,11 +193,19 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
 
         {/* 소개 */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-text-primary">소개</label>
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-text-primary">
+              소개
+            </label>
+            {isEditing && (
+              <p className="text-xs text-text-secondary">{bio.length}/200</p>
+            )}
+          </div>
           <textarea
             disabled={!isEditing}
             value={bio}
             onChange={(e) => setBio(e.target.value)}
+            maxLength={200}
             rows={4}
             className={`w-full rounded-xl px-4 py-3 text-sm text-input-text outline-none resize-none ${isEditing ? 'bg-white border border-btn-focus' : 'bg-input-bg'}`}
           />
