@@ -20,6 +20,7 @@ import PostDetailCard, {
   PostDetailCardData,
 } from '@/components/community/PostDetailCard';
 import { timeAgo } from '@/utils/timeAgo';
+import { LimitedTextarea } from '../common/LimitedTextarea';
 
 interface Props {
   id: string;
@@ -260,14 +261,16 @@ export default function PostDetailClient({
             <label htmlFor="comment-input" className="sr-only">
               댓글 입력
             </label>
-            <input
-              type="text"
+            <LimitedTextarea
               id="comment-input"
-              placeholder="댓글을 입력하세요..."
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              onChange={setComment}
+              maxLength={300}
+              allowNewline={false}
+              rows={1}
+              placeholder="댓글을 입력하세요..."
+              className="flex-1"
               onKeyDown={(e) => e.key === 'Enter' && handleCommentSubmit()}
-              className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-gray-400 transition-colors placeholder:text-gray-400"
             />
             <button
               onClick={handleCommentSubmit}
@@ -321,16 +324,17 @@ export default function PostDetailClient({
                       >
                         댓글 수정 입력
                       </label>
-                      <input
+                      <LimitedTextarea
                         id={`edit-comment-${c.id}`}
-                        type="text"
                         value={editingContent}
-                        onChange={(e) => setEditingContent(e.target.value)}
+                        onChange={setEditingContent}
+                        maxLength={300}
+                        allowNewline={false}
+                        rows={1}
+                        className="flex-1"
                         onKeyDown={(e) =>
                           e.key === 'Enter' && handleEditComment(c.id)
-                        }
-                        className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 text-sm outline-none focus:border-gray-400"
-                        autoFocus
+                        } // 추가
                       />
                       <button
                         onClick={() => handleEditComment(c.id)}

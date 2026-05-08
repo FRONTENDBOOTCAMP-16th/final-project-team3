@@ -8,6 +8,8 @@ import { updatePost, uploadPostImage } from '@/services/communityService';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ImageUpload from '@/components/community/ImageUpload';
 import PostFormActions from '@/components/community/PostFormActions';
+import { LimitedInput } from '../common/LimitedInput';
+import { LimitedTextarea } from '../common/LimitedTextarea';
 
 interface Props {
   id: string;
@@ -72,13 +74,12 @@ export default function EditClient({ id, initialPost }: Props) {
         >
           제목
         </label>
-        <input
+        <LimitedInput
           id="post-title"
-          type="text"
-          placeholder="제목을 입력하세요"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full bg-gray-50 rounded-lg px-3 py-2 text-sm outline-none"
+          onChange={setTitle}
+          maxLength={35}
+          placeholder="제목을 입력하세요"
         />
       </div>
 
@@ -97,13 +98,13 @@ export default function EditClient({ id, initialPost }: Props) {
         >
           내용
         </label>
-        <textarea
+        <LimitedTextarea
           id="post-content"
-          placeholder="내용을 입력하세요"
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={setContent}
+          maxLength={5000}
           rows={8}
-          className="w-full bg-gray-50 rounded-lg px-3 py-2 text-sm outline-none resize-none"
+          placeholder="내용을 입력하세요"
         />
       </div>
 
