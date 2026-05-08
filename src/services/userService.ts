@@ -84,6 +84,7 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
 
 // 회원 탈퇴
 export async function deleteMyAccount(): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, 2000));
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
 }

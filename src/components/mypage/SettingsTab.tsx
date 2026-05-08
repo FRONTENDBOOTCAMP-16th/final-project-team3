@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
+import { useRouter } from 'next/navigation';
 
 interface SettingsTabProps {
   profile: Profile;
@@ -36,6 +37,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+  const router = useRouter();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateMyProfile();
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteMyAccount();
   const handleCancel = () => {
@@ -255,11 +257,23 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
                 취소
               </button>
               <button
-                onClick={() => deleteAccount()}
+                onClick={() =>
+                  deleteAccount(undefined, {
+                    onSuccess: () => {
+                      router.push('/login');
+                    },
+                  })
+                }
                 disabled={isDeleting}
                 className="flex-1 px-6 py-3 bg-danger text-btn-focus-text rounded-xl text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50 cursor-pointer"
               >
-                {isDeleting ? '삭제 중...' : '확인'}
+                {isDeleting ? (
+                  <span className="animate-pulse">
+                    {profile.role === 'admin' ? '삭제 중...' : '탈퇴 중...'}
+                  </span>
+                ) : (
+                  '확인'
+                )}
               </button>
             </div>
           </DialogContent>
