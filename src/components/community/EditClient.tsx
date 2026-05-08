@@ -20,7 +20,7 @@ export default function EditClient({ id, initialPost }: Props) {
 
   const [title, setTitle] = useState(initialPost.title);
   const [content, setContent] = useState(initialPost.content);
-  const [category] = useState<PostCategory>(initialPost.category); // 수정 불가
+  const [category] = useState<PostCategory>(initialPost.category);
   const [preview, setPreview] = useState<string | null>(
     initialPost.image_url ?? null,
   );

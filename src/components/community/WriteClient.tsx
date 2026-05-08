@@ -62,7 +62,7 @@ export default function WriteClient() {
         <h1 className="text-lg font-semibold mx-auto">게시글 작성</h1>
       </div>
 
-      {/* ✅ 탭 버튼 추가 */}
+      {/* ✅ 탭 버튼 */}
       <div role="tablist" className="flex bg-gray-100 rounded-xl p-1 mb-6">
         <button
           role="tab"
