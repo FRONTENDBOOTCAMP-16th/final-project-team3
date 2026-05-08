@@ -3,6 +3,7 @@
 import { useCallback } from 'react';
 
 interface LimitedTextareaProps {
+  id?: string;
   value: string;
   onChange: (value: string) => void;
   maxLength: number;
@@ -13,9 +14,11 @@ interface LimitedTextareaProps {
   allowNewline?: boolean; // false면 댓글처럼 줄바꿈 차단
   disabled?: boolean;
   className?: string;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
 }
 
 export function LimitedTextarea({
+  id,
   value,
   onChange,
   maxLength,
@@ -26,6 +29,7 @@ export function LimitedTextarea({
   allowNewline = true,
   disabled,
   className,
+  onKeyDown,
 }: LimitedTextareaProps) {
   const threshold = warnAt ?? Math.floor(maxLength * 0.8);
   const len = value.length;
@@ -44,8 +48,9 @@ export function LimitedTextarea({
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (!allowNewline && e.key === 'Enter') e.preventDefault();
+      onKeyDown?.(e); // 외부 onKeyDown 실행
     },
-    [allowNewline],
+    [allowNewline, onKeyDown],
   );
 
   const counterColor = isError
@@ -69,6 +74,7 @@ export function LimitedTextarea({
       )}
       <div className="relative">
         <textarea
+          id={id}
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}

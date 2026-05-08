@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 
 interface LimitedInputProps {
+  id?: string;
   value: string;
   onChange: (value: string) => void;
   maxLength: number;
@@ -14,6 +15,7 @@ interface LimitedInputProps {
 }
 
 export function LimitedInput({
+  id,
   value,
   onChange,
   maxLength,
@@ -56,6 +58,7 @@ export function LimitedInput({
       )}
       <div className="relative">
         <input
+          id={id}
           type="text"
           value={value}
           onChange={handleChange}
