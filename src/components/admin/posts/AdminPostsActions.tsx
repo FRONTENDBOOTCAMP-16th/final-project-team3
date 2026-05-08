@@ -2,7 +2,7 @@
 
 import { Eye, EyeOff, Trash2, RotateCcw, FileText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import type { AdminPostStatus } from '@/components/admin/post/types';
+import type { AdminPostStatus } from '@/components/admin/posts/types';
 import { ROUTES } from '@/constants/routes';
 import { supabase } from '@/lib/supabase';
 
