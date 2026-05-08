@@ -167,6 +167,7 @@ export default function PostDetailClient({
       {/* 뒤로가기 */}
       <button
         onClick={() => router.push('/community')}
+        aria-label="커뮤니티 목록으로 이동"
         className="flex items-center gap-2 px-2.5 py-2 border-2 border-white bg-white text-black text-sm font-medium rounded-xl hover:bg-(--color-btn-focus) hover:text-white transition-colors duration-200 cursor-pointer"
       >
         <svg
@@ -204,17 +205,23 @@ export default function PostDetailClient({
               <>
                 <button
                   title="수정하기"
+                  aria-label="게시글 수정"
                   onClick={() => router.push(`/community/${id}/edit`)}
                 >
                   <Image src="/postEdit.svg" alt="" width={30} height={30} />
                 </button>
-                <button title="삭제하기" onClick={handleDeletePost}>
+                <button
+                  title="삭제하기"
+                  aria-label="게시글 삭제"
+                  onClick={handleDeletePost}
+                >
                   <Image src="/postDelete.svg" alt="" width={32} height={32} />
                 </button>
               </>
             ) : (
               <button
                 title="신고하기"
+                aria-label="게시글 신고"
                 onClick={() => setReportModalOpen(true)}
                 className="w-8 h-8 flex items-center justify-center"
               >
@@ -223,6 +230,7 @@ export default function PostDetailClient({
             )}
             <button
               title="공유하기"
+              aria-label="게시글 공유"
               onClick={handleShare}
               className="w-8 h-8 flex items-center justify-center"
             >
@@ -237,7 +245,8 @@ export default function PostDetailClient({
         <div className="px-5 pt-5 pb-3 flex items-center gap-2 border-b border-gray-100">
           <Image
             src="/postComment.svg"
-            alt="댓글"
+            alt=""
+            aria-hidden="true"
             width={16}
             height={16}
             className="opacity-40"
@@ -262,11 +271,13 @@ export default function PostDetailClient({
             />
             <button
               onClick={handleCommentSubmit}
+              aria-label="댓글 전송"
               className="w-10 h-10 flex items-center justify-center shrink-0 transition-colors cursor-pointer"
             >
               <Image
                 src="/postCommentSubmit.svg"
-                alt="전송"
+                alt=""
+                aria-hidden="true"
                 width={30}
                 height={30}
               />
@@ -323,12 +334,14 @@ export default function PostDetailClient({
                       />
                       <button
                         onClick={() => handleEditComment(c.id)}
+                        aria-label="댓글 저장"
                         className="text-xs text-blue-500 font-medium"
                       >
                         저장
                       </button>
                       <button
                         onClick={() => setEditingCommentId(null)}
+                        aria-label="댓글 수정 취소"
                         className="text-xs text-gray-400"
                       >
                         취소

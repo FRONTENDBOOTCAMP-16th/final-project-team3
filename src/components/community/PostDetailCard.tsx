@@ -1,7 +1,6 @@
 import { timeAgo } from '@/utils/timeAgo';
 import { Heart } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 
 export interface PostDetailCardData {
   nickname: string;
@@ -18,7 +17,6 @@ export interface PostDetailCardData {
 
 interface PostDetailCardProps {
   post: PostDetailCardData;
-  href?: string;
   headerActions?: React.ReactNode;
   onLike?: () => void;
   isLiked?: boolean;
@@ -26,7 +24,6 @@ interface PostDetailCardProps {
 
 export default function PostDetailCard({
   post,
-  href,
   headerActions,
   onLike,
   isLiked,
@@ -38,7 +35,7 @@ export default function PostDetailCard({
         ? { label: '관리자', className: 'bg-red-50 text-red-600' }
         : { label: '일반', className: 'bg-gray-100 text-gray-600' };
 
-  const card = (
+  return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <div className="flex items-center justify-between px-5 pt-5 pb-4">
         <div className="flex items-center gap-3">
@@ -69,7 +66,8 @@ export default function PostDetailCard({
             <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
               <Image
                 src="/postTime.svg"
-                alt="시간"
+                alt=""
+                aria-hidden="true"
                 width={11}
                 height={11}
                 className="opacity-50"
@@ -127,19 +125,17 @@ export default function PostDetailCard({
         </button>
 
         <div className="flex items-center gap-1.5 text-xs text-gray-500">
-          <Image src="/postComment.svg" alt="댓글" width={16} height={16} />
+          <Image
+            src="/postComment.svg"
+            alt=""
+            aria-hidden="true"
+            width={16}
+            height={16}
+          />
           <span>댓글 {post.commentCount}</span>
         </div>
         <span className="text-xs text-gray-500">조회 {post.view_count}</span>
       </div>
     </div>
-  );
-
-  return href ? (
-    <Link href={href} className="block">
-      {card}
-    </Link>
-  ) : (
-    card
   );
 }
