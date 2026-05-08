@@ -12,6 +12,7 @@ interface LimitedInputProps {
   label?: string;
   disabled?: boolean;
   className?: string;
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 export function LimitedInput({
@@ -24,6 +25,7 @@ export function LimitedInput({
   label,
   disabled,
   className,
+  'aria-required': ariaRequired,
 }: LimitedInputProps) {
   const threshold = warnAt ?? Math.floor(maxLength * 0.8);
   const len = value.length;
@@ -58,6 +60,7 @@ export function LimitedInput({
       )}
       <div className="relative">
         <input
+          aria-required={ariaRequired}
           id={id}
           type="text"
           value={value}
