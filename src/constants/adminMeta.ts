@@ -1,6 +1,6 @@
 export type AdminPageKey =
   | 'dashboard'
-  | 'post'
+  | 'posts'
   | 'user'
   | 'support'
   | 'competitions';
@@ -15,7 +15,7 @@ export const ADMIN_META: Record<AdminPageKey, AdminMeta> = {
     title: '대시보드',
     description: '관리자 현황을 한눈에 확인하세요',
   },
-  post: {
+  posts: {
     title: '게시글 관리',
     description: '전체 게시글을 관리합니다',
   },
