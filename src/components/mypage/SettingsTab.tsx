@@ -47,7 +47,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
         nickname,
         bio,
         avatar_url: profile.avatar_url ?? null,
-        belt_level: profile.belt_level,
+        belt_level: beltLevel,
       },
       {
         onSuccess: () => {
