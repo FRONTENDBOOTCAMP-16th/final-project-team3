@@ -79,7 +79,7 @@ export default function CompetitionClient({
             setActiveTab={setActiveTab}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            writeLink={isManager || isAdmin ? '/competitions/write' : undefined}
+            writeLink={isAdmin ? '/competitions/write' : undefined}
             writeLinkText="일정추가"
           />
         </div>
