@@ -20,7 +20,7 @@ export default function EditClient({ id, initialPost }: Props) {
 
   const [title, setTitle] = useState(initialPost.title);
   const [content, setContent] = useState(initialPost.content);
-  const [category] = useState<PostCategory>(initialPost.category); // 수정 불가
+  const [category] = useState<PostCategory>(initialPost.category);
   const [preview, setPreview] = useState<string | null>(
     initialPost.image_url ?? null,
   );
@@ -53,7 +53,10 @@ export default function EditClient({ id, initialPost }: Props) {
 
       <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
         <p className="text-sm text-gray-500 mb-2">게시글 유형</p>
-        <div className="py-2 px-3 rounded-lg text-sm font-medium bg-black text-white text-center">
+        <div
+          aria-label={`게시글 유형: ${category === 'promo' ? '도장 홍보' : category === 'notice' ? '공지' : '일반 게시글'}`}
+          className="py-2 px-3 rounded-lg text-sm font-medium bg-black text-white text-center"
+        >
           {category === 'promo'
             ? '도장 홍보'
             : category === 'notice'
@@ -63,8 +66,14 @@ export default function EditClient({ id, initialPost }: Props) {
       </div>
 
       <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-        <p className="text-sm text-gray-500 mb-2">제목</p>
+        <label
+          htmlFor="post-title"
+          className="text-sm text-gray-500 mb-2 block"
+        >
+          제목
+        </label>
         <input
+          id="post-title"
           type="text"
           placeholder="제목을 입력하세요"
           value={title}
@@ -82,8 +91,14 @@ export default function EditClient({ id, initialPost }: Props) {
       />
 
       <div className="bg-white rounded-xl p-4 mb-6 shadow-sm">
-        <p className="text-sm text-gray-500 mb-2">내용</p>
+        <label
+          htmlFor="post-content"
+          className="text-sm text-gray-500 mb-2 block"
+        >
+          내용
+        </label>
         <textarea
+          id="post-content"
           placeholder="내용을 입력하세요"
           value={content}
           onChange={(e) => setContent(e.target.value)}

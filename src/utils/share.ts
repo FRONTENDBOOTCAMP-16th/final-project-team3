@@ -1,11 +1,11 @@
 import { showSuccessToast, showErrorToast } from '@/lib/toast';
 
-export async function handleShare(title: string) {
+export async function handleShare() {
   const url = window.location.href;
 
   if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
     try {
-      await navigator.share({ title, url });
+      await navigator.share({ url });
     } catch {
       // 취소 무시
     }
