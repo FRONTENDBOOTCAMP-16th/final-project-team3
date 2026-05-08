@@ -33,14 +33,11 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
   const [beltLevel, setBeltLevel] = useState<BeltLevel>(
     profile.belt_level ?? 'White',
   );
+  const [isEditing, setIsEditing] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateMyProfile();
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteMyAccount();
-  const isChanged =
-    nickname !== (profile.nickname ?? '') ||
-    bio !== (profile.bio ?? '') ||
-    beltLevel !== (profile.belt_level ?? 'White');
   const handleUpdate = () => {
     updateProfile(
       {
@@ -52,6 +49,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
       {
         onSuccess: () => {
           showSuccessToast('프로필이 수정되었습니다.');
+          setIsEditing(false);
         },
         onError: () => {
           showErrorToast('수정에 실패했습니다. 다시 시도해주세요.');
@@ -66,14 +64,32 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
       <div className="flex flex-col gap-4 p-6 bg-bg-white rounded-2xl shadow-sm">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold text-text-primary">프로필 설정</h3>
-          <button
-            onClick={handleUpdate}
-            disabled={isUpdating || !isChanged}
-            className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all disabled:opacity-50 cursor-pointer"
-          >
-            <Pencil className="w-4 h-4" />
-            {isUpdating ? '저장 중...' : '수정'}
-          </button>
+          {isEditing ? (
+            <div className="flex gap-2">
+              <button
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2 bg-btn-basic text-btn-text rounded-lg text-sm font-bold hover:opacity-80 transition-all cursor-pointer"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleUpdate}
+                disabled={isUpdating}
+                className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all disabled:opacity-50 cursor-pointer"
+              >
+                <Pencil className="w-4 h-4" />
+                {isUpdating ? '저장 중...' : '저장'}
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all cursor-pointer"
+            >
+              <Pencil className="w-4 h-4" />
+              수정
+            </button>
+          )}
         </div>
 
         {/* 닉네임 */}
@@ -84,6 +100,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           <div className="flex items-center gap-2 bg-input-bg rounded-xl px-4 py-3">
             <User className="w-4 h-4 text-text-secondary" />
             <input
+              disabled={!isEditing}
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
@@ -134,6 +151,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
                 style={{ backgroundColor: BELT_COLORS[beltLevel] }}
               />
               <select
+                disabled={!isEditing}
                 value={beltLevel}
                 onChange={(e) => setBeltLevel(e.target.value as BeltLevel)}
                 className="flex-1 bg-transparent text-sm text-input-text outline-none appearance-none cursor-pointer"
@@ -152,6 +170,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-text-primary">소개</label>
           <textarea
+            disabled={!isEditing}
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             rows={4}
