@@ -60,35 +60,42 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* 프로필 설정 */}
       <div className="flex flex-col gap-4 p-6 bg-bg-white rounded-2xl shadow-sm">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-text-primary">프로필 설정</h3>
-          {isEditing ? (
-            <div className="flex gap-2">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-text-primary">프로필 설정</h3>
+            {isEditing ? (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setIsEditing(false)}
+                  className="px-4 py-2 bg-btn-basic text-btn-text rounded-lg text-sm font-bold hover:opacity-80 transition-all cursor-pointer"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleUpdate}
+                  disabled={isUpdating}
+                  className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all disabled:opacity-50 cursor-pointer"
+                >
+                  <Pencil className="w-4 h-4" />
+                  {isUpdating ? '저장 중...' : '저장'}
+                </button>
+              </div>
+            ) : (
               <button
-                onClick={() => setIsEditing(false)}
-                className="px-4 py-2 bg-btn-basic text-btn-text rounded-lg text-sm font-bold hover:opacity-80 transition-all cursor-pointer"
-              >
-                취소
-              </button>
-              <button
-                onClick={handleUpdate}
-                disabled={isUpdating}
-                className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all disabled:opacity-50 cursor-pointer"
+                onClick={() => setIsEditing(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all cursor-pointer"
               >
                 <Pencil className="w-4 h-4" />
-                {isUpdating ? '저장 중...' : '저장'}
+                수정
               </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all cursor-pointer"
-            >
-              <Pencil className="w-4 h-4" />
-              수정
-            </button>
+            )}
+          </div>
+          {isEditing && (
+            <p className="text-xs text-btn-focus font-medium flex items-center gap-1">
+              <Pencil className="w-3 h-3" />
+              수정 모드입니다. 내용을 변경 후 저장하세요.
+            </p>
           )}
         </div>
 
@@ -97,7 +104,9 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           <label className="text-sm font-medium text-text-primary">
             닉네임
           </label>
-          <div className="flex items-center gap-2 bg-input-bg rounded-xl px-4 py-3">
+          <div
+            className={`flex items-center gap-2 rounded-xl px-4 py-3 ${isEditing ? 'bg-white border border-btn-focus' : 'bg-input-bg'}`}
+          >
             <User className="w-4 h-4 text-text-secondary" />
             <input
               disabled={!isEditing}
@@ -139,13 +148,15 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           </div>
         </div>
 
-        {/* 벨트 - 관리자는 표시 안 함 */}
+        {/* 벨트 */}
         {profile.role !== 'admin' && (
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-text-primary">
               벨트
             </label>
-            <div className="relative flex items-center bg-input-bg rounded-xl px-4 py-3">
+            <div
+              className={`relative flex items-center rounded-xl px-4 py-3 ${isEditing ? 'bg-white border border-btn-focus' : 'bg-input-bg'}`}
+            >
               <span
                 className="w-3 h-3 rounded-full mr-2 shrink-0"
                 style={{ backgroundColor: BELT_COLORS[beltLevel] }}
@@ -174,7 +185,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             rows={4}
-            className="w-full bg-input-bg rounded-xl px-4 py-3 text-sm text-input-text outline-none resize-none"
+            className={`w-full rounded-xl px-4 py-3 text-sm text-input-text outline-none resize-none ${isEditing ? 'bg-white border border-btn-focus' : 'bg-input-bg'}`}
           />
         </div>
       </div>
