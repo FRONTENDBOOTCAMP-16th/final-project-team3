@@ -38,6 +38,12 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
 
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateMyProfile();
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteMyAccount();
+  const handleCancel = () => {
+    setNickname(profile.nickname ?? '');
+    setBio(profile.bio ?? '');
+    setBeltLevel(profile.belt_level ?? 'White');
+    setIsEditing(false);
+  };
   const handleUpdate = () => {
     updateProfile(
       {
@@ -67,7 +73,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             {isEditing ? (
               <div className="flex gap-2">
                 <button
-                  onClick={() => setIsEditing(false)}
+                  onClick={handleCancel}
                   className="px-4 py-2 bg-btn-basic text-btn-text rounded-lg text-sm font-bold hover:opacity-80 transition-all cursor-pointer"
                 >
                   취소
