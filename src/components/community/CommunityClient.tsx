@@ -18,7 +18,6 @@ interface CommunityClientProps {
 export default function CommunityClient({
   initialPosts,
 }: CommunityClientProps) {
-  // 1. 상태 선언 및 초기값 복원 (에러 해결 핵심: Lazy Initialization)
   const [activeTab, setActiveTab] = useState('전체');
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
@@ -40,19 +39,16 @@ export default function CommunityClient({
   const { user, loading } = useAuth();
   const { data: posts = initialPosts } = usePosts();
 
-  // 헤더 높이 측정
   useEffect(() => {
     if (headerRef.current) {
       setHeaderHeight(headerRef.current.offsetHeight);
     }
   }, []);
 
-  // 페이지 번호 저장 (변경될 때마다 세션 업데이트)
   useEffect(() => {
     sessionStorage.setItem('communityPage', page.toString());
   }, [page]);
 
-  // 필터링 로직 최적화
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
       const matchTab =
@@ -70,21 +66,16 @@ export default function CommunityClient({
   const visiblePosts = filteredPosts.slice(0, page * PAGE_SIZE);
   const hasMore = visiblePosts.length < filteredPosts.length;
 
-  // 2. 스크롤 위치 복원 로직
   useEffect(() => {
     const lastPostId = sessionStorage.getItem('lastPostId');
-
-    // 이미 복원했거나 마지막 ID가 없으면 종료
     if (isScrollRestoredRef.current || !lastPostId) return;
-
-    // 데이터가 충분히 로드되었는지 확인
     if (visiblePosts.length > 0) {
       const timer = setTimeout(() => {
         const el = document.getElementById(lastPostId);
         if (el) {
           el.scrollIntoView({ block: 'center', behavior: 'instant' });
           sessionStorage.removeItem('lastPostId');
-          isScrollRestoredRef.current = true; // 복원 완료 표시
+          isScrollRestoredRef.current = true;
         }
       }, 100);
       return () => clearTimeout(timer);
@@ -100,7 +91,7 @@ export default function CommunityClient({
   });
 
   return (
-    <main className="w-full min-h-screen">
+    <main className="w-full min-h-screen" aria-label="커뮤니티 게시글 목록">
       <div
         ref={headerRef}
         className="fixed top-0 left-50 right-0 z-10 bg-white shadow-sm flex justify-center"
@@ -114,7 +105,7 @@ export default function CommunityClient({
             setActiveTab={(tab) => {
               setActiveTab(tab);
               setPage(1);
-              window.scrollTo(0, 0); // 탭 변경 시 최상단으로
+              window.scrollTo(0, 0);
             }}
             searchQuery={searchQuery}
             setSearchQuery={(query) => {
@@ -133,14 +124,28 @@ export default function CommunityClient({
         className="pb-20 flex justify-center"
       >
         <div className="w-full max-w-7xl px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* 게시글 목록 */}
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            role="list"
+            aria-label="게시글 목록"
+            id={`tabpanel-${activeTab}`}
+          >
             {visiblePosts.length > 0 ? (
               visiblePosts.map((post) => (
                 <div
                   key={post.id}
                   id={post.id}
+                  role="listitem"
                   className="cursor-pointer"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      sessionStorage.setItem('lastPostId', post.id);
+                    }
+                  }}
                   onClick={() => sessionStorage.setItem('lastPostId', post.id)}
+                  aria-label={`${post.title} 게시글`}
                 >
                   <Postcard
                     post={{
@@ -154,19 +159,30 @@ export default function CommunityClient({
                 </div>
               ))
             ) : (
-              <div className="col-span-full flex flex-col items-center justify-center py-40 text-gray-400 font-light">
+              <div
+                className="col-span-full flex flex-col items-center justify-center py-40 text-gray-400 font-light"
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 <p className="text-lg">조건에 맞는 게시글이 없습니다</p>
                 <p className="text-sm mt-2">새로운 소식을 들려주세요!</p>
               </div>
             )}
           </div>
 
+          {/* 무한스크롤 로딩 */}
           {hasMore && (
             <div
               ref={observerRef}
               className="h-20 flex items-center justify-center"
+              aria-label="더 많은 게시글 불러오는 중"
+              aria-live="polite"
             >
-              <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+              <div
+                className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"
+                role="status"
+                aria-label="로딩 중"
+              />
             </div>
           )}
         </div>

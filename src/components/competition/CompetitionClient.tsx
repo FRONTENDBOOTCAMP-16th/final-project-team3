@@ -35,7 +35,6 @@ export default function CompetitionClient({
   const { data = initialCompetitions, isLoading } = useCompetiton();
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin';
-  const isManager = user?.role === 'manager';
 
   useEffect(() => {
     if (headerRef.current) {
@@ -85,29 +84,43 @@ export default function CompetitionClient({
         </div>
       </div>
 
-      <div
+      <main
         style={{ paddingTop: `${headerHeight + 24}px` }}
         className="pb-6 flex justify-center"
+        aria-label="대회일정 목록"
       >
         <div className="w-full max-w-7xl px-6">
-          <div className="grid grid-cols-2 gap-4">
-            {isLoading ? (
+          {isLoading ? (
+            <div role="status" aria-label="대회 목록 불러오는 중">
               <LoadingSpinner />
-            ) : filteredCompetitions.length > 0 ? (
-              filteredCompetitions.map((competition) => (
-                <CompetitionCard
-                  key={competition.id}
-                  competition={competition}
-                />
-              ))
-            ) : (
-              <div className="col-span-2 flex flex-col items-center justify-center py-20 text-gray-400">
-                <p className="text-lg">대회 일정이 없습니다</p>
-              </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <ul
+              className="grid grid-cols-2 gap-4"
+              aria-label={
+                filteredCompetitions.length > 0
+                  ? `대회 목록 ${filteredCompetitions.length}개`
+                  : '대회 목록 없음'
+              }
+            >
+              {filteredCompetitions.length > 0 ? (
+                filteredCompetitions.map((competition) => (
+                  <li key={competition.id}>
+                    <CompetitionCard competition={competition} />
+                  </li>
+                ))
+              ) : (
+                <li
+                  className="col-span-2 flex flex-col items-center justify-center py-20 text-gray-400"
+                  aria-live="polite"
+                >
+                  <p className="text-lg">대회 일정이 없습니다</p>
+                </li>
+              )}
+            </ul>
+          )}
         </div>
-      </div>
+      </main>
     </div>
   );
 }
