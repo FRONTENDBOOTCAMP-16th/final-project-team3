@@ -40,6 +40,8 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
     bio !== (profile.bio ?? '') ||
     beltLevel !== (profile.belt_level ?? 'White');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   const router = useRouter();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateMyProfile();
@@ -79,13 +81,13 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             {isEditing ? (
               <div className="flex gap-2">
                 <button
-                  onClick={() => setIsEditing(false)}
+                  onClick={() => setShowCancelConfirm(true)}
                   className="px-4 py-2 bg-btn-basic text-btn-text rounded-lg text-sm font-bold hover:opacity-80 transition-all cursor-pointer"
                 >
                   취소
                 </button>
                 <button
-                  onClick={handleUpdate}
+                  onClick={() => setShowSaveConfirm(true)}
                   disabled={isUpdating || !isChanged}
                   className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all disabled:opacity-50 cursor-pointer"
                 >
@@ -237,7 +239,61 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
         >
           {profile.role === 'admin' ? '관리자 계정 삭제하기' : '회원탈퇴하기'}
         </button>
+        {/* 저장 확인 모달 */}
+        <Dialog open={showSaveConfirm} onOpenChange={setShowSaveConfirm}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>프로필을 저장하시겠습니까?</DialogTitle>
+              <DialogDescription>변경된 내용이 저장됩니다.</DialogDescription>
+            </DialogHeader>
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={() => setShowSaveConfirm(false)}
+                className="flex-1 px-6 py-3 bg-btn-basic text-btn-text rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
+              >
+                취소
+              </button>
+              <button
+                onClick={() => {
+                  handleUpdate();
+                  setShowSaveConfirm(false);
+                }}
+                className="flex-1 px-6 py-3 bg-btn-focus text-btn-focus-text rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
+              >
+                저장
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
+        {/* 취소 확인 모달 */}
+        <Dialog open={showCancelConfirm} onOpenChange={setShowCancelConfirm}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>수정을 취소하시겠습니까?</DialogTitle>
+              <DialogDescription>
+                변경된 내용이 저장되지 않습니다.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={() => setShowCancelConfirm(false)}
+                className="flex-1 px-6 py-3 bg-btn-basic text-btn-text rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
+              >
+                아니요
+              </button>
+              <button
+                onClick={() => {
+                  handleCancel();
+                  setShowCancelConfirm(false);
+                }}
+                className="flex-1 px-6 py-3 bg-danger text-btn-focus-text rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
+              >
+                취소하기
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
         {/* 탈퇴 확인 Dialog */}
         <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
           <DialogContent>
