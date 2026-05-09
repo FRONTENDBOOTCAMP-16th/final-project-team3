@@ -23,5 +23,19 @@ const step2Schema = z
   });
 
 export default function FindPasswordPage() {
+  const [step, setStep] = useState<1 | 2>(1);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errors, setErrors] = useState<{
+    name?: string;
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+    server?: string;
+  }>({});
+  const router = useRouter();
+
   return <div>비밀번호 찾기</div>;
 }
