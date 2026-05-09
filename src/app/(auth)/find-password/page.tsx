@@ -47,7 +47,28 @@ export default function FindPasswordPage() {
       return;
     }
     setErrors({});
+    const handleStep2 = async () => {
+      const result = step2Schema.safeParse({ password, confirmPassword });
+      if (!result.success) {
+        const fieldErrors = result.error.flatten().fieldErrors;
+        setErrors({
+          password: fieldErrors.password?.[0],
+          confirmPassword: fieldErrors.confirmPassword?.[0],
+        });
+        return;
+      }
+      setErrors({});
 
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) {
+        setErrors({
+          server: '비밀번호 재설정에 실패했습니다. 다시 시도해주세요.',
+        });
+        return;
+      }
+
+      router.push('/login');
+    };
     const { data, error } = await supabase
       .from('profiles')
       .select('id')
@@ -172,6 +193,7 @@ export default function FindPasswordPage() {
             className="space-y-5"
             onSubmit={(e) => {
               e.preventDefault();
+              handleStep2();
             }}
           >
             {/* 새 비밀번호 */}
