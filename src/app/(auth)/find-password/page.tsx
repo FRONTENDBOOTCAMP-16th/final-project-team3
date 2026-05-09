@@ -167,7 +167,76 @@ export default function FindPasswordPage() {
               </Link>
             </p>
           </form>
-        ) : null}
+        ) : (
+          <form
+            className="space-y-5"
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
+            {/* 새 비밀번호 */}
+            <div>
+              <label className="block text-sm font-medium text-text-primary mb-2">
+                새 비밀번호
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
+                <input
+                  type="password"
+                  placeholder="새 비밀번호를 입력하세요"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
+                />
+              </div>
+              <p className="text-danger text-sm mt-1 h-5">
+                {errors.password ?? ''}
+              </p>
+            </div>
+
+            {/* 비밀번호 확인 */}
+            <div>
+              <label className="block text-sm font-medium text-text-primary mb-2">
+                비밀번호 확인
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
+                <input
+                  type="password"
+                  placeholder="비밀번호를 다시 입력하세요"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
+                />
+              </div>
+              <p className="text-danger text-sm mt-1 h-5">
+                {errors.confirmPassword ?? ''}
+              </p>
+            </div>
+
+            <p className="text-danger text-sm text-center h-5">
+              {errors.server ?? ''}
+            </p>
+
+            <button
+              type="submit"
+              className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer"
+            >
+              비밀번호 재설정
+            </button>
+
+            <p className="text-center text-sm text-text-secondary">
+              로그인으로 돌아가기{' '}
+              <Link
+                href="/login"
+                className="font-bold hover:underline"
+                style={{ color: 'var(--color-auth-register)' }}
+              >
+                로그인
+              </Link>
+            </p>
+          </form>
+        )}
       </div>
     </>
   );
