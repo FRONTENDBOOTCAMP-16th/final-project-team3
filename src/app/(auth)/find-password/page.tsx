@@ -36,6 +36,34 @@ export default function FindPasswordPage() {
     server?: string;
   }>({});
   const router = useRouter();
+  const handleStep1 = async () => {
+    const result = step1Schema.safeParse({ name, email });
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      setErrors({
+        name: fieldErrors.name?.[0],
+        email: fieldErrors.email?.[0],
+      });
+      return;
+    }
+    setErrors({});
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('email_value', email)
+      .eq('name', name)
+      .single();
+
+    if (error || !data) {
+      setErrors({
+        server: '입력하신 이메일로 가입된 계정을 찾을 수 없습니다.',
+      });
+      return;
+    }
+
+    setStep(2);
+  };
 
   return (
     <>
@@ -74,6 +102,7 @@ export default function FindPasswordPage() {
             className="space-y-5"
             onSubmit={(e) => {
               e.preventDefault();
+              handleStep1();
             }}
           >
             {/* 이름 */}
