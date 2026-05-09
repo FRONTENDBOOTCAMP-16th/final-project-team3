@@ -69,6 +69,76 @@ export default function FindPasswordPage() {
             비밀번호 재설정
           </button>
         </div>
+        {step === 1 ? (
+          <form
+            className="space-y-5"
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
+            {/* 이름 */}
+            <div>
+              <label className="block text-sm font-medium text-text-primary mb-2">
+                이름
+              </label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
+                <input
+                  type="text"
+                  placeholder="이름을 입력하세요"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
+                />
+              </div>
+              <p className="text-danger text-sm mt-1 h-5">
+                {errors.name ?? ''}
+              </p>
+            </div>
+
+            {/* 이메일 */}
+            <div>
+              <label className="block text-sm font-medium text-text-primary mb-2">
+                이메일
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
+                <input
+                  type="email"
+                  placeholder="이메일을 입력하세요"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
+                />
+              </div>
+              <p className="text-danger text-sm mt-1 h-5">
+                {errors.email ?? ''}
+              </p>
+            </div>
+
+            <p className="text-danger text-sm text-center h-5">
+              {errors.server ?? ''}
+            </p>
+
+            <button
+              type="submit"
+              className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer"
+            >
+              비밀번호 재설정
+            </button>
+
+            <p className="text-center text-sm text-text-secondary">
+              로그인으로 돌아가기{' '}
+              <Link
+                href="/login"
+                className="font-bold hover:underline"
+                style={{ color: 'var(--color-auth-register)' }}
+              >
+                로그인
+              </Link>
+            </p>
+          </form>
+        ) : null}
       </div>
     </>
   );
