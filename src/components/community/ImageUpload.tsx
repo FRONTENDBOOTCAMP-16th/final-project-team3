@@ -28,7 +28,7 @@ export default function ImageUpload({
           <div className="relative w-full h-48 rounded-lg overflow-hidden">
             <Image
               src={preview}
-              alt="preview"
+              alt="업로드한 이미지 미리보기"
               fill={true}
               className="object-cover"
             />
@@ -44,6 +44,7 @@ export default function ImageUpload({
           type="file"
           accept="image/*"
           className="hidden"
+          aria-label={label}
           onChange={handleChange}
         />
       </label>

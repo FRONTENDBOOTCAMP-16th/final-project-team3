@@ -11,6 +11,8 @@ import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ImageUpload from '@/components/community/ImageUpload';
 import PostFormActions from '@/components/community/PostFormActions';
 import PostDetailCard from '@/components/community/PostDetailCard';
+import { LimitedInput } from '../common/LimitedInput';
+import { LimitedTextarea } from '../common/LimitedTextarea';
 
 export default function WriteClient() {
   const router = useRouter();
@@ -62,9 +64,11 @@ export default function WriteClient() {
         <h1 className="text-lg font-semibold mx-auto">게시글 작성</h1>
       </div>
 
-      {/* ✅ 탭 버튼 추가 */}
-      <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
+      {/* ✅ 탭 버튼 */}
+      <div role="tablist" className="flex bg-gray-100 rounded-xl p-1 mb-6">
         <button
+          role="tab"
+          aria-selected={tab === 'write'}
           onClick={() => setTab('write')}
           className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
             tab === 'write' ? 'bg-white text-black shadow-sm' : 'text-gray-500'
@@ -73,6 +77,8 @@ export default function WriteClient() {
           작성
         </button>
         <button
+          role="tab"
+          aria-selected={tab === 'preview'}
           onClick={() => setTab('preview')}
           className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
             tab === 'preview'
@@ -94,6 +100,7 @@ export default function WriteClient() {
                 {(['personal', 'promo'] as PostCategory[]).map((type) => (
                   <button
                     key={type}
+                    aria-pressed={category === type}
                     onClick={() => setCategory(type)}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors ${
                       category === type
@@ -106,20 +113,28 @@ export default function WriteClient() {
                 ))}
               </div>
             ) : (
-              <div className="py-2 px-3 rounded-lg text-sm font-medium bg-black text-white text-center">
+              <div
+                aria-label={`게시글 유형: ${user?.role === 'admin' ? '공지' : '일반 게시글'}`}
+                className="py-2 px-3 rounded-lg text-sm font-medium bg-black text-white text-center"
+              >
                 {user?.role === 'admin' ? '공지' : '일반 게시글'}
               </div>
             )}
           </div>
 
           <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-            <p className="text-sm text-gray-500 mb-2">제목</p>
-            <input
-              type="text"
-              placeholder="제목을 입력하세요"
+            <label
+              htmlFor="post-title"
+              className="text-sm text-gray-500 mb-2 block"
+            >
+              제목
+            </label>
+            <LimitedInput
+              id="post-title"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-gray-50 rounded-lg px-3 py-2 text-sm outline-none"
+              onChange={setTitle}
+              maxLength={35}
+              placeholder="제목을 입력하세요"
             />
           </div>
 
@@ -132,13 +147,19 @@ export default function WriteClient() {
           />
 
           <div className="bg-white rounded-xl p-4 mb-6 shadow-sm">
-            <p className="text-sm text-gray-500 mb-2">내용</p>
-            <textarea
-              placeholder="내용을 입력하세요"
+            <label
+              htmlFor="post-content"
+              className="text-sm text-gray-500 mb-2 block"
+            >
+              내용
+            </label>
+            <LimitedTextarea
+              id="post-content"
               value={content}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={setContent}
+              maxLength={5000}
               rows={8}
-              className="w-full bg-gray-50 rounded-lg px-3 py-2 text-sm outline-none resize-none"
+              placeholder="내용을 입력하세요"
             />
           </div>
         </>

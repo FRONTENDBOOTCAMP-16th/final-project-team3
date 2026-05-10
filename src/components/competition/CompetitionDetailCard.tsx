@@ -45,7 +45,10 @@ export default function CompetitionDetailCard({
         : 'text-gray-400';
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <article
+      className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+      aria-label={`${data.name} 대회 상세`}
+    >
       {/* 상단: 프로필 + 버튼 */}
       <div className="flex items-center justify-between px-5 pt-5 pb-3">
         <div className="flex items-center gap-3">
@@ -56,7 +59,11 @@ export default function CompetitionDetailCard({
                   ? data.avatar_url
                   : '/basic.svg'
               }
-              alt="프로필"
+              alt={
+                data.nickname
+                  ? `${data.nickname} 프로필 이미지`
+                  : '기본 프로필 이미지'
+              }
               width={40}
               height={40}
               className="w-full h-full object-cover rounded-full"
@@ -64,22 +71,34 @@ export default function CompetitionDetailCard({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-gray-900">
+              <span
+                className="text-sm font-semibold text-gray-900"
+                aria-label={`작성자: ${data.nickname ?? '알 수 없음'}`}
+              >
                 {data.nickname ?? '알 수 없음'}
               </span>
               {data.role && (
-                <span className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded">
+                <span
+                  className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded"
+                  aria-label={`역할: ${data.role}`}
+                >
                   {data.role}
                 </span>
               )}
             </div>
-            <span className="text-xs text-gray-400">
+            <time dateTime={data.created_at} className="text-xs text-gray-400">
               {data.created_at ? timeAgo(data.created_at) : '방금 전'}
-            </span>
+            </time>
           </div>
         </div>
         {headerActions && (
-          <div className="flex items-center gap-1">{headerActions}</div>
+          <div
+            className="flex items-center gap-1"
+            role="toolbar"
+            aria-label="게시글 액션"
+          >
+            {headerActions}
+          </div>
         )}
       </div>
 
@@ -95,37 +114,51 @@ export default function CompetitionDetailCard({
         <div className="relative w-full aspect-video bg-gray-100">
           <Image
             src={data.image_url}
-            alt={data.name}
+            alt={`${data.name} 대회 이미지`}
             fill
             className="object-cover"
           />
+          <span
+            className={`absolute top-3 left-3 px-2.5 py-1 text-xs text-white rounded-full ${statusColor}`}
+            aria-label={`모집 상태: ${status}`}
+          >
+            {status}
+          </span>
         </div>
       )}
 
       {/* 날짜/장소/신청마감 요약 바 */}
-      <div className="grid grid-cols-3 divide-x divide-gray-100 border-y border-gray-100 text-center py-3 px-2">
+      <dl
+        className="grid grid-cols-3 divide-x divide-gray-100 border-y border-gray-100 text-center py-3 px-2"
+        aria-label="대회 정보"
+      >
         <div className="px-2">
-          <p className="text-xs text-gray-400 mb-1">일시</p>
-          <p className="text-xs font-medium text-gray-700">
+          <dt className="text-xs text-gray-400 mb-1">일시</dt>
+          <dd className="text-xs font-medium text-gray-700">
             {data.event_data || '-'}
-          </p>
+          </dd>
         </div>
         <div className="px-2">
-          <p className="text-xs text-gray-400 mb-1">장소</p>
-          <p className="text-xs font-medium text-gray-700">
+          <dt className="text-xs text-gray-400 mb-1">장소</dt>
+          <dd className="text-xs font-medium text-gray-700">
             {data.location || '-'}
-          </p>
+          </dd>
         </div>
         <div className="px-2">
-          <p className="text-xs text-gray-400 mb-1">신청마감</p>
-          <p className="text-xs font-medium text-gray-700">
+          <dt className="text-xs text-gray-400 mb-1">신청마감</dt>
+          <dd className="text-xs font-medium text-gray-700">
             {data.apply_deadline || '-'}
-          </p>
+          </dd>
           {status !== '모집완료' && data.apply_deadline && (
-            <p className={`text-xs font-bold ${ddayColor}`}>{dday}</p>
+            <p
+              className={`text-xs font-bold ${ddayColor}`}
+              aria-label={`마감까지 ${dday}`}
+            >
+              {dday}
+            </p>
           )}
         </div>
-      </div>
+      </dl>
 
       {/* 본문 */}
       <div className="px-5 py-4">
@@ -135,7 +168,7 @@ export default function CompetitionDetailCard({
       </div>
 
       {/* 구분선 */}
-      <div className="border-t border-gray-100 mx-5 mb-3" />
-    </div>
+      <div className="border-t border-gray-100 mx-5 mb-3" aria-hidden="true" />
+    </article>
   );
 }
