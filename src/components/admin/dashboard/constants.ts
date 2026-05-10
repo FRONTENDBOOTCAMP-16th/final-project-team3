@@ -46,7 +46,7 @@ export const ALERT_METRICS = [
     label: '승인 대기 도장',
     suffix: '건',
     icon: BellRing,
-    tone: 'amber',
+    tone: 'blue',
   },
   {
     key: 'pendingReportsCount',

@@ -11,20 +11,20 @@ interface AdminDashboardCardsProps {
   data: AdminDashboardData;
 }
 
-const toneClassMap: Record<DashboardCardTone, string> = {
-  slate: 'bg-zinc-900 text-white ring-zinc-900/10',
-  blue: 'bg-blue-600 text-white ring-blue-600/10',
-  green: 'bg-emerald-600 text-white ring-emerald-600/10',
-  amber: 'bg-amber-500 text-white ring-amber-500/10',
-  red: 'bg-red-500 text-white ring-red-500/10',
+const iconToneClassMap: Record<DashboardCardTone, string> = {
+  slate: 'bg-zinc-100 text-zinc-700 ring-zinc-200',
+  blue: 'bg-blue-50 text-blue-600 ring-blue-100',
+  green: 'bg-emerald-50 text-emerald-600 ring-emerald-100',
+  amber: 'bg-amber-50 text-amber-600 ring-amber-100',
+  red: 'bg-red-50 text-red-500 ring-red-100',
 };
 
-const cardAccentClassMap: Record<DashboardCardTone, string> = {
-  slate: 'bg-zinc-100 text-zinc-700',
-  blue: 'bg-blue-50 text-blue-600',
-  green: 'bg-emerald-50 text-emerald-600',
-  amber: 'bg-amber-50 text-amber-600',
-  red: 'bg-red-50 text-red-500',
+const topLineClassMap: Record<DashboardCardTone, string> = {
+  slate: 'bg-zinc-900',
+  blue: 'bg-blue-600',
+  green: 'bg-emerald-600',
+  amber: 'bg-amber-500',
+  red: 'bg-red-500',
 };
 
 const numberFormatter = new Intl.NumberFormat('ko-KR');
@@ -43,8 +43,7 @@ function DashboardMetricCard({
       <div
         className={cn(
           'mb-6 inline-flex rounded-2xl p-3 ring-1',
-          cardAccentClassMap[config.tone],
-          toneClassMap[config.tone].split(' ')[2],
+          iconToneClassMap[config.tone]
         )}
       >
         <Icon className="size-5" />
@@ -53,7 +52,6 @@ function DashboardMetricCard({
       <div className="space-y-3">
         <div className="space-y-1">
           <p className="text-sm font-medium text-zinc-500">{config.label}</p>
-          <p className="text-xs text-zinc-400">{config.description}</p>
         </div>
 
         <div className="flex items-end gap-2">
@@ -69,7 +67,7 @@ function DashboardMetricCard({
       <div
         className={cn(
           'pointer-events-none absolute inset-x-0 top-0 h-1',
-          toneClassMap[config.tone].split(' ')[0],
+          topLineClassMap[config.tone],
         )}
       />
     </article>
