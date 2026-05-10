@@ -1,29 +1,14 @@
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
-
 import AdminHeader from '@/components/admin/AdminHeader';
+import AdminDashboardCards from '@/components/admin/dashboard/AdminDashboardCards';
+import { getAdminDashboardData } from '@/lib/getAdminDashboardData';
 
-// async function getAdminDashboard() {
-//   const cookieStore = await cookies();
-//   const supabase = createServerClient(
-//     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-//     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-//     {
-//       cookies: {
-//         getAll() {
-//           return cookieStore.getAll();
-//         },
-//       },
-//     },
-//   );
-// }
-
-export default function AdminDashboardtPage() {
-  // const postData = await getAdminDashboard();
+export default async function AdminDashboardPage() {
+  const dashboardData = await getAdminDashboardData();
 
   return (
-    <main className="w-full min-h-screen space-y-2">
+    <main className="min-h-screen w-full pt-28 space-y-8">
       <AdminHeader page="dashboard" />
+      <AdminDashboardCards data={dashboardData} />
     </main>
   );
 }
