@@ -19,4 +19,5 @@ export interface DashboardMetricConfig {
   suffix: string;
   icon: LucideIcon;
   tone: DashboardCardTone;
+  href?: string;
 }

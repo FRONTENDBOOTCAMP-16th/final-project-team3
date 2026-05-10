@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import AdminHeader from '@/components/admin/AdminHeader';
 import AdminSupportTableClient from '@/components/admin/support/AdminSupportTableClient';
 import type {
+  SupportSection,
   SupportDojangQueryRow,
   SupportPostQueryRow,
   SupportProfileQueryRow,
@@ -143,8 +144,22 @@ async function getAdminSupportData() {
   };
 }
 
-export default async function AdminSupportPage() {
+function getInitialSupportSection(
+  sectionParam: string | string[] | undefined,
+): SupportSection {
+  const section = Array.isArray(sectionParam) ? sectionParam[0] : sectionParam;
+
+  return section === 'reports' ? 'reports' : 'dojang';
+}
+
+export default async function AdminSupportPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ section?: string | string[] | undefined }>;
+}) {
+  const resolvedSearchParams = await searchParams;
   const data = await getAdminSupportData();
+  const initialSection = getInitialSupportSection(resolvedSearchParams.section);
 
   return (
     <main className="min-h-screen w-full pt-28 space-y-2">
@@ -152,6 +167,7 @@ export default async function AdminSupportPage() {
       <AdminSupportTableClient
         dojangVerifications={data.dojangVerifications}
         reports={data.reports}
+        initialSection={initialSection}
       />
     </main>
   );

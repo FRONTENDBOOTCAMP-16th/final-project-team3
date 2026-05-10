@@ -7,6 +7,8 @@ import {
   Users,
 } from 'lucide-react';
 
+import { ROUTES } from '@/constants/routes';
+
 import type { DashboardMetricConfig } from './types';
 
 export const OVERVIEW_METRICS = [
@@ -47,6 +49,7 @@ export const ALERT_METRICS = [
     suffix: '건',
     icon: BellRing,
     tone: 'blue',
+    href: `${ROUTES.ADMIN_SUPPORT}?section=dojang`,
   },
   {
     key: 'pendingReportsCount',
@@ -54,5 +57,6 @@ export const ALERT_METRICS = [
     suffix: '건',
     icon: ShieldAlert,
     tone: 'red',
+    href: `${ROUTES.ADMIN_SUPPORT}?section=reports`,
   },
 ] as const satisfies readonly DashboardMetricConfig[];

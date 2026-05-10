@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { cn } from '@/lib/utils';
 
 import { ALERT_METRICS, OVERVIEW_METRICS } from './constants';
@@ -37,13 +39,16 @@ function DashboardMetricCard({
   value: number;
 }) {
   const Icon = config.icon;
-
-  return (
-    <article className="group relative overflow-hidden rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm transition-transform duration-200 hover:-translate-y-0.5">
+  const cardClassName = cn(
+    'group relative overflow-hidden rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm transition-transform duration-200',
+    config.href ? 'block cursor-pointer hover:-translate-y-0.5 hover:shadow-md' : '',
+  );
+  const cardContent = (
+    <article className={cardClassName}>
       <div
         className={cn(
           'mb-6 inline-flex rounded-2xl p-3 ring-1',
-          iconToneClassMap[config.tone]
+          iconToneClassMap[config.tone],
         )}
       >
         <Icon className="size-5" />
@@ -72,6 +77,12 @@ function DashboardMetricCard({
       />
     </article>
   );
+
+  if (config.href) {
+    return <Link href={config.href}>{cardContent}</Link>;
+  }
+
+  return cardContent;
 }
 
 function DashboardSection({
@@ -113,7 +124,7 @@ export default function AdminDashboardCards({
   data,
 }: AdminDashboardCardsProps) {
   return (
-    <div className="space-y-10 px-6 pb-8">
+    <div className="space-y-10 px-6 pt-8 pb-8">
       <DashboardSection
         title="전체 통계"
         description="서비스의 핵심 지표를 한눈에 확인할 수 있습니다."
