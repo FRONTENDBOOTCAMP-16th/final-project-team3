@@ -15,6 +15,7 @@ import {
   registerDojang,
   uploadBusinessFile,
 } from '@/services/authService';
+import { showSuccessToast, showErrorToast } from '@/lib/toast';
 
 // 일반 회원 zod 유효성 검사 스키마
 const generalSchema = z
@@ -119,7 +120,6 @@ function Field({
         {label}
       </label>
       {children}
-      {/* 빈 p 태그 제거! 에러는 GeneralForm에서 직접 표시 */}
     </div>
   );
 }
@@ -198,7 +198,7 @@ function GeneralForm() {
   };
   const onSubmit = async (data: GeneralFormType) => {
     if (nicknameStatus !== 'available') {
-      setServerError('닉네임 중복확인을 해주세요.');
+      showErrorToast('닉네임 중복확인을 완료해주세요!');
       return;
     }
 
@@ -212,6 +212,7 @@ function GeneralForm() {
         nickname: data.nickname,
         belt: data.belt,
       });
+      showSuccessToast('회원가입이 완료되었습니다! 로그인해주세요 🎉');
       router.push('/login');
     } catch {
       setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
@@ -317,7 +318,7 @@ function GeneralForm() {
       {/* 로딩 중일 때 버튼 비활성화 */}
       <button
         type="submit"
-        disabled={isLoading || nicknameStatus !== 'available'}
+        disabled={isLoading}
         className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
       >
         {isLoading ? '가입 중...' : '가입하기'}
@@ -398,7 +399,7 @@ function DojangForm() {
 
   const onSubmit = async (data: DojangFormType) => {
     if (nicknameStatus !== 'available') {
-      setServerError('닉네임 중복확인을 해주세요.');
+      showErrorToast('닉네임 중복확인을 완료해주세요!');
       return;
     }
     if (!businessFile) {
@@ -423,6 +424,7 @@ function DojangForm() {
         address: data.address,
         businessFileUrl,
       });
+      showSuccessToast('회원가입이 완료되었습니다! 로그인해주세요 🎉');
       router.push('/login');
     } catch {
       setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
@@ -660,7 +662,7 @@ function DojangForm() {
         {/* 로딩 중일 때 버튼 비활성화 */}
         <button
           type="submit"
-          disabled={isLoading || nicknameStatus !== 'available'}
+          disabled={isLoading}
           className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
         >
           {isUploading

@@ -22,6 +22,7 @@ export const showSuccessToast = (message: string, icon?: string) => {
       fontWeight: '600',
       borderRadius: '12px',
       padding: '12px 20px',
+      minWidth: '300px',
     },
     icon: icon ?? '✅',
   });
