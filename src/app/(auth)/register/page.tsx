@@ -186,6 +186,9 @@ function GeneralForm() {
     if (!nickname || nickname.length < 2) return;
 
     setNicknameStatus('checking');
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     const { data } = await supabase
       .from('profiles')
       .select('id')
@@ -377,6 +380,9 @@ function DojangForm() {
     if (!nickname || nickname.length < 2) return;
 
     setNicknameStatus('checking');
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     const { data } = await supabase
       .from('profiles')
       .select('id')
