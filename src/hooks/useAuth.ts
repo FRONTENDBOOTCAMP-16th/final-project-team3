@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { getCurrentUser, AuthUser } from '../lib/auth';
 import { useRouter } from 'next/navigation';
+import { tokenStorage } from '@/lib/tokenStorage';
 
 export function useAuth() {
   const [user, setUser] = useState<AuthUser>(null);
@@ -33,6 +34,7 @@ export function useAuth() {
 
   const logout = async () => {
     await supabase.auth.signOut();
+    tokenStorage.remove();
     setUser(null);
     router.push('/community');
   };
