@@ -13,6 +13,8 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { useRouter } from 'next/navigation';
+import { LimitedInput } from '@/components/common/LimitedInput';
+import { LimitedTextarea } from '@/components/common/LimitedTextarea';
 
 interface SettingsTabProps {
   profile: Profile;
@@ -114,31 +116,14 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
         </div>
 
         {/* 닉네임 */}
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-text-primary">
-              닉네임
-            </label>
-            {isEditing && (
-              <p className="text-xs text-text-secondary">
-                {nickname.length}/10
-              </p>
-            )}
-          </div>
-          <div
-            className={`flex items-center gap-2 rounded-xl px-4 py-3 ${isEditing ? 'bg-white border border-btn-focus' : 'bg-input-bg'}`}
-          >
-            <User className="w-4 h-4 text-text-secondary" />
-            <input
-              disabled={!isEditing}
-              type="text"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-              maxLength={10}
-              className="flex-1 bg-transparent text-sm text-input-text outline-none"
-            />
-          </div>
-        </div>
+        <LimitedInput
+          label="닉네임"
+          value={nickname}
+          onChange={setNickname}
+          maxLength={10}
+          placeholder="닉네임을 입력하세요"
+          disabled={!isEditing}
+        />
 
         {/* 이름 */}
         <div className="flex flex-col gap-2">
@@ -200,26 +185,16 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
         )}
 
         {/* 소개 */}
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-text-primary">
-              소개
-            </label>
-            {isEditing && (
-              <p className="text-xs text-text-secondary">{bio.length}/200</p>
-            )}
-          </div>
-          <textarea
-            disabled={!isEditing}
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            maxLength={200}
-            rows={4}
-            className={`w-full rounded-xl px-4 py-3 text-sm text-input-text outline-none resize-none ${isEditing ? 'bg-white border border-btn-focus' : 'bg-input-bg'}`}
-          />
-        </div>
+        <LimitedTextarea
+          label="소개"
+          value={bio}
+          onChange={setBio}
+          maxLength={200}
+          placeholder="소개를 입력하세요"
+          rows={4}
+          disabled={!isEditing}
+        />
       </div>
-
       {/* 회원 탈퇴 */}
       <div className="flex flex-col gap-3 p-6 bg-bg-white rounded-2xl shadow-sm">
         <div className="flex items-center gap-2">
