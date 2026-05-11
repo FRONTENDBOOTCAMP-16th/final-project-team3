@@ -56,12 +56,9 @@ const dojangSchema = z
 // 벨트 종류
 const BELTS = [
   { value: 'white', label: 'White  (입문자)', color: '#e8e8e8' },
-  { value: 'yellow', label: 'Yellow (노란띠)', color: '#f5c842' },
-  { value: 'green', label: 'Green  (초록띠)', color: '#3a9e4f' },
   { value: 'blue', label: 'Blue   (파란띠)', color: '#2e6fdb' },
   { value: 'purple', label: 'Purple (보라띠)', color: '#7c4ddb' },
   { value: 'brown', label: 'Brown  (갈색띠)', color: '#8b5a2b' },
-  { value: 'red', label: 'Red    (빨간띠)', color: '#d63a2a' },
   { value: 'black', label: 'Black  (검은띠)', color: '#1a1a1a' },
 ];
 
@@ -271,9 +268,9 @@ function GeneralForm() {
           placeholder="이메일을 입력하세요"
           {...register('email')}
         />
-        {errors.email && (
-          <p className="text-danger text-sm mt-1">{errors.email.message}</p>
-        )}
+        <p className="text-danger text-sm mt-1 h-5">
+          {errors.email?.message ?? ''}
+        </p>
       </Field>
       <Field label="비밀번호" htmlFor="password">
         <InputWithIcon
@@ -283,9 +280,9 @@ function GeneralForm() {
           placeholder="비밀번호를 입력하세요"
           {...register('password')}
         />
-        {errors.password && (
-          <p className="text-danger text-sm mt-1">{errors.password.message}</p>
-        )}
+        <p className="text-danger text-sm mt-1 h-5">
+          {errors.password?.message ?? ''}
+        </p>
       </Field>
       <Field label="비밀번호 확인" htmlFor="passwordCheck">
         <InputWithIcon
@@ -295,17 +292,17 @@ function GeneralForm() {
           placeholder="비밀번호를 다시 입력하세요"
           {...register('passwordCheck')}
         />
-        {errors.passwordCheck && (
-          <p className="text-danger text-sm mt-1">
-            {errors.passwordCheck.message}
-          </p>
-        )}
+
+        <p className="text-danger text-sm mt-1 h-5">
+          {errors.passwordCheck?.message ?? ''}
+        </p>
       </Field>
       <Field label="벨트" htmlFor="belt">
         <BeltSelect id="belt" {...register('belt')} />
-        {errors.belt && (
-          <p className="text-danger text-sm mt-1">{errors.belt.message}</p>
-        )}
+
+        <p className="text-danger text-sm mt-1 h-5">
+          {errors.belt?.message ?? ''}
+        </p>
       </Field>
 
       {/* 서버 에러 메시지 */}
