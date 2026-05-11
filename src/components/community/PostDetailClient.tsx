@@ -69,7 +69,15 @@ export default function PostDetailClient({
         return;
       }
 
-      setComments((prev) => [...prev, data.comment]);
+      // 현재 유저 프로필 정보를 합쳐서 바로 표시 (프로필 이미지 즉시 반영)
+      setComments((prev) => [
+        ...prev,
+        {
+          ...data.comment,
+          nickname: user?.name ?? '알 수 없음',
+          avatar_url: user?.image ?? null,
+        },
+      ]);
       setComment('');
     } catch (e) {
       console.error(e);
