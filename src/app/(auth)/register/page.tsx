@@ -190,6 +190,11 @@ function GeneralForm() {
     setNicknameStatus(data ? 'taken' : 'available');
   };
   const onSubmit = async (data: GeneralFormType) => {
+    if (nicknameStatus !== 'available') {
+      setServerError('닉네임 중복확인을 해주세요.');
+      return;
+    }
+
     setIsLoading(true);
     setServerError('');
     try {
@@ -197,6 +202,7 @@ function GeneralForm() {
         email: data.email,
         password: data.password,
         name: data.name,
+        nickname: data.nickname,
         belt: data.belt,
       });
       router.push('/login');
