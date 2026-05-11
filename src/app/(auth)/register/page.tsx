@@ -1,5 +1,6 @@
 'use client';
 
+import { supabase } from '@/lib/supabase';
 import Script from 'next/script';
 import { useState } from 'react';
 import Link from 'next/link';
@@ -158,8 +159,10 @@ type GeneralFormType = z.infer<typeof generalSchema>;
 function GeneralForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [nicknameStatus, setNicknameStatus] = useState;
-  'idle' | 'checking' | 'available' | ('taken' > 'idle');
+  const [nicknameStatus, setNicknameStatus] = useState<
+    'idle' | 'checking' | 'available' | 'taken'
+  >('idle');
+
   const [serverError, setServerError] = useState('');
   const {
     register,
@@ -170,6 +173,7 @@ function GeneralForm() {
     resolver: zodResolver(generalSchema),
     defaultValues: {
       name: '',
+      nickname: '',
       email: '',
       password: '',
       passwordCheck: '',
@@ -225,6 +229,42 @@ function GeneralForm() {
         />
         {errors.name && (
           <p className="text-danger text-sm mt-1">{errors.name.message}</p>
+        )}
+      </Field>
+      {/* 닉네임 */}
+      <Field label="닉네임" htmlFor="nickname">
+        <div className="flex gap-2">
+          <div className="flex-1">
+            <InputWithIcon
+              id="nickname"
+              icon={<User className="w-5 h-5" />}
+              placeholder="닉네임을 입력하세요 (2~10자)"
+              {...register('nickname', {
+                onChange: () => setNicknameStatus('idle'),
+              })}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleCheckNickname}
+            disabled={nicknameStatus === 'checking'}
+            className="px-4 py-3 bg-btn-focus text-btn-focus-text rounded-2xl text-sm font-bold whitespace-nowrap hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
+          >
+            {nicknameStatus === 'checking' ? '확인 중...' : '중복확인'}
+          </button>
+        </div>
+        {errors.nickname && (
+          <p className="text-danger text-sm mt-1">{errors.nickname.message}</p>
+        )}
+        {nicknameStatus === 'available' && (
+          <p className="text-green-500 text-sm mt-1">
+            사용 가능한 닉네임입니다!
+          </p>
+        )}
+        {nicknameStatus === 'taken' && (
+          <p className="text-danger text-sm mt-1">
+            이미 사용 중인 닉네임입니다.
+          </p>
         )}
       </Field>
       <Field label="이메일" htmlFor="email">
