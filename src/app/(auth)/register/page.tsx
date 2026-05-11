@@ -38,6 +38,10 @@ const generalSchema = z
 const dojangSchema = z
   .object({
     name: z.string().min(1, '이름을 입력해주세요.'),
+    nickname: z
+      .string()
+      .min(2, '닉네임은 2자 이상이어야 합니다.')
+      .max(10, '닉네임은 10자 이하여야 합니다.'),
     email: z.string().email('올바른 이메일 형식으로 입력해주세요.'),
     password: z.string().min(8, '비밀번호는 8자 이상이어야 합니다.'),
     passwordCheck: z.string().min(1, '비밀번호 확인을 입력해주세요.'),
