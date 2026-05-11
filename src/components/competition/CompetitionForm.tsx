@@ -1,6 +1,8 @@
 'use client';
 
 import ImageUpload from '@/components/community/ImageUpload';
+import { LimitedInput } from '../common/LimitedInput';
+import { LimitedTextarea } from '../common/LimitedTextarea';
 
 export interface CompetitionFormValues {
   name: string;
@@ -45,14 +47,13 @@ export default function CompetitionForm({
           </span>
           <span className="sr-only">(필수)</span>
         </label>
-        <input
+        <LimitedInput
           id="competition-name"
-          type="text"
-          placeholder="예: 2026 서울 주짓수 챔피언십"
           value={values.name}
-          onChange={(e) => update('name', e.target.value)}
+          onChange={(v) => update('name', v)}
+          maxLength={35}
+          placeholder="예: 2026 서울 주짓수 챔피언십"
           aria-required="true"
-          className="w-full bg-gray-50 rounded-lg px-3 py-2 text-sm outline-none"
         />
       </div>
 
@@ -211,13 +212,13 @@ export default function CompetitionForm({
         >
           대회 설명
         </label>
-        <textarea
+        <LimitedTextarea
           id="competition-description"
-          placeholder="대회에 대한 상세 설명을 입력하세요"
           value={values.description}
-          onChange={(e) => update('description', e.target.value)}
+          onChange={(v) => update('description', v)}
+          maxLength={5000}
           rows={6}
-          className="w-full bg-gray-50 rounded-lg px-3 py-2 text-sm outline-none resize-none"
+          placeholder="대회에 대한 상세 설명을 입력하세요"
         />
       </div>
     </div>
