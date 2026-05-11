@@ -47,7 +47,6 @@ const dojangSchema = z
     passwordCheck: z.string().min(1, '비밀번호 확인을 입력해주세요.'),
     belt: z.string().min(1, '벨트를 선택해주세요.'),
     licenseNumber: z.string().min(1, '사업자등록번호를 입력해주세요.'),
-    gymName: z.string().min(1, '기업명(도장명)을 입력해주세요.'),
     ownerName: z.string().min(1, '대표자명을 입력해주세요.'),
     phone: z.string().min(1, '연락처를 입력해주세요.'),
     address: z.string().min(1, '주소를 입력해주세요.'),
@@ -368,7 +367,6 @@ function DojangForm() {
       passwordCheck: '',
       belt: '',
       licenseNumber: '',
-      gymName: '',
       ownerName: '',
       phone: '',
       address: '',
@@ -420,7 +418,6 @@ function DojangForm() {
         nickname: data.nickname,
         belt: data.belt,
         licenseNumber: data.licenseNumber,
-        gymName: data.gymName,
         ownerName: data.ownerName,
         phone: data.phone,
         address: data.address,
@@ -441,15 +438,15 @@ function DojangForm() {
         strategy="lazyOnload"
       />
       <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-        <Field label="이름" htmlFor="dojang-name">
+        <Field label="대표자명" htmlFor="ownerName">
           <InputWithIcon
-            id="dojang-name"
+            id="ownerName"
             icon={<User className="w-5 h-5" />}
-            placeholder="이름을 입력하세요"
-            {...register('name')}
+            placeholder="대표자명"
+            {...register('ownerName')}
           />
           <p className="text-danger text-sm mt-1 h-5">
-            {errors.name?.message ?? ''}
+            {errors.ownerName?.message ?? ''}
           </p>
         </Field>
         {/* 닉네임 */}
@@ -526,6 +523,18 @@ function DojangForm() {
             {errors.belt?.message ?? ''}
           </p>
         </Field>
+
+        <Field label="도장명" htmlFor="dojang-name">
+          <InputWithIcon
+            id="dojang-name"
+            icon={<User className="w-5 h-5" />}
+            placeholder="도장명을 입력하세요"
+            {...register('name')}
+          />
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.name?.message ?? ''}
+          </p>
+        </Field>
         <Field label="사업자등록번호" htmlFor="licenseNumber">
           <InputWithIcon
             id="licenseNumber"
@@ -537,30 +546,7 @@ function DojangForm() {
             {errors.licenseNumber?.message ?? ''}
           </p>
         </Field>
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="기업명(도장명)" htmlFor="gymName">
-            <InputWithIcon
-              id="gymName"
-              icon={<CreditCard className="w-5 h-5" />}
-              placeholder="도장명"
-              {...register('gymName')}
-            />
-            <p className="text-danger text-sm mt-1 h-5">
-              {errors.gymName?.message ?? ''}
-            </p>
-          </Field>
-          <Field label="대표자명" htmlFor="ownerName">
-            <InputWithIcon
-              id="ownerName"
-              icon={<User className="w-5 h-5" />}
-              placeholder="대표자명"
-              {...register('ownerName')}
-            />
-            <p className="text-danger text-sm mt-1 h-5">
-              {errors.ownerName?.message ?? ''}
-            </p>
-          </Field>
-        </div>
+
         <Field label="연락처" htmlFor="phone">
           <InputWithIcon
             id="phone"
