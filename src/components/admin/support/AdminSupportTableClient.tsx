@@ -28,6 +28,7 @@ import {
 interface AdminSupportTableClientProps {
   dojangVerifications: AdminDojangVerificationRow[];
   reports: AdminReportRow[];
+  initialSection: SupportSection;
 }
 
 const DOJANG_COLUMNS: AdminTableColumn<AdminDojangVerificationRow>[] = [
@@ -105,8 +106,10 @@ const REPORT_COLUMNS: AdminTableColumn<AdminReportRow>[] = [
 export default function AdminSupportTableClient({
   dojangVerifications,
   reports,
+  initialSection,
 }: AdminSupportTableClientProps) {
-  const [activeSection, setActiveSection] = useState<SupportSection>('dojang');
+  const [activeSection, setActiveSection] =
+    useState<SupportSection>(initialSection);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredDojangVerifications = useMemo(() => {
