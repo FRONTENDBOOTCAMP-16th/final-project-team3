@@ -374,7 +374,6 @@ function DojangForm() {
   const handleAddressSearch = () => {
     new window.daum.Postcode({
       oncomplete: (data: { address: string }) => {
-        console.log('선택한 주소:', data.address); // ← 추가
         setValue('address', data.address, { shouldValidate: true });
       },
     }).open();
