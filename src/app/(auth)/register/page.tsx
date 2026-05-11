@@ -353,12 +353,14 @@ function DojangForm() {
   const {
     register,
     handleSubmit,
+    getValues,
     setValue,
     formState: { errors },
   } = useForm<DojangFormType>({
     resolver: zodResolver(dojangSchema),
     defaultValues: {
       name: '',
+      nickname: '',
       email: '',
       password: '',
       passwordCheck: '',
