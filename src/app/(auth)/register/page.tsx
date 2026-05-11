@@ -253,19 +253,15 @@ function GeneralForm() {
             {nicknameStatus === 'checking' ? '확인 중...' : '중복확인'}
           </button>
         </div>
-        {errors.nickname && (
-          <p className="text-danger text-sm mt-1">{errors.nickname.message}</p>
-        )}
-        {nicknameStatus === 'available' && (
-          <p className="text-green-500 text-sm mt-1">
-            사용 가능한 닉네임입니다!
-          </p>
-        )}
-        {nicknameStatus === 'taken' && (
-          <p className="text-danger text-sm mt-1">
-            이미 사용 중인 닉네임입니다.
-          </p>
-        )}
+        <p className="text-sm mt-1 h-5">
+          {errors.nickname ? (
+            <span className="text-danger">{errors.nickname.message}</span>
+          ) : nicknameStatus === 'available' ? (
+            <span className="text-green-500">사용 가능한 닉네임입니다!</span>
+          ) : nicknameStatus === 'taken' ? (
+            <span className="text-danger">이미 사용 중인 닉네임입니다.</span>
+          ) : null}
+        </p>
       </Field>
       <Field label="이메일" htmlFor="email">
         <InputWithIcon
