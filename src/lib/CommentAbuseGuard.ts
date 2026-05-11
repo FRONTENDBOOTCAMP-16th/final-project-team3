@@ -13,7 +13,7 @@ export const ABUSE_CONFIG = {
   /** 중복 체크할 최근 댓글 수 */
   DUPLICATE_CHECK_RANGE: 3,
   /** 연속 작성 최대 횟수 (초과 시 차단) */
-  CONSECUTIVE_LIMIT: 3,
+  CONSECUTIVE_LIMIT: 2,
   /** 최소 글자 수 */
   MIN_LENGTH: 5,
   /** 최대 글자 수 */
@@ -119,7 +119,7 @@ export async function checkCommentAbuse(params: {
     return {
       ok: false,
       code: 'CONSECUTIVE_LIMIT',
-      message: `연속으로 ${ABUSE_CONFIG.CONSECUTIVE_LIMIT}회 이상 댓글을 작성할 수 없습니다.`,
+      message: `연속으로 ${ABUSE_CONFIG.CONSECUTIVE_LIMIT + 1}회 이상 댓글을 작성할 수 없습니다.`,
     };
   }
 
