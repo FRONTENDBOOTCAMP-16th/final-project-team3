@@ -223,7 +223,7 @@ export default function FindPasswordPage() {
               type="submit"
               className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer"
             >
-              비밀번호 재설정
+              재설정 완료
             </button>
 
             <p className="text-center text-sm text-text-secondary">
