@@ -37,7 +37,7 @@ const generalSchema = z
 // 도장 회원 zod 유효성 검사 스키마 추가
 const dojangSchema = z
   .object({
-    name: z.string().min(1, '이름을 입력해주세요.'),
+    name: z.string().optional(),
     nickname: z
       .string()
       .min(2, '닉네임은 2자 이상이어야 합니다.')
@@ -228,9 +228,9 @@ function GeneralForm() {
           placeholder="이름을 입력하세요"
           {...register('name')}
         />
-        {errors.name && (
-          <p className="text-danger text-sm mt-1">{errors.name.message}</p>
-        )}
+        <p className="text-danger text-sm mt-1 h-5">
+          {errors.name?.message ?? ''}
+        </p>
       </Field>
       {/* 닉네임 */}
       <Field label="닉네임" htmlFor="nickname">
