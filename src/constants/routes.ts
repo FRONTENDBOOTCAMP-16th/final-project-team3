@@ -6,6 +6,7 @@ export const ROUTES = {
   FIND_PASSWORD: "/find-password",
   MYPAGE: "/mypage",
   ADMIN: "/admin",
+  ADMIN_SUPPORT: "/admin/support",
   DOJANGS: "/dojangs",
   COMPETITIONS: "/competitions",
   COMMUNITY: "/community",
