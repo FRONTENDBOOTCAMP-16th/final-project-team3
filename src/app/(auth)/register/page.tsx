@@ -444,9 +444,9 @@ function DojangForm() {
             placeholder="이름을 입력하세요"
             {...register('name')}
           />
-          {errors.name && (
-            <p className="text-danger text-sm mt-1">{errors.name.message}</p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.name?.message ?? ''}
+          </p>
         </Field>
         {/* 닉네임 */}
         <Field label="닉네임" htmlFor="dojang-nickname">
@@ -488,9 +488,9 @@ function DojangForm() {
             placeholder="이메일을 입력하세요"
             {...register('email')}
           />
-          {errors.email && (
-            <p className="text-danger text-sm mt-1">{errors.email.message}</p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.email?.message ?? ''}
+          </p>
         </Field>
         <Field label="비밀번호" htmlFor="dojang-password">
           <InputWithIcon
@@ -500,11 +500,9 @@ function DojangForm() {
             placeholder="비밀번호를 입력하세요"
             {...register('password')}
           />
-          {errors.password && (
-            <p className="text-danger text-sm mt-1">
-              {errors.password.message}
-            </p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.password?.message ?? ''}
+          </p>
         </Field>
         <Field label="비밀번호 확인" htmlFor="dojang-passwordConfirm">
           <InputWithIcon
@@ -514,17 +512,15 @@ function DojangForm() {
             placeholder="비밀번호를 다시 입력하세요"
             {...register('passwordCheck')}
           />
-          {errors.passwordCheck && (
-            <p className="text-danger text-sm mt-1">
-              {errors.passwordCheck.message}
-            </p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.passwordCheck?.message ?? ''}
+          </p>
         </Field>
         <Field label="벨트" htmlFor="dojang-belt">
           <BeltSelect id="dojang-belt" {...register('belt')} />
-          {errors.belt && (
-            <p className="text-danger text-sm mt-1">{errors.belt.message}</p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.belt?.message ?? ''}
+          </p>
         </Field>
         <Field label="사업자등록번호" htmlFor="licenseNumber">
           <InputWithIcon
@@ -533,11 +529,9 @@ function DojangForm() {
             placeholder="사업자등록번호를 입력하세요"
             {...register('licenseNumber')}
           />
-          {errors.licenseNumber && (
-            <p className="text-danger text-sm mt-1">
-              {errors.licenseNumber.message}
-            </p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.licenseNumber?.message ?? ''}
+          </p>
         </Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label="기업명(도장명)" htmlFor="gymName">
@@ -547,11 +541,9 @@ function DojangForm() {
               placeholder="도장명"
               {...register('gymName')}
             />
-            {errors.gymName && (
-              <p className="text-danger text-sm mt-1">
-                {errors.gymName.message}
-              </p>
-            )}
+            <p className="text-danger text-sm mt-1 h-5">
+              {errors.gymName?.message ?? ''}
+            </p>
           </Field>
           <Field label="대표자명" htmlFor="ownerName">
             <InputWithIcon
@@ -560,11 +552,9 @@ function DojangForm() {
               placeholder="대표자명"
               {...register('ownerName')}
             />
-            {errors.ownerName && (
-              <p className="text-danger text-sm mt-1">
-                {errors.ownerName.message}
-              </p>
-            )}
+            <p className="text-danger text-sm mt-1 h-5">
+              {errors.ownerName?.message ?? ''}
+            </p>
           </Field>
         </div>
         <Field label="연락처" htmlFor="phone">
@@ -575,9 +565,9 @@ function DojangForm() {
             placeholder="010-0000-0000"
             {...register('phone')}
           />
-          {errors.phone && (
-            <p className="text-danger text-sm mt-1">{errors.phone.message}</p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.phone?.message ?? ''}
+          </p>
         </Field>
         <Field label="주소" htmlFor="address">
           <div className="flex gap-2">
@@ -598,9 +588,9 @@ function DojangForm() {
               주소 검색
             </button>
           </div>
-          {errors.address && (
-            <p className="text-danger text-sm mt-1">{errors.address.message}</p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.address?.message ?? ''}
+          </p>
         </Field>
 
         {/* 파일 업로드 */}
