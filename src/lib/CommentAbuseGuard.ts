@@ -33,9 +33,8 @@ export type AbuseErrorCode =
 
 function normalize(text: string): string {
   return text
-    .replace(/[\u200B-\u200D\uFEFF\u00A0]/g, '') // 유니코드 invisible 문자 제거
-    .replace(/\s+/g, ' ') // 연속 공백 → 단일 공백
-    .trim()
+    .replace(/[\u200B-\u200D\uFEFF\u00A0]/g, '') // 보이지 않는 유니코드 공백 제거
+    .replace(/\s/g, '') // 모든 공백 완전 제거
     .toLowerCase();
 }
 
