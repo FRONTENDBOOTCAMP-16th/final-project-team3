@@ -18,10 +18,10 @@ export async function registerGeneral({
     password,
   });
   if (error) throw error;
+  if (!data.user) throw new Error('회원가입에 실패했습니다.');
 
   // 일반 - profiles 테이블에 추가 정보 저장
   const { error: profileError } = await supabase.from('profiles').upsert({
-    id: data.user!.id,
     name,
     belt_level: belt,
     email_value: email,
