@@ -345,6 +345,9 @@ function DojangForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState('');
+  const [nicknameStatus, setNicknameStatus] = useState<
+    'idle' | 'checking' | 'available' | 'taken'
+  >('idle');
   const [businessFile, setBusinessFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const {
@@ -367,7 +370,19 @@ function DojangForm() {
       address: '',
     },
   });
+  const handleCheckNickname = async () => {
+    const nickname = getValues('nickname');
+    if (!nickname || nickname.length < 2) return;
 
+    setNicknameStatus('checking');
+    const { data } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('nickname', nickname)
+      .maybeSingle();
+
+    setNicknameStatus(data ? 'taken' : 'available');
+  };
   const handleAddressSearch = () => {
     new window.daum.Postcode({
       oncomplete: (data: { address: string }) => {
