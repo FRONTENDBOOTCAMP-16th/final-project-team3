@@ -57,7 +57,7 @@ export default function FindPasswordPage() {
 
     if (error || !data) {
       setErrors({
-        server: '입력하신 이메일로 가입된 계정을 찾을 수 없습니다.',
+        server: '이름 또는 이메일이 올바르지 않습니다.',
       });
       return;
     }
