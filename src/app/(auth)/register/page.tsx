@@ -214,8 +214,7 @@ function GeneralForm() {
         belt: data.belt,
       });
       router.push('/login');
-    } catch (e) {
-      console.error(e);
+    } catch {
       setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
     } finally {
       setIsLoading(false);
@@ -428,8 +427,7 @@ function DojangForm() {
         businessFileUrl,
       });
       router.push('/login');
-    } catch (e) {
-      console.error(e);
+    } catch {
       setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
     } finally {
       setIsLoading(false);
