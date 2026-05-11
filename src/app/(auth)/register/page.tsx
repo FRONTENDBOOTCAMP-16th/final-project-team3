@@ -158,10 +158,13 @@ type GeneralFormType = z.infer<typeof generalSchema>;
 function GeneralForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [nicknameStatus, setNicknameStatus] = useState;
+  'idle' | 'checking' | 'available' | ('taken' > 'idle');
   const [serverError, setServerError] = useState('');
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<GeneralFormType>({
     resolver: zodResolver(generalSchema),
@@ -173,7 +176,19 @@ function GeneralForm() {
       belt: '',
     },
   });
+  const handleCheckNickname = async () => {
+    const nickname = getValues('nickname');
+    if (!nickname || nickname.length < 2) return;
 
+    setNicknameStatus('checking');
+    const { data } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('nickname', nickname)
+      .maybeSingle();
+
+    setNicknameStatus(data ? 'taken' : 'available');
+  };
   const onSubmit = async (data: GeneralFormType) => {
     setIsLoading(true);
     setServerError('');
