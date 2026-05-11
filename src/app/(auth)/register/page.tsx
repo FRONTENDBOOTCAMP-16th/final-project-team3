@@ -394,6 +394,10 @@ function DojangForm() {
   };
 
   const onSubmit = async (data: DojangFormType) => {
+    if (nicknameStatus !== 'available') {
+      setServerError('닉네임 중복확인을 해주세요.');
+      return;
+    }
     if (!businessFile) {
       setServerError('사업자등록증을 첨부해주세요.');
       return;
@@ -408,6 +412,7 @@ function DojangForm() {
         email: data.email,
         password: data.password,
         name: data.name,
+        nickname: data.nickname,
         belt: data.belt,
         licenseNumber: data.licenseNumber,
         gymName: data.gymName,
@@ -442,6 +447,38 @@ function DojangForm() {
           {errors.name && (
             <p className="text-danger text-sm mt-1">{errors.name.message}</p>
           )}
+        </Field>
+        {/* 닉네임 */}
+        <Field label="닉네임" htmlFor="dojang-nickname">
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <InputWithIcon
+                id="dojang-nickname"
+                icon={<User className="w-5 h-5" />}
+                placeholder="닉네임을 입력하세요 (2~10자)"
+                {...register('nickname', {
+                  onChange: () => setNicknameStatus('idle'),
+                })}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleCheckNickname}
+              disabled={nicknameStatus === 'checking'}
+              className="px-4 py-3 bg-btn-focus text-btn-focus-text rounded-2xl text-sm font-bold whitespace-nowrap hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
+            >
+              {nicknameStatus === 'checking' ? '확인 중...' : '중복확인'}
+            </button>
+          </div>
+          <p className="text-sm mt-1 h-5">
+            {errors.nickname ? (
+              <span className="text-danger">{errors.nickname.message}</span>
+            ) : nicknameStatus === 'available' ? (
+              <span className="text-green-500">사용 가능한 닉네임입니다!</span>
+            ) : nicknameStatus === 'taken' ? (
+              <span className="text-danger">이미 사용 중인 닉네임입니다.</span>
+            ) : null}
+          </p>
         </Field>
         <Field label="이메일" htmlFor="dojang-email">
           <InputWithIcon
