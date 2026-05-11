@@ -680,7 +680,7 @@ function DojangForm() {
         {/* 로딩 중일 때 버튼 비활성화 */}
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || nicknameStatus !== 'available'}
           className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
         >
           {isUploading
