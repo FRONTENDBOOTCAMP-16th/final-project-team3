@@ -1,9 +1,25 @@
-// app/(main)/competitions/[id]/edit/page.tsx (서버 컴포넌트)
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getCompetition } from '@/services/competitionService';
 import CompetitionEditClient from '@/components/competition/CompetitionEditClient';
+import type { Metadata } from 'next';
+
+export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const competition = await getCompetition(id);
+
+  return {
+    title: `${competition?.name ?? '대회'} 수정 | Black Belt BJJ`,
+    description: `${competition?.name ?? '대회'} 정보를 수정합니다`,
+  };
+}
 
 export default async function CompetitionEditPage({
   params,
@@ -22,7 +38,6 @@ export default async function CompetitionEditPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
   if (!user) redirect('/login');
 
   const { data: profile } = await supabase
