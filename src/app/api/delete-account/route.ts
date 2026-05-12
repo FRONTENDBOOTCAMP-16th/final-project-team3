@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function DELETE(req: NextRequest) {
   const { userId } = await req.json();
-  console.log('userId:', userId);
 
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -16,7 +15,6 @@ export async function DELETE(req: NextRequest) {
     .eq('id', userId);
 
   if (profileError) {
-    console.log('profileError:', profileError);
     return NextResponse.json(
       { error: '회원탈퇴에 실패했습니다.' },
       { status: 500 },
@@ -24,7 +22,6 @@ export async function DELETE(req: NextRequest) {
   }
 
   const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
-  console.log('error:', error);
 
   if (error) {
     return NextResponse.json(
