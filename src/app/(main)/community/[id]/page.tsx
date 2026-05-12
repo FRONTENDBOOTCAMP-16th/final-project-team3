@@ -28,11 +28,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = post.content.slice(0, 120).replace(/\n/g, ' ');
 
   return {
-    title: post.title,
-    description,
+    title: `${post.title} | Black Belt BJJ`,
+    description: description ?? '주짓수 커뮤니티 게시글 상세 정보',
     openGraph: {
-      title: post.title,
-      description,
+      title: `${post.title} | Black Belt BJJ`,
+      description: description ?? '주짓수 커뮤니티 게시글 상세 정보',
       ...(post.image_url && { images: [{ url: post.image_url }] }),
       type: 'article',
     },
