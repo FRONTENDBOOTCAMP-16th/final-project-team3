@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!post) {
     return {
-      title: '게시글을 찾을 수 없습니다',
+      title: '게시글을 찾을 수 없습니다 | Black Belt BJJ',
       description: '존재하지 않거나 삭제된 게시글입니다.',
     };
   }

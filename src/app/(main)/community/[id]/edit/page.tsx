@@ -15,11 +15,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getPost(id);
 
   if (!post) {
-    return { title: '게시글을 찾을 수 없습니다' };
+    return { title: '게시글을 찾을 수 없습니다 | Black Belt BJJ' };
   }
 
   return {
-    title: `${post.title} — 수정`,
+    title: `${post.title} 수정 | Black Belt BJJ`,
     description: `"${post.title}" 게시글을 수정합니다.`,
     robots: { index: false }, // 수정 페이지는 검색엔진 색인 제외
   };
