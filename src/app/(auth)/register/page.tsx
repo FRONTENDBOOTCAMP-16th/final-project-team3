@@ -214,8 +214,15 @@ function GeneralForm() {
       });
       showSuccessToast('회원가입이 완료되었습니다! 로그인해주세요 🎉');
       router.push('/login');
-    } catch {
-      setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message.includes('already registered')
+      ) {
+        setServerError('이미 가입된 이메일입니다. 다른 이메일로 시도해주세요.');
+      } else {
+        setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -426,8 +433,15 @@ function DojangForm() {
       });
       showSuccessToast('회원가입이 완료되었습니다! 로그인해주세요 🎉');
       router.push('/login');
-    } catch {
-      setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message.includes('already registered')
+      ) {
+        setServerError('이미 가입된 이메일입니다. 다른 이메일로 시도해주세요.');
+      } else {
+        setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+      }
     } finally {
       setIsLoading(false);
       setIsUploading(false);
