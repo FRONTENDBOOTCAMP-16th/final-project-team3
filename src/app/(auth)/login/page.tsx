@@ -162,7 +162,7 @@ export default function LoginPage() {
               </span>
             </label>
             <Link
-              href="/forgot-password"
+              href="/find-password"
               className="text-sm font-bold hover:underline text-[#4f74e8]"
             >
               비밀번호 찾기
