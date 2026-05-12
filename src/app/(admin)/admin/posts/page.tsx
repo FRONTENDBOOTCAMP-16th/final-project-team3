@@ -1,24 +1,10 @@
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
-
-import AdminHeader from '@/components/admin/AdminHeader';
 import AdminPostTableClient from '@/components/admin/posts/AdminPostsTableClient';
 import type { PostQueryRow } from '@/components/admin/posts/types';
 import { mapPostQueryRowsToAdminPostRows } from '@/components/admin/posts/utils';
+import { createServerSupabaseClient } from '@/lib/createServerSupabaseClient';
 
 async function getAdminPosts() {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-      },
-    },
-  );
+  const supabase = await createServerSupabaseClient();
 
   const { data, error } = await supabase
     .from('posts')
@@ -49,10 +35,5 @@ async function getAdminPosts() {
 export default async function AdminPostPage() {
   const postData = await getAdminPosts();
 
-  return (
-    <main className="min-h-screen w-full pt-28 space-y-2">
-      <AdminHeader page="posts" />
-      <AdminPostTableClient data={postData} />
-    </main>
-  );
+  return <AdminPostTableClient data={postData} />;
 }
