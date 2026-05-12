@@ -43,7 +43,7 @@ const RESTORE_POST_MESSAGES: ActionMessages = {
 };
 
 function revalidateAdminPostPaths(postId: string) {
-  revalidatePath('/admin/posts');
+  revalidatePath(ROUTES.ADMIN_POSTS);
   revalidatePath(ROUTES.COMMUNITY);
   revalidatePath(ROUTES.COMMUNITY_DETAIL(postId));
 }
