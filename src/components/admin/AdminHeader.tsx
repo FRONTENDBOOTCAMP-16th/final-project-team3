@@ -1,10 +1,17 @@
+'use client';
+
+import { useSelectedLayoutSegment } from 'next/navigation';
+
 import { ADMIN_META, type AdminPageKey } from '@/constants/adminMeta';
 
-interface AdminHeaderProps {
-  page: AdminPageKey;
+function isAdminPageKey(value: string): value is AdminPageKey {
+  return value in ADMIN_META;
 }
 
-export default function AdminHeader({ page }: AdminHeaderProps) {
+export default function AdminHeader() {
+  const segment = useSelectedLayoutSegment();
+  const page =
+    segment && isAdminPageKey(segment) ? segment : 'dashboard';
   const { title, description } = ADMIN_META[page];
 
   return (
