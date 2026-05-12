@@ -1,8 +1,6 @@
 import ScrollToTop from '@/components/common/ScrollToTop';
 import Sidebar from '@/components/layout/Sidebar';
-<<<<<<< HEAD
 import { Toaster } from 'sonner';
-=======
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -16,8 +14,6 @@ export const metadata: Metadata = {
     type: 'website',
   },
 };
->>>>>>> develop
-
 export default function MainLayout({
   children,
 }: {
