@@ -1,14 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import { Mail, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { supabase } from '@/lib/supabase';
 import useAuthStore from '@/store/authStore';
-import { tokenStorage } from '@/lib/tokenStorage';
 
 const loginSchema = z.object({
   email: z.string().email('올바른 이메일 형식으로 작성해주세요.'),
@@ -18,7 +16,6 @@ const loginSchema = z.object({
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [stayLoggedIn, setStayLoggedIn] = useState(false);
   const [errors, setErrors] = useState<{
     email?: string;
     password?: string;
@@ -69,11 +66,6 @@ export default function LoginPage() {
       nickname: profile?.nickname ?? '',
       role: profile?.role ?? '',
     });
-
-    // 토큰 저장
-    if (data.session) {
-      tokenStorage.set(data.session.access_token, stayLoggedIn);
-    }
 
     // role에 따라 다른 페이지로 이동
     const role = profile?.role ?? '';
@@ -150,25 +142,9 @@ export default function LoginPage() {
               {errors.password ?? ''}
             </p>
           </div>
-          {/* 로그인 상태 유지 체크박스*/}
-          <div className="flex items-center justify-between">
-            <label
-              htmlFor="stayLoggedIn"
-              className="flex items-center gap-2 cursor-pointer"
-            >
-              <input
-                id="stayLoggedIn"
-                type="checkbox"
-                checked={stayLoggedIn}
-                onChange={(e) => setStayLoggedIn(e.target.checked)}
-                className="w-4 h-4 rounded accent-black"
-              />
-              <span className="font-bold text-sm text-text-secondary">
-                로그인 상태 유지
-              </span>
-            </label>
+          <div className="flex justify-end">
             <Link
-              href="/forgot-password"
+              href="/find-password"
               className="text-sm font-bold hover:underline text-[#4f74e8]"
             >
               비밀번호 찾기
