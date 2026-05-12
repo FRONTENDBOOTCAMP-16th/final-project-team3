@@ -1,7 +1,3 @@
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
-
-import AdminHeader from '@/components/admin/AdminHeader';
 import AdminSupportTableClient from '@/components/admin/support/AdminSupportTableClient';
 import type {
   SupportSection,
@@ -15,20 +11,10 @@ import {
   mapReportQueryRowsToAdminReportRows,
   sortSupportReportQueryRows,
 } from '@/components/admin/support/utils';
+import { createServerSupabaseClient } from '@/lib/createServerSupabaseClient';
 
 async function getAdminSupportData() {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-      },
-    },
-  );
+  const supabase = await createServerSupabaseClient();
 
   const [dojangResult, reportsResult] = await Promise.all([
     supabase
@@ -162,13 +148,10 @@ export default async function AdminSupportPage({
   const initialSection = getInitialSupportSection(resolvedSearchParams.section);
 
   return (
-    <main className="min-h-screen w-full pt-28 space-y-2">
-      <AdminHeader page="support" />
-      <AdminSupportTableClient
-        dojangVerifications={data.dojangVerifications}
-        reports={data.reports}
-        initialSection={initialSection}
-      />
-    </main>
+    <AdminSupportTableClient
+      dojangVerifications={data.dojangVerifications}
+      reports={data.reports}
+      initialSection={initialSection}
+    />
   );
 }
