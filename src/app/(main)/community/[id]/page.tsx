@@ -1,4 +1,3 @@
-// community/[id]/page.tsx
 export const dynamic = 'force-dynamic';
 
 import type { Metadata } from 'next';

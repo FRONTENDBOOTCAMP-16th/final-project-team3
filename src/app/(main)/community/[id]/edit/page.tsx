@@ -1,4 +1,3 @@
-// community/[id]/edit/page.tsx
 export const dynamic = 'force-dynamic';
 
 import type { Metadata } from 'next';
@@ -21,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${post.title} 수정 | Black Belt BJJ`,
     description: `"${post.title}" 게시글을 수정합니다.`,
-    robots: { index: false }, // 수정 페이지는 검색엔진 색인 제외
+    robots: { index: false },
   };
 }
 

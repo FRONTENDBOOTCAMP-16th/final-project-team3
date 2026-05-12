@@ -1,4 +1,3 @@
-// community/write/page.tsx
 export const dynamic = 'force-dynamic';
 
 import type { Metadata } from 'next';
@@ -10,7 +9,7 @@ import { redirect } from 'next/navigation';
 export const metadata: Metadata = {
   title: '게시글 작성 | Black Belt BJJ',
   description: '블랙벨트 커뮤니티에 새 게시글을 작성합니다.',
-  robots: { index: false }, // 작성 페이지는 검색엔진 색인 제외
+  robots: { index: false },
 };
 
 async function getUser() {
