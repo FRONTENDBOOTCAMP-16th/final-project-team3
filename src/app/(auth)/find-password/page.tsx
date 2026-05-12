@@ -5,7 +5,6 @@ import { Mail, Lock, User } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
-import { supabase } from '@/lib/supabase';
 
 const step1Schema = z.object({
   name: z.string().min(1, '이름을 입력해주세요.'),
@@ -48,17 +47,14 @@ export default function FindPasswordPage() {
     }
     setErrors({});
 
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('email_value', email)
-      .eq('name', name)
-      .single();
+    const res = await fetch('/api/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, checkOnly: true }),
+    });
 
-    if (error || !data) {
-      setErrors({
-        server: '이름 또는 이메일이 올바르지 않습니다.',
-      });
+    if (!res.ok) {
+      setErrors({ server: '이름 또는 이메일이 올바르지 않습니다.' });
       return;
     }
 
@@ -76,8 +72,13 @@ export default function FindPasswordPage() {
     }
     setErrors({});
 
-    const { error } = await supabase.auth.updateUser({ password });
-    if (error) {
+    const res = await fetch('/api/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    if (!res.ok) {
       setErrors({
         server: '비밀번호 재설정에 실패했습니다. 다시 시도해주세요.',
       });
