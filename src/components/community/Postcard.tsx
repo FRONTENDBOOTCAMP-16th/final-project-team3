@@ -47,6 +47,8 @@ export default function PostCard({ post, userId }: PostCardProps) {
     <Link
       href={`/community/${post.id}`}
       className="block w-full"
+      target="_blank"
+      rel="noopener noreferrer"
       aria-label={`${post.title} 게시글 상세보기`}
     >
       <article

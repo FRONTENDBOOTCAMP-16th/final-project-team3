@@ -19,3 +19,9 @@ export interface Profile {
   address?: string;
   business_file_url?: string;
 }
+export interface ProfileUpdateForm {
+  nickname: string;
+  bio: string;
+  avatar_url: string | null;
+  belt_level: BeltLevel;
+}

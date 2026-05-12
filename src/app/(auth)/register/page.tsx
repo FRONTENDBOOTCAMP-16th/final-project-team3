@@ -1,5 +1,6 @@
 'use client';
 
+import { supabase } from '@/lib/supabase';
 import Script from 'next/script';
 import { useState } from 'react';
 import Link from 'next/link';
@@ -14,11 +15,16 @@ import {
   registerDojang,
   uploadBusinessFile,
 } from '@/services/authService';
+import { showSuccessToast, showErrorToast } from '@/lib/toast';
 
 // 일반 회원 zod 유효성 검사 스키마
 const generalSchema = z
   .object({
-    name: z.string().min(1, '이름을 입력해주세요.'),
+    name: z.string().optional(),
+    nickname: z
+      .string()
+      .min(2, '닉네임은 2자 이상이어야 합니다.')
+      .max(10, '닉네임은 10자 이하여야 합니다.'),
     email: z.string().email('올바른 이메일 형식으로 입력해주세요.'),
     password: z.string().min(8, '비밀번호는 8자 이상이어야 합니다.'),
     passwordCheck: z.string().min(1, '비밀번호 확인을 입력해주세요.'),
@@ -32,13 +38,16 @@ const generalSchema = z
 // 도장 회원 zod 유효성 검사 스키마 추가
 const dojangSchema = z
   .object({
-    name: z.string().min(1, '이름을 입력해주세요.'),
+    name: z.string().optional(),
+    nickname: z
+      .string()
+      .min(2, '닉네임은 2자 이상이어야 합니다.')
+      .max(10, '닉네임은 10자 이하여야 합니다.'),
     email: z.string().email('올바른 이메일 형식으로 입력해주세요.'),
     password: z.string().min(8, '비밀번호는 8자 이상이어야 합니다.'),
     passwordCheck: z.string().min(1, '비밀번호 확인을 입력해주세요.'),
     belt: z.string().min(1, '벨트를 선택해주세요.'),
     licenseNumber: z.string().min(1, '사업자등록번호를 입력해주세요.'),
-    gymName: z.string().min(1, '기업명(도장명)을 입력해주세요.'),
     ownerName: z.string().min(1, '대표자명을 입력해주세요.'),
     phone: z.string().min(1, '연락처를 입력해주세요.'),
     address: z.string().min(1, '주소를 입력해주세요.'),
@@ -51,12 +60,9 @@ const dojangSchema = z
 // 벨트 종류
 const BELTS = [
   { value: 'white', label: 'White  (입문자)', color: '#e8e8e8' },
-  { value: 'yellow', label: 'Yellow (노란띠)', color: '#f5c842' },
-  { value: 'green', label: 'Green  (초록띠)', color: '#3a9e4f' },
   { value: 'blue', label: 'Blue   (파란띠)', color: '#2e6fdb' },
   { value: 'purple', label: 'Purple (보라띠)', color: '#7c4ddb' },
   { value: 'brown', label: 'Brown  (갈색띠)', color: '#8b5a2b' },
-  { value: 'red', label: 'Red    (빨간띠)', color: '#d63a2a' },
   { value: 'black', label: 'Black  (검은띠)', color: '#1a1a1a' },
 ];
 
@@ -114,7 +120,6 @@ function Field({
         {label}
       </label>
       {children}
-      {/* 빈 p 태그 제거! 에러는 GeneralForm에서 직접 표시 */}
     </div>
   );
 }
@@ -154,23 +159,49 @@ type GeneralFormType = z.infer<typeof generalSchema>;
 function GeneralForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [nicknameStatus, setNicknameStatus] = useState<
+    'idle' | 'checking' | 'available' | 'taken'
+  >('idle');
+
   const [serverError, setServerError] = useState('');
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<GeneralFormType>({
     resolver: zodResolver(generalSchema),
     defaultValues: {
       name: '',
+      nickname: '',
       email: '',
       password: '',
       passwordCheck: '',
       belt: '',
     },
   });
+  const handleCheckNickname = async () => {
+    const nickname = getValues('nickname');
+    if (!nickname || nickname.length < 2) return;
 
+    setNicknameStatus('checking');
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const { data } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('nickname', nickname)
+      .maybeSingle();
+
+    setNicknameStatus(data ? 'taken' : 'available');
+  };
   const onSubmit = async (data: GeneralFormType) => {
+    if (nicknameStatus !== 'available') {
+      showErrorToast('닉네임 중복확인을 완료해주세요!');
+      return;
+    }
+
     setIsLoading(true);
     setServerError('');
     try {
@@ -178,12 +209,20 @@ function GeneralForm() {
         email: data.email,
         password: data.password,
         name: data.name,
+        nickname: data.nickname,
         belt: data.belt,
       });
+      showSuccessToast('회원가입이 완료되었습니다! 로그인해주세요 🎉');
       router.push('/login');
-    } catch (e) {
-      console.error(e);
-      setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message.includes('already registered')
+      ) {
+        setServerError('이미 가입된 이메일입니다. 다른 이메일로 시도해주세요.');
+      } else {
+        setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -198,9 +237,41 @@ function GeneralForm() {
           placeholder="이름을 입력하세요"
           {...register('name')}
         />
-        {errors.name && (
-          <p className="text-danger text-sm mt-1">{errors.name.message}</p>
-        )}
+        <p className="text-danger text-sm mt-1 h-5">
+          {errors.name?.message ?? ''}
+        </p>
+      </Field>
+      {/* 닉네임 */}
+      <Field label="닉네임" htmlFor="nickname">
+        <div className="flex gap-2">
+          <div className="flex-1">
+            <InputWithIcon
+              id="nickname"
+              icon={<User className="w-5 h-5" />}
+              placeholder="닉네임을 입력하세요 (2~10자)"
+              {...register('nickname', {
+                onChange: () => setNicknameStatus('idle'),
+              })}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleCheckNickname}
+            disabled={nicknameStatus === 'checking'}
+            className="px-4 py-3 bg-btn-focus text-btn-focus-text rounded-2xl text-sm font-bold whitespace-nowrap hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
+          >
+            {nicknameStatus === 'checking' ? '확인 중...' : '중복확인'}
+          </button>
+        </div>
+        <p className="text-sm mt-1 h-5">
+          {errors.nickname ? (
+            <span className="text-danger">{errors.nickname.message}</span>
+          ) : nicknameStatus === 'available' ? (
+            <span className="text-green-500">사용 가능한 닉네임입니다!</span>
+          ) : nicknameStatus === 'taken' ? (
+            <span className="text-danger">이미 사용 중인 닉네임입니다.</span>
+          ) : null}
+        </p>
       </Field>
       <Field label="이메일" htmlFor="email">
         <InputWithIcon
@@ -210,9 +281,9 @@ function GeneralForm() {
           placeholder="이메일을 입력하세요"
           {...register('email')}
         />
-        {errors.email && (
-          <p className="text-danger text-sm mt-1">{errors.email.message}</p>
-        )}
+        <p className="text-danger text-sm mt-1 h-5">
+          {errors.email?.message ?? ''}
+        </p>
       </Field>
       <Field label="비밀번호" htmlFor="password">
         <InputWithIcon
@@ -222,9 +293,9 @@ function GeneralForm() {
           placeholder="비밀번호를 입력하세요"
           {...register('password')}
         />
-        {errors.password && (
-          <p className="text-danger text-sm mt-1">{errors.password.message}</p>
-        )}
+        <p className="text-danger text-sm mt-1 h-5">
+          {errors.password?.message ?? ''}
+        </p>
       </Field>
       <Field label="비밀번호 확인" htmlFor="passwordCheck">
         <InputWithIcon
@@ -234,17 +305,17 @@ function GeneralForm() {
           placeholder="비밀번호를 다시 입력하세요"
           {...register('passwordCheck')}
         />
-        {errors.passwordCheck && (
-          <p className="text-danger text-sm mt-1">
-            {errors.passwordCheck.message}
-          </p>
-        )}
+
+        <p className="text-danger text-sm mt-1 h-5">
+          {errors.passwordCheck?.message ?? ''}
+        </p>
       </Field>
       <Field label="벨트" htmlFor="belt">
         <BeltSelect id="belt" {...register('belt')} />
-        {errors.belt && (
-          <p className="text-danger text-sm mt-1">{errors.belt.message}</p>
-        )}
+
+        <p className="text-danger text-sm mt-1 h-5">
+          {errors.belt?.message ?? ''}
+        </p>
       </Field>
 
       {/* 서버 에러 메시지 */}
@@ -283,39 +354,61 @@ function DojangForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState('');
+  const [nicknameStatus, setNicknameStatus] = useState<
+    'idle' | 'checking' | 'available' | 'taken'
+  >('idle');
   const [businessFile, setBusinessFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const {
     register,
     handleSubmit,
+    getValues,
     setValue,
     formState: { errors },
   } = useForm<DojangFormType>({
     resolver: zodResolver(dojangSchema),
     defaultValues: {
       name: '',
+      nickname: '',
       email: '',
       password: '',
       passwordCheck: '',
       belt: '',
       licenseNumber: '',
-      gymName: '',
       ownerName: '',
       phone: '',
       address: '',
     },
   });
+  const handleCheckNickname = async () => {
+    const nickname = getValues('nickname');
+    if (!nickname || nickname.length < 2) return;
 
+    setNicknameStatus('checking');
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const { data } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('nickname', nickname)
+      .maybeSingle();
+
+    setNicknameStatus(data ? 'taken' : 'available');
+  };
   const handleAddressSearch = () => {
     new window.daum.Postcode({
       oncomplete: (data: { address: string }) => {
-        console.log('선택한 주소:', data.address); // ← 추가
         setValue('address', data.address, { shouldValidate: true });
       },
     }).open();
   };
 
   const onSubmit = async (data: DojangFormType) => {
+    if (nicknameStatus !== 'available') {
+      showErrorToast('닉네임 중복확인을 완료해주세요!');
+      return;
+    }
     if (!businessFile) {
       setServerError('사업자등록증을 첨부해주세요.');
       return;
@@ -330,18 +423,25 @@ function DojangForm() {
         email: data.email,
         password: data.password,
         name: data.name,
+        nickname: data.nickname,
         belt: data.belt,
         licenseNumber: data.licenseNumber,
-        gymName: data.gymName,
         ownerName: data.ownerName,
         phone: data.phone,
         address: data.address,
         businessFileUrl,
       });
+      showSuccessToast('회원가입이 완료되었습니다! 로그인해주세요 🎉');
       router.push('/login');
-    } catch (e) {
-      console.error(e);
-      setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message.includes('already registered')
+      ) {
+        setServerError('이미 가입된 이메일입니다. 다른 이메일로 시도해주세요.');
+      } else {
+        setServerError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+      }
     } finally {
       setIsLoading(false);
       setIsUploading(false);
@@ -354,16 +454,48 @@ function DojangForm() {
         strategy="lazyOnload"
       />
       <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-        <Field label="이름" htmlFor="dojang-name">
+        <Field label="대표자명" htmlFor="ownerName">
           <InputWithIcon
-            id="dojang-name"
+            id="ownerName"
             icon={<User className="w-5 h-5" />}
-            placeholder="이름을 입력하세요"
-            {...register('name')}
+            placeholder="대표자명"
+            {...register('ownerName')}
           />
-          {errors.name && (
-            <p className="text-danger text-sm mt-1">{errors.name.message}</p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.ownerName?.message ?? ''}
+          </p>
+        </Field>
+        {/* 닉네임 */}
+        <Field label="닉네임" htmlFor="dojang-nickname">
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <InputWithIcon
+                id="dojang-nickname"
+                icon={<User className="w-5 h-5" />}
+                placeholder="닉네임을 입력하세요 (2~10자)"
+                {...register('nickname', {
+                  onChange: () => setNicknameStatus('idle'),
+                })}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleCheckNickname}
+              disabled={nicknameStatus === 'checking'}
+              className="px-4 py-3 bg-btn-focus text-btn-focus-text rounded-2xl text-sm font-bold whitespace-nowrap hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
+            >
+              {nicknameStatus === 'checking' ? '확인 중...' : '중복확인'}
+            </button>
+          </div>
+          <p className="text-sm mt-1 h-5">
+            {errors.nickname ? (
+              <span className="text-danger">{errors.nickname.message}</span>
+            ) : nicknameStatus === 'available' ? (
+              <span className="text-green-500">사용 가능한 닉네임입니다!</span>
+            ) : nicknameStatus === 'taken' ? (
+              <span className="text-danger">이미 사용 중인 닉네임입니다.</span>
+            ) : null}
+          </p>
         </Field>
         <Field label="이메일" htmlFor="dojang-email">
           <InputWithIcon
@@ -373,9 +505,9 @@ function DojangForm() {
             placeholder="이메일을 입력하세요"
             {...register('email')}
           />
-          {errors.email && (
-            <p className="text-danger text-sm mt-1">{errors.email.message}</p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.email?.message ?? ''}
+          </p>
         </Field>
         <Field label="비밀번호" htmlFor="dojang-password">
           <InputWithIcon
@@ -385,11 +517,9 @@ function DojangForm() {
             placeholder="비밀번호를 입력하세요"
             {...register('password')}
           />
-          {errors.password && (
-            <p className="text-danger text-sm mt-1">
-              {errors.password.message}
-            </p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.password?.message ?? ''}
+          </p>
         </Field>
         <Field label="비밀번호 확인" htmlFor="dojang-passwordConfirm">
           <InputWithIcon
@@ -399,17 +529,27 @@ function DojangForm() {
             placeholder="비밀번호를 다시 입력하세요"
             {...register('passwordCheck')}
           />
-          {errors.passwordCheck && (
-            <p className="text-danger text-sm mt-1">
-              {errors.passwordCheck.message}
-            </p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.passwordCheck?.message ?? ''}
+          </p>
         </Field>
         <Field label="벨트" htmlFor="dojang-belt">
           <BeltSelect id="dojang-belt" {...register('belt')} />
-          {errors.belt && (
-            <p className="text-danger text-sm mt-1">{errors.belt.message}</p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.belt?.message ?? ''}
+          </p>
+        </Field>
+
+        <Field label="도장명" htmlFor="dojang-name">
+          <InputWithIcon
+            id="dojang-name"
+            icon={<User className="w-5 h-5" />}
+            placeholder="도장명을 입력하세요"
+            {...register('name')}
+          />
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.name?.message ?? ''}
+          </p>
         </Field>
         <Field label="사업자등록번호" htmlFor="licenseNumber">
           <InputWithIcon
@@ -418,40 +558,11 @@ function DojangForm() {
             placeholder="사업자등록번호를 입력하세요"
             {...register('licenseNumber')}
           />
-          {errors.licenseNumber && (
-            <p className="text-danger text-sm mt-1">
-              {errors.licenseNumber.message}
-            </p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.licenseNumber?.message ?? ''}
+          </p>
         </Field>
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="기업명(도장명)" htmlFor="gymName">
-            <InputWithIcon
-              id="gymName"
-              icon={<CreditCard className="w-5 h-5" />}
-              placeholder="도장명"
-              {...register('gymName')}
-            />
-            {errors.gymName && (
-              <p className="text-danger text-sm mt-1">
-                {errors.gymName.message}
-              </p>
-            )}
-          </Field>
-          <Field label="대표자명" htmlFor="ownerName">
-            <InputWithIcon
-              id="ownerName"
-              icon={<User className="w-5 h-5" />}
-              placeholder="대표자명"
-              {...register('ownerName')}
-            />
-            {errors.ownerName && (
-              <p className="text-danger text-sm mt-1">
-                {errors.ownerName.message}
-              </p>
-            )}
-          </Field>
-        </div>
+
         <Field label="연락처" htmlFor="phone">
           <InputWithIcon
             id="phone"
@@ -460,9 +571,9 @@ function DojangForm() {
             placeholder="010-0000-0000"
             {...register('phone')}
           />
-          {errors.phone && (
-            <p className="text-danger text-sm mt-1">{errors.phone.message}</p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.phone?.message ?? ''}
+          </p>
         </Field>
         <Field label="주소" htmlFor="address">
           <div className="flex gap-2">
@@ -483,9 +594,9 @@ function DojangForm() {
               주소 검색
             </button>
           </div>
-          {errors.address && (
-            <p className="text-danger text-sm mt-1">{errors.address.message}</p>
-          )}
+          <p className="text-danger text-sm mt-1 h-5">
+            {errors.address?.message ?? ''}
+          </p>
         </Field>
 
         {/* 파일 업로드 */}
