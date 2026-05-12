@@ -3,9 +3,7 @@
 import React, { useState } from 'react';
 import { Mail, Lock, User } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { z } from 'zod';
-import { supabase } from '@/lib/supabase';
 
 const step1Schema = z.object({
   name: z.string().min(1, '이름을 입력해주세요.'),
@@ -23,7 +21,7 @@ const step2Schema = z
   });
 
 export default function FindPasswordPage() {
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,35 +33,29 @@ export default function FindPasswordPage() {
     confirmPassword?: string;
     server?: string;
   }>({});
-  const router = useRouter();
+
   const handleStep1 = async () => {
     const result = step1Schema.safeParse({ name, email });
     if (!result.success) {
       const fieldErrors = result.error.flatten().fieldErrors;
-      setErrors({
-        name: fieldErrors.name?.[0],
-        email: fieldErrors.email?.[0],
-      });
+      setErrors({ name: fieldErrors.name?.[0], email: fieldErrors.email?.[0] });
       return;
     }
     setErrors({});
 
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('email_value', email)
-      .eq('name', name)
-      .single();
+    const res = await fetch('/api/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, checkOnly: true }),
+    });
 
-    if (error || !data) {
-      setErrors({
-        server: '이름 또는 이메일이 올바르지 않습니다.',
-      });
+    if (!res.ok) {
+      setErrors({ server: '이름 또는 이메일이 올바르지 않습니다.' });
       return;
     }
-
     setStep(2);
   };
+
   const handleStep2 = async () => {
     const result = step2Schema.safeParse({ password, confirmPassword });
     if (!result.success) {
@@ -76,16 +68,21 @@ export default function FindPasswordPage() {
     }
     setErrors({});
 
-    const { error } = await supabase.auth.updateUser({ password });
-    if (error) {
+    const res = await fetch('/api/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    if (!res.ok) {
       setErrors({
         server: '비밀번호 재설정에 실패했습니다. 다시 시도해주세요.',
       });
       return;
     }
-
-    router.push('/login');
+    setStep(3);
   };
+
   return (
     <>
       <p className="text-text-secondary text-sm font-medium text-center mb-6">
@@ -94,10 +91,14 @@ export default function FindPasswordPage() {
 
       <div className="max-w-150 w-full bg-bg-white rounded-[32px] p-8 shadow-sm border-none">
         <h2 className="text-2xl font-bold text-center text-text-primary mb-8">
-          {step === 1 ? '비밀번호 찾기' : '비밀번호 재설정'}
+          {step === 1
+            ? '비밀번호 찾기'
+            : step === 2
+              ? '비밀번호 재설정'
+              : '재설정 완료'}
         </h2>
 
-        {step === 1 ? (
+        {step === 1 && (
           <form
             className="space-y-5"
             onSubmit={(e) => {
@@ -105,7 +106,6 @@ export default function FindPasswordPage() {
               handleStep1();
             }}
           >
-            {/* 이름 */}
             <div>
               <label className="block text-sm font-medium text-text-primary mb-2">
                 이름
@@ -125,7 +125,6 @@ export default function FindPasswordPage() {
               </p>
             </div>
 
-            {/* 이메일 */}
             <div>
               <label className="block text-sm font-medium text-text-primary mb-2">
                 이메일
@@ -167,7 +166,9 @@ export default function FindPasswordPage() {
               </Link>
             </p>
           </form>
-        ) : (
+        )}
+
+        {step === 2 && (
           <form
             className="space-y-5"
             onSubmit={(e) => {
@@ -175,7 +176,6 @@ export default function FindPasswordPage() {
               handleStep2();
             }}
           >
-            {/* 새 비밀번호 */}
             <div>
               <label className="block text-sm font-medium text-text-primary mb-2">
                 새 비밀번호
@@ -195,7 +195,6 @@ export default function FindPasswordPage() {
               </p>
             </div>
 
-            {/* 비밀번호 확인 */}
             <div>
               <label className="block text-sm font-medium text-text-primary mb-2">
                 비밀번호 확인
@@ -237,6 +236,40 @@ export default function FindPasswordPage() {
               </Link>
             </p>
           </form>
+        )}
+
+        {step === 3 && (
+          <div className="flex flex-col items-center gap-6 py-4">
+            <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+              <svg
+                className="w-8 h-8 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <div className="text-center flex flex-col gap-2">
+              <p className="text-lg font-bold text-text-primary">
+                비밀번호가 재설정되었습니다.
+              </p>
+              <p className="text-sm text-text-secondary">
+                새 비밀번호로 다시 로그인해주세요.
+              </p>
+            </div>
+            <Link
+              href="/login"
+              className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all text-center"
+            >
+              로그인하러 가기
+            </Link>
+          </div>
         )}
       </div>
     </>
