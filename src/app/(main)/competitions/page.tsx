@@ -1,8 +1,18 @@
 import CompetitionClient from '@/components/competition/CompetitionClient';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import type { Metadata } from 'next';
 
-export const revalidate = 0; // 추가 — 캐시 안 씀
+export const metadata: Metadata = {
+  title: '대회일정 | Black Belt BJJ',
+  description: '전국 주짓수 대회 일정을 한눈에 확인하세요',
+  openGraph: {
+    title: '대회일정 | Black Belt BJJ',
+    description: '전국 주짓수 대회 일정을 한눈에 확인하세요',
+  },
+};
+
+export const dynamic = 'force-dynamic';
 
 export default async function CompetitionsPage() {
   const cookieStore = await cookies();
