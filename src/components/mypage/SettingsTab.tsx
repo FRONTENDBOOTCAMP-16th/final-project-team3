@@ -44,6 +44,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
 
   const router = useRouter();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateMyProfile();
@@ -295,7 +296,13 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
                 onClick={() =>
                   deleteAccount(undefined, {
                     onSuccess: () => {
-                      router.push('/login');
+                      setShowDeleteConfirm(false);
+                      setShowDeleteSuccess(true);
+                    },
+                    onError: () => {
+                      showErrorToast(
+                        '회원탈퇴에 실패했습니다. 다시 시도해주세요.',
+                      );
                     },
                   })
                 }
@@ -311,6 +318,25 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
                 )}
               </button>
             </div>
+          </DialogContent>
+        </Dialog>
+        {/* 탈퇴 완료 모달 */}
+        <Dialog open={showDeleteSuccess} onOpenChange={setShowDeleteSuccess}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="text-center">
+                탈퇴 완료되었습니다.
+              </DialogTitle>
+              <DialogDescription className="text-center">
+                이용해주셔서 감사합니다.
+              </DialogDescription>
+            </DialogHeader>
+            <button
+              onClick={() => router.push('/login')}
+              className="w-full mt-4 px-6 py-3 bg-btn-focus text-btn-focus-text rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
+            >
+              확인
+            </button>
           </DialogContent>
         </Dialog>
       </div>
