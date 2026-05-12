@@ -3,11 +3,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  createComment,
-  deletePost,
-  deleteComment,
-} from '@/services/communityService';
+import { deletePost, deleteComment } from '@/services/communityService';
 import { reportPost, ReportReason } from '@/services/reportService';
 import { supabase } from '@/lib/supabase';
 import type { Post, Comment } from '@/types/community';
@@ -58,16 +54,34 @@ export default function PostDetailClient({
       showErrorToast('댓글을 입력해주세요.');
       return;
     }
+
     try {
-      const newComment = await createComment({
-        post_id: id,
-        user_id: userId,
-        content: comment,
+      const res = await fetch('/api/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ postId: id, content: comment }),
       });
-      setComments((prev) => [...prev, newComment]);
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showErrorToast(data.error ?? '댓글 작성에 실패했습니다.');
+        return;
+      }
+
+      // 현재 유저 프로필 정보를 합쳐서 바로 표시 (프로필 이미지 즉시 반영)
+      setComments((prev) => [
+        ...prev,
+        {
+          ...data.comment,
+          nickname: user?.name ?? '알 수 없음',
+          avatar_url: user?.image ?? null,
+        },
+      ]);
       setComment('');
     } catch (e) {
       console.error(e);
+      showErrorToast('네트워크 오류가 발생했습니다.');
     }
   };
 
