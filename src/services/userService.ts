@@ -84,9 +84,22 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
 
 // 회원 탈퇴
 export async function deleteMyAccount(): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error('로그인이 필요합니다.');
+
+  const res = await fetch('/api/delete-account', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId: user.id }),
+  });
+
+  if (!res.ok) {
+    throw new Error('회원탈퇴에 실패했습니다.');
+  }
+
+  await supabase.auth.signOut();
 }
 
 // 내 게시글 수 조회
