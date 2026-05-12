@@ -2,8 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import type { Metadata } from 'next';
 import PostDetailClient from '@/components/community/PostDetailClient';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
   getPost,
   getComments,
@@ -39,12 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 async function getInitialData(id: string) {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll() } },
-  );
+  const supabase = await createSupabaseServerClient();
 
   const [
     post,
