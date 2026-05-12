@@ -1,17 +1,50 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import LogoutButton from '@/components/layout/LogoutButton';
+import { LogIn } from 'lucide-react';
 
-export default function Home() {
-  // throw Error('test');
+export const metadata: Metadata = {
+  title: '블랙벨트 | 주짓수 올인원 네트워크',
+  description:
+    '주짓수 수련자와 도장을 하나의 공간에서 연결하는 커뮤니티 플랫폼.',
+  keywords: ['주짓수', '블랙벨트', '도장', '커뮤니티', 'BJJ'],
+  openGraph: {
+    title: '블랙벨트 | 주짓수 올인원 네트워크',
+    description: '주짓수인들을 위한 올인원 네트워크, 블랙벨트',
+    locale: 'ko_KR',
+    type: 'website',
+  },
+};
+
+const NAV_LINKS = [
+  { href: '/community', icon: '/whitebelt.svg', label: '커뮤니티' },
+  { href: '/dojangs', icon: '/brownbelt.svg', label: '도장 찾기' },
+  {
+    href: '/competitions',
+    icon: '/blackbeltcompetiton.svg',
+    label: '대회 일정',
+  },
+] as const;
+
+const NAV_LINK_CLASS =
+  'flex items-center gap-2 px-6 py-3 border-2 border-btn-focus text-black text-sm font-medium rounded-xl hover:bg-btn-focus hover:text-white transition-colors duration-200';
+
+export default async function Home() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
     <main
       aria-label="블랙벨트 홈"
       className="min-h-screen bg-white flex flex-col items-center justify-center px-6 py-16 relative overflow-hidden"
     >
-      {/* 로고 */}
+      {/* 로고 & 타이틀 */}
       <div className="flex flex-col items-center mb-6 animate-fade-in">
-        <div className="mb-4 relative">
+        <div className="mb-4">
           <Image
             src="/blackbelt.svg"
             alt="블랙벨트 로고"
@@ -20,7 +53,6 @@ export default function Home() {
           />
         </div>
 
-        {/* 타이틀 */}
         <h1
           className="text-4xl font-black tracking-tight text-black text-center leading-tight"
           style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
@@ -33,10 +65,8 @@ export default function Home() {
         >
           (Black-Belt)
         </p>
-        <br />
 
-        {/* 설명 텍스트 */}
-        <p className="text-sm text-gray-600 text-center max-w-xl leading-relaxed">
+        <p className="text-sm text-gray-600 text-center max-w-xl leading-relaxed mt-4">
           주짓수인들을 위한 올인원 네트워크, 블랙벨트
           <br />
           <br />
@@ -51,57 +81,31 @@ export default function Home() {
         </p>
       </div>
 
-      {/* 네비게이션 버튼 */}
+      {/* 네비게이션 */}
       <nav aria-label="주요 메뉴">
         <div className="flex flex-wrap justify-center gap-3 mt-2">
-          <Link
-            href="/community"
-            className="flex items-center gap-2 px-5 py-2.5 border-2 border-btn-focus text-black text-sm font-medium rounded-xl hover:bg-btn-focus hover:text-white transition-colors duration-200"
-          >
-            <Image
-              src="/whitebelt.svg"
-              alt=""
-              width={35}
-              height={35}
-              aria-hidden="true"
-            />
-            <span>커뮤니티</span>
-          </Link>
+          {NAV_LINKS.map(({ href, icon, label }) => (
+            <Link key={href} href={href} className={NAV_LINK_CLASS}>
+              <Image
+                src={icon}
+                alt=""
+                width={35}
+                height={35}
+                aria-hidden="true"
+              />
+              <span>{label}</span>
+            </Link>
+          ))}
 
-          <Link
-            href="/dojangs"
-            className="flex items-center gap-2 px-5 py-2.5 border-2 border-btn-focus text-black text-sm font-medium rounded-xl hover:bg-btn-focus hover:text-white transition-colors duration-200"
-          >
-            <Image
-              src="/brownbelt.svg"
-              alt=""
-              width={35}
-              height={35}
-              aria-hidden="true"
-            />
-            <span>도장 찾기</span>
-          </Link>
-
-          <Link
-            href="/competitions"
-            className="flex items-center gap-2 px-5 py-2.5 border-2 border-btn-focus text-black text-sm font-medium rounded-xl hover:bg-btn-focus hover:text-white transition-colors duration-200"
-          >
-            <Image
-              src="/blackbeltcompetiton.svg"
-              alt=""
-              width={35}
-              height={35}
-              aria-hidden="true"
-            />
-            <span>대회 일정</span>
-          </Link>
-
-          <Link
-            href="/login"
-            className="flex items-center gap-2 px-5 py-2.5 border-2 border-btn-focus text-black text-sm font-medium rounded-xl hover:bg-btn-focus hover:text-white transition-colors duration-200"
-          >
-            <span>로그인</span>
-          </Link>
+          {/* 로그인 상태 분기 */}
+          {user ? (
+            <LogoutButton />
+          ) : (
+            <Link href="/login" className={NAV_LINK_CLASS}>
+              <LogIn size={20} aria-hidden="true" />
+              <span>로그인</span>
+            </Link>
+          )}
         </div>
       </nav>
     </main>
