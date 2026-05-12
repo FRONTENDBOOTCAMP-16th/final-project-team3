@@ -12,7 +12,6 @@ export function useAuth() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    // 로컬 세션 먼저 확인 (빠름)
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         getCurrentUser().then((u) => {

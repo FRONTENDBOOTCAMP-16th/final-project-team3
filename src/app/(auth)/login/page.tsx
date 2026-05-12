@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import { Mail, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -17,7 +16,6 @@ const loginSchema = z.object({
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [stayLoggedIn, setStayLoggedIn] = useState(false);
   const [errors, setErrors] = useState<{
     email?: string;
     password?: string;
@@ -144,23 +142,7 @@ export default function LoginPage() {
               {errors.password ?? ''}
             </p>
           </div>
-          {/* 로그인 상태 유지 체크박스*/}
-          <div className="flex items-center justify-between">
-            <label
-              htmlFor="stayLoggedIn"
-              className="flex items-center gap-2 cursor-pointer"
-            >
-              <input
-                id="stayLoggedIn"
-                type="checkbox"
-                checked={stayLoggedIn}
-                onChange={(e) => setStayLoggedIn(e.target.checked)}
-                className="w-4 h-4 rounded accent-black"
-              />
-              <span className="font-bold text-sm text-text-secondary">
-                로그인 상태 유지
-              </span>
-            </label>
+          <div className="flex justify-end -mt-5 -mb-5">
             <Link
               href="/find-password"
               className="text-sm font-bold hover:underline text-[#4f74e8]"
@@ -175,7 +157,7 @@ export default function LoginPage() {
           {/* 로그인 버튼 */}
           <button
             type="submit"
-            className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all"
+            className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer"
           >
             로그인
           </button>

@@ -5,24 +5,23 @@ export async function registerGeneral({
   email,
   password,
   name,
+  nickname,
   belt,
 }: {
   email: string;
   password: string;
-  name: string;
+  name?: string;
+  nickname: string;
   belt: string;
 }) {
-  // 일반 - supabase auth 회원가입
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-  });
+  const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) throw error;
+  if (!data.user) throw new Error('회원가입에 실패했습니다.');
 
-  // 일반 - profiles 테이블에 추가 정보 저장
   const { error: profileError } = await supabase.from('profiles').upsert({
-    id: data.user!.id,
+    id: data.user.id,
     name,
+    nickname,
     belt_level: belt,
     email_value: email,
     role: 'user',
@@ -35,9 +34,9 @@ export async function registerDojang({
   email,
   password,
   name,
+  nickname,
   belt,
   licenseNumber,
-  gymName,
   ownerName,
   phone,
   address,
@@ -45,36 +44,38 @@ export async function registerDojang({
 }: {
   email: string;
   password: string;
-  name: string;
+  name?: string;
+  nickname: string;
   belt: string;
   licenseNumber: string;
-  gymName: string;
   ownerName: string;
   phone: string;
   address: string;
   businessFileUrl?: string;
 }) {
-  // 도장 - supabase auth 회원가입
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-  });
+  const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) throw error;
+  if (!data.user) throw new Error('회원가입에 실패했습니다.');
 
-  // 도장 - profiles 테이블에 추가 정보 저장
   const { error: profileError } = await supabase.from('profiles').upsert({
-    id: data.user!.id,
+    id: data.user.id,
     name,
+    nickname,
     belt_level: belt,
     email_value: email,
     role: 'manager',
+  });
+  if (profileError) throw profileError;
+
+  const { error: dojangError } = await supabase.from('dojang').insert({
+    profile_id: data.user.id,
     business_number: licenseNumber,
     representative: ownerName,
     phone_value: phone,
     address,
     business_file_url: businessFileUrl,
   });
-  if (profileError) throw profileError;
+  if (dojangError) throw dojangError;
 }
 
 // 사업자등록증 파일 업로드

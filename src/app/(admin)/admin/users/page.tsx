@@ -1,28 +1,13 @@
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
-
-import AdminHeader from '@/components/admin/AdminHeader';
 import AdminUsersClient from '@/components/admin/users/AdminUsersClient';
 import type {
   DojangQueryRow,
   ProfileQueryRow,
 } from '@/components/admin/users/types';
 import { mapProfilesToAdminUserRows } from '@/components/admin/users/utils';
+import { createServerSupabaseClient } from '@/lib/createServerSupabaseClient';
 
 async function getAdminUsers() {
-  const cookieStore = await cookies();
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-      },
-    },
-  );
+  const supabase = await createServerSupabaseClient();
 
   const [profilesResult, dojangsResult] = await Promise.all([
     supabase
@@ -75,10 +60,5 @@ async function getAdminUsers() {
 export default async function AdminUsersPage() {
   const data = await getAdminUsers();
 
-  return (
-    <main className="min-h-screen w-full pt-28 space-y-2">
-      <AdminHeader page="user" />
-      <AdminUsersClient data={data} />
-    </main>
-  );
+  return <AdminUsersClient data={data} />;
 }
