@@ -142,7 +142,7 @@ export default function LoginPage() {
               {errors.password ?? ''}
             </p>
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-end -mt-5 -mb-5">
             <Link
               href="/find-password"
               className="text-sm font-bold hover:underline text-[#4f74e8]"
