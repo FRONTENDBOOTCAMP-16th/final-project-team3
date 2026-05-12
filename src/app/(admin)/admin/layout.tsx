@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
 
 import AdminHeader from '@/components/admin/AdminHeader';
+import ScrollToTop from '@/components/common/ScrollToTop';
+import Sidebar from '@/components/layout/Sidebar';
 import { createServerSupabaseClient } from '@/lib/createServerSupabaseClient';
 
 async function requireAdminAccess() {
@@ -33,9 +35,14 @@ export default async function AdminLayout({
   await requireAdminAccess();
 
   return (
-    <div className="min-h-screen w-full pt-28">
+    <div className="flex min-h-screen bg-bg-page">
+      <div className="w-50 shrink-0" />
+      <Sidebar />
       <AdminHeader />
-      <div className="mt-2">{children}</div>
+      <main className="flex-1 flex justify-center min-w-0">
+        <div className="w-full max-w-7xl pt-28">{children}</div>
+      </main>
+      <ScrollToTop />
     </div>
   );
 }
