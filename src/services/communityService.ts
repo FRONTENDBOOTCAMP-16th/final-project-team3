@@ -8,11 +8,15 @@ export async function getPosts() {
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data.map((post: any) => ({
+
+  return data.map((post) => ({
     ...post,
-    comment_count: post.comments[0].count,
-    nickname: post.profiles?.nickname,
-    avatar_url: post.profiles?.avatar_url,
+    comment_count: (post.comments as { count: number }[])[0]?.count ?? 0,
+    nickname: (post.profiles as { nickname: string; avatar_url: string } | null)
+      ?.nickname,
+    avatar_url: (
+      post.profiles as { nickname: string; avatar_url: string } | null
+    )?.avatar_url,
     profiles: undefined,
   }));
 }
@@ -81,6 +85,13 @@ export async function uploadPostImage(file: File): Promise<string> {
   return data.publicUrl;
 }
 
+interface CommentProfile {
+  nickname: string;
+  avatar_url: string;
+  belt_level: string;
+  role: string;
+}
+
 export async function getComments(postId: string) {
   const { data, error } = await supabase
     .from('comments')
@@ -90,12 +101,12 @@ export async function getComments(postId: string) {
 
   if (error) throw error;
 
-  return data.map((comment: any) => ({
+  return data.map((comment) => ({
     ...comment,
-    nickname: comment.profiles?.nickname,
-    avatar_url: comment.profiles?.avatar_url,
-    belt_level: comment.profiles?.belt_level,
-    role: comment.profiles?.role,
+    nickname: (comment.profiles as CommentProfile | null)?.nickname,
+    avatar_url: (comment.profiles as CommentProfile | null)?.avatar_url,
+    belt_level: (comment.profiles as CommentProfile | null)?.belt_level,
+    role: (comment.profiles as CommentProfile | null)?.role,
     profiles: undefined,
   })) as Comment[];
 }

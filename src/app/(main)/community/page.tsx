@@ -1,8 +1,19 @@
-// app/(main)/community/page.tsx - 서버 컴포넌트
 import CommunityClient from '@/components/community/CommunityClient';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import type { Post } from '@/types/community';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '커뮤니티 | Black Belt BJJ',
+  description: '주짓수 수련자들의 이야기, 기술 분석, 도장 정보를 나누는 공간',
+  openGraph: {
+    title: '커뮤니티 | Black Belt BJJ',
+    description: '주짓수 수련자들의 이야기, 기술 분석, 도장 정보를 나누는 공간',
+  },
+};
+
+export const dynamic = 'force-dynamic';
 
 async function getPosts(): Promise<Post[]> {
   const cookieStore = await cookies();
@@ -33,6 +44,5 @@ async function getPosts(): Promise<Post[]> {
 
 export default async function CommunityPage() {
   const initialPosts = await getPosts();
-
   return <CommunityClient initialPosts={initialPosts} />;
 }

@@ -1,8 +1,15 @@
-// app/(main)/competitions/write/page.tsx (서버 컴포넌트)
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import CompetitionWriteClient from '@/components/competition/CompetitionWriteClient';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '대회 추가 | Black Belt BJJ',
+  description: '새로운 주짓수 대회 일정을 등록하세요',
+};
+
+export const dynamic = 'force-dynamic';
 
 export default async function CompetitionWritePage() {
   const cookieStore = await cookies();
@@ -15,10 +22,8 @@ export default async function CompetitionWritePage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
   if (!user) redirect('/login');
 
-  // 프로필에서 role 확인
   const { data: profile } = await supabase
     .from('profiles')
     .select('role')
