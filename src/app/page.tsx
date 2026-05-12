@@ -1,5 +1,19 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '블랙벨트 | 주짓수 올인원 네트워크',
+  description:
+    '주짓수 수련자와 도장을 하나의 공간에서 연결하는 커뮤니티 플랫폼.',
+  keywords: ['주짓수', '블랙벨트', '도장', '커뮤니티', 'BJJ'],
+  openGraph: {
+    title: '블랙벨트 | 주짓수 올인원 네트워크',
+    description: '주짓수인들을 위한 올인원 네트워크, 블랙벨트',
+    locale: 'ko_KR',
+    type: 'website',
+  },
+};
 
 export default function Home() {
   // throw Error('test');
