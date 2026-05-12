@@ -14,19 +14,16 @@ export async function registerGeneral({
   nickname: string;
   belt: string;
 }) {
-  const { data, error } = await supabase.auth.signUp({ email, password });
-  if (error) throw error;
-  if (!data.user) throw new Error('회원가입에 실패했습니다.');
-
-  const { error: profileError } = await supabase.from('profiles').upsert({
-    id: data.user.id,
-    name,
-    nickname,
-    belt_level: belt,
-    email_value: email,
-    role: 'user',
+  const res = await fetch('/api/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password, name, nickname, belt }),
   });
-  if (profileError) throw profileError;
+
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error);
+  }
 }
 
 // 도장 회원 가입
@@ -53,29 +50,27 @@ export async function registerDojang({
   address: string;
   businessFileUrl?: string;
 }) {
-  const { data, error } = await supabase.auth.signUp({ email, password });
-  if (error) throw error;
-  if (!data.user) throw new Error('회원가입에 실패했습니다.');
-
-  const { error: profileError } = await supabase.from('profiles').upsert({
-    id: data.user.id,
-    name,
-    nickname,
-    belt_level: belt,
-    email_value: email,
-    role: 'manager',
+  const res = await fetch('/api/register-dojang', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email,
+      password,
+      name,
+      nickname,
+      belt,
+      licenseNumber,
+      ownerName,
+      phone,
+      address,
+      businessFileUrl,
+    }),
   });
-  if (profileError) throw profileError;
 
-  const { error: dojangError } = await supabase.from('dojang').insert({
-    profile_id: data.user.id,
-    business_number: licenseNumber,
-    representative: ownerName,
-    phone_value: phone,
-    address,
-    business_file_url: businessFileUrl,
-  });
-  if (dojangError) throw dojangError;
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error);
+  }
 }
 
 // 사업자등록증 파일 업로드
