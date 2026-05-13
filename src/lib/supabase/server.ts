@@ -13,9 +13,13 @@ export async function createSupabaseServerClient() {
           return cookieStore.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options),
-          );
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options),
+            );
+          } catch {
+            // proxy.ts에서 세션 갱신을 처리하므로 무시
+          }
         },
       },
     },
