@@ -10,6 +10,7 @@ export const ROUTES = {
   ADMIN_SUPPORT: "/admin/support",
   DOJANGS: "/dojangs",
   COMPETITIONS: "/competitions",
+  COMPETITIONS_DETAIL: (id: string) => `/competitions/${id}`,
   COMMUNITY: "/community",
   COMMUNITY_WRITE: "/community/write",
   COMMUNITY_DETAIL: (id: string) => `/community/${id}`,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Link as LinkIcon } from 'lucide-react';
+import { FileText } from 'lucide-react';
 
 import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
@@ -10,6 +10,7 @@ import AdminDataTable, {
 import AdminTableToolbar from '@/components/admin/AdminTableToolbar';
 import {
   ADMIN_COMPETITION_FILTERS,
+  COMPETITION_PUBLISH_STATUS_BADGE_VARIANT_MAP,
   COMPETITION_STATUS_BADGE_VARIANT_MAP,
 } from '@/components/admin/competitions/constants';
 import type {
@@ -17,14 +18,15 @@ import type {
   AdminCompetitionRow,
 } from '@/components/admin/competitions/types';
 import { filterAdminCompetitions } from '@/components/admin/competitions/utils';
+import { ROUTES } from '@/constants/routes';
 
 interface AdminCompetitionsClientProps {
   data: AdminCompetitionRow[];
 }
 
 const COMPETITION_COLUMNS: AdminTableColumn<AdminCompetitionRow>[] = [
-  { key: 'name', header: '대회 제목', width: '35%', align: 'left' },
-  { key: 'location', header: '장소', width: '20%', align: 'left' },
+  { key: 'name', header: '대회 제목', width: '28%', align: 'left' },
+  { key: 'location', header: '장소', width: '16%', align: 'left' },
   {
     key: 'status',
     header: '상태',
@@ -37,6 +39,20 @@ const COMPETITION_COLUMNS: AdminTableColumn<AdminCompetitionRow>[] = [
       />
     ),
   },
+  {
+    key: 'publish_status',
+    header: '게시 상태',
+    width: '10%',
+    align: 'center',
+    render: (row) => (
+      <AdminBadge
+        label={row.publish_status}
+        variant={
+          COMPETITION_PUBLISH_STATUS_BADGE_VARIANT_MAP[row.publish_status]
+        }
+      />
+    ),
+  },
   { key: 'event_date', header: '이벤트날짜', width: '10%', align: 'center' },
   {
     key: 'apply_deadline',
@@ -46,24 +62,21 @@ const COMPETITION_COLUMNS: AdminTableColumn<AdminCompetitionRow>[] = [
   },
   { key: 'created_at', header: '생성일', width: '10%', align: 'center' },
   {
-    key: 'apply_url',
-    header: '링크',
-    width: '5%',
+    key: 'id',
+    header: '게시글',
+    width: '6%',
     align: 'center',
-    render: (row) =>
-      row.apply_url ? (
-        <a
-          href={row.apply_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center justify-center text-zinc-500 hover:text-black transition-colors"
-          title="링크 이동"
-        >
-          <LinkIcon className="w-4 h-4" />
-        </a>
-      ) : (
-        <span className="text-zinc-400">-</span>
-      ),
+    render: (row) => (
+      <a
+        href={ROUTES.COMPETITIONS_DETAIL(row.id)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center justify-center text-zinc-500 transition-colors hover:text-black"
+        title="대회 게시글 보기"
+      >
+        <FileText className="size-4" />
+      </a>
+    ),
   },
 ];
 

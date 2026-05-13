@@ -1,4 +1,5 @@
 export type AdminCompetitionStatus = '모집중' | '마감임박' | '모집완료';
+export type AdminCompetitionPublishStatus = '게시중' | '삭제';
 
 export type AdminCompetitionFilterValue = 'all' | AdminCompetitionStatus;
 
@@ -12,10 +13,10 @@ export interface AdminCompetitionRow {
   name: string;
   location: string;
   status: AdminCompetitionStatus;
+  publish_status: AdminCompetitionPublishStatus;
   event_date: string;
   apply_deadline: string;
   created_at: string;
-  apply_url: string | null;
 }
 
 export interface CompetitionQueryRow {
@@ -25,5 +26,5 @@ export interface CompetitionQueryRow {
   event_data: string;
   apply_deadline: string;
   created_at: string;
-  apply_url: string | null;
+  deleted_at: string | null;
 }
