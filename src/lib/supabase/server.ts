@@ -3,7 +3,6 @@ import { cookies } from 'next/headers';
 
 export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
-
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -13,9 +12,14 @@ export async function createSupabaseServerClient() {
           return cookieStore.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options),
-          );
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options),
+            );
+          } catch {
+            // 서버 컴포넌트에서 호출 시 무시
+            // Server Action / Route Handler에서는 정상 동작
+          }
         },
       },
     },
