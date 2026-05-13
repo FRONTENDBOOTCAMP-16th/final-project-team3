@@ -3,9 +3,12 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { deletePost, deleteComment } from '@/services/communityService';
+import {
+  deletePost,
+  deleteComment,
+  updateComment,
+} from '@/services/communityService';
 import { reportPost, ReportReason } from '@/services/reportService';
-import { supabase } from '@/lib/supabase';
 import type { Post, Comment } from '@/types/community';
 import Image from 'next/image';
 import { useAuth } from '@/hooks/useAuth';
@@ -69,7 +72,6 @@ export default function PostDetailClient({
         return;
       }
 
-      // 현재 유저 프로필 정보를 합쳐서 바로 표시 (프로필 이미지 즉시 반영)
       setComments((prev) => [
         ...prev,
         {
@@ -79,8 +81,7 @@ export default function PostDetailClient({
         },
       ]);
       setComment('');
-    } catch (e) {
-      console.error(e);
+    } catch {
       showErrorToast('네트워크 오류가 발생했습니다.');
     }
   };
@@ -92,18 +93,15 @@ export default function PostDetailClient({
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       showSuccessToast('게시글이 삭제되었습니다.', '🗑️');
       router.push('/community');
-    } catch (e) {
-      console.error(e);
+    } catch {
+      showErrorToast('게시글 삭제에 실패했습니다.');
     }
   };
 
   const handleEditComment = async (commentId: string) => {
     if (!editingContent.trim()) return;
     try {
-      await supabase
-        .from('comments')
-        .update({ content: editingContent })
-        .eq('id', commentId);
+      await updateComment(commentId, editingContent);
       setComments((prev) =>
         prev.map((c) =>
           c.id === commentId ? { ...c, content: editingContent } : c,
@@ -112,8 +110,8 @@ export default function PostDetailClient({
       setEditingCommentId(null);
       setEditingContent('');
       showSuccessToast('댓글이 수정되었습니다.', '✅');
-    } catch (e) {
-      console.error(e);
+    } catch {
+      showErrorToast('댓글 수정에 실패했습니다.');
     }
   };
 
@@ -123,8 +121,8 @@ export default function PostDetailClient({
       await deleteComment(commentId);
       setComments((prev) => prev.filter((c) => c.id !== commentId));
       showSuccessToast('댓글이 삭제되었습니다.', '🗑️');
-    } catch (e) {
-      console.error(e);
+    } catch {
+      showErrorToast('댓글 삭제에 실패했습니다.');
     }
   };
 
@@ -179,7 +177,6 @@ export default function PostDetailClient({
 
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
-      {/* 뒤로가기 */}
       <button
         onClick={() => router.push('/community')}
         aria-label="커뮤니티 목록으로 이동"
@@ -203,7 +200,6 @@ export default function PostDetailClient({
         목록으로
       </button>
 
-      {/* 게시글 카드 */}
       <PostDetailCard
         post={postDetailCardData}
         isLiked={isLiked}
@@ -255,7 +251,6 @@ export default function PostDetailClient({
         }
       />
 
-      {/* 댓글 카드 */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="px-5 pt-5 pb-3 flex items-center gap-2 border-b border-gray-100">
           <Image
@@ -269,7 +264,6 @@ export default function PostDetailClient({
           <h2 className="text-sm font-semibold text-gray-800">댓글</h2>
         </div>
 
-        {/* 댓글 입력 */}
         <div className="px-5 py-4">
           <div className="flex items-center gap-2">
             <label htmlFor="comment-input" className="sr-only">
@@ -302,7 +296,6 @@ export default function PostDetailClient({
           </div>
         </div>
 
-        {/* 댓글 목록 */}
         <div className="px-5 pb-5 space-y-4">
           {comments.map((c, index) => (
             <div key={c.id}>
@@ -348,7 +341,7 @@ export default function PostDetailClient({
                         className="flex-1"
                         onKeyDown={(e) =>
                           e.key === 'Enter' && handleEditComment(c.id)
-                        } // 추가
+                        }
                       />
                       <button
                         onClick={() => handleEditComment(c.id)}
@@ -416,7 +409,6 @@ export default function PostDetailClient({
         </div>
       </div>
 
-      {/* 신고 모달 */}
       <ReportModal
         isOpen={reportModalOpen}
         onClose={() => setReportModalOpen(false)}
