@@ -15,6 +15,7 @@ import CompetitionForm, {
   CompetitionFormValues,
 } from '@/components/competition/CompetitionForm';
 import CompetitionDetailCard from '@/components/competition/CompetitionDetailCard';
+import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 
 const defaultValues: CompetitionFormValues = {
   name: '',
@@ -34,6 +35,18 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
   const [tab, setTab] = useState<'write' | 'preview'>('write');
   const [values, setValues] = useState<CompetitionFormValues>(defaultValues);
   const [isLoading, setIsLoading] = useState(false);
+
+  const isDirty =
+    values.name.trim() !== '' ||
+    values.location.trim() !== '' ||
+    values.eventDate !== '' ||
+    values.applyDeadline !== '' ||
+    values.applyUrl !== '' ||
+    values.description.trim() !== '' ||
+    values.participants !== '' ||
+    values.imageFile !== null;
+
+  useBeforeUnload(isDirty);
 
   const handleSubmit = async () => {
     if (
