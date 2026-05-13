@@ -44,26 +44,41 @@ export default function PostCard({ post, userId }: PostCardProps) {
   };
 
   return (
-    <Link href={`/community/${post.id}`} className="block w-full">
-      <div className="rounded-lg overflow-hidden border bg-bg-white border-gray-200 flex flex-col h-97.5 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
+    <Link
+      href={`/community/${post.id}`}
+      className="block w-full"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${post.title} 게시글 상세보기`}
+    >
+      <article
+        className="rounded-lg overflow-hidden border bg-bg-white border-gray-200 flex flex-col h-97.5 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+        aria-label={`${post.nickname}의 게시글: ${post.title}`}
+      >
         {/* 이미지 영역 */}
         <div className="relative w-full h-50 bg-btn-basic shrink-0">
           {post.image_url ? (
             <Image
               src={post.image_url}
-              alt={post.title}
+              alt={`${post.title} 게시글 이미지`}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               loading="eager"
               className="object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <span className="text-text-secondary text-sm">이미지 없음</span>
+            <div
+              className="w-full h-full flex items-center justify-center"
+              aria-label="이미지 없음"
+            >
+              <span className="text-text-secondary text-sm" aria-hidden="true">
+                이미지 없음
+              </span>
             </div>
           )}
           <span
             className={`absolute top-2 right-2 px-2 py-1 text-xs text-white rounded-full ${categoryInfo.color}`}
+            aria-label={`카테고리: ${categoryInfo.label}`}
           >
             {categoryInfo.label}
           </span>
@@ -79,11 +94,22 @@ export default function PostCard({ post, userId }: PostCardProps) {
           <div className="flex-1" />
 
           {/* 날짜 + 조회수 + 댓글수 */}
-          <div className="flex gap-3 text-xs text-text-secondary items-center">
-            <span>{formatDate(post.created_at)}</span>
-            <span>조회 {post.view_count}</span>
-            <span className="flex items-center gap-1">
-              <MessageCircle size={12} />
+          <div
+            className="flex gap-3 text-xs text-text-secondary items-center"
+            role="group"
+            aria-label="게시글 통계"
+          >
+            <time dateTime={post.created_at}>
+              {formatDate(post.created_at)}
+            </time>
+            <span aria-label={`조회수 ${post.view_count}회`}>
+              조회 {post.view_count}
+            </span>
+            <span
+              className="flex items-center gap-1"
+              aria-label={`댓글 ${post.comment_count ?? 0}개`}
+            >
+              <MessageCircle size={12} aria-hidden="true" />
               <span className="translate-y-px">{post.comment_count ?? 0}</span>
             </span>
           </div>
@@ -92,11 +118,14 @@ export default function PostCard({ post, userId }: PostCardProps) {
 
           {/* 프로필 + 좋아요 */}
           <div className="flex items-center justify-between pt-2">
-            <div className="flex items-center gap-2">
+            <div
+              className="flex items-center gap-2"
+              aria-label={`작성자: ${post.nickname}`}
+            >
               <div className="relative w-6 h-6 shrink-0">
                 <Image
                   src={post.avatar_url || '/basic.svg'}
-                  alt={post.nickname}
+                  alt={`${post.nickname} 프로필 이미지`}
                   fill
                   sizes="24px"
                   className="rounded-full object-cover"
@@ -109,16 +138,20 @@ export default function PostCard({ post, userId }: PostCardProps) {
             <div className="w-12 flex items-center justify-end">
               <button
                 onClick={handleLike}
+                aria-pressed={isLiked}
+                aria-label={`좋아요 ${likeCount}개${isLiked ? ', 좋아요 취소하기' : ', 좋아요 누르기'}`}
                 className="flex items-center gap-1 transition-all duration-200 cursor-pointer"
               >
                 <Heart
                   size={16}
+                  aria-hidden="true"
                   className={
                     isLiked ? 'fill-danger text-danger' : 'text-text-secondary'
                   }
                 />
                 <span
                   className={`text-sm w-2 text-right ${isLiked ? 'text-danger' : 'text-text-secondary'}`}
+                  aria-hidden="true"
                 >
                   {likeCount}
                 </span>
@@ -126,7 +159,7 @@ export default function PostCard({ post, userId }: PostCardProps) {
             </div>
           </div>
         </div>
-      </div>
+      </article>
     </Link>
   );
 }

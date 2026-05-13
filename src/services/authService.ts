@@ -5,29 +5,25 @@ export async function registerGeneral({
   email,
   password,
   name,
+  nickname,
   belt,
 }: {
   email: string;
   password: string;
-  name: string;
+  name?: string;
+  nickname: string;
   belt: string;
 }) {
-  // 일반 - supabase auth 회원가입
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
+  const res = await fetch('/api/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password, name, nickname, belt }),
   });
-  if (error) throw error;
 
-  // 일반 - profiles 테이블에 추가 정보 저장
-  const { error: profileError } = await supabase.from('profiles').upsert({
-    id: data.user!.id,
-    name,
-    belt_level: belt,
-    email_value: email,
-    role: 'user',
-  });
-  if (profileError) throw profileError;
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error);
+  }
 }
 
 // 도장 회원 가입
@@ -35,9 +31,9 @@ export async function registerDojang({
   email,
   password,
   name,
+  nickname,
   belt,
   licenseNumber,
-  gymName,
   ownerName,
   phone,
   address,
@@ -45,36 +41,36 @@ export async function registerDojang({
 }: {
   email: string;
   password: string;
-  name: string;
+  name?: string;
+  nickname: string;
   belt: string;
   licenseNumber: string;
-  gymName: string;
   ownerName: string;
   phone: string;
   address: string;
   businessFileUrl?: string;
 }) {
-  // 도장 - supabase auth 회원가입
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
+  const res = await fetch('/api/register-dojang', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email,
+      password,
+      name,
+      nickname,
+      belt,
+      licenseNumber,
+      ownerName,
+      phone,
+      address,
+      businessFileUrl,
+    }),
   });
-  if (error) throw error;
 
-  // 도장 - profiles 테이블에 추가 정보 저장
-  const { error: profileError } = await supabase.from('profiles').upsert({
-    id: data.user!.id,
-    name,
-    belt_level: belt,
-    email_value: email,
-    role: 'manager',
-    business_number: licenseNumber,
-    representative: ownerName,
-    phone_value: phone,
-    address,
-    business_file_url: businessFileUrl,
-  });
-  if (profileError) throw profileError;
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error);
+  }
 }
 
 // 사업자등록증 파일 업로드

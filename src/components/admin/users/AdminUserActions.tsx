@@ -1,6 +1,6 @@
 'use client';
 
-import { ExternalLink, Power, PowerOff } from 'lucide-react';
+import { ExternalLink, FileText, Power, PowerOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import AdminBadge from '@/components/admin/AdminBadge';
@@ -34,7 +34,7 @@ interface DetailItemProps {
 }
 
 const actionButtonClass =
-  'inline-flex h-9 items-center justify-center gap-1 rounded-md border px-3 text-xs font-medium transition-colors duration-200 cursor-pointer';
+  'rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
 
 function DetailItem({ label, value }: DetailItemProps) {
   return (
@@ -110,9 +110,10 @@ export default function AdminUserActions({ user }: AdminUserActionsProps) {
           <button
             type="button"
             aria-label={`${user.nickname} 상세 정보 보기`}
-            className={`${actionButtonClass} border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-100`}
+            title="상세보기"
+            className={actionButtonClass}
           >
-            상세보기
+            <FileText size={18} />
           </button>
         </DialogTrigger>
 
@@ -241,14 +242,14 @@ export default function AdminUserActions({ user }: AdminUserActionsProps) {
         type="button"
         onClick={handleToggleAccountStatus}
         aria-label={`${user.nickname} 계정 ${isActive ? '비활성화' : '활성화'}`}
-        className={`${actionButtonClass} ${
-          isActive
-            ? 'border-red-200 bg-red-50 text-red-600 hover:bg-red-100'
-            : 'border-green-200 bg-green-50 text-green-700 hover:bg-green-100'
-        }`}
+        title={isActive ? '비활성화' : '활성화'}
+        className={actionButtonClass}
       >
-        {isActive ? <PowerOff className="size-4" /> : <Power className="size-4" />}
-        {isActive ? '비활성화' : '활성화'}
+        {isActive ? (
+          <PowerOff size={18} className="text-red-500" />
+        ) : (
+          <Power size={18} className="text-green-600" />
+        )}
       </button>
     </div>
   );

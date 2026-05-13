@@ -1,0 +1,48 @@
+import { notFound } from 'next/navigation';
+
+import AdminHeader from '@/components/admin/AdminHeader';
+import ScrollToTop from '@/components/common/ScrollToTop';
+import Sidebar from '@/components/layout/Sidebar';
+import { createServerSupabaseClient } from '@/lib/createServerSupabaseClient';
+
+async function requireAdminAccess() {
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    notFound();
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (profileError || profile.role !== 'admin') {
+    notFound();
+  }
+}
+
+export default async function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  await requireAdminAccess();
+
+  return (
+    <div className="flex min-h-screen bg-bg-page">
+      <div className="w-50 shrink-0" />
+      <Sidebar />
+      <AdminHeader />
+      <main className="flex-1 flex justify-center min-w-0">
+        <div className="w-full max-w-7xl pt-28">{children}</div>
+      </main>
+      <ScrollToTop />
+    </div>
+  );
+}

@@ -1,5 +1,6 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Pageheader from '@/components/layout/PageHeader';
 import CompetitionCard from '@/components/competition/CompetitionCard';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -7,6 +8,8 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useCompetiton } from '@/hooks/useCompetition';
 import { useAuth } from '@/hooks/useAuth';
 import { getStatus } from '@/utils/formatDate';
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { useState } from 'react';
 
 interface Competition {
   id: string;
@@ -18,6 +21,7 @@ interface Competition {
   image_url: string;
   participants: number;
   apply_url: string;
+  comment_count?: number;
 }
 
 interface CompetitionClientProps {
@@ -27,15 +31,25 @@ interface CompetitionClientProps {
 export default function CompetitionClient({
   initialCompetitions,
 }: CompetitionClientProps) {
-  const [activeTab, setActiveTab] = useState('전체');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get('tab') ?? '전체';
+
   const [searchQuery, setSearchQuery] = useState('');
   const [headerHeight, setHeaderHeight] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
   const debouncedSearch = useDebounce(searchQuery, 300);
-  const { data = initialCompetitions, isLoading } = useCompetiton();
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin';
-  const isManager = user?.role === 'manager';
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useCompetiton();
+
+  // 모든 페이지 데이터를 하나의 배열로 합치기
+  const competitions = useMemo(
+    () => data?.pages.flatMap((page) => page) ?? initialCompetitions,
+    [data, initialCompetitions],
+  );
 
   useEffect(() => {
     if (headerRef.current) {
@@ -43,26 +57,42 @@ export default function CompetitionClient({
     }
   }, []);
 
-  const filteredCompetitions = data
-    .filter((competition) => {
-      const matchTab =
-        activeTab === '전체' ||
-        getStatus(competition.apply_deadline) === activeTab;
-      const matchSearch = competition.name
-        .toLowerCase()
-        .includes(debouncedSearch.toLowerCase());
-      return matchTab && matchSearch;
-    })
-    .sort((a, b) => {
-      const statusA = getStatus(a.apply_deadline);
-      const statusB = getStatus(b.apply_deadline);
-      if (statusA === '모집완료' && statusB !== '모집완료') return 1;
-      if (statusA !== '모집완료' && statusB === '모집완료') return -1;
-      return (
-        new Date(a.apply_deadline).getTime() -
-        new Date(b.apply_deadline).getTime()
-      );
-    });
+  const handleTabChange = (tab: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', tab);
+    router.replace(`?${params.toString()}`, { scroll: false });
+  };
+
+  const filteredCompetitions = useMemo(
+    () =>
+      competitions
+        .filter((competition) => {
+          const matchTab =
+            activeTab === '전체' ||
+            getStatus(competition.apply_deadline) === activeTab;
+          const matchSearch = competition.name
+            .toLowerCase()
+            .includes(debouncedSearch.toLowerCase());
+          return matchTab && matchSearch;
+        })
+        .sort((a, b) => {
+          const statusA = getStatus(a.apply_deadline);
+          const statusB = getStatus(b.apply_deadline);
+          if (statusA === '모집완료' && statusB !== '모집완료') return 1;
+          if (statusA !== '모집완료' && statusB === '모집완료') return -1;
+          return (
+            new Date(a.apply_deadline).getTime() -
+            new Date(b.apply_deadline).getTime()
+          );
+        }),
+    [competitions, activeTab, debouncedSearch],
+  );
+
+  const observerRef = useInfiniteScroll(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  });
 
   return (
     <div className="w-full min-h-screen">
@@ -76,38 +106,69 @@ export default function CompetitionClient({
             description="전국 주짓수 대회 일정"
             tabs={['전체', '모집중', '마감임박', '모집완료']}
             activeTab={activeTab}
-            setActiveTab={setActiveTab}
+            setActiveTab={handleTabChange}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            writeLink={isManager || isAdmin ? '/competitions/write' : undefined}
+            writeLink={isAdmin ? '/competitions/write' : undefined}
             writeLinkText="일정추가"
           />
         </div>
       </div>
 
-      <div
+      <main
         style={{ paddingTop: `${headerHeight + 24}px` }}
         className="pb-6 flex justify-center"
+        aria-label="대회일정 목록"
       >
         <div className="w-full max-w-7xl px-6">
-          <div className="grid grid-cols-2 gap-4">
-            {isLoading ? (
+          {isLoading ? (
+            <div role="status" aria-label="대회 목록 불러오는 중">
               <LoadingSpinner />
-            ) : filteredCompetitions.length > 0 ? (
-              filteredCompetitions.map((competition) => (
-                <CompetitionCard
-                  key={competition.id}
-                  competition={competition}
+            </div>
+          ) : (
+            <ul
+              className="grid grid-cols-2 gap-4"
+              aria-label={
+                filteredCompetitions.length > 0
+                  ? `대회 목록 ${filteredCompetitions.length}개`
+                  : '대회 목록 없음'
+              }
+            >
+              {filteredCompetitions.length > 0 ? (
+                filteredCompetitions.map((competition) => (
+                  <li key={competition.id} className="h-full">
+                    <CompetitionCard competition={competition} />
+                  </li>
+                ))
+              ) : (
+                <li
+                  className="col-span-2 flex flex-col items-center justify-center py-20 text-gray-400"
+                  aria-live="polite"
+                >
+                  <p className="text-lg">대회 일정이 없습니다</p>
+                </li>
+              )}
+            </ul>
+          )}
+
+          {/* 무한스크롤 로딩 */}
+          {hasNextPage && (
+            <div
+              ref={observerRef}
+              className="h-20 flex items-center justify-center"
+              aria-live="polite"
+            >
+              {isFetchingNextPage && (
+                <div
+                  className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"
+                  role="status"
+                  aria-label="로딩 중"
                 />
-              ))
-            ) : (
-              <div className="col-span-2 flex flex-col items-center justify-center py-20 text-gray-400">
-                <p className="text-lg">대회 일정이 없습니다</p>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
-      </div>
+      </main>
     </div>
   );
 }

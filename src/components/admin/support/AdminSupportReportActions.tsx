@@ -1,0 +1,224 @@
+'use client';
+
+import { FileText, ShieldAlert } from 'lucide-react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+import AdminBadge from '@/components/admin/AdminBadge';
+import {
+  REPORT_ACTION_BADGE_VARIANT_MAP,
+  REPORT_STATUS_BADGE_VARIANT_MAP,
+} from '@/components/admin/support/constants';
+import type { AdminReportRow } from '@/components/admin/support/types';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { ROUTES } from '@/constants/routes';
+import { supabase } from '@/lib/supabase';
+
+interface AdminSupportReportActionsProps {
+  row: AdminReportRow;
+}
+
+interface DetailItemProps {
+  label: string;
+  value: React.ReactNode;
+}
+
+const actionButtonClass =
+  'rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
+
+function DetailItem({ label, value }: DetailItemProps) {
+  return (
+    <div className="grid grid-cols-[104px_minmax(0,1fr)] items-start gap-3 rounded-lg bg-zinc-50 px-4 py-3">
+      <dt className="text-sm font-medium text-zinc-500">{label}</dt>
+      <dd className="min-w-0 text-sm text-zinc-800 break-words">{value}</dd>
+    </div>
+  );
+}
+
+export default function AdminSupportReportActions({
+  row,
+}: AdminSupportReportActionsProps) {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+
+  const isPending = row.raw_status === 'pending' || row.raw_status === null;
+
+  const handleViewDetail = () => {
+    if (!row.post_id) {
+      alert('연결된 게시글 정보를 찾을 수 없습니다.');
+      return;
+    }
+
+    window.open(
+      ROUTES.COMMUNITY_DETAIL(row.post_id),
+      '_blank',
+      'noopener,noreferrer',
+    );
+  };
+
+  const handleProcessReport = async (
+    actionType: 'hide_post' | 'delete_post' | 'none',
+  ) => {
+    if ((actionType === 'hide_post' || actionType === 'delete_post') && !row.post_id) {
+      alert('연결된 게시글 정보를 찾을 수 없습니다.');
+      return;
+    }
+
+    const confirmationMessage =
+      actionType === 'hide_post'
+        ? `${row.post_title} 게시글을 숨김 처리하시겠습니까?`
+        : actionType === 'delete_post'
+          ? `${row.post_title} 게시글을 삭제 처리하시겠습니까?`
+          : `${row.post_title} 신고를 문제없음으로 처리하시겠습니까?`;
+
+    const confirmed = window.confirm(confirmationMessage);
+
+    if (!confirmed) {
+      return;
+    }
+
+    if (actionType === 'hide_post' && row.post_id) {
+      const { error } = await supabase
+        .from('posts')
+        .update({ status: 'hidden' })
+        .eq('id', row.post_id);
+
+      if (error) {
+        alert('게시글 숨김 처리에 실패했습니다.');
+        return;
+      }
+    }
+
+    if (actionType === 'delete_post' && row.post_id) {
+      const { error } = await supabase
+        .from('posts')
+        .update({ deleted_at: new Date().toISOString() })
+        .eq('id', row.post_id);
+
+      if (error) {
+        alert('게시글 삭제 처리에 실패했습니다.');
+        return;
+      }
+    }
+
+    const nextReportStatus = actionType === 'none' ? 'ignored' : 'resolved';
+    const { error } = await supabase
+      .from('reports')
+      .update({
+        reports_status: nextReportStatus,
+        action_type: actionType,
+        handled_at: new Date().toISOString(),
+      })
+      .eq('id', row.id);
+
+    if (error) {
+      alert('신고 처리 상태 저장에 실패했습니다.');
+      return;
+    }
+
+    setOpen(false);
+    router.refresh();
+  };
+
+  return (
+    <div className="flex items-center justify-center gap-2">
+      <button
+        type="button"
+        onClick={handleViewDetail}
+        aria-label={`${row.post_title} 상세보기`}
+        title="상세보기"
+        className={actionButtonClass}
+      >
+        <FileText size={18} />
+      </button>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <button
+            type="button"
+            aria-label={`${row.post_title} ${isPending ? '처리하기' : '처리내역'}`}
+            title={isPending ? '처리하기' : '처리내역'}
+            className={actionButtonClass}
+          >
+            <ShieldAlert
+              size={18}
+              className={isPending ? 'text-red-500' : 'text-blue-500'}
+            />
+          </button>
+        </DialogTrigger>
+
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader className="gap-3">
+            <DialogTitle className="text-xl font-semibold text-zinc-900">
+              신고 상세
+            </DialogTitle>
+            <DialogDescription className="text-sm text-zinc-500">
+              신고 상태와 처리 결과를 확인하세요.
+            </DialogDescription>
+          </DialogHeader>
+
+          <section className="space-y-3">
+            <dl className="space-y-2">
+              <DetailItem label="게시글 제목" value={row.post_title} />
+              <DetailItem label="사유" value={row.reason} />
+              <DetailItem label="신고자" value={row.reporter} />
+              <DetailItem label="신고 날짜" value={row.reported_at} />
+              <DetailItem
+                label="처리 상태"
+                value={
+                  <AdminBadge
+                    label={row.process_status}
+                    variant={REPORT_STATUS_BADGE_VARIANT_MAP[row.process_status]}
+                  />
+                }
+              />
+              <DetailItem
+                label="처리 결과"
+                value={
+                  <AdminBadge
+                    label={row.action_result}
+                    variant={REPORT_ACTION_BADGE_VARIANT_MAP[row.action_result]}
+                  />
+                }
+              />
+              <DetailItem label="처리 날짜" value={row.handled_at} />
+            </dl>
+          </section>
+
+          {isPending ? (
+            <div className="flex flex-wrap justify-end gap-2 border-t pt-4">
+              <button
+                type="button"
+                onClick={() => handleProcessReport('none')}
+                className={`${actionButtonClass} h-9 border-zinc-200 bg-zinc-50 px-3 text-zinc-700 hover:bg-zinc-100`}
+              >
+                문제 없음 처리
+              </button>
+              <button
+                type="button"
+                onClick={() => handleProcessReport('hide_post')}
+                className={`${actionButtonClass} h-9 border-blue-200 bg-blue-50 px-3 text-blue-700 hover:bg-blue-100`}
+              >
+                게시글 숨김 처리
+              </button>
+              <button
+                type="button"
+                onClick={() => handleProcessReport('delete_post')}
+                className={`${actionButtonClass} h-9 border-red-200 bg-red-50 px-3 text-red-600 hover:bg-red-100`}
+              >
+                게시글 삭제 처리
+              </button>
+            </div>
+          ) : null}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

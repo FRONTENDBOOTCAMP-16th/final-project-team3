@@ -48,15 +48,22 @@ export default function ReportModal({
       <div
         className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm"
         onClick={handleBackdropClick}
+        aria-label="신고창 닫기"
       >
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="report-modal-title"
           className="w-full sm:max-w-sm bg-white rounded-t-3xl sm:rounded-2xl shadow-xl overflow-hidden"
           style={{ animation: 'slide-up 0.2s ease-out' }}
         >
           {/* 헤더 */}
           <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-gray-100">
             <div>
-              <h2 className="text-base font-bold text-gray-900">
+              <h2
+                id="report-modal-title"
+                className="text-base font-bold text-gray-900"
+              >
                 게시글 신고하기
               </h2>
               <p className="text-xs text-gray-400 mt-0.5">
@@ -85,6 +92,7 @@ export default function ReportModal({
               <button
                 key={reason}
                 onClick={() => setSelected(reason)}
+                aria-pressed={selected === reason}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-left transition-all duration-150 cursor-pointer ${
                   selected === reason
                     ? 'bg-red-50 text-red-600 font-medium'
@@ -116,6 +124,7 @@ export default function ReportModal({
             <button
               onClick={handleSubmit}
               disabled={!selected || loading}
+              aria-disabled={!selected || loading}
               className="flex-1 py-3 rounded-xl text-sm font-semibold text-white transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               style={{ backgroundColor: selected ? '#ef4444' : '#d1d5db' }}
             >

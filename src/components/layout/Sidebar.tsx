@@ -45,31 +45,47 @@ export default function Sidebar() {
     <aside
       className="fixed left-0 top-0 flex flex-col border-r w-50 h-screen bg-bg-white border-gray-200"
       style={{ boxShadow: '4px 0 10px rgba(0,0,0,0.08)' }}
+      aria-label="사이드바 내비게이션"
     >
       {/* 로고 */}
-      <Link href="/">
+      <Link href="/" aria-label="홈으로 이동">
         <div className="flex items-center justify-center py-6 cursor-pointer">
-          <Image src="/blackbelt.svg" alt="black-belt" width={95} height={37} />
+          <Image
+            src="/blackbelt.svg"
+            alt="Black Belt 로고"
+            width={95}
+            height={37}
+          />
         </div>
       </Link>
 
-      <div className="border-t border-gray-200" />
+      <div className="border-t border-gray-200" aria-hidden="true" />
 
       {/* 공통 네비게이션 */}
-      <nav className="flex flex-col gap-1 px-3 py-3 flex-1">
+      <nav
+        className="flex flex-col gap-1 px-3 py-3 flex-1"
+        aria-label="주요 메뉴"
+      >
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
-            <Link key={item.href} href={item.href} className="cursor-pointer">
+            <Link
+              key={item.href}
+              href={item.href}
+              className="cursor-pointer"
+              aria-current={isActive ? 'page' : undefined}
+            >
               <Button
                 className={`w-full h-12 justify-start gap-3 bg-bg-white text-btn-text hover:bg-btn-basic cursor-pointer
                   ${isActive ? 'bg-btn-focus text-btn-focus-text hover:bg-btn-focus' : ''}`}
+                aria-label={item.label}
               >
                 <Image
                   src={item.icon}
-                  alt={item.label}
+                  alt=""
                   width={44}
                   height={17}
+                  aria-hidden="true"
                 />
                 <span className="text-[1rem]">{item.label}</span>
               </Button>
@@ -78,50 +94,54 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="border-t border-gray-200" />
+      <div className="border-t border-gray-200" aria-hidden="true" />
 
       {/* 푸터 */}
       <div className="px-3 py-4 flex flex-col gap-2">
         {/* 관리자 전용 섹션 */}
         {isAdmin && (
-          <div className="flex flex-col gap-1 mb-2">
+          <nav className="flex flex-col gap-1 mb-2" aria-label="관리자 메뉴">
             {adminNavItems.map((item) => {
-              const isActive = pathname === item.href; // ✅ startsWith → === 변경
+              const isActive = pathname === item.href;
               const Icon = item.icon;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   className="cursor-pointer"
+                  aria-current={isActive ? 'page' : undefined}
                 >
                   <Button
                     className={`w-full h-12 justify-start gap-3 cursor-pointer bg-bg-white text-btn-text hover:bg-btn-basic
                       ${isActive ? 'bg-btn-focus text-btn-focus-text hover:bg-btn-focus' : ''}`}
+                    aria-label={item.label}
                   >
-                    <Icon size={18} />
+                    <Icon size={18} aria-hidden="true" />
                     <span className="text-[1rem]">{item.label}</span>
                   </Button>
                 </Link>
               );
             })}
-          </div>
+          </nav>
         )}
 
         {/* 로그인 상태 분기 */}
         {loading ? (
-          <div className="h-12" />
+          <div className="h-12" aria-hidden="true" />
         ) : user ? (
           <div className="flex flex-col gap-2">
-            <Link href="/mypage" className="cursor-pointer">
+            <Link
+              href="/mypage"
+              className="cursor-pointer"
+              aria-label={`${user.name ?? '사용자'} 마이페이지로 이동`}
+            >
               <div className="flex items-center gap-3 px-2 py-1 rounded-lg hover:bg-btn-basic transition-colors cursor-pointer">
-                <div className="w-9 h-9 rounded-full bg-btn-basic flex items-center justify-center overflow-hidden shrink-0">
+                <div
+                  className="w-9 h-9 rounded-full bg-btn-basic flex items-center justify-center overflow-hidden shrink-0"
+                  aria-hidden="true"
+                >
                   {user.image ? (
-                    <Image
-                      src={user.image}
-                      alt={user.name ?? '프로필 이미지'}
-                      width={36}
-                      height={36}
-                    />
+                    <Image src={user.image} alt="" width={36} height={36} />
                   ) : (
                     <span className="text-sm font-medium text-btn-text">
                       {user.name?.[0] ?? '?'}
@@ -142,15 +162,20 @@ export default function Sidebar() {
               variant="ghost"
               className="w-full h-10 gap-2 text-text-secondary hover:text-text-primary cursor-pointer"
               onClick={handleLogout}
+              aria-label="로그아웃"
             >
-              <LogOut size={15} />
+              <LogOut size={15} aria-hidden="true" />
               <span className="text-sm">로그아웃</span>
             </Button>
           </div>
         ) : (
-          <Link href="/login" className="cursor-pointer">
+          <Link
+            href="/login"
+            className="cursor-pointer"
+            aria-label="로그인 페이지로 이동"
+          >
             <Button className="w-full h-12 gap-2 bg-btn-focus text-btn-focus-text cursor-pointer">
-              <LogIn size={16} />
+              <LogIn size={16} aria-hidden="true" />
               로그인
             </Button>
           </Link>
