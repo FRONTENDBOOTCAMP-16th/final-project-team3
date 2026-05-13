@@ -4,7 +4,7 @@ interface PostFormActionsProps {
   onCancel: () => void;
   onSubmit: () => void;
   submitLabel: string;
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 export default function PostFormActions({
