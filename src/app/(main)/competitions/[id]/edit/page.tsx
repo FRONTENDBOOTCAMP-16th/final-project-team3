@@ -1,6 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getCompetition } from '@/services/competitionService';
 import CompetitionEditClient from '@/components/competition/CompetitionEditClient';
 import type { Metadata } from 'next';
@@ -51,6 +51,7 @@ export default async function CompetitionEditPage({
   }
 
   const competition = await getCompetition(id);
+  if (!competition) notFound();
 
   return <CompetitionEditClient competition={competition} />;
 }

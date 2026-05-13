@@ -3,6 +3,7 @@ import type { AdminBadgeVariant } from '@/components/admin/AdminBadge';
 import type {
   AdminDojangVerificationStatus,
   AdminReportActionResult,
+  AdminReportPostStatus,
   AdminReportProcessStatus,
   SupportSectionFilterOption,
 } from './types';
@@ -44,4 +45,14 @@ export const REPORT_ACTION_BADGE_VARIANT_MAP: Record<
   '조치 없음': 'gray',
   '게시글 숨김': 'blue',
   '게시글 삭제': 'red',
+  '-': 'gray',
+};
+
+export const REPORT_POST_STATUS_BADGE_VARIANT_MAP: Record<
+  AdminReportPostStatus,
+  AdminBadgeVariant
+> = {
+  게시중: 'green',
+  숨김: 'yellow',
+  삭제: 'red',
 };

@@ -1,7 +1,10 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
-import { getCompetition } from '@/services/competitionService';
+import {
+  getCompetition,
+  isPublicCompetitionVisible,
+} from '@/services/competitionService';
 import CompetitionDetailClient from '@/components/competition/CompetitionDetailClient';
 import type { Metadata } from 'next';
 
@@ -15,7 +18,7 @@ export async function generateMetadata({
   const { id } = await params;
   const competition = await getCompetition(id);
 
-  if (!competition) {
+  if (!isPublicCompetitionVisible(competition)) {
     return { title: '대회를 찾을 수 없습니다 | Black Belt BJJ' };
   }
 
@@ -49,7 +52,7 @@ export default async function CompetitionDetailPage({
   } = await supabase.auth.getUser();
 
   const competition = await getCompetition(id);
-  if (!competition) notFound();
+  if (!isPublicCompetitionVisible(competition)) notFound();
 
   await supabase
     .from('competition')

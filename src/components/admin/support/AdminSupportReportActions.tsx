@@ -31,7 +31,9 @@ interface DetailItemProps {
 }
 
 const actionButtonClass =
-  'rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
+  'inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
+const actionPlaceholderClass =
+  'inline-flex h-[34px] w-[34px] items-center justify-center text-sm text-zinc-400';
 
 function DetailItem({ label, value }: DetailItemProps) {
   return (
@@ -49,9 +51,11 @@ export default function AdminSupportReportActions({
   const [open, setOpen] = useState(false);
 
   const isPending = row.raw_status === 'pending' || row.raw_status === null;
+  const canViewDetail =
+    Boolean(row.post_id) && row.post_status_label === '게시중';
 
   const handleViewDetail = () => {
-    if (!row.post_id) {
+    if (!canViewDetail || !row.post_id) {
       alert('연결된 게시글 정보를 찾을 수 없습니다.');
       return;
     }
@@ -129,15 +133,19 @@ export default function AdminSupportReportActions({
 
   return (
     <div className="flex items-center justify-center gap-2">
-      <button
-        type="button"
-        onClick={handleViewDetail}
-        aria-label={`${row.post_title} 상세보기`}
-        title="상세보기"
-        className={actionButtonClass}
-      >
-        <FileText size={18} />
-      </button>
+      {canViewDetail ? (
+        <button
+          type="button"
+          onClick={handleViewDetail}
+          aria-label={`${row.post_title} 상세보기`}
+          title="상세보기"
+          className={actionButtonClass}
+        >
+          <FileText size={18} />
+        </button>
+      ) : (
+        <span className={actionPlaceholderClass}>-</span>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
@@ -182,10 +190,14 @@ export default function AdminSupportReportActions({
               <DetailItem
                 label="처리 결과"
                 value={
-                  <AdminBadge
-                    label={row.action_result}
-                    variant={REPORT_ACTION_BADGE_VARIANT_MAP[row.action_result]}
-                  />
+                  row.action_result === '-' ? (
+                    <span className="text-sm text-zinc-400">-</span>
+                  ) : (
+                    <AdminBadge
+                      label={row.action_result}
+                      variant={REPORT_ACTION_BADGE_VARIANT_MAP[row.action_result]}
+                    />
+                  )
                 }
               />
               <DetailItem label="처리 날짜" value={row.handled_at} />

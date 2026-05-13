@@ -2,6 +2,7 @@ import type { AdminBadgeVariant } from '@/components/admin/AdminBadge';
 
 import type {
   AdminCompetitionFilterOption,
+  AdminCompetitionPublishStatus,
   AdminCompetitionStatus,
 } from './types';
 
@@ -22,4 +23,12 @@ export const COMPETITION_STATUS_BADGE_VARIANT_MAP: Record<
   모집중: 'green',
   마감임박: 'yellow',
   모집완료: 'red',
+};
+
+export const COMPETITION_PUBLISH_STATUS_BADGE_VARIANT_MAP: Record<
+  AdminCompetitionPublishStatus,
+  AdminBadgeVariant
+> = {
+  게시중: 'green',
+  삭제: 'red',
 };

@@ -16,7 +16,7 @@ async function getAdminCompetitions() {
       event_data,
       apply_deadline,
       created_at,
-      apply_url
+      deleted_at
     `,
     )
     .order('created_at', { ascending: false });
