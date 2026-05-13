@@ -32,12 +32,15 @@ const COMPETITION_COLUMNS: AdminTableColumn<AdminCompetitionRow>[] = [
     header: '상태',
     width: '10%',
     align: 'center',
-    render: (row) => (
-      <AdminBadge
-        label={row.status}
-        variant={COMPETITION_STATUS_BADGE_VARIANT_MAP[row.status]}
-      />
-    ),
+    render: (row) =>
+      row.publish_status === '삭제' ? (
+        <span className="text-sm text-zinc-400">-</span>
+      ) : (
+        <AdminBadge
+          label={row.status}
+          variant={COMPETITION_STATUS_BADGE_VARIANT_MAP[row.status]}
+        />
+      ),
   },
   {
     key: 'publish_status',
@@ -66,17 +69,20 @@ const COMPETITION_COLUMNS: AdminTableColumn<AdminCompetitionRow>[] = [
     header: '게시글',
     width: '6%',
     align: 'center',
-    render: (row) => (
-      <a
-        href={ROUTES.COMPETITIONS_DETAIL(row.id)}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center justify-center text-zinc-500 transition-colors hover:text-black"
-        title="대회 게시글 보기"
-      >
-        <FileText className="size-4" />
-      </a>
-    ),
+    render: (row) =>
+      row.publish_status === '삭제' ? (
+        <span className="text-sm text-zinc-400">-</span>
+      ) : (
+        <a
+          href={ROUTES.COMPETITIONS_DETAIL(row.id)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center text-zinc-500 transition-colors hover:text-black"
+          title="대회 게시글 보기"
+        >
+          <FileText className="size-4" />
+        </a>
+      ),
   },
 ];
 

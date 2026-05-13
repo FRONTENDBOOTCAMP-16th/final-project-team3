@@ -54,14 +54,15 @@ export async function uploadCompetitionImage(file: File): Promise<string> {
   return data.publicUrl;
 }
 
-export async function getCompetition(id: string): Promise<Competition> {
+export async function getCompetition(id: string): Promise<Competition | null> {
   const { data, error } = await supabase
     .from('competition')
     .select('*, profiles(nickname, avatar_url, role)')
     .eq('id', id)
-    .is('deleted_at', null) // soft delete 필터
-    .single();
+    .maybeSingle();
+
   if (error) throw error;
+  if (!data) return null;
 
   return {
     ...data,
@@ -70,6 +71,15 @@ export async function getCompetition(id: string): Promise<Competition> {
     role: data.profiles?.role,
     profiles: undefined,
   } as Competition;
+}
+
+export function isPublicCompetitionVisible(
+  competition: Competition | null | undefined,
+): competition is Competition {
+  return Boolean(
+    competition &&
+      (competition.deleted_at === null || competition.deleted_at === undefined),
+  );
 }
 
 export async function updateCompetition(

@@ -31,7 +31,10 @@ export type AdminReportProcessStatus = '처리중' | '처리완료' | '문제없
 export type AdminReportActionResult =
   | '조치 없음'
   | '게시글 숨김'
-  | '게시글 삭제';
+  | '게시글 삭제'
+  | '-';
+
+export type AdminReportPostStatus = '게시중' | '숨김' | '삭제';
 
 export interface SupportProfileQueryRow {
   id: string;
@@ -98,6 +101,7 @@ export interface AdminReportRow {
   handled_at: string;
   raw_status: RawReportStatus;
   raw_action_type: RawReportActionType;
+  post_status_label: AdminReportPostStatus;
   post_status: string | null;
   post_deleted_at: string | null;
 }

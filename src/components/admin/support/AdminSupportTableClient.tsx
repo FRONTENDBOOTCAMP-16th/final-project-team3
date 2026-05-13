@@ -12,6 +12,7 @@ import AdminSupportReportActions from '@/components/admin/support/AdminSupportRe
 import {
   DOJANG_STATUS_BADGE_VARIANT_MAP,
   REPORT_ACTION_BADGE_VARIANT_MAP,
+  REPORT_POST_STATUS_BADGE_VARIANT_MAP,
   REPORT_STATUS_BADGE_VARIANT_MAP,
   SUPPORT_SECTION_FILTERS,
 } from '@/components/admin/support/constants';
@@ -62,14 +63,27 @@ const DOJANG_COLUMNS: AdminTableColumn<AdminDojangVerificationRow>[] = [
 ];
 
 const REPORT_COLUMNS: AdminTableColumn<AdminReportRow>[] = [
-  { key: 'post_title', header: '게시글 제목', width: '20%', align: 'left' },
-  { key: 'reason', header: '사유', width: '16%', align: 'left' },
-  { key: 'reporter', header: '신고자', width: '10%', align: 'center' },
+  { key: 'post_title', header: '게시글 제목', width: '18%', align: 'left' },
+  { key: 'reason', header: '사유', width: '14%', align: 'left' },
+  { key: 'reporter', header: '신고자', width: '9%', align: 'center' },
   { key: 'reported_at', header: '신고 날짜', width: '9%', align: 'center' },
+  {
+    key: 'post_status_label',
+    header: '게시글 상태',
+    width: '8%',
+    align: 'center',
+    truncate: false,
+    render: (row) => (
+      <AdminBadge
+        label={row.post_status_label}
+        variant={REPORT_POST_STATUS_BADGE_VARIANT_MAP[row.post_status_label]}
+      />
+    ),
+  },
   {
     key: 'process_status',
     header: '처리 상태',
-    width: '9%',
+    width: '8%',
     align: 'center',
     truncate: false,
     render: (row) => (
@@ -82,17 +96,21 @@ const REPORT_COLUMNS: AdminTableColumn<AdminReportRow>[] = [
   {
     key: 'action_result',
     header: '처리 결과',
-    width: '9%',
+    width: '8%',
     align: 'center',
     truncate: false,
     render: (row) => (
-      <AdminBadge
-        label={row.action_result}
-        variant={REPORT_ACTION_BADGE_VARIANT_MAP[row.action_result]}
-      />
+      row.action_result === '-' ? (
+        <span className="text-sm text-zinc-400">-</span>
+      ) : (
+        <AdminBadge
+          label={row.action_result}
+          variant={REPORT_ACTION_BADGE_VARIANT_MAP[row.action_result]}
+        />
+      )
     ),
   },
-  { key: 'handled_at', header: '처리 날짜', width: '9%', align: 'center' },
+  { key: 'handled_at', header: '처리 날짜', width: '8%', align: 'center' },
   {
     key: 'id',
     header: '관리',

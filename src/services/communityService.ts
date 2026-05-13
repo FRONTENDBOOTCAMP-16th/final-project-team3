@@ -40,9 +40,10 @@ export const getPost = cache(async (id: string) => {
     .from('posts')
     .select('*, profiles(nickname, avatar_url, belt_level, role)')
     .eq('id', id)
-    .is('deleted_at', null) // soft delete 필터
-    .single();
+    .maybeSingle();
+
   if (error) throw error;
+  if (!data) return null;
 
   return {
     ...data,
@@ -53,6 +54,17 @@ export const getPost = cache(async (id: string) => {
     profiles: undefined,
   } as Post;
 });
+
+export function isPublicPostVisible(post: Post | null | undefined): post is Post {
+  if (!post) {
+    return false;
+  }
+
+  return (
+    (post.deleted_at === null || post.deleted_at === undefined) &&
+    post.status !== 'hidden'
+  );
+}
 
 export async function createPost({
   category,

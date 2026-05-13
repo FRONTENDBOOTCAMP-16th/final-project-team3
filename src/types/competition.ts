@@ -6,6 +6,7 @@ export interface Competition {
   location: string;
   event_data: string;
   apply_deadline: string;
+  deleted_at?: string | null;
   apply_url?: string;
   description?: string;
   image_url?: string;
