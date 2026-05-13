@@ -13,6 +13,7 @@ import PostFormActions from '@/components/community/PostFormActions';
 import PostDetailCard from '@/components/community/PostDetailCard';
 import { LimitedInput } from '../common/LimitedInput';
 import { LimitedTextarea } from '../common/LimitedTextarea';
+import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 
 export default function WriteClient() {
   const router = useRouter();
@@ -25,6 +26,11 @@ export default function WriteClient() {
   const { user } = useAuth();
   const [category, setCategory] = useState<PostCategory>('personal');
   const queryClient = useQueryClient();
+
+  const isDirty =
+    title.trim() !== '' || content.trim() !== '' || imageFile !== null;
+
+  useBeforeUnload(isDirty);
 
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {
@@ -64,7 +70,6 @@ export default function WriteClient() {
         <h1 className="text-lg font-semibold mx-auto">게시글 작성</h1>
       </div>
 
-      {/* ✅ 탭 버튼 */}
       <div role="tablist" className="flex bg-gray-100 rounded-xl p-1 mb-6">
         <button
           role="tab"
@@ -90,7 +95,6 @@ export default function WriteClient() {
         </button>
       </div>
 
-      {/* ✅ 작성 탭 */}
       {tab === 'write' && (
         <>
           <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
@@ -165,7 +169,6 @@ export default function WriteClient() {
         </>
       )}
 
-      {/* ✅ 미리보기 탭 */}
       {tab === 'preview' &&
         (!title && !content ? (
           <div className="flex flex-col items-center justify-center py-16 text-gray-400 mb-6">
@@ -191,7 +194,6 @@ export default function WriteClient() {
           </div>
         ))}
 
-      {/* 하단 버튼 */}
       <PostFormActions
         onCancel={() => router.back()}
         onSubmit={handleSubmit}

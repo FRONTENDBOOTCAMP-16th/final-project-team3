@@ -10,6 +10,7 @@ import ImageUpload from '@/components/community/ImageUpload';
 import PostFormActions from '@/components/community/PostFormActions';
 import { LimitedInput } from '../common/LimitedInput';
 import { LimitedTextarea } from '../common/LimitedTextarea';
+import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 
 interface Props {
   id: string;
@@ -27,6 +28,13 @@ export default function EditClient({ id, initialPost }: Props) {
     initialPost.image_url ?? null,
   );
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const isDirty =
+    title !== initialPost.title ||
+    content !== initialPost.content ||
+    imageFile !== null;
+
+  useBeforeUnload(isDirty);
 
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {

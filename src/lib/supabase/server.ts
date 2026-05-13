@@ -17,8 +17,7 @@ export async function createSupabaseServerClient() {
               cookieStore.set(name, value, options),
             );
           } catch {
-            // 서버 컴포넌트에서 호출 시 무시
-            // Server Action / Route Handler에서는 정상 동작
+            // proxy.ts에서 세션 갱신을 처리하므로 무시
           }
         },
       },

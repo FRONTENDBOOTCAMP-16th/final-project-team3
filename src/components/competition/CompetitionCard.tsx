@@ -38,7 +38,7 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
 
   return (
     <article
-      className="rounded-lg overflow-hidden bg-bg-white border border-gray-200 flex flex-col cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+      className="rounded-lg overflow-hidden bg-bg-white border border-gray-200 flex flex-col h-full cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
       aria-label={`${competition.name} 대회`}
     >
       <Link
