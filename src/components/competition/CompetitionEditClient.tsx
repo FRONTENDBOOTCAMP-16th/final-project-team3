@@ -14,6 +14,7 @@ import CompetitionForm, {
   CompetitionFormValues,
 } from '@/components/competition/CompetitionForm';
 import type { Competition } from '@/types/competition';
+import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 
 interface CompetitionEditClientProps {
   competition: Competition;
@@ -38,6 +39,19 @@ export default function CompetitionEditClient({
     preview: competition.image_url ?? null,
     imageFile: null,
   });
+
+  const isDirty =
+    values.name !== (competition.name ?? '') ||
+    values.location !== (competition.location ?? '') ||
+    values.eventDate !== (competition.event_data ?? '') ||
+    values.applyDeadline !== (competition.apply_deadline ?? '') ||
+    values.applyUrl !== (competition.apply_url ?? '') ||
+    values.description !== (competition.description ?? '') ||
+    values.participants !==
+      (competition.participants ? String(competition.participants) : '') ||
+    values.imageFile !== null;
+
+  useBeforeUnload(isDirty);
 
   const handleSubmit = async () => {
     if (
