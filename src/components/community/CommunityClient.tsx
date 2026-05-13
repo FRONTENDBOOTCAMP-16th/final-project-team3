@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect, startTransition, useMemo } from 'react';
+import { useRef, useEffect, startTransition, useMemo } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Pageheader from '@/components/layout/PageHeader';
 import Postcard from '@/components/community/Postcard';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
@@ -8,6 +9,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { usePosts } from '@/hooks/useCommunity';
 import { useAuth } from '@/hooks/useAuth';
 import type { Post } from '@/types/community';
+import { useState } from 'react';
 
 const PAGE_SIZE = 10;
 
@@ -18,7 +20,12 @@ interface CommunityClientProps {
 export default function CommunityClient({
   initialPosts,
 }: CommunityClientProps) {
-  const [activeTab, setActiveTab] = useState('전체');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // URL에서 탭 상태 읽기 (없으면 '전체')
+  const activeTab = searchParams.get('tab') ?? '전체';
+
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
 
@@ -48,6 +55,15 @@ export default function CommunityClient({
   useEffect(() => {
     sessionStorage.setItem('communityPage', page.toString());
   }, [page]);
+
+  // 탭 변경 시 URL 업데이트
+  const handleTabChange = (tab: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', tab);
+    router.replace(`?${params.toString()}`, { scroll: false });
+    setPage(1);
+    window.scrollTo(0, 0);
+  };
 
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
@@ -102,11 +118,7 @@ export default function CommunityClient({
             description="주짓수에 대한 모든 이야기"
             tabs={['전체', '공지', '도장 홍보', '일반 게시글']}
             activeTab={activeTab}
-            setActiveTab={(tab) => {
-              setActiveTab(tab);
-              setPage(1);
-              window.scrollTo(0, 0);
-            }}
+            setActiveTab={handleTabChange}
             searchQuery={searchQuery}
             setSearchQuery={(query) => {
               setSearchQuery(query);
@@ -124,7 +136,6 @@ export default function CommunityClient({
         className="pb-20 flex justify-center"
       >
         <div className="w-full max-w-7xl px-6">
-          {/* 게시글 목록 */}
           <div
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
             role="list"
@@ -170,7 +181,6 @@ export default function CommunityClient({
             )}
           </div>
 
-          {/* 무한스크롤 로딩 */}
           {hasMore && (
             <div
               ref={observerRef}

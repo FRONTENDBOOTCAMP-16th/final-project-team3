@@ -1,5 +1,6 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Pageheader from '@/components/layout/PageHeader';
 import CompetitionCard from '@/components/competition/CompetitionCard';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -7,6 +8,7 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useCompetiton } from '@/hooks/useCompetition';
 import { useAuth } from '@/hooks/useAuth';
 import { getStatus } from '@/utils/formatDate';
+import { useState } from 'react';
 
 interface Competition {
   id: string;
@@ -27,7 +29,12 @@ interface CompetitionClientProps {
 export default function CompetitionClient({
   initialCompetitions,
 }: CompetitionClientProps) {
-  const [activeTab, setActiveTab] = useState('전체');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // URL에서 탭 상태 읽기 (없으면 '전체')
+  const activeTab = searchParams.get('tab') ?? '전체';
+
   const [searchQuery, setSearchQuery] = useState('');
   const [headerHeight, setHeaderHeight] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -41,6 +48,13 @@ export default function CompetitionClient({
       setHeaderHeight(headerRef.current.offsetHeight);
     }
   }, []);
+
+  // 탭 변경 시 URL 업데이트
+  const handleTabChange = (tab: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', tab);
+    router.replace(`?${params.toString()}`, { scroll: false });
+  };
 
   const filteredCompetitions = data
     .filter((competition) => {
@@ -75,7 +89,7 @@ export default function CompetitionClient({
             description="전국 주짓수 대회 일정"
             tabs={['전체', '모집중', '마감임박', '모집완료']}
             activeTab={activeTab}
-            setActiveTab={setActiveTab}
+            setActiveTab={handleTabChange}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             writeLink={isAdmin ? '/competitions/write' : undefined}
