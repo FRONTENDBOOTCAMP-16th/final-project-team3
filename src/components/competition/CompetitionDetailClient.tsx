@@ -9,6 +9,7 @@ import { handleShare } from '@/utils/share';
 import type { Competition } from '@/types/competition';
 import CompetitionDetailCard from '@/components/competition/CompetitionDetailCard';
 import Image from 'next/image';
+import { deleteCompetition } from '@/services/competitionService';
 
 interface CompetitionDetailClientProps {
   competition: Competition;
@@ -29,15 +30,15 @@ export default function CompetitionDetailClient({
   const handleDeletePost = async () => {
     if (!confirm('대회 게시글을 삭제하시겠습니까?')) return;
     try {
-      await supabase.from('competition').delete().eq('id', id);
+      await deleteCompetition(id);
       showSuccessToast('삭제되었습니다.', '🗑️');
       await queryClient.invalidateQueries({ queryKey: ['competition'] });
       router.push('/competitions');
+      router.refresh();
     } catch (e) {
       console.error(e);
     }
   };
-
   return (
     <main
       className="max-w-2xl mx-auto p-4 space-y-4"
