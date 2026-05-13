@@ -15,6 +15,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLike } from '@/hooks/useLike';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ReportModal from '@/components/community/ReportModal';
+import ConfirmModal from '@/components/community/ConfirmModal';
 import PostDetailCard, {
   PostDetailCardData,
 } from '@/components/community/PostDetailCard';
@@ -45,6 +46,8 @@ export default function PostDetailClient({
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingContent, setEditingContent] = useState('');
   const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [deletePostModalOpen, setDeletePostModalOpen] = useState(false);
+  const [deleteCommentId, setDeleteCommentId] = useState<string | null>(null);
 
   const isOwner = userId === post.user_id;
 
@@ -87,13 +90,13 @@ export default function PostDetailClient({
   };
 
   const handleDeletePost = async () => {
-    if (!confirm('게시글을 삭제하시겠습니까?')) return;
     try {
       await deletePost(id);
-      await queryClient.invalidateQueries({ queryKey: ['posts'] }); // await 추가
+      await queryClient.invalidateQueries({ queryKey: ['posts'] });
       showSuccessToast('게시글이 삭제되었습니다.', '🗑️');
+      await new Promise((resolve) => setTimeout(resolve, 700));
       router.push('/community');
-      router.refresh(); // 추가
+      router.refresh();
     } catch {
       showErrorToast('게시글 삭제에 실패했습니다.');
     }
@@ -117,7 +120,6 @@ export default function PostDetailClient({
   };
 
   const handleDeleteComment = async (commentId: string) => {
-    if (!confirm('댓글을 삭제하시겠습니까?')) return;
     try {
       await deleteComment(commentId);
       setComments((prev) => prev.filter((c) => c.id !== commentId));
@@ -225,7 +227,7 @@ export default function PostDetailClient({
                 <button
                   title="삭제하기"
                   aria-label="게시글 삭제"
-                  onClick={handleDeletePost}
+                  onClick={() => setDeletePostModalOpen(true)}
                 >
                   <Image src="/postDelete.svg" alt="" width={32} height={32} />
                 </button>
@@ -389,7 +391,7 @@ export default function PostDetailClient({
                           수정
                         </button>
                         <button
-                          onClick={() => handleDeleteComment(c.id)}
+                          onClick={() => setDeleteCommentId(c.id)}
                           aria-label={`${c.nickname}의 댓글 삭제`}
                           className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors"
                         >
@@ -414,6 +416,22 @@ export default function PostDetailClient({
         isOpen={reportModalOpen}
         onClose={() => setReportModalOpen(false)}
         onSubmit={handleReportSubmit}
+      />
+      <ConfirmModal
+        isOpen={deletePostModalOpen}
+        onClose={() => setDeletePostModalOpen(false)}
+        onConfirm={handleDeletePost}
+        title="게시글 삭제"
+        description="정말 삭제하시겠습니까? 삭제된 게시글은 복구할 수 없습니다."
+      />
+      <ConfirmModal
+        isOpen={deleteCommentId !== null}
+        onClose={() => setDeleteCommentId(null)}
+        onConfirm={() => {
+          if (deleteCommentId) handleDeleteComment(deleteCommentId);
+        }}
+        title="댓글 삭제"
+        description="정말 삭제하시겠습니까? 삭제된 댓글은 복구할 수 없습니다."
       />
     </div>
   );
