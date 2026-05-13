@@ -10,6 +10,7 @@ export async function createCompetition({
   description,
   image_url,
   user_id,
+  participants,
 }: {
   name: string;
   location: string;
@@ -31,7 +32,8 @@ export async function createCompetition({
       apply_url,
       description,
       image_url,
-      user_id, // 추가
+      user_id,
+      participants,
     })
     .select()
     .single();
@@ -57,6 +59,7 @@ export async function getCompetition(id: string): Promise<Competition> {
     .from('competition')
     .select('*, profiles(nickname, avatar_url, role)')
     .eq('id', id)
+    .is('deleted_at', null) // soft delete 필터
     .single();
   if (error) throw error;
 
@@ -68,6 +71,7 @@ export async function getCompetition(id: string): Promise<Competition> {
     profiles: undefined,
   } as Competition;
 }
+
 export async function updateCompetition(
   id: string,
   fields: {
@@ -84,6 +88,15 @@ export async function updateCompetition(
   const { error } = await supabase
     .from('competition')
     .update(fields)
+    .eq('id', id);
+  if (error) throw error;
+}
+
+// soft delete
+export async function deleteCompetition(id: string) {
+  const { error } = await supabase
+    .from('competition')
+    .update({ deleted_at: new Date().toISOString() })
     .eq('id', id);
   if (error) throw error;
 }
