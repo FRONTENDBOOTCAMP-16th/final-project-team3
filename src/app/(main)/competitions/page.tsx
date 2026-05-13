@@ -30,8 +30,18 @@ export default async function CompetitionsPage() {
 
   const { data: initialCompetitions } = await supabase
     .from('competition')
-    .select('*')
-    .order('event_data', { ascending: true });
+    .select('*') // comments(count) 제거
+    .order('event_data', { ascending: true })
+    .range(0, 9);
 
-  return <CompetitionClient initialCompetitions={initialCompetitions ?? []} />;
+  return (
+    <CompetitionClient
+      initialCompetitions={
+        initialCompetitions?.map((c) => ({
+          ...c,
+          comment_count: 0,
+        })) ?? []
+      }
+    />
+  );
 }
