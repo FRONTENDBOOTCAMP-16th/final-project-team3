@@ -1,13 +1,13 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { FileText } from 'lucide-react';
 
 import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
   type AdminTableColumn,
 } from '@/components/admin/AdminDataTable';
 import AdminTableToolbar from '@/components/admin/AdminTableToolbar';
+import AdminCompetitionPostAction from '@/components/admin/competitions/AdminCompetitionPostAction';
 import {
   ADMIN_COMPETITION_FILTERS,
   COMPETITION_PUBLISH_STATUS_BADGE_VARIANT_MAP,
@@ -18,7 +18,6 @@ import type {
   AdminCompetitionRow,
 } from '@/components/admin/competitions/types';
 import { filterAdminCompetitions } from '@/components/admin/competitions/utils';
-import { ROUTES } from '@/constants/routes';
 
 interface AdminCompetitionsClientProps {
   data: AdminCompetitionRow[];
@@ -69,20 +68,13 @@ const COMPETITION_COLUMNS: AdminTableColumn<AdminCompetitionRow>[] = [
     header: '게시글',
     width: '6%',
     align: 'center',
-    render: (row) =>
-      row.publish_status === '삭제' ? (
-        <span className="text-sm text-zinc-400">-</span>
-      ) : (
-        <a
-          href={ROUTES.COMPETITIONS_DETAIL(row.id)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center justify-center text-zinc-500 transition-colors hover:text-black"
-          title="대회 게시글 보기"
-        >
-          <FileText className="size-4" />
-        </a>
-      ),
+    render: (row) => (
+      <AdminCompetitionPostAction
+        id={row.id}
+        name={row.name}
+        publishStatus={row.publish_status}
+      />
+    ),
   },
 ];
 
