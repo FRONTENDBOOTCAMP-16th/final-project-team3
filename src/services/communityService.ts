@@ -12,11 +12,15 @@ interface PostProfile extends ProfileBase {
   role: string;
 }
 
-export async function getPosts() {
+export async function getPosts(page = 0, pageSize = 10) {
+  const from = page * pageSize;
+  const to = from + pageSize - 1;
+
   const { data, error } = await supabase
     .from('posts')
     .select('*, comments(count), profiles(nickname, avatar_url)')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .range(from, to);
 
   if (error) throw error;
 
@@ -28,7 +32,6 @@ export async function getPosts() {
     profiles: undefined,
   }));
 }
-
 export const getPost = cache(async (id: string) => {
   const { data, error } = await supabase
     .from('posts')
