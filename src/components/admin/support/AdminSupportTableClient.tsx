@@ -96,7 +96,7 @@ const REPORT_COLUMNS: AdminTableColumn<AdminReportRow>[] = [
   {
     key: 'action_result',
     header: '처리 결과',
-    width: '8%',
+    width: '11%',
     align: 'center',
     truncate: false,
     render: (row) => (
@@ -110,11 +110,11 @@ const REPORT_COLUMNS: AdminTableColumn<AdminReportRow>[] = [
       )
     ),
   },
-  { key: 'handled_at', header: '처리 날짜', width: '8%', align: 'center' },
+  { key: 'handled_at', header: '처리 날짜', width: '11%', align: 'center' },
   {
     key: 'id',
     header: '관리',
-    width: '18%',
+    width: '12%',
     align: 'center',
     truncate: false,
     render: (row) => <AdminSupportReportActions row={row} />,
