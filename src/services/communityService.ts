@@ -19,6 +19,8 @@ export async function getPosts(page = 0, pageSize = 10) {
   const { data, error } = await supabase
     .from('posts')
     .select('*, comments(count), profiles(nickname, avatar_url)')
+    .is('deleted_at', null) // soft delete 필터
+    .eq('status', 'published') // 발행된 게시글만
     .order('created_at', { ascending: false })
     .range(from, to);
 
@@ -32,11 +34,13 @@ export async function getPosts(page = 0, pageSize = 10) {
     profiles: undefined,
   }));
 }
+
 export const getPost = cache(async (id: string) => {
   const { data, error } = await supabase
     .from('posts')
     .select('*, profiles(nickname, avatar_url, belt_level, role)')
     .eq('id', id)
+    .is('deleted_at', null) // soft delete 필터
     .single();
   if (error) throw error;
 
@@ -80,8 +84,12 @@ export async function updatePost(
   if (error) throw error;
 }
 
+// soft delete
 export async function deletePost(id: string) {
-  const { error } = await supabase.from('posts').delete().eq('id', id);
+  const { error } = await supabase
+    .from('posts')
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', id);
   if (error) throw error;
 }
 
@@ -101,6 +109,7 @@ export async function getComments(postId: string) {
     .from('comments')
     .select('*, profiles(nickname, avatar_url, belt_level, role)')
     .eq('post_id', postId)
+    .is('deleted_at', null) // soft delete 필터
     .order('created_at', { ascending: true });
 
   if (error) throw error;
@@ -149,8 +158,12 @@ export async function updateComment(id: string, content: string) {
   if (error) throw error;
 }
 
+// soft delete
 export async function deleteComment(id: string) {
-  const { error } = await supabase.from('comments').delete().eq('id', id);
+  const { error } = await supabase
+    .from('comments')
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', id);
   if (error) throw error;
 }
 
