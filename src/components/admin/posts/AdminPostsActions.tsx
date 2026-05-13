@@ -30,8 +30,11 @@ export default function AdminPostActions({
   const [isPending, startTransition] = useTransition();
 
   const isDeleted = Boolean(deleted_at);
+  const canViewDetail = status !== 'hidden';
   const actionButtonClass =
-    'rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
+    'inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
+  const actionPlaceholderClass =
+    'inline-flex h-[34px] w-[34px] items-center justify-center text-sm text-zinc-400';
 
   const handleView = () => {
     window.open(ROUTES.COMMUNITY_DETAIL(id), '_blank', 'noopener,noreferrer');
@@ -113,16 +116,20 @@ export default function AdminPostActions({
         </button>
       ) : (
         <>
-          <button
-            type="button"
-            aria-label={`${title} 상세보기`}
-            onClick={handleView}
-            title="상세보기"
-            className={actionButtonClass}
-            disabled={isPending}
-          >
-            <FileText size={18} />
-          </button>
+          {canViewDetail ? (
+            <button
+              type="button"
+              aria-label={`${title} 상세보기`}
+              onClick={handleView}
+              title="상세보기"
+              className={actionButtonClass}
+              disabled={isPending}
+            >
+              <FileText size={18} />
+            </button>
+          ) : (
+            <span className={actionPlaceholderClass}>-</span>
+          )}
 
           <button
             type="button"
