@@ -31,14 +31,21 @@ async function getPosts(): Promise<Post[]> {
 
   const { data, error } = await supabase
     .from('posts')
-    .select('*, comments(count)')
-    .order('created_at', { ascending: false });
+    .select('*, comments(count), profiles(nickname, avatar_url)')
+    .order('created_at', { ascending: false })
+    .range(0, 9);
 
   if (error) return [];
 
   return data.map((post) => ({
     ...post,
-    comment_count: post.comments?.[0]?.count ?? 0,
+    comment_count: (post.comments as { count: number }[])[0]?.count ?? 0,
+    nickname: (post.profiles as { nickname: string; avatar_url: string } | null)
+      ?.nickname,
+    avatar_url: (
+      post.profiles as { nickname: string; avatar_url: string } | null
+    )?.avatar_url,
+    profiles: undefined,
   })) as Post[];
 }
 

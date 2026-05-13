@@ -187,7 +187,7 @@ export default function DojangClient({
                   />
                 </div>
               </div>
-            ) : dojangs.length > 0 ? (
+            ) : dojangs && dojangs.length > 0 ? (
               <ul
                 className="grid grid-cols-2 gap-4"
                 aria-label={`검색 결과 ${dojangs.length}개`}
