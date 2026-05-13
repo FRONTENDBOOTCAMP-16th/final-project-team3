@@ -18,7 +18,7 @@ export default function PostFormActions({
       <button
         onClick={onCancel}
         disabled={isLoading}
-        className="flex-1 py-3 rounded-xl bg-btn-basic border border-gray-300 text-black hover:bg-gray-200 cursor-pointer"
+        className="flex-1 py-3 rounded-xl bg-btn-basic border border-gray-300 text-black hover:bg-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
         취소
       </button>
