@@ -31,7 +31,7 @@ export default function PostFormActions({
             : 'bg-black cursor-pointer'
         }`}
       >
-        {isLoading ? '작성 중...' : submitLabel}
+        {isLoading ? '처리 중...' : submitLabel}
       </button>
     </div>
   );

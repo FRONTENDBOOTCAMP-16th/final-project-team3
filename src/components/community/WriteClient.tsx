@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PostCategory } from '@/types/community';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { createPost, uploadPostImage } from '@/services/communityService';
 import { useAuth } from '@/hooks/useAuth';
 import { useQueryClient } from '@tanstack/react-query';
@@ -54,7 +53,7 @@ export default function WriteClient() {
       });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       showSuccessToast('게시글이 업로드되었습니다.', '📝');
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await new Promise((resolve) => setTimeout(resolve, 700));
       router.push('/community');
     } catch {
       showErrorToast('게시글 작성에 실패했습니다.');
