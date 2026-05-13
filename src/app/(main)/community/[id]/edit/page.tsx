@@ -1,10 +1,8 @@
-// community/[id]/edit/page.tsx
 export const dynamic = 'force-dynamic';
 
 import type { Metadata } from 'next';
 import EditClient from '@/components/community/EditClient';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getPost } from '@/services/communityService';
 import { notFound, redirect } from 'next/navigation';
 
@@ -21,17 +19,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${post.title} 수정 | Black Belt BJJ`,
     description: `"${post.title}" 게시글을 수정합니다.`,
-    robots: { index: false }, // 수정 페이지는 검색엔진 색인 제외
+    robots: { index: false },
   };
 }
 
 async function getInitialData(id: string) {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll() } },
-  );
+  const supabase = await createSupabaseServerClient();
 
   const [
     post,
