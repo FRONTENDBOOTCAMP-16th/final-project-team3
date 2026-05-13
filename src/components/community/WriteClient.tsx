@@ -13,6 +13,7 @@ import PostFormActions from '@/components/community/PostFormActions';
 import PostDetailCard from '@/components/community/PostDetailCard';
 import { LimitedInput } from '../common/LimitedInput';
 import { LimitedTextarea } from '../common/LimitedTextarea';
+import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 
 export default function WriteClient() {
   const router = useRouter();
@@ -25,6 +26,11 @@ export default function WriteClient() {
   const { user } = useAuth();
   const [category, setCategory] = useState<PostCategory>('personal');
   const queryClient = useQueryClient();
+
+  const isDirty =
+    title.trim() !== '' || content.trim() !== '' || imageFile !== null;
+
+  useBeforeUnload(isDirty);
 
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {
