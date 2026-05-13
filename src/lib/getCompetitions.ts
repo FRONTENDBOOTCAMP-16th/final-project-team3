@@ -6,7 +6,8 @@ export async function getCompetitions(page = 0, pageSize = 10) {
 
   const { error, data } = await supabase
     .from('competition')
-    .select('*') // comments(count) 제거
+    .select('*')
+    .is('deleted_at', null) // soft delete 필터
     .order('event_data', { ascending: true })
     .range(from, to);
 
@@ -14,7 +15,6 @@ export async function getCompetitions(page = 0, pageSize = 10) {
 
   return data.map((competition) => ({
     ...competition,
-    comment_count: 0, // 일단 0으로
-    comments: undefined,
+    comment_count: 0,
   }));
 }
