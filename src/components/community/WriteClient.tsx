@@ -27,7 +27,6 @@ export default function WriteClient() {
   const [category, setCategory] = useState<PostCategory>('personal');
   const queryClient = useQueryClient();
 
-  // 하나라도 입력됐으면 dirty
   const isDirty =
     title.trim() !== '' || content.trim() !== '' || imageFile !== null;
 

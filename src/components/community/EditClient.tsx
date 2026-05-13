@@ -29,7 +29,6 @@ export default function EditClient({ id, initialPost }: Props) {
   );
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  // 초기값과 달라졌는지 체크
   const isDirty =
     title !== initialPost.title ||
     content !== initialPost.content ||
