@@ -89,6 +89,23 @@
   /* 에러 페이지 */
   --color-error-not-found: #2c56e7; /* not-found color */
   --color-error-runtime: #e7000b; /* error color */
+
+  /* 커뮤니티 카테고리 뱃지 */
+  --color-category-promo-bg: var(--category-promo-bg);
+  --color-category-notice-bg: var(--category-notice-bg);
+  --color-category-personal-bg: var(--category-personal-bg);
+  --color-category-text: var(--category-text);
+
+  /* 대회 모집 상태 뱃지 */
+  --color-state-recruiting-bg: var(--state-recruiting-bg);
+  --color-state-recruiting-text: var(--state-recruiting-text);
+  --color-state-deadline-bg: var(--state-deadline-bg);
+  --color-state-deadline-text: var(--state-deadline-text);
+  --color-state-closed-bg: var(--state-closed-bg);
+  --color-state-closed-text: var(--state-closed-text);
+
+  /* 대회 D-day */
+  --color-dday-imminent: var(--dday-imminent);
 }
 
 :root {
@@ -140,6 +157,20 @@
   --state-manager-bg: #dbeafe;
   --state-basic-bg: #f3f4f6;
   --border-custom: #e5e7eb;
+
+  --category-promo-bg: #155dfc;
+  --category-notice-bg: #e7000b;
+  --category-personal-bg: #364153;
+  --category-text: #ffffff;
+
+  --state-recruiting-bg: #22c55e;
+  --state-recruiting-text: #ffffff;
+  --state-deadline-bg: #f97316;
+  --state-deadline-text: #ffffff;
+  --state-closed-bg: #9ca3af;
+  --state-closed-text: #ffffff;
+
+  --dday-imminent: #3b82f6;
 }
 
 .dark {
@@ -191,6 +222,20 @@
   --state-manager-bg: #1e3a5f;
   --state-basic-bg: #2a2a2a;
   --border-custom: #3f3f3f;
+
+  --category-promo-bg: #1d4ed8;
+  --category-notice-bg: #dc2626;
+  --category-personal-bg: #4b5563;
+  --category-text: #ffffff;
+
+  --state-recruiting-bg: #16a34a;
+  --state-recruiting-text: #ffffff;
+  --state-deadline-bg: #ea580c;
+  --state-deadline-text: #ffffff;
+  --state-closed-bg: #6b7280;
+  --state-closed-text: #ffffff;
+
+  --dday-imminent: #60a5fa;
 }
 
 .dark input,

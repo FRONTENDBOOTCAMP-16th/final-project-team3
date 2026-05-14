@@ -24,9 +24,9 @@ interface PostCardProps {
 }
 
 const categoryMap: Record<string, { label: string; color: string }> = {
-  promo: { label: '도장', color: 'bg-[#155DFC]' },
-  notice: { label: '공지', color: 'bg-[#e7000b]' },
-  personal: { label: '일반', color: 'bg-[#364153]' },
+  promo: { label: '도장', color: 'bg-category-promo-bg' },
+  notice: { label: '공지', color: 'bg-category-notice-bg' },
+  personal: { label: '일반', color: 'bg-category-personal-bg' },
 };
 
 export default function PostCard({ post, userId }: PostCardProps) {

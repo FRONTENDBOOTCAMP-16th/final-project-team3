@@ -30,10 +30,19 @@ export default function PostDetailCard({
 }: PostDetailCardProps) {
   const roleBadge =
     post.role === 'manager'
-      ? { label: '도장', className: 'bg-blue-50 text-blue-600' }
+      ? {
+          label: '도장',
+          className: 'bg-category-promo-bg text-category-text',
+        }
       : post.role === 'admin'
-        ? { label: '관리자', className: 'bg-red-50 text-red-600' }
-        : { label: '일반', className: 'bg-btn-basic text-btn-text' };
+        ? {
+            label: '공지',
+            className: 'bg-category-notice-bg text-category-text',
+          }
+        : {
+            label: '일반',
+            className: 'bg-category-personal-bg text-category-text',
+          };
 
   return (
     <div className="bg-bg-white rounded-2xl shadow-sm border border-border overflow-hidden">

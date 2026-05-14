@@ -32,16 +32,16 @@ export default function CompetitionDetailCard({
 
   const statusColor =
     {
-      모집중: 'bg-green-500',
-      마감임박: 'bg-orange-500',
-      모집완료: 'bg-gray-400',
-    }[status] ?? 'bg-gray-400';
+      모집중: 'bg-state-recruiting-bg text-state-recruiting-text',
+      마감임박: 'bg-state-deadline-bg text-state-deadline-text',
+      모집완료: 'bg-state-closed-bg text-state-closed-text',
+    }[status] ?? 'bg-state-closed-bg text-state-closed-text';
 
   const ddayColor =
     dday === 'D-DAY'
       ? 'text-red-500'
       : dday.startsWith('D-')
-        ? 'text-blue-500'
+        ? 'text-dday-imminent'
         : 'text-text-secondary';
 
   return (
@@ -79,7 +79,7 @@ export default function CompetitionDetailCard({
               </span>
               {data.role && (
                 <span
-                  className="text-xs px-1.5 py-0.5 bg-state-basic-bg text-text-secondary rounded"
+                  className="text-xs px-1.5 py-0.5 bg-state-basic-bg text-category-text rounded"
                   aria-label={`역할: ${data.role}`}
                 >
                   {data.role}
@@ -122,7 +122,7 @@ export default function CompetitionDetailCard({
             className="object-cover"
           />
           <span
-            className={`absolute top-3 left-3 px-2.5 py-1 text-xs text-white rounded-full ${statusColor}`}
+            className={`absolute top-3 left-3 px-2.5 py-1 text-xs rounded-full ${statusColor}`}
             aria-label={`모집 상태: ${status}`}
           >
             {status}
