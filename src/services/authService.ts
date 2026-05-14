@@ -1,6 +1,5 @@
 import { supabase } from '@/lib/supabase/client';
 
-// 일반 회원 가입
 export async function registerGeneral({
   email,
   password,
@@ -26,7 +25,6 @@ export async function registerGeneral({
   }
 }
 
-// 도장 회원 가입
 export async function registerDojang({
   email,
   password,
@@ -73,7 +71,6 @@ export async function registerDojang({
   }
 }
 
-// 사업자등록증 파일 업로드
 export async function uploadBusinessFile(file: File): Promise<string> {
   const ext = file.name.split('.').pop();
   const fileName = `${Date.now()}.${ext}`;

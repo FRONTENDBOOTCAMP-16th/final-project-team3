@@ -7,7 +7,7 @@ export async function getCompetitions(page = 0, pageSize = 10) {
   const { error, data } = await supabase
     .from('competition')
     .select('*')
-    .is('deleted_at', null) // soft delete 필터
+    .is('deleted_at', null)
     .order('event_data', { ascending: true })
     .range(from, to);
 

@@ -6,19 +6,18 @@ export function useLike(postId: string, userId: string) {
   const { data: likeCount = 0 } = useQuery({
     queryKey: ['likeCount', postId],
     queryFn: () => getLikesCount(postId),
-    enabled: !!postId, // postId 있을 때만 실행
+    enabled: !!postId,
   });
 
   const { data: isLiked = false } = useQuery({
     queryKey: ['isLiked', postId, userId],
     queryFn: () => getIsLiked(postId, userId),
-    enabled: !!userId, // userId 있을 때만 실행
+    enabled: !!userId,
   });
 
   const { mutate: toggle } = useMutation({
     mutationFn: () => toggleLike(postId, userId, isLiked),
     onSuccess: () => {
-      // 좋아요 누르면 likeCount랑 isLiked 자동 갱신
       queryClient.invalidateQueries({ queryKey: ['likeCount', postId] });
       queryClient.invalidateQueries({ queryKey: ['isLiked', postId, userId] });
     },

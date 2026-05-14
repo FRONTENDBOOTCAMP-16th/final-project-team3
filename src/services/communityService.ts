@@ -18,8 +18,8 @@ export async function getPosts(page = 0, pageSize = 10) {
   const { data, error } = await supabase
     .from('posts')
     .select('*, comments(count), profiles(nickname, avatar_url)')
-    .is('deleted_at', null) // soft delete 필터
-    .eq('status', 'published') // 발행된 게시글만
+    .is('deleted_at', null)
+    .eq('status', 'published')
     .order('created_at', { ascending: false })
     .range(from, to);
 
@@ -154,7 +154,6 @@ export async function updateComment(id: string, content: string) {
   if (error) throw error;
 }
 
-// soft delete
 export async function deleteComment(id: string) {
   const { error } = await supabase
     .from('comments')

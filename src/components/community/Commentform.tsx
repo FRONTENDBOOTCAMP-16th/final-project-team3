@@ -1,13 +1,11 @@
 'use client';
-// components/CommentForm.tsx
-// 클라이언트 컴포넌트 — 낙관적 UX + 서버 에러 처리
 
 import { useState, useRef, useTransition } from 'react';
 import { ABUSE_CONFIG } from '@/lib/CommentAbuseGuard';
 
 interface CommentFormProps {
   postId: string;
-  onCommentPosted?: () => void; // 성공 후 목록 리프레시 콜백
+  onCommentPosted?: () => void;
 }
 
 type Status =
@@ -27,7 +25,6 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
   const canSubmit =
     !isPending && coolRemainSec === 0 && !isOverLimit && charCount >= 1;
 
-  // 쿨타임 카운트다운 시작
   function startCooldown(sec: number) {
     setCoolRemainSec(sec);
     if (coolTimer.current) clearInterval(coolTimer.current);
@@ -57,7 +54,6 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
         const data = await res.json();
 
         if (!res.ok) {
-          // 쿨타임 에러면 남은 시간 파싱해서 카운트다운 표시
           if (data.code === 'COOLTIME') {
             const match = data.error.match(/(\d+)초/);
             if (match) startCooldown(Number(match[1]));
@@ -70,7 +66,6 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
         setStatus({ type: 'success' });
         onCommentPosted?.();
 
-        // 성공 후 쿨타임 카운트다운 시작
         startCooldown(ABUSE_CONFIG.COOLTIME_MS / 1000);
 
         setTimeout(() => setStatus({ type: 'idle' }), 2000);
@@ -89,7 +84,6 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      {/* 텍스트 입력 */}
       <div className="relative">
         <textarea
           value={content}
@@ -102,7 +96,7 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
                      disabled:opacity-50 disabled:bg-gray-50"
         />
-        {/* 글자 수 표시 */}
+
         <span
           className={`absolute bottom-2 right-3 text-xs
             ${isOverLimit ? 'text-red-500 font-medium' : 'text-gray-400'}`}
@@ -111,7 +105,6 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
         </span>
       </div>
 
-      {/* 에러 / 성공 메시지 */}
       {status.type === 'error' && (
         <p className="text-sm text-red-500 flex items-center gap-1">
           <span>⚠️</span> {status.message}
@@ -123,7 +116,6 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
         </p>
       )}
 
-      {/* 작성 버튼 + 쿨타임 표시 */}
       <div className="flex items-center justify-between">
         <p className="text-xs text-gray-400">
           {coolRemainSec > 0
@@ -146,7 +138,6 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
         </button>
       </div>
 
-      {/* 쿨타임 진행바 */}
       {coolRemainSec > 0 && (
         <div className="h-0.5 w-full rounded bg-gray-100 overflow-hidden">
           <div
