@@ -68,18 +68,26 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
 
   if (error) throw error;
 
-  return (data ?? []).map((post) => ({
-    id: post.id,
-    title: post.title,
-    content: post.content,
-    category: post.category,
-    image_url: post.image_url,
-    view_count: post.view_count,
-    created_at: post.created_at,
-    nickname: (post.profiles as any)?.nickname ?? '',
-    avatar_url: (post.profiles as any)?.avatar_url ?? '',
-    comment_count: (post.comments as any)?.[0]?.count ?? 0,
-  }));
+  return (data ?? []).map((post) => {
+    const profiles = post.profiles as {
+      nickname: string;
+      avatar_url: string;
+    } | null;
+    const comments = post.comments as { count: number }[] | null;
+
+    return {
+      id: post.id,
+      title: post.title,
+      content: post.content,
+      category: post.category,
+      image_url: post.image_url,
+      view_count: post.view_count,
+      created_at: post.created_at,
+      nickname: profiles?.nickname ?? '',
+      avatar_url: profiles?.avatar_url ?? '',
+      comment_count: comments?.[0]?.count ?? 0,
+    };
+  });
 }
 
 // 회원 탈퇴
