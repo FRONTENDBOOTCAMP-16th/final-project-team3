@@ -106,6 +106,12 @@
 
   /* 대회 D-day */
   --color-dday-imminent: var(--dday-imminent);
+
+  --color-belt-white: var(--belt-white);
+  --color-belt-blue: var(--belt-blue);
+  --color-belt-purple: var(--belt-purple);
+  --color-belt-brown: var(--belt-brown);
+  --color-belt-black: var(--belt-black);
 }
 
 :root {
@@ -171,6 +177,12 @@
   --state-closed-text: #ffffff;
 
   --dday-imminent: #3b82f6;
+
+  --belt-white: #e8e8e8;
+  --belt-blue: #2e6fdb;
+  --belt-purple: #7c4ddb;
+  --belt-brown: #8b5a2b;
+  --belt-black: #1a1a1a;
 }
 
 .dark {
@@ -236,6 +248,12 @@
   --state-closed-text: #ffffff;
 
   --dday-imminent: #60a5fa;
+
+  --belt-white: #e8e8e8;
+  --belt-blue: #2e6fdb;
+  --belt-purple: #7c4ddb;
+  --belt-brown: #8b5a2b;
+  --belt-black: #3a3a3a;
 }
 
 .dark input,
@@ -265,4 +283,14 @@
   outline: 2px solid var(--color-btn-focus);
   outline-offset: 2px;
   border-radius: 0.5rem;
+}
+
+.dark select {
+  color: #f9fafb;
+  background-color: var(--input-bg);
+}
+
+.dark select option {
+  background-color: var(--input-bg);
+  color: #f9fafb;
 }

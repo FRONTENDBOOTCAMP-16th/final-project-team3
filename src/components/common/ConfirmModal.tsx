@@ -25,10 +25,10 @@ const confirmButtonVariantClassMap: Record<
   NonNullable<ConfirmModalProps['confirmVariant']>,
   string
 > = {
-  default: 'bg-black text-white hover:bg-gray-700',
-  danger: 'bg-red-600 text-white hover:bg-red-700',
-  success: 'bg-green-600 text-white hover:bg-green-700',
-  warning: 'bg-amber-500 text-white hover:bg-amber-600',
+  default: 'bg-btn-focus text-btn-focus-text hover:opacity-80',
+  danger: 'bg-danger text-btn-focus-text hover:opacity-80',
+  success: 'bg-state-green-text text-white hover:opacity-80',
+  warning: 'bg-state-yellow text-white hover:opacity-80',
 };
 
 export default function ConfirmModal({
@@ -54,7 +54,7 @@ export default function ConfirmModal({
             type="button"
             onClick={onClose}
             disabled={disabled}
-            className="flex-1 rounded-lg bg-gray-100 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex-1 rounded-lg bg-btn-basic py-2 text-sm font-medium text-btn-text transition-colors hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {cancelLabel}
           </button>

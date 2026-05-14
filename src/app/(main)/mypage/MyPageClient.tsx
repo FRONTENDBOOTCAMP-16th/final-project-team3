@@ -40,9 +40,9 @@ export default function MyPageClient() {
   if (!profile) return null;
 
   return (
-    <main className="w-full min-h-screen">
+    <main className="w-full min-h-screen bg-bg-page">
       {/* 헤더 */}
-      <div className="fixed top-0 left-50 right-0 z-10 bg-white shadow-sm flex justify-center">
+      <div className="fixed top-0 left-50 right-0 z-10 bg-bg-white shadow-sm flex justify-center">
         <div className="w-full max-w-7xl px-6 py-6">
           <h1 className="text-4xl font-bold text-text-primary">마이페이지</h1>
           <p className="text-sm text-text-secondary mt-2">
@@ -71,7 +71,7 @@ export default function MyPageClient() {
               className={`px-4 py-2.5 rounded-lg text-sm font-bold transition-all shadow-sm border cursor-pointer ${
                 tab === 'posts'
                   ? 'bg-btn-focus text-btn-focus-text border-btn-focus'
-                  : 'bg-bg-white text-text-secondary border-gray-100 hover:text-text-primary'
+                  : 'bg-bg-white text-text-secondary border-border-custom hover:text-text-primary'
               }`}
             >
               게시글
@@ -81,7 +81,7 @@ export default function MyPageClient() {
               className={`px-4 py-2.5 rounded-lg text-sm font-bold transition-all shadow-sm border cursor-pointer ${
                 tab === 'settings'
                   ? 'bg-btn-focus text-btn-focus-text border-btn-focus'
-                  : 'bg-bg-white text-text-secondary border-gray-100 hover:text-text-primary'
+                  : 'bg-bg-white text-text-secondary border-border-custom hover:text-text-primary'
               }`}
             >
               설정

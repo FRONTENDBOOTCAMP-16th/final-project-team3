@@ -43,18 +43,18 @@ export function LimitedInput({
     ? 'text-red-500'
     : isWarn
       ? 'text-yellow-500'
-      : 'text-gray-400';
+      : 'text-text-secondary';
 
   const borderColor = isError
     ? 'border-red-400 focus:ring-red-400'
     : isWarn
       ? 'border-yellow-400 focus:ring-yellow-400'
-      : 'border-gray-300 focus:ring-blue-400';
+      : 'border-border focus:ring-btn-focus';
 
   return (
     <div className={className}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-text-primary mb-1">
           {label}
         </label>
       )}
@@ -70,7 +70,7 @@ export function LimitedInput({
           maxLength={maxLength}
           className={`w-full pr-20 px-3 py-2 text-sm border rounded-lg
             focus:outline-none focus:ring-1 transition-colors
-            disabled:bg-gray-50 disabled:text-gray-400
+            disabled:bg-btn-basic disabled:text-text-secondary
             ${borderColor}`}
         />
         <span

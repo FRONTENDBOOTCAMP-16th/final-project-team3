@@ -15,20 +15,13 @@ import {
 import { useRouter } from 'next/navigation';
 import { LimitedInput } from '@/components/common/LimitedInput';
 import { LimitedTextarea } from '@/components/common/LimitedTextarea';
+import { BELT_COLORS } from '@/utils/beltColors';
 
 interface SettingsTabProps {
   profile: Profile;
 }
 
 const BELTS: BeltLevel[] = ['White', 'Blue', 'Purple', 'Brown', 'Black'];
-
-const BELT_COLORS: Record<BeltLevel, string> = {
-  White: '#e8e8e8',
-  Blue: '#2e6fdb',
-  Purple: '#7c4ddb',
-  Brown: '#8b5a2b',
-  Black: '#1a1a1a',
-};
 
 export default function SettingsTab({ profile }: SettingsTabProps) {
   const [nickname, setNickname] = useState(profile.nickname ?? '');
@@ -163,7 +156,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
               벨트
             </label>
             <div
-              className={`relative flex items-center rounded-xl px-4 py-3 ${isEditing ? 'bg-white border border-btn-focus' : 'bg-input-bg'}`}
+              className={`relative flex items-center rounded-xl px-4 py-3 ${isEditing ? 'bg-bg-white border border-btn-focus' : 'bg-input-bg'}`}
             >
               <span
                 className="w-3 h-3 rounded-full mr-2 shrink-0"

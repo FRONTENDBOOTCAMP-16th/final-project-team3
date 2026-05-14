@@ -1,14 +1,6 @@
 import Image from 'next/image';
 import { Profile, BeltLevel } from '@/types/user';
-
-const BELT_COLORS: Record<BeltLevel, string> = {
-  White: '#e8e8e8',
-  Blue: '#2e6fdb',
-  Purple: '#7c4ddb',
-  Brown: '#8b5a2b',
-  Black: '#1a1a1a',
-};
-
+import { BELT_COLORS } from '@/utils/beltColors';
 interface ProfileCardProps {
   profile: Profile;
   postCount?: number;
@@ -59,7 +51,7 @@ export default function ProfileCard({
       )}
 
       {/* 게시글 / 댓글 수 */}
-      <div className="flex gap-12 pt-4 border-t border-gray-100 w-full justify-center">
+      <div className="flex gap-12 pt-4 border-t border-border w-full justify-center">
         <div className="flex flex-col items-center gap-1">
           <span className="text-2xl font-bold text-text-primary">
             {postCount}

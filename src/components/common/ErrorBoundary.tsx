@@ -25,11 +25,11 @@ export default class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         this.props.fallback ?? (
-          <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+          <div className="flex flex-col items-center justify-center py-16 text-text-secondary">
             <p className="text-sm">오류가 발생했습니다.</p>
             <button
               onClick={() => this.setState({ hasError: false })}
-              className="mt-4 px-4 py-2 text-sm border rounded-lg hover:bg-gray-100"
+              className="mt-4 px-4 py-2 text-sm border border-border rounded-lg hover:bg-btn-basic text-text-primary"
             >
               다시 시도
             </button>

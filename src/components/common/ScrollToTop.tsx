@@ -32,7 +32,7 @@ export default function ScrollToTop() {
       {!isTop && (
         <button
           onClick={scrollToTop}
-          className="w-12 h-12 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-btn-focus hover:text-btn-focus-text transition-all"
+          className="w-12 h-12 bg-btn-basic text-btn-text rounded-full flex items-center justify-center cursor-pointer hover:bg-btn-focus hover:text-btn-focus-text transition-all border border-border-custom"
         >
           <ArrowUp size={20} />
         </button>
@@ -40,7 +40,7 @@ export default function ScrollToTop() {
       {!isBottom && (
         <button
           onClick={scrollToBottom}
-          className="w-12 h-12 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-btn-focus hover:text-btn-focus-text transition-all"
+          className="w-12 h-12 bg-btn-basic text-btn-text rounded-full flex items-center justify-center cursor-pointer hover:bg-btn-focus hover:text-btn-focus-text transition-all border border-border-custom"
         >
           <ArrowDown size={20} />
         </button>
