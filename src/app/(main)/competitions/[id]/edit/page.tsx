@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { canManageContent } from '@/lib/contentPermissions';
 import { notFound, redirect } from 'next/navigation';
 import { getCompetition } from '@/services/competitionService';
 import CompetitionEditClient from '@/components/competition/CompetitionEditClient';
@@ -46,12 +47,19 @@ export default async function CompetitionEditPage({
     .eq('id', user.id)
     .single();
 
-  if (profile?.role !== 'admin' && profile?.role !== 'manager') {
-    redirect('/competitions');
-  }
-
   const competition = await getCompetition(id);
   if (!competition) notFound();
+
+  if (
+    !canManageContent({
+      currentUserId: user.id,
+      authorUserId: competition.user_id,
+      currentUserRole: profile?.role ?? null,
+      authorRole: competition.role,
+    })
+  ) {
+    redirect(`/competitions/${id}`);
+  }
 
   return <CompetitionEditClient competition={competition} />;
 }

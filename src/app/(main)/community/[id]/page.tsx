@@ -55,14 +55,30 @@ async function getInitialData(id: string) {
 
   if (!isPublicPostVisible(post)) notFound();
 
+  const currentUserRole =
+    user?.id
+      ? (
+          await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', user.id)
+            .single()
+        ).data?.role ?? null
+      : null;
+
   await incrementViewCount(id);
 
-  return { post, comments, userId: user?.id ?? null };
+  return {
+    post,
+    comments,
+    userId: user?.id ?? null,
+    currentUserRole,
+  };
 }
 
 export default async function PostDetailPage({ params }: Props) {
   const { id } = await params;
-  const { post, comments, userId } = await getInitialData(id);
+  const { post, comments, userId, currentUserRole } = await getInitialData(id);
 
   return (
     <PostDetailClient
@@ -70,6 +86,7 @@ export default async function PostDetailPage({ params }: Props) {
       initialPost={post}
       initialComments={comments}
       userId={userId}
+      currentUserRole={currentUserRole}
     />
   );
 }
