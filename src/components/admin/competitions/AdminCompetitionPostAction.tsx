@@ -1,10 +1,11 @@
 'use client';
 
 import { RotateCcw, FileText } from 'lucide-react';
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { restoreAdminCompetition } from '@/actions/admin/competitions';
+import ConfirmModal from '@/components/common/ConfirmModal';
 import type { AdminCompetitionPublishStatus } from '@/components/admin/competitions/types';
 import { ROUTES } from '@/constants/routes';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
@@ -25,6 +26,7 @@ export default function AdminCompetitionPostAction({
 }: AdminCompetitionPostActionProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   if (publishStatus === '게시중') {
     return (
@@ -42,10 +44,6 @@ export default function AdminCompetitionPostAction({
   }
 
   const handleRestore = () => {
-    const confirmed = window.confirm(`${name} 대회 게시글을 복구하시겠습니까?`);
-
-    if (!confirmed) return;
-
     startTransition(async () => {
       const result = await restoreAdminCompetition(id);
 
@@ -60,15 +58,28 @@ export default function AdminCompetitionPostAction({
   };
 
   return (
-    <button
-      type="button"
-      onClick={handleRestore}
-      aria-label={`${name} 복구`}
-      title="복구"
-      className={actionButtonClass}
-      disabled={isPending}
-    >
-      <RotateCcw size={18} className="text-blue-500" />
-    </button>
+    <>
+      <button
+        type="button"
+        onClick={() => setIsConfirmOpen(true)}
+        aria-label={`${name} 복구`}
+        title="복구"
+        className={actionButtonClass}
+        disabled={isPending}
+      >
+        <RotateCcw size={18} className="text-blue-500" />
+      </button>
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleRestore}
+        title="대회 게시글 복구 확인"
+        description={`${name} 대회 게시글을 복구하시겠습니까?`}
+        confirmLabel="복구"
+        confirmVariant="success"
+        disabled={isPending}
+      />
+    </>
   );
 }
