@@ -1,5 +1,6 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useState, useTransition } from 'react';
 import { Eye, EyeOff, Trash2, RotateCcw, FileText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -30,6 +31,7 @@ export default function AdminPostActions({
   deleted_at,
 }: AdminPostActionsProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [isPending, startTransition] = useTransition();
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
 
@@ -57,6 +59,7 @@ export default function AdminPostActions({
       }
 
       showSuccessToast(result.message, status === 'hidden' ? '👀' : '🙈');
+      await queryClient.invalidateQueries({ queryKey: ['posts'] });
       router.refresh();
     });
   };
@@ -71,6 +74,7 @@ export default function AdminPostActions({
       }
 
       showSuccessToast(result.message, '🗑️');
+      await queryClient.invalidateQueries({ queryKey: ['posts'] });
       router.refresh();
     });
   };
@@ -85,6 +89,7 @@ export default function AdminPostActions({
       }
 
       showSuccessToast(result.message, '♻️');
+      await queryClient.invalidateQueries({ queryKey: ['posts'] });
       router.refresh();
     });
   };
