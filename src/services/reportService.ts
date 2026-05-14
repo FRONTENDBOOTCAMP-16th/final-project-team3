@@ -1,4 +1,3 @@
-// services/reportService.ts
 import { supabase } from '@/lib/supabase';
 
 export type ReportReason =
@@ -30,7 +29,6 @@ export async function reportPost(
   postId: string,
   reason: ReportReason,
 ) {
-  // 중복 신고 확인
   const { data: existing } = await supabase
     .from('reports')
     .select('id')
@@ -51,7 +49,6 @@ export async function reportPost(
   const { error } = await supabase.from('reports').insert(payload);
   if (error) throw error;
 
-  // posts 테이블 report_count 증가
   await supabase.rpc('increment_report_count', { post_id: postId });
 }
 
@@ -61,7 +58,6 @@ export async function reportComment(
   postId: string,
   reason: ReportReason,
 ) {
-  // 중복 신고 확인
   const { data: existing } = await supabase
     .from('reports')
     .select('id')

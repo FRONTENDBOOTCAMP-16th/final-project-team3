@@ -1,4 +1,3 @@
-// lib/toast.ts
 import toast from 'react-hot-toast';
 
 export const showErrorToast = (message: string) => {
