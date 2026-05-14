@@ -5,8 +5,8 @@ export const showErrorToast = (message: string) => {
   toast.error(message, {
     position: 'bottom-center',
     style: {
-      background: isDark ? '#1a1a1a' : '#fff',
-      color: isDark ? '#e5e7eb' : '#111',
+      background: isDark ? '#e5e7eb' : '#111',
+      color: isDark ? '#111' : '#fff',
       fontWeight: '600',
       borderRadius: '12px',
       boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
@@ -20,8 +20,8 @@ export const showSuccessToast = (message: string, icon?: string) => {
     duration: 2000,
     position: 'bottom-center',
     style: {
-      background: isDark ? '#1a1a1a' : '#111',
-      color: '#fff',
+      background: isDark ? '#e5e7eb' : '#111',
+      color: isDark ? '#111' : '#fff',
       fontWeight: '600',
       borderRadius: '12px',
       padding: '12px 20px',
