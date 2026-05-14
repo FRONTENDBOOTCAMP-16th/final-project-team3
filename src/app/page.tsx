@@ -42,7 +42,6 @@ export default async function Home() {
       aria-label="블랙벨트 홈"
       className="min-h-screen bg-white flex flex-col items-center justify-center px-6 py-16 relative overflow-hidden"
     >
-      {/* 로고 & 타이틀 */}
       <div className="flex flex-col items-center mb-6 animate-fade-in">
         <div className="mb-4">
           <Image
@@ -81,7 +80,6 @@ export default async function Home() {
         </p>
       </div>
 
-      {/* 네비게이션 */}
       <nav aria-label="주요 메뉴">
         <div className="flex flex-wrap justify-center gap-3 mt-2">
           {NAV_LINKS.map(({ href, icon, label }) => (
@@ -97,7 +95,6 @@ export default async function Home() {
             </Link>
           ))}
 
-          {/* 로그인 상태 분기 */}
           {user ? (
             <LogoutButton />
           ) : (

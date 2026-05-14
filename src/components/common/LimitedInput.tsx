@@ -7,7 +7,7 @@ interface LimitedInputProps {
   value: string;
   onChange: (value: string) => void;
   maxLength: number;
-  warnAt?: number; // 생략 시 maxLength의 80%
+  warnAt?: number;
   placeholder?: string;
   label?: string;
   disabled?: boolean;

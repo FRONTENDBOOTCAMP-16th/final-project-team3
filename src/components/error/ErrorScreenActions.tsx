@@ -46,7 +46,6 @@ export default function ErrorScreenActions({ variant, onRetry }: Props) {
         </Link>
       </Button>
 
-      {/* 조건부 버튼 */}
       {isError ? (
         <Button onClick={onRetry} className={cn(buttonBase, buttonHover)}>
           <RefreshCw className="size-[18px]" />
