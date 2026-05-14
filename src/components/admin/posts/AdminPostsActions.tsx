@@ -59,7 +59,7 @@ export default function AdminPostActions({
       }
 
       showSuccessToast(result.message, status === 'hidden' ? '👀' : '🙈');
-      await queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.removeQueries({ queryKey: ['posts'] });
       router.refresh();
     });
   };
@@ -74,7 +74,7 @@ export default function AdminPostActions({
       }
 
       showSuccessToast(result.message, '🗑️');
-      await queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.removeQueries({ queryKey: ['posts'] });
       router.refresh();
     });
   };
@@ -89,7 +89,7 @@ export default function AdminPostActions({
       }
 
       showSuccessToast(result.message, '♻️');
-      await queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.removeQueries({ queryKey: ['posts'] });
       router.refresh();
     });
   };

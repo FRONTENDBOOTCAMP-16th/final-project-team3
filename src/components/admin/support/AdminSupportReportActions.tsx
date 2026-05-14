@@ -115,7 +115,7 @@ export default function AdminSupportReportActions({
       showSuccessToast(result.message, successIcon);
       setOpen(false);
       setConfirmAction(null);
-      await queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.removeQueries({ queryKey: ['posts'] });
       router.refresh();
     });
   };
