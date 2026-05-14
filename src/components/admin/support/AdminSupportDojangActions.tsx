@@ -1,10 +1,11 @@
 'use client';
 
 import { ExternalLink, FileText } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import AdminBadge from '@/components/admin/AdminBadge';
+import ConfirmModal from '@/components/common/ConfirmModal';
 import { DOJANG_STATUS_BADGE_VARIANT_MAP } from '@/components/admin/support/constants';
 import type { AdminDojangVerificationRow } from '@/components/admin/support/types';
 import { formatOptionalText } from '@/components/admin/support/utils';
@@ -17,6 +18,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { supabase } from '@/lib/supabase';
+import { showErrorToast, showSuccessToast } from '@/lib/toast';
 
 interface AdminSupportDojangActionsProps {
   row: AdminDojangVerificationRow;
@@ -26,6 +28,19 @@ interface DetailItemProps {
   label: string;
   value: React.ReactNode;
 }
+
+type ConfirmDojangAction =
+  | {
+      nextStatus: 'pending' | 'approved' | 'rejected';
+      title: string;
+      description: string;
+      confirmLabel: string;
+      confirmVariant: 'default' | 'danger' | 'success' | 'warning';
+      failureMessage: string;
+      successMessage: string;
+      successIcon: string;
+    }
+  | null;
 
 const actionButtonClass =
   'inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
@@ -44,30 +59,30 @@ export default function AdminSupportDojangActions({
 }: AdminSupportDojangActionsProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const [confirmAction, setConfirmAction] = useState<ConfirmDojangAction>(null);
 
   const updateDojangStatus = async (
     nextStatus: 'pending' | 'approved' | 'rejected',
-    confirmationMessage: string,
     failureMessage: string,
+    successMessage: string,
+    successIcon: string,
   ) => {
-    const confirmed = window.confirm(confirmationMessage);
+    startTransition(async () => {
+      const { error } = await supabase
+        .from('dojang')
+        .update({ dojang_status: nextStatus })
+        .eq('id', row.id);
 
-    if (!confirmed) {
-      return;
-    }
+      if (error) {
+        showErrorToast(failureMessage);
+        return;
+      }
 
-    const { error } = await supabase
-      .from('dojang')
-      .update({ dojang_status: nextStatus })
-      .eq('id', row.id);
-
-    if (error) {
-      alert(failureMessage);
-      return;
-    }
-
-    setOpen(false);
-    router.refresh();
+      showSuccessToast(successMessage, successIcon);
+      setOpen(false);
+      router.refresh();
+    });
   };
 
   return (
@@ -79,6 +94,7 @@ export default function AdminSupportDojangActions({
             aria-label={`${row.dojang_name} 상세보기`}
             title="상세보기"
             className={actionButtonClass}
+            disabled={isPending}
           >
             <FileText size={18} />
           </button>
@@ -137,12 +153,18 @@ export default function AdminSupportDojangActions({
               <button
                 type="button"
                 onClick={() =>
-                  updateDojangStatus(
-                    'approved',
-                    `${row.dojang_name} 인증 요청을 승인하시겠습니까?`,
-                    '도장 승인에 실패했습니다.',
-                  )
+                  setConfirmAction({
+                    nextStatus: 'approved',
+                    title: '도장 승인 확인',
+                    description: `${row.dojang_name} 인증 요청을 승인하시겠습니까?`,
+                    confirmLabel: '승인',
+                    confirmVariant: 'success',
+                    failureMessage: '도장 승인에 실패했습니다.',
+                    successMessage: '도장 인증 요청을 승인했습니다.',
+                    successIcon: '✅',
+                  })
                 }
+                disabled={isPending}
                 className={`${actionButtonClass} h-9 border-green-200 bg-green-50 px-3 text-green-700 hover:bg-green-100`}
               >
                 승인
@@ -150,12 +172,18 @@ export default function AdminSupportDojangActions({
               <button
                 type="button"
                 onClick={() =>
-                  updateDojangStatus(
-                    'rejected',
-                    `${row.dojang_name} 인증 요청을 거부하시겠습니까?`,
-                    '도장 거부 처리에 실패했습니다.',
-                  )
+                  setConfirmAction({
+                    nextStatus: 'rejected',
+                    title: '도장 거부 확인',
+                    description: `${row.dojang_name} 인증 요청을 거부하시겠습니까?`,
+                    confirmLabel: '거부',
+                    confirmVariant: 'danger',
+                    failureMessage: '도장 거부 처리에 실패했습니다.',
+                    successMessage: '도장 인증 요청을 거부했습니다.',
+                    successIcon: '🚫',
+                  })
                 }
+                disabled={isPending}
                 className={`${actionButtonClass} h-9 border-red-200 bg-red-50 px-3 text-red-600 hover:bg-red-100`}
               >
                 거부
@@ -168,12 +196,18 @@ export default function AdminSupportDojangActions({
               <button
                 type="button"
                 onClick={() =>
-                  updateDojangStatus(
-                    'pending',
-                    `${row.dojang_name} 인증 상태를 검토중으로 변경하시겠습니까?`,
-                    '승인 취소에 실패했습니다.',
-                  )
+                  setConfirmAction({
+                    nextStatus: 'pending',
+                    title: '승인 취소 확인',
+                    description: `${row.dojang_name} 인증 상태를 검토중으로 변경하시겠습니까?`,
+                    confirmLabel: '승인 취소',
+                    confirmVariant: 'warning',
+                    failureMessage: '승인 취소에 실패했습니다.',
+                    successMessage: '도장 인증 상태를 검토중으로 변경했습니다.',
+                    successIcon: '↩️',
+                  })
                 }
+                disabled={isPending}
                 className={`${actionButtonClass} h-9 border-amber-200 bg-amber-50 px-3 text-amber-700 hover:bg-amber-100`}
               >
                 승인 취소
@@ -181,12 +215,18 @@ export default function AdminSupportDojangActions({
               <button
                 type="button"
                 onClick={() =>
-                  updateDojangStatus(
-                    'rejected',
-                    `${row.dojang_name} 인증 상태를 거부로 변경하시겠습니까?`,
-                    '도장 거부 처리에 실패했습니다.',
-                  )
+                  setConfirmAction({
+                    nextStatus: 'rejected',
+                    title: '도장 거부 확인',
+                    description: `${row.dojang_name} 인증 상태를 거부로 변경하시겠습니까?`,
+                    confirmLabel: '거부',
+                    confirmVariant: 'danger',
+                    failureMessage: '도장 거부 처리에 실패했습니다.',
+                    successMessage: '도장 인증 상태를 거부로 변경했습니다.',
+                    successIcon: '🚫',
+                  })
                 }
+                disabled={isPending}
                 className={`${actionButtonClass} h-9 border-red-200 bg-red-50 px-3 text-red-600 hover:bg-red-100`}
               >
                 거부
@@ -199,12 +239,18 @@ export default function AdminSupportDojangActions({
               <button
                 type="button"
                 onClick={() =>
-                  updateDojangStatus(
-                    'pending',
-                    `${row.dojang_name} 인증 상태를 다시 검토중으로 변경하시겠습니까?`,
-                    '재검토 처리에 실패했습니다.',
-                  )
+                  setConfirmAction({
+                    nextStatus: 'pending',
+                    title: '재검토 확인',
+                    description: `${row.dojang_name} 인증 상태를 다시 검토중으로 변경하시겠습니까?`,
+                    confirmLabel: '재검토',
+                    confirmVariant: 'default',
+                    failureMessage: '재검토 처리에 실패했습니다.',
+                    successMessage: '도장 인증 상태를 재검토로 변경했습니다.',
+                    successIcon: '🔄',
+                  })
                 }
+                disabled={isPending}
                 className={`${actionButtonClass} h-9 border-blue-200 bg-blue-50 px-3 text-blue-700 hover:bg-blue-100`}
               >
                 재검토
@@ -212,12 +258,18 @@ export default function AdminSupportDojangActions({
               <button
                 type="button"
                 onClick={() =>
-                  updateDojangStatus(
-                    'approved',
-                    `${row.dojang_name} 인증 요청을 승인하시겠습니까?`,
-                    '도장 승인에 실패했습니다.',
-                  )
+                  setConfirmAction({
+                    nextStatus: 'approved',
+                    title: '도장 승인 확인',
+                    description: `${row.dojang_name} 인증 요청을 승인하시겠습니까?`,
+                    confirmLabel: '승인',
+                    confirmVariant: 'success',
+                    failureMessage: '도장 승인에 실패했습니다.',
+                    successMessage: '도장 인증 요청을 승인했습니다.',
+                    successIcon: '✅',
+                  })
                 }
+                disabled={isPending}
                 className={`${actionButtonClass} h-9 border-green-200 bg-green-50 px-3 text-green-700 hover:bg-green-100`}
               >
                 승인
@@ -226,6 +278,26 @@ export default function AdminSupportDojangActions({
           ) : null}
         </DialogContent>
       </Dialog>
+
+      {confirmAction ? (
+        <ConfirmModal
+          isOpen={Boolean(confirmAction)}
+          onClose={() => setConfirmAction(null)}
+          onConfirm={() =>
+            updateDojangStatus(
+              confirmAction.nextStatus,
+              confirmAction.failureMessage,
+              confirmAction.successMessage,
+              confirmAction.successIcon,
+            )
+          }
+          title={confirmAction.title}
+          description={confirmAction.description}
+          confirmLabel={confirmAction.confirmLabel}
+          confirmVariant={confirmAction.confirmVariant}
+          disabled={isPending}
+        />
+      ) : null}
     </div>
   );
 }
