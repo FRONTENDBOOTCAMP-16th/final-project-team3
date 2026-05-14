@@ -5,7 +5,7 @@ import { Mail, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 import useAuthStore from '@/store/authStore';
 
 const loginSchema = z.object({

@@ -28,6 +28,7 @@ export default function EditClient({ id, initialPost }: Props) {
     initialPost.image_url ?? null,
   );
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const isDirty =
     title !== initialPost.title ||
@@ -42,6 +43,12 @@ export default function EditClient({ id, initialPost }: Props) {
       return;
     }
 
+    if (!isDirty) {
+      showErrorToast('수정된 내용이 없습니다.');
+      return;
+    }
+
+    setIsLoading(true);
     try {
       const image_url = imageFile
         ? await uploadPostImage(imageFile)
@@ -49,9 +56,12 @@ export default function EditClient({ id, initialPost }: Props) {
       await updatePost(id, { title, content, image_url });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       showSuccessToast('게시글이 수정되었습니다.', '✅');
+      await new Promise((resolve) => setTimeout(resolve, 700));
       router.push(`/community/${id}`);
+      router.refresh(); // 추가
     } catch {
       showErrorToast('게시글 수정에 실패했습니다.');
+      setIsLoading(false);
     }
   };
 
@@ -120,6 +130,7 @@ export default function EditClient({ id, initialPost }: Props) {
         onCancel={() => router.back()}
         onSubmit={handleSubmit}
         submitLabel="수정하기"
+        isLoading={isLoading}
       />
     </div>
   );

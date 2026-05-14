@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase } from './supabase/client';
 
 export async function getLikesCount(postId: string) {
   const { count } = await supabase
@@ -9,7 +9,6 @@ export async function getLikesCount(postId: string) {
 }
 
 export async function getIsLiked(postId: string, userId: string) {
-  // likes 테이블에서 post_id랑 user_id 둘 다 일치하는 행 찾기
   const { data } = await supabase
     .from('likes')
     .select('*')

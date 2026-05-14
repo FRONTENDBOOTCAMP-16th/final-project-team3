@@ -1,17 +1,14 @@
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { Suspense } from 'react';
 import { notFound, redirect } from 'next/navigation';
 import { getCompetition } from '@/services/competitionService';
 import CompetitionEditClient from '@/components/competition/CompetitionEditClient';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Metadata } from 'next';
 
-export const dynamic = 'force-dynamic';
+type Props = { params: Promise<{ id: string }> };
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const competition = await getCompetition(id);
 
@@ -21,23 +18,13 @@ export async function generateMetadata({
   };
 }
 
-export default async function CompetitionEditPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+async function CompetitionEditContent({ params }: Props) {
   const { id } = await params;
-
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll() } },
-  );
-
+  const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
   if (!user) redirect('/login');
 
   const { data: profile } = await supabase
@@ -54,4 +41,12 @@ export default async function CompetitionEditPage({
   if (!competition) notFound();
 
   return <CompetitionEditClient competition={competition} />;
+}
+
+export default function CompetitionEditPage({ params }: Props) {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <CompetitionEditContent params={params} />
+    </Suspense>
+  );
 }

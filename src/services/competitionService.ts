@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 import type { Competition } from '@/types/competition';
 
 export async function createCompetition({
@@ -78,7 +78,7 @@ export function isPublicCompetitionVisible(
 ): competition is Competition {
   return Boolean(
     competition &&
-      (competition.deleted_at === null || competition.deleted_at === undefined),
+    (competition.deleted_at === null || competition.deleted_at === undefined),
   );
 }
 

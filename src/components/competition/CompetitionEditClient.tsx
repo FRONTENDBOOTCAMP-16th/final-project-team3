@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import {
   updateCompetition,
   uploadCompetitionImage,
@@ -63,6 +62,11 @@ export default function CompetitionEditClient({
       showErrorToast('필수 항목을 모두 입력해주세요.');
       return;
     }
+    if (!isDirty) {
+      showErrorToast('수정된 내용이 없습니다.');
+      return;
+    }
+
     setIsLoading(true);
     try {
       let image_url: string | undefined = values.preview ?? undefined;
@@ -83,15 +87,13 @@ export default function CompetitionEditClient({
       });
       showSuccessToast('대회일정이 수정되었습니다.', '✅');
       await queryClient.invalidateQueries({ queryKey: ['competition'] });
+      await new Promise((resolve) => setTimeout(resolve, 700));
       router.push(`/competitions/${competition.id}`);
     } catch {
       showErrorToast('대회 수정에 실패했습니다.');
-    } finally {
       setIsLoading(false);
     }
   };
-
-  if (isLoading) return <LoadingSpinner />;
 
   return (
     <main className="max-w-2xl mx-auto p-6" aria-label="대회 수정">
@@ -103,6 +105,7 @@ export default function CompetitionEditClient({
         onCancel={() => router.back()}
         onSubmit={handleSubmit}
         submitLabel="수정하기"
+        isLoading={isLoading}
       />
     </main>
   );

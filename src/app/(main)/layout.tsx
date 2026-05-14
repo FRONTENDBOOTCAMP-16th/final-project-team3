@@ -2,6 +2,7 @@ import ScrollToTop from '@/components/common/ScrollToTop';
 import Sidebar from '@/components/layout/Sidebar';
 import { Toaster } from 'sonner';
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'Black Belt BJJ',
@@ -22,7 +23,9 @@ export default function MainLayout({
   return (
     <div className="flex min-h-screen">
       <div className="w-50 shrink-0" />
-      <Sidebar />
+      <Suspense>
+        <Sidebar />
+      </Suspense>
       <main className="flex-1 flex justify-center min-w-0">
         <div className="w-full max-w-7xl">{children}</div>
       </main>

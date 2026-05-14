@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import SearchInput from '../common/SearchInput';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 
 interface PageheaderProps {
   title: string;
@@ -51,7 +51,6 @@ export default function Pageheader({
 
   return (
     <div className="flex flex-col gap-5 bg-white z-10 py-6">
-      {/* 타이틀 */}
       <div className="flex flex-col gap-1">
         <h1 className="text-4xl font-bold text-text-primary">{title}</h1>
         <p className="text-sm text-text-secondary" aria-label={description}>
@@ -59,7 +58,6 @@ export default function Pageheader({
         </p>
       </div>
 
-      {/* 검색창 + 글쓰기 버튼 */}
       <div className="flex items-center gap-2" role="search">
         <div className="flex-1 relative flex items-center">
           <button
@@ -102,7 +100,6 @@ export default function Pageheader({
         )}
       </div>
 
-      {/* 탭 버튼 */}
       {tabs && tabs.length > 0 && (
         <div
           className="flex gap-2"

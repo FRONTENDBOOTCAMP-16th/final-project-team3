@@ -1,8 +1,7 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 import { Profile } from '@/types/user';
 import { ProfileUpdateForm, MyPost } from '@/types/mypage';
 
-// 내 프로필 조회
 export async function fetchMyProfile(): Promise<Profile> {
   const {
     data: { user },
@@ -18,7 +17,7 @@ export async function fetchMyProfile(): Promise<Profile> {
   if (error) throw error;
   return data;
 }
-// 내 프로필 수정
+
 export async function updateMyProfile(form: ProfileUpdateForm): Promise<void> {
   const {
     data: { user },
@@ -33,7 +32,6 @@ export async function updateMyProfile(form: ProfileUpdateForm): Promise<void> {
   if (error) throw error;
 }
 
-// 내가 쓴 게시글 조회 (무한스크롤용)
 export async function fetchMyPosts(page: number): Promise<MyPost[]> {
   const {
     data: { user },
@@ -82,7 +80,6 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
   }));
 }
 
-// 회원 탈퇴
 export async function deleteMyAccount(): Promise<void> {
   const {
     data: { user },
@@ -102,7 +99,6 @@ export async function deleteMyAccount(): Promise<void> {
   await supabase.auth.signOut();
 }
 
-// 내 게시글 수 조회
 export async function fetchMyPostCount(): Promise<number> {
   const {
     data: { user },
@@ -117,7 +113,6 @@ export async function fetchMyPostCount(): Promise<number> {
   return count ?? 0;
 }
 
-// 내 댓글 수 조회
 export async function fetchMyCommentCount(): Promise<number> {
   const {
     data: { user },

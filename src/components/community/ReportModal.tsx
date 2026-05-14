@@ -57,7 +57,6 @@ export default function ReportModal({
           className="w-full sm:max-w-sm bg-white rounded-t-3xl sm:rounded-2xl shadow-xl overflow-hidden"
           style={{ animation: 'slide-up 0.2s ease-out' }}
         >
-          {/* 헤더 */}
           <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-gray-100">
             <div>
               <h2
@@ -86,7 +85,6 @@ export default function ReportModal({
             </button>
           </div>
 
-          {/* 사유 목록 */}
           <div className="px-5 py-3 space-y-1.5">
             {REPORT_REASONS.map((reason) => (
               <button
@@ -113,7 +111,6 @@ export default function ReportModal({
             ))}
           </div>
 
-          {/* 하단 버튼 */}
           <div className="px-5 pt-2 pb-6 flex gap-2">
             <button
               onClick={onClose}

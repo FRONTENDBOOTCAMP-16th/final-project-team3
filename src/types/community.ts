@@ -13,7 +13,6 @@ export interface Post {
   report_count: number;
   created_at: string;
   updated_at?: string;
-  // profiles join (flat)
   nickname?: string;
   avatar_url?: string;
   belt_level?: string;
@@ -27,7 +26,6 @@ export interface Comment {
   user_id: string;
   content: string;
   created_at: string;
-  // profiles join (flat)
   nickname?: string;
   avatar_url?: string;
   belt_level?: string;

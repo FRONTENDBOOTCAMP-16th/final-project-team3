@@ -10,11 +10,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // throw Error('test');
-
   return (
     <html lang="ko">
-      <body className="bg-bg-page min-w-[1024px]">
+      <body className="bg-bg-page min-w-5xl">
         <QueryClientProvider client={queryClient}>
           {children}
           <Toaster position="top-center" />
