@@ -15,7 +15,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLike } from '@/hooks/useLike';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ReportModal from '@/components/community/ReportModal';
-import ConfirmModal from '@/components/community/ConfirmModal';
+import ConfirmModal from '@/components/common/ConfirmModal';
 import PostDetailCard, {
   PostDetailCardData,
 } from '@/components/community/PostDetailCard';

@@ -10,7 +10,7 @@ import CompetitionDetailCard from '@/components/competition/CompetitionDetailCar
 import Image from 'next/image';
 import { deleteCompetition } from '@/services/competitionService';
 import { useState } from 'react';
-import ConfirmModal from '../community/ConfirmModal';
+import ConfirmModal from '../common/ConfirmModal';
 
 interface CompetitionDetailClientProps {
   competition: Competition;
