@@ -5,6 +5,7 @@ import { cacheTag, cacheLife } from 'next/cache';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Post } from '@/types/community';
 import type { Metadata } from 'next';
+import ErrorBoundary from '@/components/common/ErrorBoundary';
 
 export const metadata: Metadata = {
   title: '커뮤니티 | Black Belt BJJ',
@@ -47,8 +48,10 @@ async function CommunityContent() {
 
 export default function CommunityPage() {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <CommunityContent />
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={<LoadingSpinner />}>
+        <CommunityContent />
+      </Suspense>
+    </ErrorBoundary>
   );
 }

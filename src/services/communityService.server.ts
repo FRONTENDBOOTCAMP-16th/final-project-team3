@@ -1,3 +1,4 @@
+import 'server-only';
 import { supabasePublic } from '@/lib/supabase/public';
 import { cacheTag } from 'next/cache';
 import type { Post, Comment } from '@/types/community';
