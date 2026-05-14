@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+
 import AdminSupportTableClient from '@/components/admin/support/AdminSupportTableClient';
 import type {
   SupportSection,
@@ -11,7 +13,10 @@ import {
   mapReportQueryRowsToAdminReportRows,
   sortSupportReportQueryRows,
 } from '@/components/admin/support/utils';
+import { getAdminPageMetadata } from '@/constants/adminMeta';
 import { createServerSupabaseClient } from '@/lib/createServerSupabaseClient';
+
+export const metadata: Metadata = getAdminPageMetadata('support');
 
 async function getAdminSupportData() {
   const supabase = await createServerSupabaseClient();
