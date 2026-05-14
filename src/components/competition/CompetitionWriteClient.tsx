@@ -91,11 +91,13 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
         <h1 className="text-lg font-semibold">대회 추가</h1>
       </div>
 
-      <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
+      <div className="flex bg-table-top rounded-xl p-1 mb-6">
         <button
           onClick={() => setTab('write')}
           className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-            tab === 'write' ? 'bg-white text-black shadow-sm' : 'text-gray-500'
+            tab === 'write'
+              ? 'bg-bg-white text-text-primary shadow-sm'
+              : 'text-text-secondary'
           }`}
         >
           작성
@@ -104,8 +106,8 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
           onClick={() => setTab('preview')}
           className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
             tab === 'preview'
-              ? 'bg-white text-black shadow-sm'
-              : 'text-gray-500'
+              ? 'bg-bg-white text-text-primary shadow-sm'
+              : 'text-text-secondary'
           }`}
         >
           미리보기
@@ -118,7 +120,7 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
 
       {tab === 'preview' &&
         (!values.name && !values.description ? (
-          <div className="flex flex-col items-center justify-center py-16 text-gray-400 mb-6">
+          <div className="flex flex-col items-center justify-center py-16 text-text-secondary mb-6">
             <p className="text-sm">작성 탭에서 내용을 입력하면</p>
             <p className="text-sm">여기서 미리볼 수 있어요.</p>
           </div>

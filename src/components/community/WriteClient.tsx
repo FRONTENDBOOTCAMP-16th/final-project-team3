@@ -67,7 +67,7 @@ export default function WriteClient() {
         <h1 className="text-lg font-semibold mx-auto">게시글 작성</h1>
       </div>
 
-      <div role="tablist" className="flex bg-btn-basic rounded-xl p-1 mb-6">
+      <div role="tablist" className="flex bg-table-top rounded-xl p-1 mb-6">
         <button
           role="tab"
           aria-selected={tab === 'write'}

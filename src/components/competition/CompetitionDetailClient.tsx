@@ -7,10 +7,10 @@ import { getStatus } from '@/utils/formatDate';
 import { handleShare } from '@/utils/share';
 import type { Competition } from '@/types/competition';
 import CompetitionDetailCard from '@/components/competition/CompetitionDetailCard';
-import Image from 'next/image';
 import { deleteCompetition } from '@/services/competitionService';
 import { useState } from 'react';
 import ConfirmModal from '../common/ConfirmModal';
+import { Pencil, Trash2, Share2 } from 'lucide-react';
 
 interface CompetitionDetailClientProps {
   competition: Competition;
@@ -51,7 +51,7 @@ export default function CompetitionDetailClient({
       <button
         onClick={() => router.push('/competitions')}
         aria-label="대회일정 목록으로 돌아가기"
-        className="flex items-center gap-2 px-2.5 py-2 border-2 border-white bg-white text-black text-sm font-medium rounded-xl hover:bg-(--color-btn-focus) hover:text-white transition-colors duration-200 cursor-pointer"
+        className="flex items-center gap-2 px-2.5 py-2 border-2 border-border bg-bg-white text-text-primary text-sm font-medium rounded-xl hover:bg-btn-focus hover:text-btn-focus-text transition-colors duration-200 cursor-pointer"
       >
         <svg
           width="16"
@@ -93,28 +93,22 @@ export default function CompetitionDetailClient({
                   title="수정하기"
                   aria-label="대회 게시글 수정하기"
                   onClick={() => router.push(`/competitions/${id}/edit`)}
-                  className="cursor-pointer"
+                  className="p-1 cursor-pointer"
                 >
-                  <Image
-                    src="/postEdit.svg"
-                    alt=""
-                    width={30}
-                    height={30}
-                    aria-hidden="true"
+                  <Pencil
+                    size={20}
+                    className="text-text-secondary hover:text-text-primary"
                   />
                 </button>
                 <button
                   title="삭제하기"
                   aria-label="대회 게시글 삭제하기"
                   onClick={() => setDeleteModalOpen(true)}
-                  className="cursor-pointer"
+                  className="p-1 cursor-pointer"
                 >
-                  <Image
-                    src="/postDelete.svg"
-                    alt=""
-                    width={32}
-                    height={32}
-                    aria-hidden="true"
+                  <Trash2
+                    size={20}
+                    className="text-text-secondary hover:text-red-500"
                   />
                 </button>
               </>
@@ -123,14 +117,11 @@ export default function CompetitionDetailClient({
               title="공유하기"
               aria-label="대회 게시글 링크 공유하기"
               onClick={() => handleShare()}
-              className="w-8 h-8 flex items-center justify-center cursor-pointer"
+              className="p-1 cursor-pointer"
             >
-              <Image
-                src="/postShare.svg"
-                alt=""
-                width={18}
-                height={18}
-                aria-hidden="true"
+              <Share2
+                size={18}
+                className="text-text-secondary hover:text-text-primary"
               />
             </button>
           </>
@@ -151,11 +142,11 @@ export default function CompetitionDetailClient({
             : `${competition.name} 대회 신청하기`
         }
         aria-disabled={status === '모집완료'}
-        className={`block w-full py-4 text-center text-sm font-bold text-white rounded-2xl transition-all
+        className={`block w-full py-4 text-center text-sm font-bold rounded-2xl transition-all
           ${
             status === '모집완료'
-              ? 'bg-gray-400 cursor-not-allowed pointer-events-none'
-              : 'bg-[#2c2c2c] hover:bg-black'
+              ? 'bg-state-basic-bg text-text-secondary cursor-not-allowed pointer-events-none'
+              : 'bg-btn-focus text-btn-focus-text hover:opacity-80'
           }`}
       >
         {status === '모집완료' ? '모집 완료' : '대회 신청하기'}
