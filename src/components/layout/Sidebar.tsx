@@ -11,8 +11,12 @@ import {
   Users,
   HelpCircle,
   Calendar,
+  Moon,
+  Sun,
 } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { useAuth } from '../../hooks/useAuth';
+import { useState, useEffect } from 'react';
 
 const navItems = [
   { label: '커뮤니티', href: '/community', icon: '/whitebelt.svg' },
@@ -36,6 +40,13 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { user, loading, logout } = useAuth();
   const isAdmin = user?.role === 'admin';
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -121,6 +132,27 @@ export default function Sidebar() {
             })}
           </nav>
         )}
+
+        <Button
+          variant="ghost"
+          className="w-full h-10 gap-2 text-text-secondary hover:text-text-primary cursor-pointer"
+          onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+          aria-label="다크모드 전환"
+        >
+          {mounted &&
+            (resolvedTheme === 'dark' ? (
+              <Sun size={15} aria-hidden="true" />
+            ) : (
+              <Moon size={15} aria-hidden="true" />
+            ))}
+          <span className="text-sm">
+            {mounted
+              ? resolvedTheme === 'dark'
+                ? '라이트 모드'
+                : '다크 모드'
+              : '테마'}
+          </span>
+        </Button>
 
         {loading ? (
           <div className="h-12" aria-hidden="true" />
