@@ -1,10 +1,11 @@
 import { Suspense } from 'react';
-import { notFound, redirect } from 'next/navigation';
-import { getCompetition } from '@/services/competitionService';
-import CompetitionEditClient from '@/components/competition/CompetitionEditClient';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Metadata } from 'next';
+import { notFound, redirect } from 'next/navigation';
+import CompetitionEditClient from '@/components/competition/CompetitionEditClient';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { canManageContent } from '@/lib/contentPermissions';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { getCompetition } from '@/services/competitionService';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -33,12 +34,19 @@ async function CompetitionEditContent({ params }: Props) {
     .eq('id', user.id)
     .single();
 
-  if (profile?.role !== 'admin' && profile?.role !== 'manager') {
-    redirect('/competitions');
-  }
-
   const competition = await getCompetition(id);
   if (!competition) notFound();
+
+  if (
+    !canManageContent({
+      currentUserId: user.id,
+      authorUserId: competition.user_id,
+      currentUserRole: profile?.role ?? null,
+      authorRole: competition.role,
+    })
+  ) {
+    redirect(`/competitions/${id}`);
+  }
 
   return <CompetitionEditClient competition={competition} />;
 }

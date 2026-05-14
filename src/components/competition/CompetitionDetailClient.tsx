@@ -10,16 +10,22 @@ import CompetitionDetailCard from '@/components/competition/CompetitionDetailCar
 import { deleteCompetition } from '@/services/competitionService';
 import { useState } from 'react';
 import ConfirmModal from '../common/ConfirmModal';
+import {
+  canManageContent,
+  type ContentUserRole,
+} from '@/lib/contentPermissions';
 import { Pencil, Trash2, Share2 } from 'lucide-react';
 
 interface CompetitionDetailClientProps {
   competition: Competition;
   userId: string | null;
+  currentUserRole: ContentUserRole;
 }
 
 export default function CompetitionDetailClient({
   competition,
   userId,
+  currentUserRole,
 }: CompetitionDetailClientProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -27,7 +33,12 @@ export default function CompetitionDetailClient({
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const isOwner = userId === competition.user_id;
+  const canManageCompetition = canManageContent({
+    currentUserId: userId,
+    authorUserId: competition.user_id,
+    currentUserRole,
+    authorRole: competition.role,
+  });
   const status = getStatus(competition.apply_deadline);
 
   const handleDeletePost = async () => {
@@ -87,7 +98,7 @@ export default function CompetitionDetailClient({
         }}
         headerActions={
           <>
-            {isOwner && (
+            {canManageCompetition && (
               <>
                 <button
                   title="수정하기"

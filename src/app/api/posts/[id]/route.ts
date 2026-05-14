@@ -1,6 +1,18 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { canManageContent } from '@/lib/contentPermissions';
 import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
+
+interface PostPermissionRow {
+  user_id: string | null;
+  profiles: { role: string | null } | { role: string | null }[] | null;
+}
+
+function getAuthorRole(post: PostPermissionRow) {
+  return post.profiles && !Array.isArray(post.profiles)
+    ? post.profiles.role
+    : null;
+}
 
 // app/api/posts/[id]/route.ts
 export async function PUT(
@@ -18,11 +30,38 @@ export async function PUT(
 
   const { title, content, image_url } = await req.json(); // 허용 필드만 구조분해
 
+  const [{ data: profile }, { data: post, error: postError }] = await Promise.all([
+    supabase.from('profiles').select('role').eq('id', user.id).single(),
+    supabase
+      .from('posts')
+      .select('user_id, profiles(role)')
+      .eq('id', id)
+      .maybeSingle(),
+  ]);
+
+  if (postError)
+    return NextResponse.json({ error: postError.message }, { status: 500 });
+
+  if (!post)
+    return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 });
+
+  const authorRole = getAuthorRole(post as PostPermissionRow);
+
+  if (
+    !canManageContent({
+      currentUserId: user.id,
+      authorUserId: post.user_id,
+      currentUserRole: profile?.role ?? null,
+      authorRole,
+    })
+  ) {
+    return NextResponse.json({ error: '권한 없음' }, { status: 403 });
+  }
+
   const { error } = await supabase
     .from('posts')
     .update({ title, content, image_url })
-    .eq('id', id)
-    .eq('user_id', user.id);
+    .eq('id', id);
 
   if (error)
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -45,15 +84,33 @@ export async function DELETE(
   if (!user)
     return NextResponse.json({ error: '로그인 필요' }, { status: 401 });
 
-  // 권한 체크
-  const { data: post } = await supabase
-    .from('posts')
-    .select('user_id')
-    .eq('id', id)
-    .single();
+  const [{ data: profile }, { data: post, error: postError }] = await Promise.all([
+    supabase.from('profiles').select('role').eq('id', user.id).single(),
+    supabase
+      .from('posts')
+      .select('user_id, profiles(role)')
+      .eq('id', id)
+      .maybeSingle(),
+  ]);
 
-  if (post?.user_id !== user.id)
+  if (postError)
+    return NextResponse.json({ error: postError.message }, { status: 500 });
+
+  if (!post)
+    return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 });
+
+  const authorRole = getAuthorRole(post as PostPermissionRow);
+
+  if (
+    !canManageContent({
+      currentUserId: user.id,
+      authorUserId: post.user_id,
+      currentUserRole: profile?.role ?? null,
+      authorRole,
+    })
+  ) {
     return NextResponse.json({ error: '권한 없음' }, { status: 403 });
+  }
 
   const { error } = await supabase
     .from('posts')
