@@ -67,13 +67,15 @@ export default function WriteClient() {
         <h1 className="text-lg font-semibold mx-auto">게시글 작성</h1>
       </div>
 
-      <div role="tablist" className="flex bg-gray-100 rounded-xl p-1 mb-6">
+      <div role="tablist" className="flex bg-btn-basic rounded-xl p-1 mb-6">
         <button
           role="tab"
           aria-selected={tab === 'write'}
           onClick={() => setTab('write')}
           className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-            tab === 'write' ? 'bg-white text-black shadow-sm' : 'text-gray-500'
+            tab === 'write'
+              ? 'bg-bg-white text-text-primary shadow-sm'
+              : 'text-text-secondary'
           }`}
         >
           작성
@@ -84,8 +86,8 @@ export default function WriteClient() {
           onClick={() => setTab('preview')}
           className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
             tab === 'preview'
-              ? 'bg-white text-black shadow-sm'
-              : 'text-gray-500'
+              ? 'bg-bg-white text-text-primary shadow-sm'
+              : 'text-text-secondary'
           }`}
         >
           미리보기
@@ -94,8 +96,8 @@ export default function WriteClient() {
 
       {tab === 'write' && (
         <>
-          <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-            <p className="text-sm text-gray-500 mb-2">게시글 유형</p>
+          <div className="bg-bg-white rounded-xl p-4 mb-4 shadow-sm">
+            <p className="text-sm text-text-secondary mb-2">게시글 유형</p>
             {user?.role === 'manager' ? (
               <div className="flex gap-2">
                 {(['personal', 'promo'] as PostCategory[]).map((type) => (
@@ -105,8 +107,8 @@ export default function WriteClient() {
                     onClick={() => setCategory(type)}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors ${
                       category === type
-                        ? 'bg-black text-white'
-                        : 'bg-gray-100 text-gray-600'
+                        ? 'bg-btn-focus text-btn-focus-text'
+                        : 'bg-btn-basic text-btn-text'
                     }`}
                   >
                     {type === 'personal' ? '일반 게시글' : '도장 홍보'}
@@ -116,17 +118,17 @@ export default function WriteClient() {
             ) : (
               <div
                 aria-label={`게시글 유형: ${user?.role === 'admin' ? '공지' : '일반 게시글'}`}
-                className="py-2 px-3 rounded-lg text-sm font-medium bg-black text-white text-center"
+                className="py-2 px-3 rounded-lg text-sm font-medium bg-btn-focus text-btn-focus-text text-center"
               >
                 {user?.role === 'admin' ? '공지' : '일반 게시글'}
               </div>
             )}
           </div>
 
-          <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
+          <div className="bg-bg-white rounded-xl p-4 mb-4 shadow-sm">
             <label
               htmlFor="post-title"
-              className="text-sm text-gray-500 mb-2 block"
+              className="text-sm text-text-secondary mb-2 block"
             >
               제목
             </label>
@@ -147,10 +149,10 @@ export default function WriteClient() {
             }}
           />
 
-          <div className="bg-white rounded-xl p-4 mb-6 shadow-sm">
+          <div className="bg-bg-white rounded-xl p-4 mb-6 shadow-sm">
             <label
               htmlFor="post-content"
-              className="text-sm text-gray-500 mb-2 block"
+              className="text-sm text-text-secondary mb-2 block"
             >
               내용
             </label>

@@ -21,8 +21,8 @@ export default function ImageUpload({
   };
 
   return (
-    <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-      <p className="text-sm text-gray-500 mb-2">{label}</p>
+    <div className="bg-bg-white rounded-xl p-4 mb-4 shadow-sm">
+      <p className="text-sm text-text-secondary mb-2">{label}</p>
       <label className="block cursor-pointer">
         {preview ? (
           <div className="relative w-full h-48 rounded-lg overflow-hidden">
@@ -34,10 +34,14 @@ export default function ImageUpload({
             />
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-32 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+          <div className="flex flex-col items-center justify-center h-32 bg-btn-basic rounded-lg border-2 border-dashed border-border">
             <span className="text-2xl mb-1">↑</span>
-            <p className="text-sm text-gray-500">클릭하여 이미지 업로드</p>
-            <p className="text-xs text-gray-400">JPG, PNG, GIF (최대 10MB)</p>
+            <p className="text-sm text-text-secondary">
+              클릭하여 이미지 업로드
+            </p>
+            <p className="text-xs text-text-secondary">
+              JPG, PNG, GIF (최대 10MB)
+            </p>
           </div>
         )}
         <input

@@ -33,13 +33,13 @@ export default function PostDetailCard({
       ? { label: '도장', className: 'bg-blue-50 text-blue-600' }
       : post.role === 'admin'
         ? { label: '관리자', className: 'bg-red-50 text-red-600' }
-        : { label: '일반', className: 'bg-gray-100 text-gray-600' };
+        : { label: '일반', className: 'bg-btn-basic text-btn-text' };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="bg-bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
       <div className="flex items-center justify-between px-5 pt-5 pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden shrink-0">
+          <div className="w-10 h-10 rounded-full bg-btn-basic overflow-hidden shrink-0">
             {post.avatar_url && (
               <Image
                 src={post.avatar_url}
@@ -52,7 +52,7 @@ export default function PostDetailCard({
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-sm font-semibold text-gray-900">
+              <span className="text-sm font-semibold text-text-primary">
                 {post.nickname}
               </span>
               {post.role && (
@@ -63,7 +63,7 @@ export default function PostDetailCard({
                 </span>
               )}
             </div>
-            <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
+            <p className="text-xs text-text-secondary mt-0.5 flex items-center gap-1">
               <Image
                 src="/postTime.svg"
                 alt=""
@@ -77,14 +77,14 @@ export default function PostDetailCard({
           </div>
         </div>
         {headerActions && (
-          <div className="flex items-center gap-1 [&_button]:cursor-pointer">
+          <div className="flex items-center gap-3 [&_button]:cursor-pointer">
             {headerActions}
           </div>
         )}
       </div>
 
       <div className="px-5 pb-3">
-        <h1 className="text-lg font-bold text-gray-900">{post.title}</h1>
+        <h1 className="text-lg font-bold text-text-primary">{post.title}</h1>
       </div>
 
       {post.image_url && (
@@ -102,12 +102,12 @@ export default function PostDetailCard({
       )}
 
       <div className="px-5 pb-5">
-        <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">
+        <p className="text-sm text-text-primary whitespace-pre-line leading-relaxed">
           {post.content}
         </p>
       </div>
 
-      <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
+      <div className="px-5 py-3 border-t border-border flex items-center gap-4">
         <button
           onClick={onLike}
           disabled={!onLike}
@@ -117,14 +117,16 @@ export default function PostDetailCard({
         >
           <Heart
             size={16}
-            className={isLiked ? 'fill-danger text-danger' : 'text-gray-500'}
+            className={
+              isLiked ? 'fill-danger text-danger' : 'text-text-secondary'
+            }
           />
-          <span className={isLiked ? 'text-danger' : 'text-gray-500'}>
+          <span className={isLiked ? 'text-danger' : 'text-text-secondary'}>
             좋아요 {post.likeCount}
           </span>
         </button>
 
-        <div className="flex items-center gap-1.5 text-xs text-gray-500">
+        <div className="flex items-center gap-1.5 text-xs text-text-secondary">
           <Image
             src="/postComment.svg"
             alt=""
@@ -134,7 +136,9 @@ export default function PostDetailCard({
           />
           <span>댓글 {post.commentCount}</span>
         </div>
-        <span className="text-xs text-gray-500">조회 {post.view_count}</span>
+        <span className="text-xs text-text-secondary">
+          조회 {post.view_count}
+        </span>
       </div>
     </div>
   );

@@ -92,7 +92,7 @@ export default function CommunityClient({
     <main className="w-full min-h-screen" aria-label="커뮤니티 게시글 목록">
       <div
         ref={headerRef}
-        className="fixed top-0 left-50 right-0 z-10 bg-white shadow-sm flex justify-center"
+        className="fixed top-0 left-50 right-0 z-10 bg-bg-white shadow-sm flex justify-center"
       >
         <div className="w-full max-w-7xl px-6">
           <Pageheader

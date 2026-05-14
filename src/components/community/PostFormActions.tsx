@@ -18,17 +18,17 @@ export default function PostFormActions({
       <button
         onClick={onCancel}
         disabled={isLoading}
-        className="flex-1 py-3 rounded-xl bg-btn-basic border border-gray-300 text-black hover:bg-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex-1 py-3 rounded-xl bg-btn-basic border border-border text-text-primary hover:bg-btn-basic cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
         취소
       </button>
       <button
         onClick={onSubmit}
         disabled={isLoading}
-        className={`flex-3 py-3 rounded-xl text-white text-sm font-medium transition-colors duration-200 ${
+        className={`flex-3 py-3 rounded-xl text-btn-focus-text text-sm font-medium transition-colors duration-200 ${
           isLoading
-            ? 'bg-gray-400 cursor-not-allowed'
-            : 'bg-black cursor-pointer'
+            ? 'bg-btn-basic cursor-not-allowed'
+            : 'bg-btn-focus cursor-pointer'
         }`}
       >
         {isLoading ? '처리 중...' : submitLabel}

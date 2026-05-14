@@ -21,6 +21,7 @@ import PostDetailCard, {
 } from '@/components/community/PostDetailCard';
 import { timeAgo } from '@/utils/timeAgo';
 import { LimitedTextarea } from '../common/LimitedTextarea';
+import { Pencil, Trash2, Flag, Share2 } from 'lucide-react';
 
 interface Props {
   id: string;
@@ -183,7 +184,7 @@ export default function PostDetailClient({
       <button
         onClick={() => router.push('/community')}
         aria-label="커뮤니티 목록으로 이동"
-        className="flex items-center gap-2 px-2.5 py-2 border-2 border-white bg-white text-black text-sm font-medium rounded-xl hover:bg-(--color-btn-focus) hover:text-white transition-colors duration-200 cursor-pointer"
+        className="flex items-center gap-2 px-2.5 py-2 border-2 border-border bg-bg-white text-text-primary text-sm font-medium rounded-xl hover:bg-btn-focus hover:text-btn-focus-text transition-colors duration-200 cursor-pointer"
       >
         <svg
           width="16"
@@ -221,15 +222,23 @@ export default function PostDetailClient({
                   title="수정하기"
                   aria-label="게시글 수정"
                   onClick={() => router.push(`/community/${id}/edit`)}
+                  className="p-1"
                 >
-                  <Image src="/postEdit.svg" alt="" width={30} height={30} />
+                  <Pencil
+                    size={20}
+                    className="text-text-secondary hover:text-text-primary"
+                  />
                 </button>
                 <button
                   title="삭제하기"
                   aria-label="게시글 삭제"
                   onClick={() => setDeletePostModalOpen(true)}
+                  className="p-1"
                 >
-                  <Image src="/postDelete.svg" alt="" width={32} height={32} />
+                  <Trash2
+                    size={20}
+                    className="text-text-secondary hover:text-red-500"
+                  />
                 </button>
               </>
             ) : (
@@ -237,34 +246,40 @@ export default function PostDetailClient({
                 title="신고하기"
                 aria-label="게시글 신고"
                 onClick={() => setReportModalOpen(true)}
-                className="w-8 h-8 flex items-center justify-center"
+                className="p-1"
               >
-                <Image src="/postReport.svg" alt="" width={27} height={27} />
+                <Flag
+                  size={20}
+                  className="text-text-secondary hover:text-text-primary"
+                />
               </button>
             )}
             <button
               title="공유하기"
               aria-label="게시글 공유"
               onClick={handleShare}
-              className="w-8 h-8 flex items-center justify-center"
+              className="p-1"
             >
-              <Image src="/postShare.svg" alt="" width={18} height={18} />
+              <Share2
+                size={18}
+                className="text-text-secondary hover:text-text-primary"
+              />
             </button>
           </>
         }
       />
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-5 pt-5 pb-3 flex items-center gap-2 border-b border-gray-100">
+      <div className="bg-bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
+        <div className="px-5 pt-5 pb-3 flex items-center gap-2 border-b border-border">
           <Image
             src="/postComment.svg"
             alt=""
             aria-hidden="true"
             width={16}
             height={16}
-            className="opacity-40"
+            className="opacity-40 dark:invert"
           />
-          <h2 className="text-sm font-semibold text-gray-800">댓글</h2>
+          <h2 className="text-sm font-semibold text-text-primary">댓글</h2>
         </div>
 
         <div className="px-5 py-4">
@@ -294,6 +309,7 @@ export default function PostDetailClient({
                 aria-hidden="true"
                 width={30}
                 height={30}
+                className="dark:invert"
               />
             </button>
           </div>
@@ -302,9 +318,9 @@ export default function PostDetailClient({
         <div className="px-5 pb-5 space-y-4">
           {comments.map((c, index) => (
             <div key={c.id}>
-              {index > 0 && <div className="border-t border-gray-50 mb-4" />}
+              {index > 0 && <div className="border-t border-border mb-4" />}
               <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-gray-200 shrink-0 overflow-hidden">
+                <div className="w-8 h-8 rounded-full  bg-btn-basic shrink-0 overflow-hidden">
                   {c.avatar_url && (
                     <Image
                       src={c.avatar_url}
@@ -317,11 +333,11 @@ export default function PostDetailClient({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1">
-                    <span className="text-sm font-semibold text-gray-900">
+                    <span className="text-sm font-semibold text-text-primary">
                       {c.nickname}
                     </span>
                     {c.belt_level && (
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-text-secondary">
                         {c.belt_level}
                       </span>
                     )}
@@ -356,18 +372,18 @@ export default function PostDetailClient({
                       <button
                         onClick={() => setEditingCommentId(null)}
                         aria-label="댓글 수정 취소"
-                        className="text-xs text-gray-400"
+                        className="text-xs text-text-secondary"
                       >
                         취소
                       </button>
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-700 leading-relaxed">
+                    <p className="text-sm text-text-primary leading-relaxed">
                       {c.content}
                     </p>
                   )}
                   <div className="flex items-center gap-3 mt-1.5">
-                    <span className="flex items-center gap-1 text-xs text-gray-400">
+                    <span className="flex items-center gap-1 text-xs text-text-secondary">
                       <Image
                         src="/postTime.svg"
                         alt=""
@@ -386,7 +402,7 @@ export default function PostDetailClient({
                             setEditingContent(c.content);
                           }}
                           aria-label={`${c.nickname}의 댓글 수정`}
-                          className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                          className="text-xs text-text-secondary hover:text-text-primary transition-colors"
                         >
                           수정
                         </button>
@@ -405,7 +421,7 @@ export default function PostDetailClient({
             </div>
           ))}
           {comments.length === 0 && (
-            <p className="text-center text-sm text-gray-400 py-4">
+            <p className="text-center text-sm text-text-secondary py-4">
               첫 번째 댓글을 남겨보세요!
             </p>
           )}
