@@ -17,7 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 
 interface AdminSupportDojangActionsProps {
@@ -29,18 +29,16 @@ interface DetailItemProps {
   value: React.ReactNode;
 }
 
-type ConfirmDojangAction =
-  | {
-      nextStatus: 'pending' | 'approved' | 'rejected';
-      title: string;
-      description: string;
-      confirmLabel: string;
-      confirmVariant: 'default' | 'danger' | 'success' | 'warning';
-      failureMessage: string;
-      successMessage: string;
-      successIcon: string;
-    }
-  | null;
+type ConfirmDojangAction = {
+  nextStatus: 'pending' | 'approved' | 'rejected';
+  title: string;
+  description: string;
+  confirmLabel: string;
+  confirmVariant: 'default' | 'danger' | 'success' | 'warning';
+  failureMessage: string;
+  successMessage: string;
+  successIcon: string;
+} | null;
 
 const actionButtonClass =
   'inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
@@ -117,7 +115,9 @@ export default function AdminSupportDojangActions({
           </DialogHeader>
 
           <section className="space-y-3">
-            <h3 className="text-sm font-semibold text-zinc-900">도장 인증 정보</h3>
+            <h3 className="text-sm font-semibold text-zinc-900">
+              도장 인증 정보
+            </h3>
 
             <dl className="space-y-2">
               <DetailItem label="도장명" value={row.dojang_name} />

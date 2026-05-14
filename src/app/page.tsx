@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Suspense } from 'react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import LogoutButton from '@/components/layout/LogoutButton';
 import { LogIn } from 'lucide-react';
@@ -31,12 +32,23 @@ const NAV_LINKS = [
 const NAV_LINK_CLASS =
   'flex items-center gap-2 px-6 py-3 border-2 border-btn-focus text-black text-sm font-medium rounded-xl hover:bg-btn-focus hover:text-white transition-colors duration-200';
 
-export default async function Home() {
+async function AuthButton() {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
+  return user ? (
+    <LogoutButton />
+  ) : (
+    <Link href="/login" className={NAV_LINK_CLASS}>
+      <LogIn size={20} aria-hidden="true" />
+      <span>로그인</span>
+    </Link>
+  );
+}
+
+export default function Home() {
   return (
     <main
       aria-label="블랙벨트 홈"
@@ -51,7 +63,6 @@ export default async function Home() {
             height={170}
           />
         </div>
-
         <h1
           className="text-4xl font-black tracking-tight text-black text-center leading-tight"
           style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
@@ -64,7 +75,6 @@ export default async function Home() {
         >
           (Black-Belt)
         </p>
-
         <p className="text-sm text-gray-600 text-center max-w-xl leading-relaxed mt-4">
           주짓수인들을 위한 올인원 네트워크, 블랙벨트
           <br />
@@ -94,15 +104,15 @@ export default async function Home() {
               <span>{label}</span>
             </Link>
           ))}
-
-          {user ? (
-            <LogoutButton />
-          ) : (
-            <Link href="/login" className={NAV_LINK_CLASS}>
-              <LogIn size={20} aria-hidden="true" />
-              <span>로그인</span>
-            </Link>
-          )}
+          <Suspense
+            fallback={
+              <div className="flex items-center gap-2 px-6 py-3 border-2 border-btn-focus rounded-xl text-sm">
+                로딩중...
+              </div>
+            }
+          >
+            <AuthButton />
+          </Suspense>
         </div>
       </nav>
     </main>

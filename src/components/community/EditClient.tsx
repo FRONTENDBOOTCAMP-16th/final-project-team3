@@ -58,6 +58,7 @@ export default function EditClient({ id, initialPost }: Props) {
       showSuccessToast('게시글이 수정되었습니다.', '✅');
       await new Promise((resolve) => setTimeout(resolve, 700));
       router.push(`/community/${id}`);
+      router.refresh(); // 추가
     } catch {
       showErrorToast('게시글 수정에 실패했습니다.');
       setIsLoading(false);

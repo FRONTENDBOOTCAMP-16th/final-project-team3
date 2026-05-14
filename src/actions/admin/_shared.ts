@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { createServerSupabaseClient } from '@/lib/createServerSupabaseClient';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export type AdminActionResult = {
   success: boolean;
@@ -20,7 +20,7 @@ export const actionResponse = {
 };
 
 export async function requireAdminSupabaseForAction() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createSupabaseServerClient();
 
   const {
     data: { user },

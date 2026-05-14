@@ -5,13 +5,6 @@ import Pageheader from '@/components/layout/PageHeader';
 import { useDebounce } from '@/hooks/useDebounce';
 import Script from 'next/script';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-declare global {
-  interface Window {
-    naver: any;
-  }
-}
-
 interface KakaoPlace {
   id: string;
   place_name: string;
@@ -38,8 +31,8 @@ export default function DojangClient({
   const [selectedDojangId, setSelectedDojangId] = useState<string | null>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstance = useRef<any>(null);
-  const markersRef = useRef<any[]>([]);
+  const mapInstance = useRef<naver.maps.Map | undefined>(undefined);
+  const markersRef = useRef<naver.maps.Marker[]>([]);
   const cardRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
   const debouncedSearch = useDebounce(searchQuery, 500);
 
@@ -96,7 +89,10 @@ export default function DojangClient({
 
           data.documents.forEach((place: KakaoPlace) => {
             const marker = new window.naver.maps.Marker({
-              position: new window.naver.maps.LatLng(place.y, place.x),
+              position: new window.naver.maps.LatLng(
+                Number(place.y),
+                Number(place.x),
+              ),
               map: mapInstance.current,
               title: place.place_name,
             });

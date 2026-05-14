@@ -20,7 +20,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { ROUTES } from '@/constants/routes';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 
 interface AdminSupportReportActionsProps {
@@ -32,15 +32,13 @@ interface DetailItemProps {
   value: React.ReactNode;
 }
 
-type ConfirmReportAction =
-  | {
-      actionType: 'hide_post' | 'delete_post' | 'none';
-      title: string;
-      description: string;
-      confirmLabel: string;
-      confirmVariant: 'default' | 'danger' | 'success' | 'warning';
-    }
-  | null;
+type ConfirmReportAction = {
+  actionType: 'hide_post' | 'delete_post' | 'none';
+  title: string;
+  description: string;
+  confirmLabel: string;
+  confirmVariant: 'default' | 'danger' | 'success' | 'warning';
+} | null;
 
 const actionButtonClass =
   'inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
@@ -85,7 +83,10 @@ export default function AdminSupportReportActions({
   const handleProcessReport = async (
     actionType: 'hide_post' | 'delete_post' | 'none',
   ) => {
-    if ((actionType === 'hide_post' || actionType === 'delete_post') && !row.post_id) {
+    if (
+      (actionType === 'hide_post' || actionType === 'delete_post') &&
+      !row.post_id
+    ) {
       showErrorToast('연결된 게시글 정보를 찾을 수 없습니다.');
       return;
     }
@@ -153,16 +154,16 @@ export default function AdminSupportReportActions({
   return (
     <div className="flex items-center justify-center gap-2">
       {canViewDetail ? (
-          <button
-            type="button"
-            onClick={handleViewDetail}
-            aria-label={`${row.post_title} 상세보기`}
-            title="상세보기"
-            className={actionButtonClass}
-            disabled={isSubmitting}
-          >
-            <FileText size={18} />
-          </button>
+        <button
+          type="button"
+          onClick={handleViewDetail}
+          aria-label={`${row.post_title} 상세보기`}
+          title="상세보기"
+          className={actionButtonClass}
+          disabled={isSubmitting}
+        >
+          <FileText size={18} />
+        </button>
       ) : (
         <span className={actionPlaceholderClass}>-</span>
       )}
@@ -204,7 +205,9 @@ export default function AdminSupportReportActions({
                 value={
                   <AdminBadge
                     label={row.process_status}
-                    variant={REPORT_STATUS_BADGE_VARIANT_MAP[row.process_status]}
+                    variant={
+                      REPORT_STATUS_BADGE_VARIANT_MAP[row.process_status]
+                    }
                   />
                 }
               />
@@ -216,7 +219,9 @@ export default function AdminSupportReportActions({
                   ) : (
                     <AdminBadge
                       label={row.action_result}
-                      variant={REPORT_ACTION_BADGE_VARIANT_MAP[row.action_result]}
+                      variant={
+                        REPORT_ACTION_BADGE_VARIANT_MAP[row.action_result]
+                      }
                     />
                   )
                 }
