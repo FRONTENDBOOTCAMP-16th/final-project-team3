@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import ScrollToTop from '@/components/common/ScrollToTop';
 import Sidebar from '@/components/layout/Sidebar';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { ADMIN_LAYOUT_METADATA } from '@/constants/adminMeta';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
@@ -15,9 +17,7 @@ async function requireAdminAccess() {
     error: authError,
   } = await supabase.auth.getUser();
 
-  if (authError || !user) {
-    notFound();
-  }
+  if (authError || !user) notFound();
 
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
@@ -25,16 +25,10 @@ async function requireAdminAccess() {
     .eq('id', user.id)
     .single();
 
-  if (profileError || profile.role !== 'admin') {
-    notFound();
-  }
+  if (profileError || profile.role !== 'admin') notFound();
 }
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+async function AdminContent({ children }: { children: React.ReactNode }) {
   await requireAdminAccess();
 
   return (
@@ -47,5 +41,17 @@ export default async function AdminLayout({
       </main>
       <ScrollToTop />
     </div>
+  );
+}
+
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <AdminContent>{children}</AdminContent>
+    </Suspense>
   );
 }

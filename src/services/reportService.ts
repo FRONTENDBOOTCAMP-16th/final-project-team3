@@ -1,5 +1,5 @@
 // services/reportService.ts
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 
 export type ReportReason =
   | '스팸 또는 광고'

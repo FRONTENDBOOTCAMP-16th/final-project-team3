@@ -16,7 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 
 interface AdminSupportDojangActionsProps {
   row: AdminDojangVerificationRow;
@@ -101,7 +101,9 @@ export default function AdminSupportDojangActions({
           </DialogHeader>
 
           <section className="space-y-3">
-            <h3 className="text-sm font-semibold text-zinc-900">도장 인증 정보</h3>
+            <h3 className="text-sm font-semibold text-zinc-900">
+              도장 인증 정보
+            </h3>
 
             <dl className="space-y-2">
               <DetailItem label="도장명" value={row.dojang_name} />

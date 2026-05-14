@@ -1,5 +1,8 @@
+import { Suspense } from 'react';
 import CommunityClient from '@/components/community/CommunityClient';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { supabasePublic } from '@/lib/supabase/public';
+import { cacheTag, cacheLife } from 'next/cache';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Post } from '@/types/community';
 import type { Metadata } from 'next';
 
@@ -12,12 +15,12 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = 'force-dynamic';
-
 async function getPosts(): Promise<Post[]> {
-  const supabase = await createSupabaseServerClient();
+  'use cache';
+  cacheTag('posts-list');
+  cacheLife('minutes');
 
-  const { data, error } = await supabase
+  const { data, error } = await supabasePublic
     .from('posts')
     .select('*, comments(count), profiles(nickname, avatar_url)')
     .order('created_at', { ascending: false })
@@ -37,7 +40,15 @@ async function getPosts(): Promise<Post[]> {
   })) as Post[];
 }
 
-export default async function CommunityPage() {
+async function CommunityContent() {
   const initialPosts = await getPosts();
   return <CommunityClient initialPosts={initialPosts} />;
+}
+
+export default function CommunityPage() {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <CommunityContent />
+    </Suspense>
+  );
 }

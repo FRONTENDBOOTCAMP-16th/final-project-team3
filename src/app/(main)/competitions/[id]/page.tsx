@@ -1,13 +1,13 @@
+import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import {
   getCompetition,
   isPublicCompetitionVisible,
 } from '@/services/competitionService';
 import CompetitionDetailClient from '@/components/competition/CompetitionDetailClient';
-import type { Metadata } from 'next';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-
-export const dynamic = 'force-dynamic';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import type { Metadata } from 'next';
 
 export async function generateMetadata({
   params,
@@ -32,13 +32,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function CompetitionDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-
+async function CompetitionDetailContent({ id }: { id: string }) {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -57,5 +51,19 @@ export default async function CompetitionDetailPage({
       competition={competition}
       userId={user?.id ?? null}
     />
+  );
+}
+
+export default async function CompetitionDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <CompetitionDetailContent id={id} />
+    </Suspense>
   );
 }

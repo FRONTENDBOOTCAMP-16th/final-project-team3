@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 
 export async function getCompetitions(page = 0, pageSize = 10) {
   const from = page * pageSize;

@@ -1,5 +1,8 @@
+import { Suspense } from 'react';
 import DojangClient from '@/components/dojang/DojangClient';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { supabasePublic } from '@/lib/supabase/public';
+import { cacheTag, cacheLife } from 'next/cache';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -11,13 +14,24 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 3600; // 도장 정보는 자주 안 바뀌므로 1시간 캐시
+async function getDojangs() {
+  'use cache';
+  cacheTag('dojangs');
+  cacheLife('hours');
 
-export default async function DojangsPage() {
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase.from('dojang').select('name');
+  const { data } = await supabasePublic.from('dojang').select('name');
+  return data?.map((d) => d.name) ?? [];
+}
 
+async function DojangContent() {
+  const initialVerifiedDojangs = await getDojangs();
+  return <DojangClient initialVerifiedDojangs={initialVerifiedDojangs} />;
+}
+
+export default function DojangsPage() {
   return (
-    <DojangClient initialVerifiedDojangs={data?.map((d) => d.name) ?? []} />
+    <Suspense fallback={<LoadingSpinner />}>
+      <DojangContent />
+    </Suspense>
   );
 }

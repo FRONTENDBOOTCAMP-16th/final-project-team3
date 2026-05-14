@@ -19,7 +19,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { ROUTES } from '@/constants/routes';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 
 interface AdminSupportReportActionsProps {
   row: AdminReportRow;
@@ -70,7 +70,10 @@ export default function AdminSupportReportActions({
   const handleProcessReport = async (
     actionType: 'hide_post' | 'delete_post' | 'none',
   ) => {
-    if ((actionType === 'hide_post' || actionType === 'delete_post') && !row.post_id) {
+    if (
+      (actionType === 'hide_post' || actionType === 'delete_post') &&
+      !row.post_id
+    ) {
       alert('연결된 게시글 정보를 찾을 수 없습니다.');
       return;
     }
@@ -183,7 +186,9 @@ export default function AdminSupportReportActions({
                 value={
                   <AdminBadge
                     label={row.process_status}
-                    variant={REPORT_STATUS_BADGE_VARIANT_MAP[row.process_status]}
+                    variant={
+                      REPORT_STATUS_BADGE_VARIANT_MAP[row.process_status]
+                    }
                   />
                 }
               />
@@ -195,7 +200,9 @@ export default function AdminSupportReportActions({
                   ) : (
                     <AdminBadge
                       label={row.action_result}
-                      variant={REPORT_ACTION_BADGE_VARIANT_MAP[row.action_result]}
+                      variant={
+                        REPORT_ACTION_BADGE_VARIANT_MAP[row.action_result]
+                      }
                     />
                   )
                 }

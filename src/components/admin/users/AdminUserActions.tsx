@@ -22,7 +22,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 
 interface AdminUserActionsProps {
   user: AdminUserRow;
@@ -166,10 +166,7 @@ export default function AdminUserActions({ user }: AdminUserActionsProps) {
                   label="벨트"
                   value={formatOptionalText(user.belt_level)}
                 />
-                <DetailItem
-                  label="소개"
-                  value={formatOptionalText(user.bio)}
-                />
+                <DetailItem label="소개" value={formatOptionalText(user.bio)} />
               </dl>
             </section>
 
