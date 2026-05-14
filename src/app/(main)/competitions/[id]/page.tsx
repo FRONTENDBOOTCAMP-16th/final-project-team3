@@ -9,11 +9,9 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Metadata } from 'next';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}): Promise<Metadata> {
+type Props = { params: Promise<{ id: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const competition = await getCompetition(id);
 
@@ -32,7 +30,8 @@ export async function generateMetadata({
   };
 }
 
-async function CompetitionDetailContent({ id }: { id: string }) {
+async function CompetitionDetailContent({ params }: Props) {
+  const { id } = await params;
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -54,16 +53,10 @@ async function CompetitionDetailContent({ id }: { id: string }) {
   );
 }
 
-export default async function CompetitionDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-
+export default function CompetitionDetailPage({ params }: Props) {
   return (
     <Suspense fallback={<LoadingSpinner />}>
-      <CompetitionDetailContent id={id} />
+      <CompetitionDetailContent params={params} />
     </Suspense>
   );
 }
