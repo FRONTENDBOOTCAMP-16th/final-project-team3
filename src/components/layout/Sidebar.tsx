@@ -54,7 +54,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="fixed left-0 top-0 flex flex-col border-r w-50 h-screen bg-bg-white border-gray-200"
+      className="fixed left-0 top-0 flex flex-col border-r w-50 h-screen bg-bg-white border-border"
       style={{ boxShadow: '4px 0 10px rgba(0,0,0,0.08)' }}
       aria-label="사이드바 내비게이션"
     >
@@ -70,7 +70,7 @@ export default function Sidebar() {
         </div>
       </Link>
 
-      <div className="border-t border-gray-200" aria-hidden="true" />
+      <div className="border-t border-border" aria-hidden="true" />
 
       <nav
         className="flex flex-col gap-1 px-3 py-3 flex-1"
@@ -104,7 +104,7 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="border-t border-gray-200" aria-hidden="true" />
+      <div className="border-t border-border" aria-hidden="true" />
 
       <div className="px-3 py-4 flex flex-col gap-2">
         {isAdmin && (

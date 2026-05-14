@@ -37,7 +37,7 @@ export default function PostList({ userId }: PostListProps) {
 
   if (posts.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+      <div className="flex flex-col items-center justify-center py-20 text-text-secondary">
         <p className="text-lg">아직 작성한 게시글이 없어요</p>
       </div>
     );

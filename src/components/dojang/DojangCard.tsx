@@ -34,7 +34,7 @@ export default function DojangCard({
         </h3>
         {isVerified && (
           <span
-            className="shrink-0 px-2 py-0.5 text-xs text-white bg-[#155DFC] rounded-full"
+            className="shrink-0 px-2 py-0.5 text-xs text-category-text bg-category-promo-bg rounded-full"
             aria-label="인증된 도장"
           >
             ✓ 인증
