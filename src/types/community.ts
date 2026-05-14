@@ -6,6 +6,8 @@ export interface Post {
   title: string;
   content: string;
   category: PostCategory;
+  status?: 'published' | 'hidden' | string | null;
+  deleted_at?: string | null;
   image_url?: string;
   view_count: number;
   report_count: number;

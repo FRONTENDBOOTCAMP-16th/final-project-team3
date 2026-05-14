@@ -1,6 +1,7 @@
 'use client';
 
-import { Check, ExternalLink, FileText, RotateCcw, X } from 'lucide-react';
+import { ExternalLink, FileText } from 'lucide-react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import AdminBadge from '@/components/admin/AdminBadge';
@@ -27,7 +28,7 @@ interface DetailItemProps {
 }
 
 const actionButtonClass =
-  'rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
+  'inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
 
 function DetailItem({ label, value }: DetailItemProps) {
   return (
@@ -42,6 +43,7 @@ export default function AdminSupportDojangActions({
   row,
 }: AdminSupportDojangActionsProps) {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
 
   const updateDojangStatus = async (
     nextStatus: 'pending' | 'approved' | 'rejected',
@@ -64,12 +66,13 @@ export default function AdminSupportDojangActions({
       return;
     }
 
+    setOpen(false);
     router.refresh();
   };
 
   return (
-    <div className="flex items-center justify-center gap-2">
-      <Dialog>
+    <div className="flex items-center justify-center">
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <button
             type="button"
@@ -128,116 +131,101 @@ export default function AdminSupportDojangActions({
               />
             </dl>
           </section>
+
+          {row.raw_status === 'pending' ? (
+            <div className="flex flex-wrap justify-end gap-2 border-t pt-4">
+              <button
+                type="button"
+                onClick={() =>
+                  updateDojangStatus(
+                    'approved',
+                    `${row.dojang_name} 인증 요청을 승인하시겠습니까?`,
+                    '도장 승인에 실패했습니다.',
+                  )
+                }
+                className={`${actionButtonClass} h-9 border-green-200 bg-green-50 px-3 text-green-700 hover:bg-green-100`}
+              >
+                승인
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  updateDojangStatus(
+                    'rejected',
+                    `${row.dojang_name} 인증 요청을 거부하시겠습니까?`,
+                    '도장 거부 처리에 실패했습니다.',
+                  )
+                }
+                className={`${actionButtonClass} h-9 border-red-200 bg-red-50 px-3 text-red-600 hover:bg-red-100`}
+              >
+                거부
+              </button>
+            </div>
+          ) : null}
+
+          {row.raw_status === 'approved' ? (
+            <div className="flex flex-wrap justify-end gap-2 border-t pt-4">
+              <button
+                type="button"
+                onClick={() =>
+                  updateDojangStatus(
+                    'pending',
+                    `${row.dojang_name} 인증 상태를 검토중으로 변경하시겠습니까?`,
+                    '승인 취소에 실패했습니다.',
+                  )
+                }
+                className={`${actionButtonClass} h-9 border-amber-200 bg-amber-50 px-3 text-amber-700 hover:bg-amber-100`}
+              >
+                승인 취소
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  updateDojangStatus(
+                    'rejected',
+                    `${row.dojang_name} 인증 상태를 거부로 변경하시겠습니까?`,
+                    '도장 거부 처리에 실패했습니다.',
+                  )
+                }
+                className={`${actionButtonClass} h-9 border-red-200 bg-red-50 px-3 text-red-600 hover:bg-red-100`}
+              >
+                거부
+              </button>
+            </div>
+          ) : null}
+
+          {row.raw_status === 'rejected' ? (
+            <div className="flex flex-wrap justify-end gap-2 border-t pt-4">
+              <button
+                type="button"
+                onClick={() =>
+                  updateDojangStatus(
+                    'pending',
+                    `${row.dojang_name} 인증 상태를 다시 검토중으로 변경하시겠습니까?`,
+                    '재검토 처리에 실패했습니다.',
+                  )
+                }
+                className={`${actionButtonClass} h-9 border-blue-200 bg-blue-50 px-3 text-blue-700 hover:bg-blue-100`}
+              >
+                재검토
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  updateDojangStatus(
+                    'approved',
+                    `${row.dojang_name} 인증 요청을 승인하시겠습니까?`,
+                    '도장 승인에 실패했습니다.',
+                  )
+                }
+                className={`${actionButtonClass} h-9 border-green-200 bg-green-50 px-3 text-green-700 hover:bg-green-100`}
+              >
+                승인
+              </button>
+            </div>
+          ) : null}
         </DialogContent>
       </Dialog>
-
-      {row.raw_status === 'pending' ? (
-        <>
-          <button
-            type="button"
-            onClick={() =>
-              updateDojangStatus(
-                'approved',
-                `${row.dojang_name} 인증 요청을 승인하시겠습니까?`,
-                '도장 승인에 실패했습니다.',
-              )
-            }
-            aria-label={`${row.dojang_name} 승인`}
-            title="승인"
-            className={actionButtonClass}
-          >
-            <Check size={18} className="text-green-600" />
-          </button>
-
-          <button
-            type="button"
-            onClick={() =>
-              updateDojangStatus(
-                'rejected',
-                `${row.dojang_name} 인증 요청을 거부하시겠습니까?`,
-                '도장 거부 처리에 실패했습니다.',
-              )
-            }
-            aria-label={`${row.dojang_name} 거부`}
-            title="거부"
-            className={actionButtonClass}
-          >
-            <X size={18} className="text-red-500" />
-          </button>
-        </>
-      ) : null}
-
-      {row.raw_status === 'approved' ? (
-        <>
-          <button
-            type="button"
-            onClick={() =>
-              updateDojangStatus(
-                'pending',
-                `${row.dojang_name} 인증 상태를 검토중으로 변경하시겠습니까?`,
-                '승인 취소에 실패했습니다.',
-              )
-            }
-            aria-label={`${row.dojang_name} 승인취소`}
-            title="승인취소"
-            className={actionButtonClass}
-          >
-            <RotateCcw size={18} className="text-amber-600" />
-          </button>
-
-          <button
-            type="button"
-            onClick={() =>
-              updateDojangStatus(
-                'rejected',
-                `${row.dojang_name} 인증 상태를 거부로 변경하시겠습니까?`,
-                '도장 거부 처리에 실패했습니다.',
-              )
-            }
-            aria-label={`${row.dojang_name} 거부`}
-            title="거부"
-            className={actionButtonClass}
-          >
-            <X size={18} className="text-red-500" />
-          </button>
-        </>
-      ) : null}
-
-      {row.raw_status === 'rejected' ? (
-        <>
-          <button
-            type="button"
-            onClick={() =>
-              updateDojangStatus(
-                'pending',
-                `${row.dojang_name} 인증 상태를 다시 검토중으로 변경하시겠습니까?`,
-                '재검토 처리에 실패했습니다.',
-              )
-            }
-            aria-label={`${row.dojang_name} 재검토`}
-            title="재검토"
-            className={actionButtonClass}
-          >
-            <RotateCcw size={18} className="text-blue-500" />
-          </button>
-
-          <button
-            type="button"
-            onClick={() =>
-              updateDojangStatus(
-                'approved',
-                `${row.dojang_name} 인증 요청을 승인하시겠습니까?`,
-                '도장 승인에 실패했습니다.',
-              )
-            }
-            aria-label={`${row.dojang_name} 승인`}
-            title="승인"
-            className={actionButtonClass}
-          >
-            <Check size={18} className="text-green-600" />
-          </button>
-        </>
-      ) : null}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
   getPost,
   getComments,
+  isPublicPostVisible,
   incrementViewCount,
 } from '@/services/communityService';
 import { notFound } from 'next/navigation';
@@ -16,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const post = await getPost(id);
 
-  if (!post) {
+  if (!isPublicPostVisible(post)) {
     return {
       title: '게시글을 찾을 수 없습니다 | Black Belt BJJ',
       description: '존재하지 않거나 삭제된 게시글입니다.',
@@ -52,7 +53,7 @@ async function getInitialData(id: string) {
     supabase.auth.getUser(),
   ]);
 
-  if (!post) notFound();
+  if (!isPublicPostVisible(post)) notFound();
 
   await incrementViewCount(id);
 
