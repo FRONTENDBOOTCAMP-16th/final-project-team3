@@ -1,10 +1,11 @@
 'use client';
 
 import { FileText, ShieldAlert } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import AdminBadge from '@/components/admin/AdminBadge';
+import ConfirmModal from '@/components/common/ConfirmModal';
 import {
   REPORT_ACTION_BADGE_VARIANT_MAP,
   REPORT_STATUS_BADGE_VARIANT_MAP,
@@ -19,7 +20,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { ROUTES } from '@/constants/routes';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
+import { showErrorToast, showSuccessToast } from '@/lib/toast';
 
 interface AdminSupportReportActionsProps {
   row: AdminReportRow;
@@ -30,8 +32,18 @@ interface DetailItemProps {
   value: React.ReactNode;
 }
 
+type ConfirmReportAction = {
+  actionType: 'hide_post' | 'delete_post' | 'none';
+  title: string;
+  description: string;
+  confirmLabel: string;
+  confirmVariant: 'default' | 'danger' | 'success' | 'warning';
+} | null;
+
 const actionButtonClass =
-  'rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
+  'inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
+const actionPlaceholderClass =
+  'inline-flex h-[34px] w-[34px] items-center justify-center text-sm text-zinc-400';
 
 function DetailItem({ label, value }: DetailItemProps) {
   return (
@@ -47,12 +59,17 @@ export default function AdminSupportReportActions({
 }: AdminSupportReportActionsProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [isSubmitting, startTransition] = useTransition();
+  const [confirmAction, setConfirmAction] = useState<ConfirmReportAction>(null);
 
-  const isPending = row.raw_status === 'pending' || row.raw_status === null;
+  const isProcessPending =
+    row.raw_status === 'pending' || row.raw_status === null;
+  const canViewDetail =
+    Boolean(row.post_id) && row.post_status_label === '게시중';
 
   const handleViewDetail = () => {
-    if (!row.post_id) {
-      alert('연결된 게시글 정보를 찾을 수 없습니다.');
+    if (!canViewDetail || !row.post_id) {
+      showErrorToast('연결된 게시글 정보를 찾을 수 없습니다.');
       return;
     }
 
@@ -66,90 +83,103 @@ export default function AdminSupportReportActions({
   const handleProcessReport = async (
     actionType: 'hide_post' | 'delete_post' | 'none',
   ) => {
-    if ((actionType === 'hide_post' || actionType === 'delete_post') && !row.post_id) {
-      alert('연결된 게시글 정보를 찾을 수 없습니다.');
+    if (
+      (actionType === 'hide_post' || actionType === 'delete_post') &&
+      !row.post_id
+    ) {
+      showErrorToast('연결된 게시글 정보를 찾을 수 없습니다.');
       return;
     }
 
-    const confirmationMessage =
-      actionType === 'hide_post'
-        ? `${row.post_title} 게시글을 숨김 처리하시겠습니까?`
-        : actionType === 'delete_post'
-          ? `${row.post_title} 게시글을 삭제 처리하시겠습니까?`
-          : `${row.post_title} 신고를 문제없음으로 처리하시겠습니까?`;
+    startTransition(async () => {
+      if (actionType === 'hide_post' && row.post_id) {
+        const { error } = await supabase
+          .from('posts')
+          .update({ status: 'hidden' })
+          .eq('id', row.post_id);
 
-    const confirmed = window.confirm(confirmationMessage);
+        if (error) {
+          showErrorToast('게시글 숨김 처리에 실패했습니다.');
+          return;
+        }
+      }
 
-    if (!confirmed) {
-      return;
-    }
+      if (actionType === 'delete_post' && row.post_id) {
+        const { error } = await supabase
+          .from('posts')
+          .update({ deleted_at: new Date().toISOString() })
+          .eq('id', row.post_id);
 
-    if (actionType === 'hide_post' && row.post_id) {
+        if (error) {
+          showErrorToast('게시글 삭제 처리에 실패했습니다.');
+          return;
+        }
+      }
+
+      const nextReportStatus = actionType === 'none' ? 'ignored' : 'resolved';
       const { error } = await supabase
-        .from('posts')
-        .update({ status: 'hidden' })
-        .eq('id', row.post_id);
+        .from('reports')
+        .update({
+          reports_status: nextReportStatus,
+          action_type: actionType,
+          handled_at: new Date().toISOString(),
+        })
+        .eq('id', row.id);
 
       if (error) {
-        alert('게시글 숨김 처리에 실패했습니다.');
+        showErrorToast('신고 처리 상태 저장에 실패했습니다.');
         return;
       }
-    }
 
-    if (actionType === 'delete_post' && row.post_id) {
-      const { error } = await supabase
-        .from('posts')
-        .update({ deleted_at: new Date().toISOString() })
-        .eq('id', row.post_id);
+      const successMessage =
+        actionType === 'hide_post'
+          ? '신고 내역을 게시글 숨김으로 처리했습니다.'
+          : actionType === 'delete_post'
+            ? '신고 내역을 게시글 삭제로 처리했습니다.'
+            : '신고 내역을 문제없음으로 처리했습니다.';
 
-      if (error) {
-        alert('게시글 삭제 처리에 실패했습니다.');
-        return;
-      }
-    }
+      const successIcon =
+        actionType === 'hide_post'
+          ? '🙈'
+          : actionType === 'delete_post'
+            ? '🗑️'
+            : '✅';
 
-    const nextReportStatus = actionType === 'none' ? 'ignored' : 'resolved';
-    const { error } = await supabase
-      .from('reports')
-      .update({
-        reports_status: nextReportStatus,
-        action_type: actionType,
-        handled_at: new Date().toISOString(),
-      })
-      .eq('id', row.id);
-
-    if (error) {
-      alert('신고 처리 상태 저장에 실패했습니다.');
-      return;
-    }
-
-    setOpen(false);
-    router.refresh();
+      showSuccessToast(successMessage, successIcon);
+      setOpen(false);
+      router.refresh();
+    });
   };
 
   return (
     <div className="flex items-center justify-center gap-2">
-      <button
-        type="button"
-        onClick={handleViewDetail}
-        aria-label={`${row.post_title} 상세보기`}
-        title="상세보기"
-        className={actionButtonClass}
-      >
-        <FileText size={18} />
-      </button>
+      {canViewDetail ? (
+        <button
+          type="button"
+          onClick={handleViewDetail}
+          aria-label={`${row.post_title} 상세보기`}
+          title="상세보기"
+          className={actionButtonClass}
+          disabled={isSubmitting}
+        >
+          <FileText size={18} />
+        </button>
+      ) : (
+        <span className={actionPlaceholderClass}>-</span>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <button
             type="button"
-            aria-label={`${row.post_title} ${isPending ? '처리하기' : '처리내역'}`}
-            title={isPending ? '처리하기' : '처리내역'}
+            aria-label={`${row.post_title} ${isProcessPending ? '처리하기' : '처리내역'}`}
+            title={isProcessPending ? '처리하기' : '처리내역'}
             className={actionButtonClass}
+            disabled={isSubmitting}
           >
             <ShieldAlert
               size={18}
-              className={isPending ? 'text-red-500' : 'text-blue-500'}
+              className={isProcessPending ? 'text-red-500' : 'text-blue-500'}
             />
           </button>
         </DialogTrigger>
@@ -175,42 +205,77 @@ export default function AdminSupportReportActions({
                 value={
                   <AdminBadge
                     label={row.process_status}
-                    variant={REPORT_STATUS_BADGE_VARIANT_MAP[row.process_status]}
+                    variant={
+                      REPORT_STATUS_BADGE_VARIANT_MAP[row.process_status]
+                    }
                   />
                 }
               />
               <DetailItem
                 label="처리 결과"
                 value={
-                  <AdminBadge
-                    label={row.action_result}
-                    variant={REPORT_ACTION_BADGE_VARIANT_MAP[row.action_result]}
-                  />
+                  row.action_result === '-' ? (
+                    <span className="text-sm text-zinc-400">-</span>
+                  ) : (
+                    <AdminBadge
+                      label={row.action_result}
+                      variant={
+                        REPORT_ACTION_BADGE_VARIANT_MAP[row.action_result]
+                      }
+                    />
+                  )
                 }
               />
               <DetailItem label="처리 날짜" value={row.handled_at} />
             </dl>
           </section>
 
-          {isPending ? (
+          {isProcessPending ? (
             <div className="flex flex-wrap justify-end gap-2 border-t pt-4">
               <button
                 type="button"
-                onClick={() => handleProcessReport('none')}
+                onClick={() =>
+                  setConfirmAction({
+                    actionType: 'none',
+                    title: '문제없음 처리 확인',
+                    description: `${row.post_title} 신고를 문제없음으로 처리하시겠습니까?`,
+                    confirmLabel: '문제 없음 처리',
+                    confirmVariant: 'default',
+                  })
+                }
+                disabled={isSubmitting}
                 className={`${actionButtonClass} h-9 border-zinc-200 bg-zinc-50 px-3 text-zinc-700 hover:bg-zinc-100`}
               >
                 문제 없음 처리
               </button>
               <button
                 type="button"
-                onClick={() => handleProcessReport('hide_post')}
+                onClick={() =>
+                  setConfirmAction({
+                    actionType: 'hide_post',
+                    title: '게시글 숨김 처리 확인',
+                    description: `${row.post_title} 게시글을 숨김 처리하시겠습니까?`,
+                    confirmLabel: '게시글 숨김',
+                    confirmVariant: 'warning',
+                  })
+                }
+                disabled={isSubmitting}
                 className={`${actionButtonClass} h-9 border-blue-200 bg-blue-50 px-3 text-blue-700 hover:bg-blue-100`}
               >
                 게시글 숨김 처리
               </button>
               <button
                 type="button"
-                onClick={() => handleProcessReport('delete_post')}
+                onClick={() =>
+                  setConfirmAction({
+                    actionType: 'delete_post',
+                    title: '게시글 삭제 처리 확인',
+                    description: `${row.post_title} 게시글을 삭제 처리하시겠습니까?`,
+                    confirmLabel: '게시글 삭제',
+                    confirmVariant: 'danger',
+                  })
+                }
+                disabled={isSubmitting}
                 className={`${actionButtonClass} h-9 border-red-200 bg-red-50 px-3 text-red-600 hover:bg-red-100`}
               >
                 게시글 삭제 처리
@@ -219,6 +284,19 @@ export default function AdminSupportReportActions({
           ) : null}
         </DialogContent>
       </Dialog>
+
+      {confirmAction ? (
+        <ConfirmModal
+          isOpen={Boolean(confirmAction)}
+          onClose={() => setConfirmAction(null)}
+          onConfirm={() => handleProcessReport(confirmAction.actionType)}
+          title={confirmAction.title}
+          description={confirmAction.description}
+          confirmLabel={confirmAction.confirmLabel}
+          confirmVariant={confirmAction.confirmVariant}
+          disabled={isSubmitting}
+        />
+      ) : null}
     </div>
   );
 }

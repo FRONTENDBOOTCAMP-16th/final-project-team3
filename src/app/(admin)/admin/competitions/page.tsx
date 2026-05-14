@@ -1,10 +1,15 @@
+import type { Metadata } from 'next';
+
 import AdminCompetitionsClient from '@/components/admin/competitions/AdminCompetitionsClient';
 import type { CompetitionQueryRow } from '@/components/admin/competitions/types';
 import { mapCompetitionQueryRowsToAdminCompetitionRows } from '@/components/admin/competitions/utils';
-import { createServerSupabaseClient } from '@/lib/createServerSupabaseClient';
+import { getAdminPageMetadata } from '@/constants/adminMeta';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+
+export const metadata: Metadata = getAdminPageMetadata('competitions');
 
 async function getAdminCompetitions() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createSupabaseServerClient();
 
   const { data, error } = await supabase
     .from('competition')
@@ -16,7 +21,7 @@ async function getAdminCompetitions() {
       event_data,
       apply_deadline,
       created_at,
-      apply_url
+      deleted_at
     `,
     )
     .order('created_at', { ascending: false });

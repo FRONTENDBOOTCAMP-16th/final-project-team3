@@ -1,14 +1,14 @@
-export const dynamic = 'force-dynamic';
-
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import PostDetailClient from '@/components/community/PostDetailClient';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
-  getPost,
-  getComments,
+  isPublicPostVisible,
   incrementViewCount,
 } from '@/services/communityService';
+import { getPost, getComments } from '@/services/communityService.server';
 import { notFound } from 'next/navigation';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const post = await getPost(id);
 
-  if (!post) {
+  if (!isPublicPostVisible(post)) {
     return {
       title: '게시글을 찾을 수 없습니다 | Black Belt BJJ',
       description: '존재하지 않거나 삭제된 게시글입니다.',
@@ -37,7 +37,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-async function getInitialData(id: string) {
+async function PostDetailContent({ params }: Props) {
+  const { id } = await params;
   const supabase = await createSupabaseServerClient();
 
   const [
@@ -52,23 +53,24 @@ async function getInitialData(id: string) {
     supabase.auth.getUser(),
   ]);
 
-  if (!post) notFound();
+  if (!isPublicPostVisible(post)) notFound();
 
   await incrementViewCount(id);
-
-  return { post, comments, userId: user?.id ?? null };
-}
-
-export default async function PostDetailPage({ params }: Props) {
-  const { id } = await params;
-  const { post, comments, userId } = await getInitialData(id);
 
   return (
     <PostDetailClient
       id={id}
       initialPost={post}
       initialComments={comments}
-      userId={userId}
+      userId={user?.id ?? null}
     />
+  );
+}
+
+export default function PostDetailPage({ params }: Props) {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <PostDetailContent params={params} />
+    </Suspense>
   );
 }

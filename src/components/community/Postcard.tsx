@@ -47,7 +47,6 @@ export default function PostCard({ post, userId }: PostCardProps) {
     <Link
       href={`/community/${post.id}`}
       className="block w-full"
-      target="_blank"
       rel="noopener noreferrer"
       aria-label={`${post.title} 게시글 상세보기`}
     >
@@ -55,7 +54,6 @@ export default function PostCard({ post, userId }: PostCardProps) {
         className="rounded-lg overflow-hidden border bg-bg-white border-gray-200 flex flex-col h-97.5 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
         aria-label={`${post.nickname}의 게시글: ${post.title}`}
       >
-        {/* 이미지 영역 */}
         <div className="relative w-full h-50 bg-btn-basic shrink-0">
           {post.image_url ? (
             <Image
@@ -84,7 +82,6 @@ export default function PostCard({ post, userId }: PostCardProps) {
           </span>
         </div>
 
-        {/* 카드 내용 */}
         <div className="p-4 flex flex-col gap-2 flex-1 overflow-hidden">
           <h2 className="font-bold text-base line-clamp-1">{post.title}</h2>
           <p className="text-sm text-text-secondary line-clamp-2">
@@ -93,7 +90,6 @@ export default function PostCard({ post, userId }: PostCardProps) {
 
           <div className="flex-1" />
 
-          {/* 날짜 + 조회수 + 댓글수 */}
           <div
             className="flex gap-3 text-xs text-text-secondary items-center"
             role="group"
@@ -116,7 +112,6 @@ export default function PostCard({ post, userId }: PostCardProps) {
 
           <div className="border-t border-gray-200" />
 
-          {/* 프로필 + 좋아요 */}
           <div className="flex items-center justify-between pt-2">
             <div
               className="flex items-center gap-2"
@@ -134,7 +129,6 @@ export default function PostCard({ post, userId }: PostCardProps) {
               <span className="text-sm">{post.nickname}</span>
             </div>
 
-            {/* 좋아요 버튼 */}
             <div className="w-12 flex items-center justify-end">
               <button
                 onClick={handleLike}

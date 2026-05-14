@@ -1,5 +1,5 @@
 import type { AdminDashboardData } from '@/components/admin/dashboard/types';
-import { createServerSupabaseClient } from '@/lib/createServerSupabaseClient';
+import { createSupabaseServerClient } from './supabase/server';
 
 function getTodayStartIso() {
   const todayStart = new Date();
@@ -14,7 +14,7 @@ function normalizeCount(count: number | null) {
 }
 
 export async function getAdminDashboardData(): Promise<AdminDashboardData> {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createSupabaseServerClient();
 
   const todayStartIso = getTodayStartIso();
 

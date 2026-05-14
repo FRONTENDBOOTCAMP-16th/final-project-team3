@@ -61,7 +61,6 @@ export default function Sidebar() {
 
       <div className="border-t border-gray-200" aria-hidden="true" />
 
-      {/* 공통 네비게이션 */}
       <nav
         className="flex flex-col gap-1 px-3 py-3 flex-1"
         aria-label="주요 메뉴"
@@ -96,9 +95,7 @@ export default function Sidebar() {
 
       <div className="border-t border-gray-200" aria-hidden="true" />
 
-      {/* 푸터 */}
       <div className="px-3 py-4 flex flex-col gap-2">
-        {/* 관리자 전용 섹션 */}
         {isAdmin && (
           <nav className="flex flex-col gap-1 mb-2" aria-label="관리자 메뉴">
             {adminNavItems.map((item) => {
@@ -125,7 +122,6 @@ export default function Sidebar() {
           </nav>
         )}
 
-        {/* 로그인 상태 분기 */}
         {loading ? (
           <div className="h-12" aria-hidden="true" />
         ) : user ? (

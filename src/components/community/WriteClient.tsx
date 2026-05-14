@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PostCategory } from '@/types/community';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { createPost, uploadPostImage } from '@/services/communityService';
 import { useAuth } from '@/hooks/useAuth';
 import { useQueryClient } from '@tanstack/react-query';
@@ -13,6 +12,7 @@ import PostFormActions from '@/components/community/PostFormActions';
 import PostDetailCard from '@/components/community/PostDetailCard';
 import { LimitedInput } from '../common/LimitedInput';
 import { LimitedTextarea } from '../common/LimitedTextarea';
+import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 
 export default function WriteClient() {
   const router = useRouter();
@@ -25,6 +25,11 @@ export default function WriteClient() {
   const { user } = useAuth();
   const [category, setCategory] = useState<PostCategory>('personal');
   const queryClient = useQueryClient();
+
+  const isDirty =
+    title.trim() !== '' || content.trim() !== '' || imageFile !== null;
+
+  useBeforeUnload(isDirty);
 
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {
@@ -48,15 +53,13 @@ export default function WriteClient() {
       });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       showSuccessToast('게시글이 업로드되었습니다.', '📝');
+      await new Promise((resolve) => setTimeout(resolve, 700));
       router.push('/community');
     } catch {
       showErrorToast('게시글 작성에 실패했습니다.');
-    } finally {
       setIsLoading(false);
     }
   };
-
-  if (isLoading) return <LoadingSpinner />;
 
   return (
     <div className="max-w-5xl mx-auto p-6">
@@ -192,6 +195,7 @@ export default function WriteClient() {
         onCancel={() => router.back()}
         onSubmit={handleSubmit}
         submitLabel="작성하기"
+        isLoading={isLoading}
       />
     </div>
   );

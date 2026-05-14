@@ -48,7 +48,7 @@ export function LimitedTextarea({
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (!allowNewline && e.key === 'Enter') e.preventDefault();
-      onKeyDown?.(e); // 외부 onKeyDown 실행
+      onKeyDown?.(e);
     },
     [allowNewline, onKeyDown],
   );

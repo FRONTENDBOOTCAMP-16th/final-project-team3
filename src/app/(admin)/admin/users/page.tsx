@@ -1,13 +1,18 @@
+import type { Metadata } from 'next';
+
 import AdminUsersClient from '@/components/admin/users/AdminUsersClient';
 import type {
   DojangQueryRow,
   ProfileQueryRow,
 } from '@/components/admin/users/types';
 import { mapProfilesToAdminUserRows } from '@/components/admin/users/utils';
-import { createServerSupabaseClient } from '@/lib/createServerSupabaseClient';
+import { getAdminPageMetadata } from '@/constants/adminMeta';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+
+export const metadata: Metadata = getAdminPageMetadata('users');
 
 async function getAdminUsers() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createSupabaseServerClient();
 
   const [profilesResult, dojangsResult] = await Promise.all([
     supabase

@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 import type { Competition } from '@/types/competition';
 
 export async function createCompetition({
@@ -10,6 +10,7 @@ export async function createCompetition({
   description,
   image_url,
   user_id,
+  participants,
 }: {
   name: string;
   location: string;
@@ -31,7 +32,8 @@ export async function createCompetition({
       apply_url,
       description,
       image_url,
-      user_id, // 추가
+      user_id,
+      participants,
     })
     .select()
     .single();
@@ -52,13 +54,15 @@ export async function uploadCompetitionImage(file: File): Promise<string> {
   return data.publicUrl;
 }
 
-export async function getCompetition(id: string): Promise<Competition> {
+export async function getCompetition(id: string): Promise<Competition | null> {
   const { data, error } = await supabase
     .from('competition')
     .select('*, profiles(nickname, avatar_url, role)')
     .eq('id', id)
-    .single();
+    .maybeSingle();
+
   if (error) throw error;
+  if (!data) return null;
 
   return {
     ...data,
@@ -68,6 +72,16 @@ export async function getCompetition(id: string): Promise<Competition> {
     profiles: undefined,
   } as Competition;
 }
+
+export function isPublicCompetitionVisible(
+  competition: Competition | null | undefined,
+): competition is Competition {
+  return Boolean(
+    competition &&
+    (competition.deleted_at === null || competition.deleted_at === undefined),
+  );
+}
+
 export async function updateCompetition(
   id: string,
   fields: {
@@ -84,6 +98,15 @@ export async function updateCompetition(
   const { error } = await supabase
     .from('competition')
     .update(fields)
+    .eq('id', id);
+  if (error) throw error;
+}
+
+// soft delete
+export async function deleteCompetition(id: string) {
+  const { error } = await supabase
+    .from('competition')
+    .update({ deleted_at: new Date().toISOString() })
     .eq('id', id);
   if (error) throw error;
 }

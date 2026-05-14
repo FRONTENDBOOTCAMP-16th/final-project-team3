@@ -2,8 +2,10 @@
 
 import { ExternalLink, FileText, Power, PowerOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useState, useTransition } from 'react';
 
 import AdminBadge from '@/components/admin/AdminBadge';
+import ConfirmModal from '@/components/common/ConfirmModal';
 import {
   ACCOUNT_STATUS_BADGE_VARIANT_MAP,
   DOJANG_APPROVAL_BADGE_VARIANT_MAP,
@@ -22,7 +24,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
+import { showErrorToast, showSuccessToast } from '@/lib/toast';
 
 interface AdminUserActionsProps {
   user: AdminUserRow;
@@ -34,7 +37,7 @@ interface DetailItemProps {
 }
 
 const actionButtonClass =
-  'rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
+  'inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
 
 function DetailItem({ label, value }: DetailItemProps) {
   return (
@@ -77,30 +80,32 @@ function UserAvatar({
 
 export default function AdminUserActions({ user }: AdminUserActionsProps) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const isActive = user.account_status === '활성';
   const nextAccountLabel = isActive ? '비활성' : '활성';
 
-  const handleToggleAccountStatus = async () => {
-    const confirmed = window.confirm(
-      `${user.nickname} 계정을 ${nextAccountLabel} 상태로 변경하시겠습니까?`,
-    );
+  const handleToggleAccountStatus = () => {
+    startTransition(async () => {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          account_status: getNextAccountStatus(user.raw_account_status),
+        })
+        .eq('id', user.id);
 
-    if (!confirmed) {
-      return;
-    }
+      if (error) {
+        showErrorToast('계정 상태 변경에 실패했습니다.');
+        return;
+      }
 
-    const { error } = await supabase
-      .from('profiles')
-      .update({ account_status: getNextAccountStatus(user.raw_account_status) })
-      .eq('id', user.id);
-
-    if (error) {
-      alert('계정 상태 변경에 실패했습니다.');
-      return;
-    }
-
-    router.refresh();
+      showSuccessToast(
+        `${user.nickname} 계정을 ${nextAccountLabel} 상태로 변경했습니다.`,
+        isActive ? '🔒' : '🔓',
+      );
+      router.refresh();
+    });
   };
 
   return (
@@ -112,6 +117,7 @@ export default function AdminUserActions({ user }: AdminUserActionsProps) {
             aria-label={`${user.nickname} 상세 정보 보기`}
             title="상세보기"
             className={actionButtonClass}
+            disabled={isPending}
           >
             <FileText size={18} />
           </button>
@@ -166,10 +172,7 @@ export default function AdminUserActions({ user }: AdminUserActionsProps) {
                   label="벨트"
                   value={formatOptionalText(user.belt_level)}
                 />
-                <DetailItem
-                  label="소개"
-                  value={formatOptionalText(user.bio)}
-                />
+                <DetailItem label="소개" value={formatOptionalText(user.bio)} />
               </dl>
             </section>
 
@@ -240,10 +243,11 @@ export default function AdminUserActions({ user }: AdminUserActionsProps) {
 
       <button
         type="button"
-        onClick={handleToggleAccountStatus}
+        onClick={() => setIsConfirmOpen(true)}
         aria-label={`${user.nickname} 계정 ${isActive ? '비활성화' : '활성화'}`}
         title={isActive ? '비활성화' : '활성화'}
         className={actionButtonClass}
+        disabled={isPending}
       >
         {isActive ? (
           <PowerOff size={18} className="text-red-500" />
@@ -251,6 +255,17 @@ export default function AdminUserActions({ user }: AdminUserActionsProps) {
           <Power size={18} className="text-green-600" />
         )}
       </button>
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleToggleAccountStatus}
+        title="계정 상태 변경 확인"
+        description={`${user.nickname} 계정을 ${nextAccountLabel} 상태로 변경하시겠습니까?`}
+        confirmLabel={nextAccountLabel}
+        confirmVariant={isActive ? 'warning' : 'success'}
+        disabled={isPending}
+      />
     </div>
   );
 }

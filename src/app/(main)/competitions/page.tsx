@@ -1,6 +1,8 @@
+import { Suspense } from 'react';
 import CompetitionClient from '@/components/competition/CompetitionClient';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { supabasePublic } from '@/lib/supabase/public';
+import { cacheTag, cacheLife } from 'next/cache';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -12,36 +14,29 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = 'force-dynamic';
+async function getCompetitions() {
+  'use cache';
+  cacheTag('competitions');
+  cacheLife('hours');
 
-export default async function CompetitionsPage() {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-      },
-    },
-  );
-
-  const { data: initialCompetitions } = await supabase
+  const { data } = await supabasePublic
     .from('competition')
-    .select('*') // comments(count) 제거
+    .select('*')
     .order('event_data', { ascending: true })
     .range(0, 9);
 
+  return data?.map((c) => ({ ...c, comment_count: 0 })) ?? [];
+}
+
+async function CompetitionsContent() {
+  const initialCompetitions = await getCompetitions();
+  return <CompetitionClient initialCompetitions={initialCompetitions} />;
+}
+
+export default function CompetitionsPage() {
   return (
-    <CompetitionClient
-      initialCompetitions={
-        initialCompetitions?.map((c) => ({
-          ...c,
-          comment_count: 0,
-        })) ?? []
-      }
-    />
+    <Suspense fallback={<LoadingSpinner />}>
+      <CompetitionsContent />
+    </Suspense>
   );
 }

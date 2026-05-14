@@ -1,10 +1,15 @@
+import type { Metadata } from 'next';
+
 import AdminPostTableClient from '@/components/admin/posts/AdminPostsTableClient';
 import type { PostQueryRow } from '@/components/admin/posts/types';
 import { mapPostQueryRowsToAdminPostRows } from '@/components/admin/posts/utils';
-import { createServerSupabaseClient } from '@/lib/createServerSupabaseClient';
+import { getAdminPageMetadata } from '@/constants/adminMeta';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+
+export const metadata: Metadata = getAdminPageMetadata('posts');
 
 async function getAdminPosts() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createSupabaseServerClient();
 
   const { data, error } = await supabase
     .from('posts')

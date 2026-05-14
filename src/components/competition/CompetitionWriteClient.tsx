@@ -1,9 +1,7 @@
-// components/competition/CompetitionWriteClient.tsx
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import {
   createCompetition,
   uploadCompetitionImage,
@@ -15,6 +13,7 @@ import CompetitionForm, {
   CompetitionFormValues,
 } from '@/components/competition/CompetitionForm';
 import CompetitionDetailCard from '@/components/competition/CompetitionDetailCard';
+import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 
 const defaultValues: CompetitionFormValues = {
   name: '',
@@ -34,6 +33,18 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
   const [tab, setTab] = useState<'write' | 'preview'>('write');
   const [values, setValues] = useState<CompetitionFormValues>(defaultValues);
   const [isLoading, setIsLoading] = useState(false);
+
+  const isDirty =
+    values.name.trim() !== '' ||
+    values.location.trim() !== '' ||
+    values.eventDate !== '' ||
+    values.applyDeadline !== '' ||
+    values.applyUrl !== '' ||
+    values.description.trim() !== '' ||
+    values.participants !== '' ||
+    values.imageFile !== null;
+
+  useBeforeUnload(isDirty);
 
   const handleSubmit = async () => {
     if (
@@ -66,15 +77,13 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
       });
       showSuccessToast('대회일정이 추가되었습니다.', '🏆');
       await queryClient.invalidateQueries({ queryKey: ['competition'] });
+      await new Promise((resolve) => setTimeout(resolve, 700));
       router.push('/competitions');
     } catch {
       showErrorToast('대회 추가에 실패했습니다.');
-    } finally {
       setIsLoading(false);
     }
   };
-
-  if (isLoading) return <LoadingSpinner />;
 
   return (
     <div className="max-w-2xl mx-auto p-6">
@@ -82,7 +91,6 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
         <h1 className="text-lg font-semibold">대회 추가</h1>
       </div>
 
-      {/* 탭 */}
       <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
         <button
           onClick={() => setTab('write')}
@@ -104,12 +112,10 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
         </button>
       </div>
 
-      {/* 작성 탭 */}
       {tab === 'write' && (
         <CompetitionForm values={values} onChange={setValues} />
       )}
 
-      {/* 미리보기 탭 */}
       {tab === 'preview' &&
         (!values.name && !values.description ? (
           <div className="flex flex-col items-center justify-center py-16 text-gray-400 mb-6">
@@ -135,6 +141,7 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
         onCancel={() => router.back()}
         onSubmit={handleSubmit}
         submitLabel="추가하기"
+        isLoading={isLoading}
       />
     </div>
   );

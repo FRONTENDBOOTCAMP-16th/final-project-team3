@@ -1,14 +1,16 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import { showSuccessToast } from '@/lib/toast';
+import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { getStatus } from '@/utils/formatDate';
 import { handleShare } from '@/utils/share';
 import type { Competition } from '@/types/competition';
 import CompetitionDetailCard from '@/components/competition/CompetitionDetailCard';
 import Image from 'next/image';
+import { deleteCompetition } from '@/services/competitionService';
+import { useState } from 'react';
+import ConfirmModal from '../common/ConfirmModal';
 
 interface CompetitionDetailClientProps {
   competition: Competition;
@@ -23,18 +25,21 @@ export default function CompetitionDetailClient({
   const queryClient = useQueryClient();
   const { id } = competition;
 
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
   const isOwner = userId === competition.user_id;
   const status = getStatus(competition.apply_deadline);
 
   const handleDeletePost = async () => {
-    if (!confirm('대회 게시글을 삭제하시겠습니까?')) return;
     try {
-      await supabase.from('competition').delete().eq('id', id);
-      showSuccessToast('삭제되었습니다.', '🗑️');
+      await deleteCompetition(id);
+      showSuccessToast('대회일정이 삭제되었습니다.', '🗑️');
       await queryClient.invalidateQueries({ queryKey: ['competition'] });
+      await new Promise((resolve) => setTimeout(resolve, 700));
       router.push('/competitions');
-    } catch (e) {
-      console.error(e);
+      router.refresh();
+    } catch {
+      showErrorToast('대회일정 삭제에 실패했습니다.');
     }
   };
 
@@ -43,7 +48,6 @@ export default function CompetitionDetailClient({
       className="max-w-2xl mx-auto p-4 space-y-4"
       aria-label={`${competition.name} 대회 상세`}
     >
-      {/* 뒤로가기 */}
       <button
         onClick={() => router.push('/competitions')}
         aria-label="대회일정 목록으로 돌아가기"
@@ -67,7 +71,6 @@ export default function CompetitionDetailClient({
         목록으로
       </button>
 
-      {/* 게시글 카드 */}
       <CompetitionDetailCard
         data={{
           name: competition.name,
@@ -103,7 +106,7 @@ export default function CompetitionDetailClient({
                 <button
                   title="삭제하기"
                   aria-label="대회 게시글 삭제하기"
-                  onClick={handleDeletePost}
+                  onClick={() => setDeleteModalOpen(true)}
                   className="cursor-pointer"
                 >
                   <Image
@@ -134,8 +137,6 @@ export default function CompetitionDetailClient({
         }
       />
 
-      {/* 신청하기 버튼 */}
-
       <a
         href={
           competition.apply_url?.startsWith('http')
@@ -159,6 +160,14 @@ export default function CompetitionDetailClient({
       >
         {status === '모집완료' ? '모집 완료' : '대회 신청하기'}
       </a>
+
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDeletePost}
+        title="대회 게시글 삭제"
+        description="정말 삭제하시겠습니까? 삭제된 게시글은 복구할 수 없습니다."
+      />
     </main>
   );
 }

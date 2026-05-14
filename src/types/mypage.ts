@@ -1,6 +1,5 @@
 import { BeltLevel } from './user';
 
-// 프로필 수정 폼 타입
 export interface ProfileUpdateForm {
   nickname: string;
   bio: string;
@@ -8,7 +7,6 @@ export interface ProfileUpdateForm {
   avatar_url: string | null;
 }
 
-// 내가 쓴 게시글 타입 (PostCard props와 맞춤)
 export interface MyPost {
   id: string;
   title: string;

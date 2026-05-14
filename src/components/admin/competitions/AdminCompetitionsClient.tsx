@@ -1,15 +1,16 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Link as LinkIcon } from 'lucide-react';
 
 import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
   type AdminTableColumn,
 } from '@/components/admin/AdminDataTable';
 import AdminTableToolbar from '@/components/admin/AdminTableToolbar';
+import AdminCompetitionPostAction from '@/components/admin/competitions/AdminCompetitionPostAction';
 import {
   ADMIN_COMPETITION_FILTERS,
+  COMPETITION_PUBLISH_STATUS_BADGE_VARIANT_MAP,
   COMPETITION_STATUS_BADGE_VARIANT_MAP,
 } from '@/components/admin/competitions/constants';
 import type {
@@ -23,17 +24,34 @@ interface AdminCompetitionsClientProps {
 }
 
 const COMPETITION_COLUMNS: AdminTableColumn<AdminCompetitionRow>[] = [
-  { key: 'name', header: '대회 제목', width: '35%', align: 'left' },
-  { key: 'location', header: '장소', width: '20%', align: 'left' },
+  { key: 'name', header: '대회 제목', width: '28%', align: 'left' },
+  { key: 'location', header: '장소', width: '16%', align: 'left' },
   {
     key: 'status',
     header: '상태',
     width: '10%',
     align: 'center',
+    render: (row) =>
+      row.publish_status === '삭제' ? (
+        <span className="text-sm text-zinc-400">-</span>
+      ) : (
+        <AdminBadge
+          label={row.status}
+          variant={COMPETITION_STATUS_BADGE_VARIANT_MAP[row.status]}
+        />
+      ),
+  },
+  {
+    key: 'publish_status',
+    header: '게시 상태',
+    width: '10%',
+    align: 'center',
     render: (row) => (
       <AdminBadge
-        label={row.status}
-        variant={COMPETITION_STATUS_BADGE_VARIANT_MAP[row.status]}
+        label={row.publish_status}
+        variant={
+          COMPETITION_PUBLISH_STATUS_BADGE_VARIANT_MAP[row.publish_status]
+        }
       />
     ),
   },
@@ -46,24 +64,17 @@ const COMPETITION_COLUMNS: AdminTableColumn<AdminCompetitionRow>[] = [
   },
   { key: 'created_at', header: '생성일', width: '10%', align: 'center' },
   {
-    key: 'apply_url',
-    header: '링크',
-    width: '5%',
+    key: 'id',
+    header: '게시글',
+    width: '6%',
     align: 'center',
-    render: (row) =>
-      row.apply_url ? (
-        <a
-          href={row.apply_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center justify-center text-zinc-500 hover:text-black transition-colors"
-          title="링크 이동"
-        >
-          <LinkIcon className="w-4 h-4" />
-        </a>
-      ) : (
-        <span className="text-zinc-400">-</span>
-      ),
+    render: (row) => (
+      <AdminCompetitionPostAction
+        id={row.id}
+        name={row.name}
+        publishStatus={row.publish_status}
+      />
+    ),
   },
 ];
 
