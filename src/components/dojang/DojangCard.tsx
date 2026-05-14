@@ -22,8 +22,8 @@ export default function DojangCard({
 }: DojangCardProps) {
   return (
     <article
-      className={`p-4 border rounded-lg bg-white hover:shadow-md transition-all cursor-pointer
-        ${isSelected ? 'border-btn-focus border-2 shadow-md' : 'border-gray-200'}`}
+      className={`p-4 border rounded-lg bg-bg-white hover:shadow-md transition-all cursor-pointer
+        ${isSelected ? 'border-btn-focus border-2 shadow-md' : 'border-border'}`}
       aria-label={`${dojang.place_name} 도장${isVerified ? ', 인증 도장' : ''}${isSelected ? ', 선택됨' : ''}`}
       aria-current={isSelected}
     >
@@ -43,7 +43,7 @@ export default function DojangCard({
       </div>
 
       {/* 주소 */}
-      <address className="text-sm text-gray-500 mt-1 not-italic">
+      <address className="text-sm text-text-secondary mt-1 not-italic">
         {dojang.address_name}
       </address>
 
@@ -51,7 +51,7 @@ export default function DojangCard({
       {dojang.phone && (
         <a
           href={'tel:' + dojang.phone}
-          className="text-sm text-gray-400 mt-1 block hover:text-gray-600 transition-colors"
+          className="text-sm text-text-secondary mt-1 block hover:text-text-primary transition-colors"
           aria-label={'전화번호: ' + dojang.phone}
         >
           {dojang.phone}
@@ -65,7 +65,7 @@ export default function DojangCard({
         target="_blank"
         rel="noopener noreferrer"
         aria-label={dojang.place_name + ' 상세보기 (새 탭에서 열림)'}
-        className="mt-3 block w-full py-2 text-sm font-bold text-white text-center rounded-lg bg-[#2c2c2c] hover:bg-black transition-all"
+        className="mt-3 block w-full py-2 text-sm font-bold text-center rounded-lg bg-btn-focus hover:bg-btn-focus text-btn-focus-text transition-all"
       >
         상세보기
       </a>

@@ -159,14 +159,14 @@ export default function DojangClient({
                   aria-label="지도 불러오는 중"
                 >
                   <div
-                    className="w-8 h-8 border-4 border-gray-200 border-t-btn-focus rounded-full animate-spin"
+                    className="w-8 h-8 border-4 border-border border-t-btn-focus rounded-full animate-spin"
                     aria-hidden="true"
                   />
                 </div>
               )}
               <div
                 ref={mapRef}
-                className="w-full h-100 rounded-lg overflow-hidden border border-gray-200"
+                className="w-full h-100 rounded-lg overflow-hidden border border-border"
                 style={{ zIndex: 0 }}
                 role="application"
                 aria-label="도장 위치 지도"
@@ -178,7 +178,7 @@ export default function DojangClient({
               <div role="status" aria-label="도장 검색 중">
                 <div className="flex items-center justify-center py-20">
                   <div
-                    className="w-8 h-8 border-4 border-gray-200 border-t-btn-focus rounded-full animate-spin"
+                    className="w-8 h-8 border-4 border-border border-t-btn-focus rounded-full animate-spin"
                     aria-hidden="true"
                   />
                 </div>

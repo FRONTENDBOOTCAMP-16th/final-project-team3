@@ -116,7 +116,7 @@ export default function Pageheader({
               className={`cursor-pointer ${
                 activeTab === tab
                   ? 'bg-btn-focus text-btn-focus-text'
-                  : 'bg-btn-basic text-btn-text hover:bg-gray-200'
+                  : 'bg-btn-basic text-btn-text hover:bg-btn-focus hover:text-btn-focus-text'
               } h-10 p-6 transition-all duration-200`}
             >
               {tab}
