@@ -41,19 +41,19 @@ export default function ErrorScreenActions({ variant, onRetry }: Props) {
     >
       <Button asChild type="button" className={cn(buttonBase, buttonHover)}>
         <Link href={ROUTES.HOME}>
-          <House className="size-[18px]" />
+          <House className="size-4.5" />
           홈으로
         </Link>
       </Button>
 
       {isError ? (
         <Button onClick={onRetry} className={cn(buttonBase, buttonHover)}>
-          <RefreshCw className="size-[18px]" />
+          <RefreshCw className="size-4.5" />
           다시 시도
         </Button>
       ) : (
         <Button onClick={handleBack} className={cn(buttonBase, buttonHover)}>
-          <ArrowLeft className="size-[18px]" />
+          <ArrowLeft className="size-4.5" />
           이전 페이지
         </Button>
       )}

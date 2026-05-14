@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import SearchInput from '../common/SearchInput';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 
 interface PageheaderProps {
   title: string;

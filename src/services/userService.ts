@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 import { Profile } from '@/types/user';
 import { ProfileUpdateForm, MyPost } from '@/types/mypage';
 

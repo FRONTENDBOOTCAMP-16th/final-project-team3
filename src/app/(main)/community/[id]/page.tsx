@@ -1,15 +1,14 @@
-export const dynamic = 'force-dynamic';
-
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import PostDetailClient from '@/components/community/PostDetailClient';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
-  getPost,
-  getComments,
   isPublicPostVisible,
   incrementViewCount,
 } from '@/services/communityService';
-import { notFound } from 'next/navigation';
+import { getPost, getComments } from '@/services/communityService.server';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -38,7 +37,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-async function getInitialData(id: string) {
+async function PostDetailContent({ params }: Props) {
+  const { id } = await params;
   const supabase = await createSupabaseServerClient();
 
   const [
@@ -68,25 +68,21 @@ async function getInitialData(id: string) {
 
   await incrementViewCount(id);
 
-  return {
-    post,
-    comments,
-    userId: user?.id ?? null,
-    currentUserRole,
-  };
-}
-
-export default async function PostDetailPage({ params }: Props) {
-  const { id } = await params;
-  const { post, comments, userId, currentUserRole } = await getInitialData(id);
-
   return (
     <PostDetailClient
       id={id}
       initialPost={post}
       initialComments={comments}
-      userId={userId}
+      userId={user?.id ?? null}
       currentUserRole={currentUserRole}
     />
+  );
+}
+
+export default function PostDetailPage({ params }: Props) {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <PostDetailContent params={params} />
+    </Suspense>
   );
 }

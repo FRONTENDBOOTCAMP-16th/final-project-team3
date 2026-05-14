@@ -1,11 +1,11 @@
-export const dynamic = 'force-dynamic';
-
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import EditClient from '@/components/community/EditClient';
 import { canManageContent } from '@/lib/contentPermissions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { getPost } from '@/services/communityService';
+import { getPost } from '@/services/communityService.server';
 import { notFound, redirect } from 'next/navigation';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -24,7 +24,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-async function getInitialData(id: string) {
+async function EditContent({ params }: Props) {
+  const { id } = await params;
   const supabase = await createSupabaseServerClient();
 
   const [
@@ -54,12 +55,13 @@ async function getInitialData(id: string) {
     redirect(`/community/${id}`);
   }
 
-  return { post };
+  return <EditClient id={id} initialPost={post} />;
 }
 
-export default async function EditPage({ params }: Props) {
-  const { id } = await params;
-  const { post } = await getInitialData(id);
-
-  return <EditClient id={id} initialPost={post} />;
+export default function EditPage({ params }: Props) {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <EditContent params={params} />
+    </Suspense>
+  );
 }

@@ -1,8 +1,11 @@
+import { Suspense } from 'react';
 import CommunityClient from '@/components/community/CommunityClient';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { supabasePublic } from '@/lib/supabase/public';
+import { cacheTag, cacheLife } from 'next/cache';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Post } from '@/types/community';
 import type { Metadata } from 'next';
+import ErrorBoundary from '@/components/common/ErrorBoundary';
 
 export const metadata: Metadata = {
   title: '커뮤니티 | Black Belt BJJ',
@@ -13,23 +16,12 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = 'force-dynamic';
-
 async function getPosts(): Promise<Post[]> {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-      },
-    },
-  );
+  'use cache';
+  cacheTag('posts-list');
+  cacheLife('minutes');
 
-  const { data, error } = await supabase
+  const { data, error } = await supabasePublic
     .from('posts')
     .select('*, comments(count), profiles(nickname, avatar_url)')
     .order('created_at', { ascending: false })
@@ -49,7 +41,17 @@ async function getPosts(): Promise<Post[]> {
   })) as Post[];
 }
 
-export default async function CommunityPage() {
+async function CommunityContent() {
   const initialPosts = await getPosts();
   return <CommunityClient initialPosts={initialPosts} />;
+}
+
+export default function CommunityPage() {
+  return (
+    <ErrorBoundary>
+      <Suspense fallback={<LoadingSpinner />}>
+        <CommunityContent />
+      </Suspense>
+    </ErrorBoundary>
+  );
 }

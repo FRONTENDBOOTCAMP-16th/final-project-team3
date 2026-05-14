@@ -31,7 +31,7 @@ export default function ErrorScreen({
     >
       <section
         aria-live={variant === 'error' ? 'assertive' : undefined}
-        className="flex w-full max-w-[640px] flex-col items-center text-center"
+        className="flex w-full max-w-160 flex-col items-center text-center"
       >
         <p
           className={cn(
