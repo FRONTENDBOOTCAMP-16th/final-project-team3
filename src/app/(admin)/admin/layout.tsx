@@ -1,16 +1,15 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-
 import AdminHeader from '@/components/admin/AdminHeader';
 import ScrollToTop from '@/components/common/ScrollToTop';
 import Sidebar from '@/components/layout/Sidebar';
 import { ADMIN_LAYOUT_METADATA } from '@/constants/adminMeta';
-import { createServerSupabaseClient } from '@/lib/createServerSupabaseClient';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = ADMIN_LAYOUT_METADATA;
 
 async function requireAdminAccess() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createSupabaseServerClient();
   const {
     data: { user },
     error: authError,

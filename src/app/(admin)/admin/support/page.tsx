@@ -14,12 +14,12 @@ import {
   sortSupportReportQueryRows,
 } from '@/components/admin/support/utils';
 import { getAdminPageMetadata } from '@/constants/adminMeta';
-import { createServerSupabaseClient } from '@/lib/createServerSupabaseClient';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = getAdminPageMetadata('support');
 
 async function getAdminSupportData() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createSupabaseServerClient();
 
   const [dojangResult, reportsResult] = await Promise.all([
     supabase

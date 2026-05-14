@@ -1,6 +1,5 @@
 import DojangClient from '@/components/dojang/DojangClient';
-import { cookies } from 'next/headers';
-import { createServerClient } from '@supabase/ssr';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -15,18 +14,7 @@ export const metadata: Metadata = {
 export const revalidate = 3600; // 도장 정보는 자주 안 바뀌므로 1시간 캐시
 
 export default async function DojangsPage() {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-      },
-    },
-  );
+  const supabase = await createSupabaseServerClient();
   const { data } = await supabase.from('dojang').select('name');
 
   return (

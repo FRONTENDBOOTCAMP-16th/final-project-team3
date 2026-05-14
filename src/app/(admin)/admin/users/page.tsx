@@ -7,12 +7,12 @@ import type {
 } from '@/components/admin/users/types';
 import { mapProfilesToAdminUserRows } from '@/components/admin/users/utils';
 import { getAdminPageMetadata } from '@/constants/adminMeta';
-import { createServerSupabaseClient } from '@/lib/createServerSupabaseClient';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = getAdminPageMetadata('users');
 
 async function getAdminUsers() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createSupabaseServerClient();
 
   const [profilesResult, dojangsResult] = await Promise.all([
     supabase
