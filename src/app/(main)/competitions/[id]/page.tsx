@@ -37,6 +37,17 @@ async function CompetitionDetailContent({ params }: Props) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const currentUserRole =
+    user?.id
+      ? (
+          await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', user.id)
+            .single()
+        ).data?.role ?? null
+      : null;
+
   const competition = await getCompetition(id);
   if (!isPublicCompetitionVisible(competition)) notFound();
 
@@ -49,6 +60,7 @@ async function CompetitionDetailContent({ params }: Props) {
     <CompetitionDetailClient
       competition={competition}
       userId={user?.id ?? null}
+      currentUserRole={currentUserRole}
     />
   );
 }

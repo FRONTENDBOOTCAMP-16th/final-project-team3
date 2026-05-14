@@ -1,14 +1,14 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import PostDetailClient from '@/components/community/PostDetailClient';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
   isPublicPostVisible,
   incrementViewCount,
 } from '@/services/communityService';
 import { getPost, getComments } from '@/services/communityService.server';
-import { notFound } from 'next/navigation';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -55,6 +55,17 @@ async function PostDetailContent({ params }: Props) {
 
   if (!isPublicPostVisible(post)) notFound();
 
+  const currentUserRole =
+    user?.id
+      ? (
+          await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', user.id)
+            .single()
+        ).data?.role ?? null
+      : null;
+
   await incrementViewCount(id);
 
   return (
@@ -63,6 +74,7 @@ async function PostDetailContent({ params }: Props) {
       initialPost={post}
       initialComments={comments}
       userId={user?.id ?? null}
+      currentUserRole={currentUserRole}
     />
   );
 }

@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import EditClient from '@/components/community/EditClient';
+import { canManageContent } from '@/lib/contentPermissions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getPost } from '@/services/communityService.server';
 import { notFound, redirect } from 'next/navigation';
@@ -36,7 +37,23 @@ async function EditContent({ params }: Props) {
 
   if (!user) redirect('/login');
   if (!post) notFound();
-  if (post.user_id !== user.id) redirect(`/community/${id}`);
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (
+    !canManageContent({
+      currentUserId: user.id,
+      authorUserId: post.user_id,
+      currentUserRole: profile?.role ?? null,
+      authorRole: post.role,
+    })
+  ) {
+    redirect(`/community/${id}`);
+  }
 
   return <EditClient id={id} initialPost={post} />;
 }
