@@ -4,7 +4,8 @@ import { Input } from '../ui/input';
 
 interface SearchInputProps {
   searchQuery: string;
-  setSearchQuery: (query: string) => void;
+  // eslint-disable-next-line no-unused-vars
+  setSearchQuery: (_query: string) => void;
   onSearch?: () => void;
   placeholder?: string;
 }
@@ -17,7 +18,7 @@ export default function SearchInput({
 }: SearchInputProps) {
   return (
     <div className="flex-1 relative flex items-center">
-      <button className="absolute left-3 z-10" onClick={onSearch}>
+      <button type="button" className="absolute left-3 z-10" onClick={onSearch}>
         <Image src="/glasses.svg" alt="검색" width={18} height={18} />
       </button>
       <Input
