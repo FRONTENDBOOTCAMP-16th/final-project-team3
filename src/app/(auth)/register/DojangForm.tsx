@@ -15,6 +15,7 @@ import InputWithIcon from '@/components/common/InputWithIcon';
 import BeltSelect from './components/BeltSelect';
 import NicknameField from './components/NicknameField';
 import BusinessFileUpload from './components/BusinessFileUpload';
+import PasswordStrength from './components/PasswordStrength';
 import { useNicknameCheck } from '@/hooks/useNicknameCheck';
 
 const PASSWORD_REGEX = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/;
@@ -85,6 +86,7 @@ export default function DojangForm() {
 
   const nickname = watch('nickname');
   const beltValue = watch('belt');
+  const password = watch('password');
   const { nicknameStatus } = useNicknameCheck(nickname);
 
   const handleAddressSearch = () => {
@@ -195,6 +197,7 @@ export default function DojangForm() {
             placeholder="비밀번호를 입력하세요"
             {...register('password')}
           />
+          <PasswordStrength password={password} />
           <div className="h-5 mt-1">
             {errors.password && (
               <p className="text-danger text-sm" role="alert">
