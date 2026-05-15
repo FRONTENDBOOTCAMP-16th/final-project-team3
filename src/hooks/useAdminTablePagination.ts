@@ -1,9 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 interface UseTablePaginationParams<T> {
   data: T[];
   initialPageSize?: number;
   pageSizeOptions?: readonly number[];
+  currentPage?: number;
+  // eslint-disable-next-line no-unused-vars
+  onPageChange?: (_page: number) => void;
 }
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -13,6 +16,8 @@ export function useAdminTablePagination<T>({
   data,
   initialPageSize = DEFAULT_PAGE_SIZE,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
+  currentPage,
+  onPageChange,
 }: UseTablePaginationParams<T>) {
   const normalizedPageSizeOptions = useMemo(() => {
     const mergedOptions = new Set<number>([
@@ -27,10 +32,19 @@ export function useAdminTablePagination<T>({
     initialPageSize > 0 ? initialPageSize : DEFAULT_PAGE_SIZE,
   );
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [internalCurrentPage, setInternalCurrentPage] = useState(1);
+  const resolvedCurrentPage = currentPage ?? internalCurrentPage;
 
   const totalPages = Math.max(1, Math.ceil(data.length / pageSize));
-  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const safeCurrentPage = Math.min(resolvedCurrentPage, totalPages);
+
+  useEffect(() => {
+    if (!onPageChange || safeCurrentPage === resolvedCurrentPage) {
+      return;
+    }
+
+    onPageChange(safeCurrentPage);
+  }, [onPageChange, resolvedCurrentPage, safeCurrentPage]);
 
   const paginatedData = useMemo(() => {
     const startIndex = (safeCurrentPage - 1) * pageSize;
@@ -39,16 +53,27 @@ export function useAdminTablePagination<T>({
     return data.slice(startIndex, endIndex);
   }, [data, pageSize, safeCurrentPage]);
 
-  const handlePageChange = (page: number) => {
-    const clampedPage = Math.min(Math.max(page, 1), totalPages);
+  const handlePageChange = useCallback(
+    (page: number) => {
+      const clampedPage = Math.min(Math.max(page, 1), totalPages);
 
-    setCurrentPage(clampedPage);
-  };
+      if (onPageChange) {
+        onPageChange(clampedPage);
+        return;
+      }
 
-  const handlePageSizeChange = (nextPageSize: number) => {
-    setPageSize(nextPageSize);
-    setCurrentPage(1);
-  };
+      setInternalCurrentPage(clampedPage);
+    },
+    [onPageChange, totalPages],
+  );
+
+  const handlePageSizeChange = useCallback(
+    (nextPageSize: number) => {
+      setPageSize(nextPageSize);
+      handlePageChange(1);
+    },
+    [handlePageChange],
+  );
 
   return {
     pageSize,
