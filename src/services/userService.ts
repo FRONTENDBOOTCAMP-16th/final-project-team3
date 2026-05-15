@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase/client';
 import { Profile } from '@/types/user';
-import { ProfileUpdateForm, MyPost } from '@/types/mypage';
+import { ProfileUpdateForm, MyPost, MyPostQueryRow } from '@/types/mypage';
 
 export async function fetchMyProfile(): Promise<Profile> {
   const {
@@ -67,27 +67,21 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
   if (error) throw error;
 
   return (data ?? []).map((post) => {
-    const profiles = post.profiles as {
-      nickname: string;
-      avatar_url: string;
-    } | null;
-    const comments = post.comments as { count: number }[] | null;
-
+    const row = post as unknown as MyPostQueryRow;
     return {
-      id: post.id,
-      title: post.title,
-      content: post.content,
-      category: post.category,
-      image_url: post.image_url,
-      view_count: post.view_count,
-      created_at: post.created_at,
-      nickname: profiles?.nickname ?? '',
-      avatar_url: profiles?.avatar_url ?? '',
-      comment_count: comments?.[0]?.count ?? 0,
+      id: row.id,
+      title: row.title,
+      content: row.content,
+      category: row.category,
+      image_url: row.image_url,
+      view_count: row.view_count,
+      created_at: row.created_at,
+      nickname: row.profiles?.nickname ?? '',
+      avatar_url: row.profiles?.avatar_url ?? '',
+      comment_count: row.comments?.[0]?.count ?? 0,
     };
   });
 }
-
 export async function deleteMyAccount(): Promise<void> {
   const {
     data: { user },
