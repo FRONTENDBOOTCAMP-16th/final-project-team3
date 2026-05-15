@@ -68,14 +68,15 @@ export function useAdminTableQueryState<TFilter extends string>({
   const [searchInput, setSearchInput] = useState(appliedSearchQuery);
 
   useEffect(() => {
-    // URL change(back/forward, shared link)를 로컬 입력값에 동기화한다.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearchInput(appliedSearchQuery);
   }, [appliedSearchQuery]);
 
   const debouncedSearchInput = useDebounce(searchInput, searchDebounceMs);
   const currentQueryString = searchParams.toString();
-  const currentUrl = currentQueryString ? `${pathname}?${currentQueryString}` : pathname;
+  const currentUrl = currentQueryString
+    ? `${pathname}?${currentQueryString}`
+    : pathname;
 
   const navigateWithSearchParams = useCallback(
     (
@@ -84,7 +85,9 @@ export function useAdminTableQueryState<TFilter extends string>({
     ) => {
       const nextSearchParams = updateSearchParams(searchParams, updates);
       const nextQueryString = nextSearchParams.toString();
-      const nextUrl = nextQueryString ? `${pathname}?${nextQueryString}` : pathname;
+      const nextUrl = nextQueryString
+        ? `${pathname}?${nextQueryString}`
+        : pathname;
 
       if (nextUrl === currentUrl) {
         return;
