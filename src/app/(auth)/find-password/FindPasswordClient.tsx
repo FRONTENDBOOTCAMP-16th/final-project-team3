@@ -240,15 +240,16 @@ export default function FindPasswordPage() {
 
         {step === 3 && (
           <div className="flex flex-col items-center gap-6 py-4">
-            <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-full bg-state-green-bg flex items-center justify-center">
               <svg
-                className="w-8 h-8 text-green-500"
+                className="w-8 h-8 text-state-green-text"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path
                   strokeLinecap="round"
+                  ㅋㅋㅋ
                   strokeLinejoin="round"
                   strokeWidth={2}
                   d="M5 13l4 4L19 7"

@@ -1,6 +1,14 @@
 import Image from 'next/image';
 import { Profile, BeltLevel } from '@/types/user';
-import { BELT_COLORS } from '@/utils/beltColors';
+
+const BELT_COLORS: Record<BeltLevel, string> = {
+  White: 'var(--color-belt-white)',
+  Blue: 'var(--color-belt-blue)',
+  Purple: 'var(--color-belt-purple)',
+  Brown: 'var(--color-belt-brown)',
+  Black: 'var(--color-belt-black)',
+};
+
 interface ProfileCardProps {
   profile: Profile;
   postCount?: number;

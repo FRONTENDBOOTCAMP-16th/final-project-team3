@@ -38,9 +38,9 @@ export default function AdminPostActions({
   const isDeleted = Boolean(deleted_at);
   const canViewDetail = status !== 'hidden';
   const actionButtonClass =
-    'inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
+    'inline-flex items-center justify-center rounded-md p-2 text-text-secondary transition-colors duration-200 hover:bg-btn-basic cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
   const actionPlaceholderClass =
-    'inline-flex h-[34px] w-[34px] items-center justify-center text-sm text-zinc-400';
+    'inline-flex h-[34px] w-[34px] items-center justify-center text-sm text-text-secondary';
 
   const handleView = () => {
     window.open(ROUTES.COMMUNITY_DETAIL(id), '_blank', 'noopener,noreferrer');

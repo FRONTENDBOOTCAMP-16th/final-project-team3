@@ -68,7 +68,7 @@ export default function AdminTablePagination({
   const endItem = Math.min(currentPage * pageSize, totalItems);
 
   return (
-    <footer className="flex flex-col gap-4 border-t border-zinc-200 px-4 py-4 md:flex-row md:items-center md:justify-between">
+    <footer className="flex flex-col gap-4 border-t border-border px-4 py-4 md:flex-row md:items-center md:justify-between">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
         <p className="text-sm text-text-secondary">
           총 {totalItems}개 중 {startItem}-{endItem}개 표시
@@ -77,7 +77,7 @@ export default function AdminTablePagination({
         <label className="flex items-center gap-2 text-sm text-text-secondary">
           페이지당
           <select
-            className="h-9 cursor-pointer rounded-md border border-zinc-200 bg-bg-white px-3 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-btn-focus"
+            className="h-9 cursor-pointer rounded-md border border-border bg-bg-white px-3 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-btn-focus"
             value={pageSize}
             onChange={(event) => onPageSizeChange(Number(event.target.value))}
           >
@@ -100,7 +100,7 @@ export default function AdminTablePagination({
             aria-label="이전 페이지"
             className={cn(
               navigationButtonClass,
-              'cursor-pointer border-zinc-200 bg-bg-white text-btn-text hover:bg-btn-basic',
+              'cursor-pointer border-border bg-bg-white text-btn-text hover:bg-btn-basic',
             )}
             disabled={currentPage === 1}
             onClick={() => onPageChange(currentPage - 1)}
@@ -114,7 +114,7 @@ export default function AdminTablePagination({
                 return (
                   <span
                     key={item}
-                    className="inline-flex h-9 min-w-9 items-center justify-center text-zinc-400"
+                    className="inline-flex h-9 min-w-9 items-center justify-center text-text-secondary"
                   >
                     <MoreHorizontal className="size-4" />
                   </span>
@@ -133,7 +133,7 @@ export default function AdminTablePagination({
                     'cursor-pointer',
                     isActive
                       ? 'border-btn-focus bg-btn-focus text-btn-focus-text'
-                      : 'border-zinc-200 bg-bg-white text-btn-text hover:bg-btn-basic',
+                      : 'border-border bg-bg-white text-btn-text hover:bg-btn-basic',
                   )}
                   onClick={() => onPageChange(item)}
                 >
@@ -148,7 +148,7 @@ export default function AdminTablePagination({
             aria-label="다음 페이지"
             className={cn(
               navigationButtonClass,
-              'cursor-pointer border-zinc-200 bg-bg-white text-btn-text hover:bg-btn-basic',
+              'cursor-pointer border-border bg-bg-white text-btn-text hover:bg-btn-basic',
             )}
             disabled={currentPage === totalPages}
             onClick={() => onPageChange(currentPage + 1)}

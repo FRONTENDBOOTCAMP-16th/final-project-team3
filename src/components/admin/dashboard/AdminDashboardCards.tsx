@@ -14,7 +14,7 @@ interface AdminDashboardCardsProps {
 }
 
 const iconToneClassMap: Record<DashboardCardTone, string> = {
-  slate: 'bg-zinc-100 text-zinc-700 ring-zinc-200',
+  slate: 'bg-btn-basic text-text-primary ring-border',
   blue: 'bg-blue-50 text-blue-600 ring-blue-100',
   green: 'bg-emerald-50 text-emerald-600 ring-emerald-100',
   amber: 'bg-amber-50 text-amber-600 ring-amber-100',
@@ -22,7 +22,7 @@ const iconToneClassMap: Record<DashboardCardTone, string> = {
 };
 
 const topLineClassMap: Record<DashboardCardTone, string> = {
-  slate: 'bg-zinc-900',
+  slate: 'bg-btn-focus',
   blue: 'bg-blue-600',
   green: 'bg-emerald-600',
   amber: 'bg-amber-500',
@@ -40,8 +40,10 @@ function DashboardMetricCard({
 }) {
   const Icon = config.icon;
   const cardClassName = cn(
-    'group relative overflow-hidden rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm transition-transform duration-200',
-    config.href ? 'block cursor-pointer hover:-translate-y-0.5 hover:shadow-md' : '',
+    'group relative overflow-hidden rounded-3xl border border-border bg-bg-white p-6 shadow-sm transition-transform duration-200',
+    config.href
+      ? 'block cursor-pointer hover:-translate-y-0.5 hover:shadow-md'
+      : '',
   );
   const cardContent = (
     <article className={cardClassName}>
@@ -56,14 +58,16 @@ function DashboardMetricCard({
 
       <div className="space-y-3">
         <div className="space-y-1">
-          <p className="text-sm font-medium text-zinc-500">{config.label}</p>
+          <p className="text-sm font-medium text-text-secondary">
+            {config.label}
+          </p>
         </div>
 
         <div className="flex items-end gap-2">
-          <strong className="text-4xl font-semibold tracking-tight text-zinc-950">
+          <strong className="text-4xl font-semibold tracking-tight text-text-primary">
             {numberFormatter.format(value)}
           </strong>
-          <span className="pb-1 text-sm font-medium text-zinc-500">
+          <span className="pb-1 text-sm font-medium text-text-secondary">
             {config.suffix}
           </span>
         </div>
@@ -101,10 +105,10 @@ function DashboardSection({
   return (
     <section className="space-y-5">
       <div className="space-y-1 px-1">
-        <h2 className="text-xl font-semibold tracking-tight text-zinc-950">
+        <h2 className="text-xl font-semibold tracking-tight text-text-primary">
           {title}
         </h2>
-        <p className="text-sm text-zinc-500">{description}</p>
+        <p className="text-sm text-text-secondary">{description}</p>
       </div>
 
       <div className={cn('grid gap-4', columnsClassName)}>

@@ -10,15 +10,14 @@ function isAdminPageKey(value: string): value is AdminPageKey {
 
 export default function AdminHeader() {
   const segment = useSelectedLayoutSegment();
-  const page =
-    segment && isAdminPageKey(segment) ? segment : 'dashboard';
+  const page = segment && isAdminPageKey(segment) ? segment : 'dashboard';
   const { title, description } = ADMIN_META[page];
 
   return (
-    <header className="fixed top-0 left-50 right-0 z-50 flex justify-center bg-white shadow-md">
+    <header className="fixed top-0 left-50 right-0 z-50 flex justify-center bg-bg-white shadow-md">
       <div className="w-full max-w-7xl px-6 py-6 space-y-2">
-        <h1 className="text-2xl font-bold text-zinc-950">{title}</h1>
-        <p className="text-sm text-zinc-500">{description}</p>
+        <h1 className="text-2xl font-bold text-text-primary">{title}</h1>
+        <p className="text-sm text-text-secondary">{description}</p>
       </div>
     </header>
   );

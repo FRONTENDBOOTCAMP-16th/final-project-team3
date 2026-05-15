@@ -33,7 +33,7 @@ const COMPETITION_COLUMNS: AdminTableColumn<AdminCompetitionRow>[] = [
     align: 'center',
     render: (row) =>
       row.publish_status === '삭제' ? (
-        <span className="text-sm text-zinc-400">-</span>
+        <span className="text-sm text-text-secondary">-</span>
       ) : (
         <AdminBadge
           label={row.status}

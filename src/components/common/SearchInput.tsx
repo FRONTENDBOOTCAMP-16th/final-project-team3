@@ -23,7 +23,7 @@ export default function SearchInput({
       <Input
         placeholder={placeholder}
         aria-label="검색"
-        className="pl-9 flex-1 h-12 bg-input-bg"
+        className="pl-9 flex-1 h-12 bg-input-bg text-text-primary placeholder:text-text-secondary"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />

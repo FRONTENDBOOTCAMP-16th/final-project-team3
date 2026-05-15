@@ -37,13 +37,15 @@ interface DetailItemProps {
 }
 
 const actionButtonClass =
-  'inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
+  'inline-flex items-center justify-center rounded-md p-2 text-text-secondary transition-colors duration-200 hover:bg-btn-basic cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
 
 function DetailItem({ label, value }: DetailItemProps) {
   return (
-    <div className="grid grid-cols-[104px_minmax(0,1fr)] items-start gap-3 rounded-lg bg-zinc-50 px-4 py-3">
-      <dt className="text-sm font-medium text-zinc-500">{label}</dt>
-      <dd className="min-w-0 text-sm text-zinc-800 break-words">{value}</dd>
+    <div className="grid grid-cols-[104px_minmax(0,1fr)] items-start gap-3 rounded-lg bg-btn-basic px-4 py-3">
+      <dt className="text-sm font-medium text-text-secondary">{label}</dt>
+      <dd className="min-w-0 text-sm text-text-primary wrap-break-word">
+        {value}
+      </dd>
     </div>
   );
 }
@@ -70,7 +72,7 @@ function UserAvatar({
 
   return (
     <div
-      className={`${sizeClassName} flex shrink-0 items-center justify-center rounded-full bg-zinc-100 text-sm font-semibold text-zinc-500`}
+      className={`${sizeClassName} flex shrink-0 items-center justify-center rounded-full bg-btn-basic text-sm font-semibold text-text-secondary`}
       aria-hidden="true"
     >
       {nickname.slice(0, 1)}
@@ -134,7 +136,7 @@ export default function AdminUserActions({ user }: AdminUserActionsProps) {
 
               <div className="space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
-                  <DialogTitle className="text-xl font-semibold text-zinc-900">
+                  <DialogTitle className="text-xl font-semibold text-text-primary">
                     {user.nickname}
                   </DialogTitle>
 
@@ -151,7 +153,7 @@ export default function AdminUserActions({ user }: AdminUserActionsProps) {
                   />
                 </div>
 
-                <DialogDescription className="text-sm text-zinc-500">
+                <DialogDescription className="text-sm text-text-secondary">
                   {user.email}
                 </DialogDescription>
               </div>
@@ -160,7 +162,9 @@ export default function AdminUserActions({ user }: AdminUserActionsProps) {
 
           <div className="space-y-5">
             <section className="space-y-3">
-              <h3 className="text-sm font-semibold text-zinc-900">기본 정보</h3>
+              <h3 className="text-sm font-semibold text-text-primary">
+                기본 정보
+              </h3>
 
               <dl className="space-y-2">
                 <DetailItem label="이름" value={user.name} />
@@ -178,7 +182,7 @@ export default function AdminUserActions({ user }: AdminUserActionsProps) {
 
             {user.user_type === '도장' ? (
               <section className="space-y-3">
-                <h3 className="text-sm font-semibold text-zinc-900">
+                <h3 className="text-sm font-semibold text-text-primary">
                   도장 정보
                 </h3>
 

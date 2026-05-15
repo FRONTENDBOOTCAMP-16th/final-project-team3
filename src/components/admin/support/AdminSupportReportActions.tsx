@@ -42,15 +42,17 @@ type ConfirmReportAction = {
 } | null;
 
 const actionButtonClass =
-  'inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
+  'inline-flex items-center justify-center rounded-md p-2 text-text-secondary transition-colors duration-200 hover:bg-btn-basic cursor-pointer';
 const actionPlaceholderClass =
-  'inline-flex h-[34px] w-[34px] items-center justify-center text-sm text-zinc-400';
+  'inline-flex h-[34px] w-[34px] items-center justify-center text-sm text-text-secondary';
 
 function DetailItem({ label, value }: DetailItemProps) {
   return (
-    <div className="grid grid-cols-[104px_minmax(0,1fr)] items-start gap-3 rounded-lg bg-zinc-50 px-4 py-3">
-      <dt className="text-sm font-medium text-zinc-500">{label}</dt>
-      <dd className="min-w-0 text-sm text-zinc-800 break-words">{value}</dd>
+    <div className="grid grid-cols-[104px_minmax(0,1fr)] items-start gap-3 rounded-lg bg-btn-basic px-4 py-3">
+      <dt className="text-sm font-medium text-text-secondary">{label}</dt>
+      <dd className="min-w-0 text-sm text-text-primary wrap-break-word">
+        {value}
+      </dd>
     </div>
   );
 }
@@ -155,10 +157,10 @@ export default function AdminSupportReportActions({
 
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader className="gap-3">
-            <DialogTitle className="text-xl font-semibold text-zinc-900">
+            <DialogTitle className="text-xl font-semibold text-text-primary">
               신고 상세
             </DialogTitle>
-            <DialogDescription className="text-sm text-zinc-500">
+            <DialogDescription className="text-sm text-text-secondary">
               신고 상태와 처리 결과를 확인하세요.
             </DialogDescription>
           </DialogHeader>
@@ -184,7 +186,7 @@ export default function AdminSupportReportActions({
                 label="처리 결과"
                 value={
                   row.action_result === '-' ? (
-                    <span className="text-sm text-zinc-400">-</span>
+                    <span className="text-sm text-text-secondary">-</span>
                   ) : (
                     <AdminBadge
                       label={row.action_result}
@@ -213,7 +215,7 @@ export default function AdminSupportReportActions({
                   })
                 }
                 disabled={isSubmitting}
-                className={`${actionButtonClass} h-9 border-zinc-200 bg-zinc-50 px-3 text-zinc-700 hover:bg-zinc-100`}
+                className={`${actionButtonClass} h-9 border-border bg-btn-basic px-3 text-text-primary hover:bg-btn-basic`}
               >
                 문제 없음 처리
               </button>

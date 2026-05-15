@@ -44,7 +44,7 @@ function UserAvatarCell({
 
   return (
     <div
-      className="mx-auto flex aspect-square w-[clamp(2.25rem,3vw,2.75rem)] items-center justify-center rounded-full bg-zinc-100 text-sm font-semibold text-zinc-500"
+      className="mx-auto flex aspect-square w-[clamp(2.25rem,3vw,2.75rem)] items-center justify-center rounded-full bg-btn-basic text-sm font-semibold text-text-secondary"
       aria-hidden="true"
     >
       {nickname.slice(0, 1)}
@@ -72,12 +72,15 @@ const USER_COLUMNS: AdminTableColumn<AdminUserRow>[] = [
     render: (row) => (
       <div className="flex min-w-0 flex-col gap-1">
         <span
-          className="block truncate text-[15px] font-semibold text-zinc-950"
+          className="block truncate text-[15px] font-semibold text-text-primary"
           title={row.nickname}
         >
           {row.nickname}
         </span>
-        <span className="block truncate text-sm text-zinc-500" title={row.name}>
+        <span
+          className="block truncate text-sm text-text-secondary"
+          title={row.name}
+        >
           {row.name}
         </span>
       </div>
@@ -135,7 +138,7 @@ const USER_COLUMNS: AdminTableColumn<AdminUserRow>[] = [
           }
         />
       ) : (
-        <span className="text-zinc-400">-</span>
+        <span className="text-text-secondary">-</span>
       ),
   },
   { key: 'joined_at', header: '가입일', width: '10%', align: 'center' },

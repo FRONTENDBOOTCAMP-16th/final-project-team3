@@ -145,7 +145,7 @@ export default function LoginPage() {
           <div className="flex justify-end -mt-5 -mb-5">
             <Link
               href="/find-password"
-              className="text-sm font-bold hover:underline text-[#4f74e8]"
+              className="text-sm font-bold hover:underline text-(--color-auth-find-password)"
             >
               비밀번호 찾기
             </Link>

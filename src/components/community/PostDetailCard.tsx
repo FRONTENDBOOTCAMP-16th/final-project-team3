@@ -36,7 +36,7 @@ export default function PostDetailCard({
         }
       : post.role === 'admin'
         ? {
-            label: '공지',
+            label: '관리자',
             className: 'bg-category-notice-bg text-category-text',
           }
         : {

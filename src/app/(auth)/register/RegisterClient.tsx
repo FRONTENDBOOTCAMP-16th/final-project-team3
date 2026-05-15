@@ -59,11 +59,27 @@ const dojangSchema = z
 
 // 벨트 종류
 const BELTS = [
-  { value: 'white', label: 'White  (입문자)', color: '#e8e8e8' },
-  { value: 'blue', label: 'Blue   (파란띠)', color: '#2e6fdb' },
-  { value: 'purple', label: 'Purple (보라띠)', color: '#7c4ddb' },
-  { value: 'brown', label: 'Brown  (갈색띠)', color: '#8b5a2b' },
-  { value: 'black', label: 'Black  (검은띠)', color: '#1a1a1a' },
+  {
+    value: 'white',
+    label: 'White  (입문자)',
+    color: 'var(--color-belt-white)',
+  },
+  { value: 'blue', label: 'Blue   (파란띠)', color: 'var(--color-belt-blue)' },
+  {
+    value: 'purple',
+    label: 'Purple (보라띠)',
+    color: 'var(--color-belt-purple)',
+  },
+  {
+    value: 'brown',
+    label: 'Brown  (갈색띠)',
+    color: 'var(--color-belt-brown)',
+  },
+  {
+    value: 'black',
+    label: 'Black  (검은띠)',
+    color: 'var(--color-belt-black)',
+  },
 ];
 
 const BeltSelect = forwardRef<
@@ -701,7 +717,7 @@ export default function RegisterPage() {
   return (
     <>
       {/* 탭 */}
-      <div className="flex border-b border-gray-200 mb-6">
+      <div className="flex border-b border-border mb-6">
         <button
           onClick={() => setTab('general')}
           className={`flex-1 pb-3 text-sm font-bold transition-all cursor-pointer ${

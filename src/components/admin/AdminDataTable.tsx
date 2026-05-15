@@ -47,8 +47,8 @@ export default function AdminDataTable<T>({
   });
 
   return (
-    <section className="w-full max-w-7xl rounded-md border bg-white px-6 py-4 mb-8">
-      <table className="w-full table-fixed border-collapse bg-white">
+    <section className="w-full max-w-7xl rounded-md border bg-bg-white px-6 py-4 mb-8">
+      <table className="w-full table-fixed border-collapse bg-bg-white">
         <thead>
           <tr>
             {columns.map((column) => (
@@ -72,7 +72,7 @@ export default function AdminDataTable<T>({
             <tr>
               <td
                 colSpan={columns.length}
-                className="px-4 py-10 text-center text-sm text-zinc-500"
+                className="px-4 py-10 text-center text-sm text-text-secondary"
               >
                 {emptyMessage}
               </td>
@@ -86,13 +86,13 @@ export default function AdminDataTable<T>({
                   key={
                     getRowKey ? getRowKey(row, originalIndex) : originalIndex
                   }
-                  className="group transition-colors duration-200 hover:bg-[var(--color-table-top)]"
+                  className="group transition-colors duration-200 hover:bg-table-top"
                 >
                   {columns.map((column) => (
                     <td
                       key={String(column.key)}
                       className={cn(
-                        'border-b px-4 py-3 text-sm text-zinc-700',
+                        'border-b px-4 py-3 text-sm text-text-primary',
                         column.align === 'center' && 'text-center',
                         column.align === 'left' && 'text-left',
                       )}

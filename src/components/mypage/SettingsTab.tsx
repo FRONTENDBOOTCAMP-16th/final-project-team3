@@ -15,13 +15,20 @@ import {
 import { useRouter } from 'next/navigation';
 import { LimitedInput } from '@/components/common/LimitedInput';
 import { LimitedTextarea } from '@/components/common/LimitedTextarea';
-import { BELT_COLORS } from '@/utils/beltColors';
 
 interface SettingsTabProps {
   profile: Profile;
 }
 
 const BELTS: BeltLevel[] = ['White', 'Blue', 'Purple', 'Brown', 'Black'];
+
+const BELT_COLORS: Record<BeltLevel, string> = {
+  White: 'var(--color-belt-white)',
+  Blue: 'var(--color-belt-blue)',
+  Purple: 'var(--color-belt-purple)',
+  Brown: 'var(--color-belt-brown)',
+  Black: 'var(--color-belt-black)',
+};
 
 export default function SettingsTab({ profile }: SettingsTabProps) {
   const [nickname, setNickname] = useState(profile.nickname ?? '');

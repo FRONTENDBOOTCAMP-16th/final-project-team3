@@ -41,13 +41,15 @@ type ConfirmDojangAction = {
 } | null;
 
 const actionButtonClass =
-  'inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
+  'inline-flex items-center justify-center rounded-md p-2 text-text-secondary transition-colors duration-200 hover:bg-btn-basic cursor-pointer';
 
 function DetailItem({ label, value }: DetailItemProps) {
   return (
-    <div className="grid grid-cols-[104px_minmax(0,1fr)] items-start gap-3 rounded-lg bg-zinc-50 px-4 py-3">
-      <dt className="text-sm font-medium text-zinc-500">{label}</dt>
-      <dd className="min-w-0 text-sm text-zinc-800 break-words">{value}</dd>
+    <div className="grid grid-cols-[104px_minmax(0,1fr)] items-start gap-3 rounded-lg bg-btn-basic px-4 py-3">
+      <dt className="text-sm font-medium text-text-secondary">{label}</dt>
+      <dd className="min-w-0 text-sm text-text-primary wrap-break-word">
+        {value}
+      </dd>
     </div>
   );
 }
@@ -100,7 +102,7 @@ export default function AdminSupportDojangActions({
 
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader className="gap-3">
-            <DialogTitle className="text-xl font-semibold text-zinc-900">
+            <DialogTitle className="text-xl font-semibold text-text-primary">
               {row.dojang_name}
             </DialogTitle>
             <DialogDescription className="flex items-center gap-2">
@@ -108,14 +110,14 @@ export default function AdminSupportDojangActions({
                 label={row.status}
                 variant={DOJANG_STATUS_BADGE_VARIANT_MAP[row.status]}
               />
-              <span className="text-sm text-zinc-500">
+              <span className="text-sm text-text-secondary">
                 요청일 {row.requested_at}
               </span>
             </DialogDescription>
           </DialogHeader>
 
           <section className="space-y-3">
-            <h3 className="text-sm font-semibold text-zinc-900">
+            <h3 className="text-sm font-semibold text-text-primary">
               도장 인증 정보
             </h3>
 

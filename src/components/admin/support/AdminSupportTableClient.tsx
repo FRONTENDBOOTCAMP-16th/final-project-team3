@@ -99,16 +99,15 @@ const REPORT_COLUMNS: AdminTableColumn<AdminReportRow>[] = [
     width: '11%',
     align: 'center',
     truncate: false,
-    render: (row) => (
+    render: (row) =>
       row.action_result === '-' ? (
-        <span className="text-sm text-zinc-400">-</span>
+        <span className="text-sm text-text-secondary">-</span>
       ) : (
         <AdminBadge
           label={row.action_result}
           variant={REPORT_ACTION_BADGE_VARIANT_MAP[row.action_result]}
         />
-      )
-    ),
+      ),
   },
   { key: 'handled_at', header: '처리 날짜', width: '11%', align: 'center' },
   {
@@ -144,9 +143,7 @@ export default function AdminSupportTableClient({
   };
 
   const searchPlaceholder =
-    activeSection === 'dojang'
-      ? '도장명, 주소 검색...'
-      : '게시글 제목 검색...';
+    activeSection === 'dojang' ? '도장명, 주소 검색...' : '게시글 제목 검색...';
 
   return (
     <>

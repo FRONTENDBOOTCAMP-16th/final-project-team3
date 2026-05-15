@@ -17,7 +17,7 @@ interface AdminCompetitionPostActionProps {
 }
 
 const actionButtonClass =
-  'inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
+  'inline-flex items-center justify-center rounded-md p-2 text-text-secondary transition-colors duration-200 hover:bg-btn-basic cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
 
 export default function AdminCompetitionPostAction({
   id,
