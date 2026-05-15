@@ -48,11 +48,9 @@ const actionPlaceholderClass =
 
 function DetailItem({ label, value }: DetailItemProps) {
   return (
-    <div className="grid grid-cols-[104px_minmax(0,1fr)] items-start gap-3 rounded-lg bg-btn-basic px-4 py-3">
-      <dt className="text-sm font-medium text-text-secondary">{label}</dt>
-      <dd className="min-w-0 text-sm text-text-primary wrap-break-word">
-        {value}
-      </dd>
+    <div className="grid grid-cols-[104px_minmax(0,1fr)] items-start gap-3 rounded-lg bg-gray-100 px-4 py-3">
+      <dt className="text-sm font-medium text-gray-500">{label}</dt>
+      <dd className="min-w-0 text-sm text-gray-800 wrap-break-word">{value}</dd>
     </div>
   );
 }
@@ -157,10 +155,10 @@ export default function AdminSupportReportActions({
 
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader className="gap-3">
-            <DialogTitle className="text-xl font-semibold text-text-primary">
+            <DialogTitle className="text-xl font-semibold text-gray-900">
               신고 상세
             </DialogTitle>
-            <DialogDescription className="text-sm text-text-secondary">
+            <DialogDescription className="text-sm text-gray-500">
               신고 상태와 처리 결과를 확인하세요.
             </DialogDescription>
           </DialogHeader>
@@ -186,7 +184,7 @@ export default function AdminSupportReportActions({
                 label="처리 결과"
                 value={
                   row.action_result === '-' ? (
-                    <span className="text-sm text-text-secondary">-</span>
+                    <span className="text-sm text-gray-500">-</span>
                   ) : (
                     <AdminBadge
                       label={row.action_result}
@@ -215,7 +213,7 @@ export default function AdminSupportReportActions({
                   })
                 }
                 disabled={isSubmitting}
-                className={`${actionButtonClass} h-9 border-border bg-btn-basic px-3 text-text-primary hover:bg-btn-basic`}
+                className={`h-9 border border-gray-300 bg-gray-300 px-3 text-gray-700 hover:bg-gray-400 hover:text-white rounded-md text-sm font-medium cursor-pointer`}
               >
                 문제 없음 처리
               </button>
@@ -231,7 +229,7 @@ export default function AdminSupportReportActions({
                   })
                 }
                 disabled={isSubmitting}
-                className={`${actionButtonClass} h-9 border-blue-200 bg-blue-50 px-3 text-blue-700 hover:bg-blue-100`}
+                className={`h-9 border border-blue-300 bg-blue-300 px-3 text-blue-700 hover:bg-blue-400 hover:text-white rounded-md text-sm font-medium cursor-pointer`}
               >
                 게시글 숨김 처리
               </button>
@@ -247,7 +245,7 @@ export default function AdminSupportReportActions({
                   })
                 }
                 disabled={isSubmitting}
-                className={`${actionButtonClass} h-9 border-red-200 bg-red-50 px-3 text-red-600 hover:bg-red-100`}
+                className={`h-9 border border-red-300 bg-red-300 px-3 text-red-700 hover:bg-red-400 hover:text-white rounded-md text-sm font-medium cursor-pointer`}
               >
                 게시글 삭제 처리
               </button>

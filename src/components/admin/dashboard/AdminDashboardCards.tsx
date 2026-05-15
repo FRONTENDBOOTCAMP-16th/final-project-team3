@@ -14,7 +14,7 @@ interface AdminDashboardCardsProps {
 }
 
 const iconToneClassMap: Record<DashboardCardTone, string> = {
-  slate: 'bg-btn-basic text-text-primary ring-border',
+  slate: 'bg-gray-100 text-gray-700 ring-gray-200',
   blue: 'bg-blue-50 text-blue-600 ring-blue-100',
   green: 'bg-emerald-50 text-emerald-600 ring-emerald-100',
   amber: 'bg-amber-50 text-amber-600 ring-amber-100',
@@ -40,7 +40,7 @@ function DashboardMetricCard({
 }) {
   const Icon = config.icon;
   const cardClassName = cn(
-    'group relative overflow-hidden rounded-3xl border border-border bg-bg-white p-6 shadow-sm transition-transform duration-200',
+    'group relative overflow-hidden rounded-3xl border border-border bg-bg-page p-6 shadow-sm transition-transform duration-200',
     config.href
       ? 'block cursor-pointer hover:-translate-y-0.5 hover:shadow-md'
       : '',

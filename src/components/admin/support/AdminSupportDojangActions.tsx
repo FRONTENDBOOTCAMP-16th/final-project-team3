@@ -45,11 +45,9 @@ const actionButtonClass =
 
 function DetailItem({ label, value }: DetailItemProps) {
   return (
-    <div className="grid grid-cols-[104px_minmax(0,1fr)] items-start gap-3 rounded-lg bg-btn-basic px-4 py-3">
-      <dt className="text-sm font-medium text-text-secondary">{label}</dt>
-      <dd className="min-w-0 text-sm text-text-primary wrap-break-word">
-        {value}
-      </dd>
+    <div className="grid grid-cols-[104px_minmax(0,1fr)] items-start gap-3 rounded-lg bg-gray-100 px-4 py-3">
+      <dt className="text-sm font-medium text-gray-500">{label}</dt>
+      <dd className="min-w-0 text-sm text-gray-800 wrap-break-word">{value}</dd>
     </div>
   );
 }
@@ -102,7 +100,7 @@ export default function AdminSupportDojangActions({
 
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader className="gap-3">
-            <DialogTitle className="text-xl font-semibold text-text-primary">
+            <DialogTitle className="text-xl font-semibold text-gray-900">
               {row.dojang_name}
             </DialogTitle>
             <DialogDescription className="flex items-center gap-2">
@@ -110,14 +108,14 @@ export default function AdminSupportDojangActions({
                 label={row.status}
                 variant={DOJANG_STATUS_BADGE_VARIANT_MAP[row.status]}
               />
-              <span className="text-sm text-text-secondary">
+              <span className="text-sm text-gray-500">
                 요청일 {row.requested_at}
               </span>
             </DialogDescription>
           </DialogHeader>
 
           <section className="space-y-3">
-            <h3 className="text-sm font-semibold text-text-primary">
+            <h3 className="text-sm font-semibold text-gray-900">
               도장 인증 정보
             </h3>
 
@@ -167,7 +165,7 @@ export default function AdminSupportDojangActions({
                   })
                 }
                 disabled={isPending}
-                className={`${actionButtonClass} h-9 border-green-200 bg-green-50 px-3 text-green-700 hover:bg-green-100`}
+                className="h-9 rounded-md border border-green-300 bg-green-200 px-3 text-sm font-medium text-green-700 hover:bg-green-400 hover:text-white transition-colors duration-200 cursor-pointer"
               >
                 승인
               </button>
@@ -186,7 +184,7 @@ export default function AdminSupportDojangActions({
                   })
                 }
                 disabled={isPending}
-                className={`${actionButtonClass} h-9 border-red-200 bg-red-50 px-3 text-red-600 hover:bg-red-100`}
+                className="h-9 rounded-md border border-red-300 bg-red-200 px-3 text-sm font-medium text-red-700 hover:bg-red-400 hover:text-white transition-colors duration-200 cursor-pointer"
               >
                 거부
               </button>
@@ -210,7 +208,7 @@ export default function AdminSupportDojangActions({
                   })
                 }
                 disabled={isPending}
-                className={`${actionButtonClass} h-9 border-amber-200 bg-amber-50 px-3 text-amber-700 hover:bg-amber-100`}
+                className="h-9 rounded-md border border-amber-300 bg-amber-200 px-3 text-sm font-medium text-amber-700 hover:bg-amber-400 hover:text-white transition-colors duration-200 cursor-pointer"
               >
                 승인 취소
               </button>
@@ -229,7 +227,7 @@ export default function AdminSupportDojangActions({
                   })
                 }
                 disabled={isPending}
-                className={`${actionButtonClass} h-9 border-red-200 bg-red-50 px-3 text-red-600 hover:bg-red-100`}
+                className="h-9 rounded-md border border-red-300 bg-red-200 px-3 text-sm font-medium text-red-700 hover:bg-red-400 hover:text-white transition-colors duration-200 cursor-pointer"
               >
                 거부
               </button>
@@ -253,7 +251,7 @@ export default function AdminSupportDojangActions({
                   })
                 }
                 disabled={isPending}
-                className={`${actionButtonClass} h-9 border-blue-200 bg-blue-50 px-3 text-blue-700 hover:bg-blue-100`}
+                className="h-9 rounded-md border border-blue-300 bg-blue-200 px-3 text-sm font-medium text-blue-700 hover:bg-blue-400 hover:text-white transition-colors duration-200 cursor-pointer"
               >
                 재검토
               </button>
@@ -272,7 +270,7 @@ export default function AdminSupportDojangActions({
                   })
                 }
                 disabled={isPending}
-                className={`${actionButtonClass} h-9 border-green-200 bg-green-50 px-3 text-green-700 hover:bg-green-100`}
+                className="h-9 rounded-md border border-green-300 bg-green-200 px-3 text-sm font-medium text-green-700 hover:bg-green-400 hover:text-white transition-colors duration-200 cursor-pointer"
               >
                 승인
               </button>
