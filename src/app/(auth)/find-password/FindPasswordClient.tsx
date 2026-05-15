@@ -249,7 +249,6 @@ export default function FindPasswordPage() {
               >
                 <path
                   strokeLinecap="round"
-                  ㅋㅋㅋ
                   strokeLinejoin="round"
                   strokeWidth={2}
                   d="M5 13l4 4L19 7"
