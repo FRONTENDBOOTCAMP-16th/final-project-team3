@@ -58,9 +58,19 @@ export default function PostDetailClient({
   useEffect(() => {
     const key = `viewed-post-${id}`;
     if (sessionStorage.getItem(key)) return;
-    sessionStorage.setItem(key, 'true');
-    console.log('fetch 호출:', `/api/posts/${id}/view`);
-    fetch(`/api/posts/${id}/view`, { method: 'POST' });
+
+    const incrementView = async () => {
+      try {
+        const res = await fetch(`/api/posts/${id}/view`, { method: 'POST' });
+        if (res.ok) {
+          sessionStorage.setItem(key, 'true'); // 성공했을 때만 저장
+        }
+      } catch {
+        // 네트워크 오류 시 무시 (다음에 재시도 가능)
+      }
+    };
+
+    incrementView();
   }, [id]);
 
   const canManagePost = canManageContent({
