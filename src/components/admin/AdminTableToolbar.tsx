@@ -14,6 +14,7 @@ interface AdminTableToolbarProps<TFilter extends string> {
   searchQuery: string;
   // eslint-disable-next-line no-unused-vars
   onSearchQueryChange: (_value: string) => void;
+  onSearch?: () => void;
   searchPlaceholder?: string;
 }
 
@@ -23,6 +24,7 @@ export default function AdminTableToolbar<TFilter extends string>({
   onFilterChange,
   searchQuery,
   onSearchQueryChange,
+  onSearch,
   searchPlaceholder,
 }: AdminTableToolbarProps<TFilter>) {
   return (
@@ -56,6 +58,7 @@ export default function AdminTableToolbar<TFilter extends string>({
         <SearchInput
           searchQuery={searchQuery}
           setSearchQuery={onSearchQueryChange}
+          onSearch={onSearch}
           placeholder={searchPlaceholder}
         />
       </div>
