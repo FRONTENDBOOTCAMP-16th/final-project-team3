@@ -6,12 +6,7 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { isPublicPostVisible } from '@/services/communityService';
-import {
-  getPost,
-  getComments,
-  incrementViewCount,
-} from '@/services/communityService.server';
-import { supabasePublic } from '@/lib/supabase/public';
+import { getPost, getComments } from '@/services/communityService.server';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -68,16 +63,6 @@ async function PostDetailContent({ params }: Props) {
       ).data?.role ?? null)
     : null;
 
-  await incrementViewCount(id);
-  const viewCount =
-    (
-      await supabasePublic
-        .from('posts')
-        .select('view_count')
-        .eq('id', id)
-        .single()
-    ).data?.view_count ?? 0;
-
   return (
     <PostDetailClient
       id={id}
@@ -85,7 +70,6 @@ async function PostDetailContent({ params }: Props) {
       initialComments={comments}
       userId={user?.id ?? null}
       currentUserRole={currentUserRole}
-      viewCount={viewCount}
     />
   );
 }
