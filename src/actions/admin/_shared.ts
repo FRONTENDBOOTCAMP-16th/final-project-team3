@@ -60,7 +60,6 @@ export function revalidatePostCaches(
   postId: string,
   additionalPaths: string[] = [],
 ) {
-  // Server Actions should use updateTag for read-your-own-writes behavior.
   updateTag('posts-list');
   updateTag(`post-${postId}`);
 

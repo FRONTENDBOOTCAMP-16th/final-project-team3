@@ -17,7 +17,6 @@ import {
 } from '@/services/authService';
 import { showSuccessToast, showErrorToast } from '@/lib/toast';
 
-// 일반 회원 zod 유효성 검사 스키마
 const generalSchema = z
   .object({
     name: z.string().optional(),
@@ -35,7 +34,6 @@ const generalSchema = z
     path: ['passwordCheck'],
   });
 
-// 도장 회원 zod 유효성 검사 스키마 추가
 const dojangSchema = z
   .object({
     name: z.string().optional(),
@@ -57,7 +55,6 @@ const dojangSchema = z
     path: ['passwordCheck'],
   });
 
-// 벨트 종류
 const BELTS = [
   { value: 'white', label: 'White  (입문자)', color: '#e8e8e8' },
   { value: 'blue', label: 'Blue   (파란띠)', color: '#2e6fdb' },
@@ -151,9 +148,6 @@ const InputWithIcon = forwardRef<
 });
 InputWithIcon.displayName = 'InputWithIcon';
 
-// 일반 회원가입 폼
-// react-hook-form + zod 유효성 검사 연결
-// onSubmit → supabase API 연동 완료
 type GeneralFormType = z.infer<typeof generalSchema>;
 
 function GeneralForm() {
@@ -342,9 +336,6 @@ function GeneralForm() {
   );
 }
 
-// 도장 회원가입 폼
-// react-hook-form + zod 유효성 검사 연결
-// onSubmit → supabase API 연동 완료
 type DojangFormType = z.infer<typeof dojangSchema>;
 
 function DojangForm() {
