@@ -1,4 +1,5 @@
 import type { AdminBadgeVariant } from '@/components/admin/AdminBadge';
+import { ADMIN_TABLE_PAGE_SIZE } from '@/lib/adminTableServerPagination';
 
 import type {
   AdminPostCategory,
@@ -7,7 +8,7 @@ import type {
 } from './types';
 
 export const UNKNOWN_POST_AUTHOR = '알 수 없음';
-export const ADMIN_POSTS_PAGE_SIZE = 10;
+export const ADMIN_POSTS_PAGE_SIZE = ADMIN_TABLE_PAGE_SIZE;
 
 export const ADMIN_POST_FILTERS = [
   { label: '전체', value: 'all' },

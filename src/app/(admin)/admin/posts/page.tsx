@@ -3,24 +3,27 @@ import type { Metadata } from 'next';
 import AdminPostTableClient from '@/components/admin/posts/AdminPostsTableClient';
 import {
   ADMIN_POST_FILTERS,
-  ADMIN_POSTS_PAGE_SIZE,
   CATEGORY_QUERY_VALUE_MAP,
 } from '@/components/admin/posts/constants';
 import type { PostQueryRow } from '@/components/admin/posts/types';
-import type { AdminPostFilterValue } from '@/components/admin/posts/types';
 import { mapPostQueryRowsToAdminPostRows } from '@/components/admin/posts/utils';
 import { getAdminPageMetadata } from '@/constants/adminMeta';
-import { parseEnumParam, parsePositiveIntParam } from '@/lib/urlSearchParams';
+import {
+  ADMIN_TABLE_PAGE_SIZE,
+  buildAdminPaginationRange,
+  parseAdminTableServerQuery,
+  type AdminTableRouteSearchParams,
+} from '@/lib/adminTableServerPagination';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = getAdminPageMetadata('posts');
 
-type AdminPostsPageSearchParams = Promise<{
-  page?: string | string[] | undefined;
-  search?: string | string[] | undefined;
-  category?: string | string[] | undefined;
-  status?: string | string[] | undefined;
-}>;
+type AdminPostsPageSearchParams = Promise<
+  AdminTableRouteSearchParams & {
+    category?: string | string[] | undefined;
+    status?: string | string[] | undefined;
+  }
+>;
 
 type AdminPostStatusFilterValue =
   | 'all'
@@ -35,34 +38,21 @@ const ADMIN_POST_STATUS_FILTERS = [
   'deleted',
 ] as const satisfies readonly AdminPostStatusFilterValue[];
 
-function getSingleSearchParam(
-  value: string | string[] | undefined,
-): string | null {
-  if (Array.isArray(value)) {
-    return value[0] ?? null;
-  }
-
-  return value ?? null;
-}
-
 async function getAdminPosts(searchParams: Awaited<AdminPostsPageSearchParams>) {
   const supabase = await createSupabaseServerClient();
-  const requestedPage = parsePositiveIntParam(
-    getSingleSearchParam(searchParams.page),
-    1,
-  ).value;
-  const activeCategory = parseEnumParam<AdminPostFilterValue>(
-    getSingleSearchParam(searchParams.category),
-    ADMIN_POST_FILTERS.map((filter) => filter.value),
-    'all',
-  );
-  const activeStatus = parseEnumParam<AdminPostStatusFilterValue>(
-    getSingleSearchParam(searchParams.status),
-    ADMIN_POST_STATUS_FILTERS,
-    'all',
-  );
-  const normalizedSearchQuery =
-    getSingleSearchParam(searchParams.search)?.trim() ?? '';
+  const { requestedPage, activeFilter: activeCategory, normalizedSearchQuery } =
+    parseAdminTableServerQuery({
+      searchParams,
+      filterParamName: 'category',
+      validFilters: ADMIN_POST_FILTERS.map((filter) => filter.value),
+      defaultFilter: 'all',
+    });
+  const { activeFilter: activeStatus } = parseAdminTableServerQuery({
+    searchParams,
+    filterParamName: 'status',
+    validFilters: ADMIN_POST_STATUS_FILTERS,
+    defaultFilter: 'all',
+  });
 
   let countQuery = supabase.from('posts').select('id', {
     count: 'exact',
@@ -122,11 +112,11 @@ async function getAdminPosts(searchParams: Awaited<AdminPostsPageSearchParams>) 
   }
 
   const totalCount = count ?? 0;
-  const totalPages = Math.max(1, Math.ceil(totalCount / ADMIN_POSTS_PAGE_SIZE));
-  const currentPage =
-    totalCount === 0 ? 1 : Math.min(requestedPage, totalPages);
-  const from = (currentPage - 1) * ADMIN_POSTS_PAGE_SIZE;
-  const to = from + ADMIN_POSTS_PAGE_SIZE - 1;
+  const { from, to, pageSize } = buildAdminPaginationRange({
+    requestedPage,
+    totalCount,
+    pageSize: ADMIN_TABLE_PAGE_SIZE,
+  });
 
   const { data, error } = await dataQuery.range(from, to);
 
@@ -137,7 +127,7 @@ async function getAdminPosts(searchParams: Awaited<AdminPostsPageSearchParams>) 
   return {
     rows: mapPostQueryRowsToAdminPostRows((data ?? []) as PostQueryRow[]),
     totalCount,
-    pageSize: ADMIN_POSTS_PAGE_SIZE,
+    pageSize,
   };
 }
 
