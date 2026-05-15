@@ -19,7 +19,10 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import PostDetailCard, {
   PostDetailCardData,
 } from '@/components/community/PostDetailCard';
-import { canManageContent, type ContentUserRole } from '@/lib/contentPermissions';
+import {
+  canManageContent,
+  type ContentUserRole,
+} from '@/lib/contentPermissions';
 import { timeAgo } from '@/utils/timeAgo';
 import { LimitedTextarea } from '../common/LimitedTextarea';
 
@@ -29,6 +32,7 @@ interface Props {
   initialComments: Comment[];
   userId: string | null;
   currentUserRole: ContentUserRole;
+  viewCount: number;
 }
 
 export default function PostDetailClient({
@@ -37,6 +41,7 @@ export default function PostDetailClient({
   initialComments,
   userId,
   currentUserRole,
+  viewCount,
 }: Props) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -183,7 +188,7 @@ export default function PostDetailClient({
     content: post.content,
     likeCount: likeCount ?? 0,
     commentCount: comments.length,
-    view_count: post.view_count,
+    view_count: viewCount,
   };
 
   return (

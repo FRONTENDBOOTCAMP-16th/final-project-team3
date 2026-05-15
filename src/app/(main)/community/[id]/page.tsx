@@ -3,12 +3,15 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import PostDetailClient from '@/components/community/PostDetailClient';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import ErrorBoundary from '@/components/common/ErrorBoundary';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { isPublicPostVisible } from '@/services/communityService';
 import {
-  isPublicPostVisible,
+  getPost,
+  getComments,
   incrementViewCount,
-} from '@/services/communityService';
-import { getPost, getComments } from '@/services/communityService.server';
+} from '@/services/communityService.server';
+import { supabasePublic } from '@/lib/supabase/public';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -55,18 +58,25 @@ async function PostDetailContent({ params }: Props) {
 
   if (!isPublicPostVisible(post)) notFound();
 
-  const currentUserRole =
-    user?.id
-      ? (
-          await supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', user.id)
-            .single()
-        ).data?.role ?? null
-      : null;
+  const currentUserRole = user?.id
+    ? ((
+        await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single()
+      ).data?.role ?? null)
+    : null;
 
   await incrementViewCount(id);
+  const viewCount =
+    (
+      await supabasePublic
+        .from('posts')
+        .select('view_count')
+        .eq('id', id)
+        .single()
+    ).data?.view_count ?? 0;
 
   return (
     <PostDetailClient
@@ -75,14 +85,17 @@ async function PostDetailContent({ params }: Props) {
       initialComments={comments}
       userId={user?.id ?? null}
       currentUserRole={currentUserRole}
+      viewCount={viewCount}
     />
   );
 }
 
 export default function PostDetailPage({ params }: Props) {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <PostDetailContent params={params} />
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={<LoadingSpinner />}>
+        <PostDetailContent params={params} />
+      </Suspense>
+    </ErrorBoundary>
   );
 }
