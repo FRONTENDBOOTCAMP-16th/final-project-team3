@@ -25,6 +25,7 @@ import {
 } from '@/lib/contentPermissions';
 import { timeAgo } from '@/utils/timeAgo';
 import { LimitedTextarea } from '../common/LimitedTextarea';
+import { Pencil, Trash2, Flag, Share2 } from 'lucide-react';
 
 interface Props {
   id: string;
@@ -62,11 +63,9 @@ export default function PostDetailClient({
       try {
         const res = await fetch(`/api/posts/${id}/view`, { method: 'POST' });
         if (res.ok) {
-          sessionStorage.setItem(key, 'true'); // 성공했을 때만 저장
+          sessionStorage.setItem(key, 'true');
         }
-      } catch {
-        // 네트워크 오류 시 무시 (다음에 재시도 가능)
-      }
+      } catch {}
     };
 
     incrementView();
@@ -249,15 +248,23 @@ export default function PostDetailClient({
                   title="수정하기"
                   aria-label="게시글 수정"
                   onClick={() => router.push(`/community/${id}/edit`)}
+                  className="p-1"
                 >
-                  <Image src="/postEdit.svg" alt="" width={30} height={30} />
+                  <Pencil
+                    size={20}
+                    className="text-gray-400 hover:text-gray-800"
+                  />
                 </button>
                 <button
                   title="삭제하기"
                   aria-label="게시글 삭제"
                   onClick={() => setDeletePostModalOpen(true)}
+                  className="p-1"
                 >
-                  <Image src="/postDelete.svg" alt="" width={32} height={32} />
+                  <Trash2
+                    size={20}
+                    className="text-gray-400 hover:text-red-500"
+                  />
                 </button>
               </>
             ) : (
@@ -265,18 +272,18 @@ export default function PostDetailClient({
                 title="신고하기"
                 aria-label="게시글 신고"
                 onClick={() => setReportModalOpen(true)}
-                className="w-8 h-8 flex items-center justify-center"
+                className="p-1"
               >
-                <Image src="/postReport.svg" alt="" width={27} height={27} />
+                <Flag size={20} className="text-gray-400 hover:text-gray-800" />
               </button>
             )}
             <button
               title="공유하기"
               aria-label="게시글 공유"
               onClick={handleShare}
-              className="w-8 h-8 flex items-center justify-center"
+              className="p-1"
             >
-              <Image src="/postShare.svg" alt="" width={18} height={18} />
+              <Share2 size={18} className="text-gray-400 hover:text-gray-800" />
             </button>
           </>
         }
