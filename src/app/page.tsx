@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import LogoutButton from '@/components/layout/LogoutButton';
 import { LogIn } from 'lucide-react';
+import ThemeToggle from '@/components/layout/ThemeToggle';
 
 export const metadata: Metadata = {
   title: '블랙벨트 | 주짓수 올인원 네트워크',
@@ -30,7 +31,7 @@ const NAV_LINKS = [
 ] as const;
 
 const NAV_LINK_CLASS =
-  'flex items-center gap-2 px-6 py-3 border-2 border-btn-focus text-black text-sm font-medium rounded-xl hover:bg-btn-focus hover:text-white transition-colors duration-200';
+  'flex items-center gap-2 px-6 py-3 border-2 border-btn-focus text-text-primary text-sm font-medium rounded-xl hover:bg-btn-focus hover:text-btn-focus-text transition-colors duration-200';
 
 async function AuthButton() {
   const supabase = await createSupabaseServerClient();
@@ -52,8 +53,11 @@ export default function Home() {
   return (
     <main
       aria-label="블랙벨트 홈"
-      className="min-h-screen bg-white flex flex-col items-center justify-center px-6 py-16 relative overflow-hidden"
+      className="min-h-screen bg-bg-white flex flex-col items-center justify-center px-6 py-16 relative overflow-hidden"
     >
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
       <div className="flex flex-col items-center mb-6 animate-fade-in">
         <div className="mb-4">
           <Image
@@ -64,18 +68,18 @@ export default function Home() {
           />
         </div>
         <h1
-          className="text-4xl font-black tracking-tight text-black text-center leading-tight"
+          className="text-4xl font-black tracking-tight text-text-primary text-center leading-tight"
           style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
         >
           블랙벨트
         </h1>
         <p
-          className="text-lg font-light tracking-[0.3em] text-gray-500 mt-1"
+          className="text-lg font-light tracking-[0.3em] text-text-secondary mt-1"
           style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
         >
           (Black-Belt)
         </p>
-        <p className="text-sm text-gray-600 text-center max-w-xl leading-relaxed mt-4">
+        <p className="text-sm text-text-secondary text-center max-w-xl leading-relaxed mt-4">
           주짓수인들을 위한 올인원 네트워크, 블랙벨트
           <br />
           <br />
