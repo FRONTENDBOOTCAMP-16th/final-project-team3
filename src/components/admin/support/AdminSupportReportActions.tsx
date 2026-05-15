@@ -1,9 +1,11 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { FileText, ShieldAlert } from 'lucide-react';
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { processAdminReport } from '@/actions/admin/reports';
 import AdminBadge from '@/components/admin/AdminBadge';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import {
@@ -20,7 +22,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { ROUTES } from '@/constants/routes';
-import { supabase } from '@/lib/supabase/client';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 
 interface AdminSupportReportActionsProps {
@@ -58,6 +59,7 @@ export default function AdminSupportReportActions({
   row,
 }: AdminSupportReportActionsProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [isSubmitting, startTransition] = useTransition();
   const [confirmAction, setConfirmAction] = useState<ConfirmReportAction>(null);
@@ -92,51 +94,16 @@ export default function AdminSupportReportActions({
     }
 
     startTransition(async () => {
-      if (actionType === 'hide_post' && row.post_id) {
-        const { error } = await supabase
-          .from('posts')
-          .update({ status: 'hidden' })
-          .eq('id', row.post_id);
+      const result = await processAdminReport({
+        reportId: row.id,
+        postId: row.post_id,
+        actionType,
+      });
 
-        if (error) {
-          showErrorToast('게시글 숨김 처리에 실패했습니다.');
-          return;
-        }
-      }
-
-      if (actionType === 'delete_post' && row.post_id) {
-        const { error } = await supabase
-          .from('posts')
-          .update({ deleted_at: new Date().toISOString() })
-          .eq('id', row.post_id);
-
-        if (error) {
-          showErrorToast('게시글 삭제 처리에 실패했습니다.');
-          return;
-        }
-      }
-
-      const nextReportStatus = actionType === 'none' ? 'ignored' : 'resolved';
-      const { error } = await supabase
-        .from('reports')
-        .update({
-          reports_status: nextReportStatus,
-          action_type: actionType,
-          handled_at: new Date().toISOString(),
-        })
-        .eq('id', row.id);
-
-      if (error) {
-        showErrorToast('신고 처리 상태 저장에 실패했습니다.');
+      if (!result.success) {
+        showErrorToast(result.message);
         return;
       }
-
-      const successMessage =
-        actionType === 'hide_post'
-          ? '신고 내역을 게시글 숨김으로 처리했습니다.'
-          : actionType === 'delete_post'
-            ? '신고 내역을 게시글 삭제로 처리했습니다.'
-            : '신고 내역을 문제없음으로 처리했습니다.';
 
       const successIcon =
         actionType === 'hide_post'
@@ -145,8 +112,10 @@ export default function AdminSupportReportActions({
             ? '🗑️'
             : '✅';
 
-      showSuccessToast(successMessage, successIcon);
+      showSuccessToast(result.message, successIcon);
       setOpen(false);
+      setConfirmAction(null);
+      queryClient.removeQueries({ queryKey: ['posts'] });
       router.refresh();
     });
   };

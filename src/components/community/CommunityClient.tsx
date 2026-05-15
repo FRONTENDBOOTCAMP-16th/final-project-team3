@@ -32,12 +32,9 @@ export default function CommunityClient({
   const { user, loading } = useAuth();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    usePosts();
+    usePosts(initialPosts);
 
-  const posts = useMemo(
-    () => data?.pages.flatMap((page) => page) ?? initialPosts,
-    [data, initialPosts],
-  );
+  const posts = useMemo(() => data.pages.flatMap((page) => page), [data]);
 
   useEffect(() => {
     if (headerRef.current) {

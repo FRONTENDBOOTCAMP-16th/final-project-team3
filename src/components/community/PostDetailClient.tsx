@@ -19,6 +19,7 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import PostDetailCard, {
   PostDetailCardData,
 } from '@/components/community/PostDetailCard';
+import { canManageContent, type ContentUserRole } from '@/lib/contentPermissions';
 import { timeAgo } from '@/utils/timeAgo';
 import { LimitedTextarea } from '../common/LimitedTextarea';
 
@@ -27,6 +28,7 @@ interface Props {
   initialPost: Post;
   initialComments: Comment[];
   userId: string | null;
+  currentUserRole: ContentUserRole;
 }
 
 export default function PostDetailClient({
@@ -34,6 +36,7 @@ export default function PostDetailClient({
   initialPost,
   initialComments,
   userId,
+  currentUserRole,
 }: Props) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -49,7 +52,12 @@ export default function PostDetailClient({
   const [deletePostModalOpen, setDeletePostModalOpen] = useState(false);
   const [deleteCommentId, setDeleteCommentId] = useState<string | null>(null);
 
-  const isOwner = userId === post.user_id;
+  const canManagePost = canManageContent({
+    currentUserId: userId,
+    authorUserId: post.user_id,
+    currentUserRole,
+    authorRole: post.role,
+  });
 
   const handleCommentSubmit = async () => {
     if (!userId) {
@@ -215,7 +223,7 @@ export default function PostDetailClient({
         }}
         headerActions={
           <>
-            {isOwner ? (
+            {canManagePost ? (
               <>
                 <button
                   title="수정하기"
