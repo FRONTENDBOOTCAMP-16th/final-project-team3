@@ -63,20 +63,6 @@ async function getAdminPosts(searchParams: Awaited<AdminPostsPageSearchParams>) 
   );
   const normalizedSearchQuery =
     getSingleSearchParam(searchParams.search)?.trim() ?? '';
-  let authorIds: string[] = [];
-
-  if (normalizedSearchQuery.length > 0) {
-    const { data: matchingProfiles, error: authorSearchError } = await supabase
-      .from('profiles')
-      .select('id')
-      .ilike('nickname', `%${normalizedSearchQuery}%`);
-
-    if (authorSearchError) {
-      throw new Error(authorSearchError.message);
-    }
-
-    authorIds = (matchingProfiles ?? []).map((profile) => profile.id);
-  }
 
   let countQuery = supabase.from('posts').select('id', {
     count: 'exact',
@@ -125,18 +111,8 @@ async function getAdminPosts(searchParams: Awaited<AdminPostsPageSearchParams>) 
   }
 
   if (normalizedSearchQuery.length > 0) {
-    const titleFilter = `title.ilike.%${normalizedSearchQuery}%`;
-
-    if (authorIds.length > 0) {
-      const authorFilter = `user_id.in.(${authorIds.join(',')})`;
-      const searchFilter = `${titleFilter},${authorFilter}`;
-
-      countQuery = countQuery.or(searchFilter);
-      dataQuery = dataQuery.or(searchFilter);
-    } else {
-      countQuery = countQuery.ilike('title', `%${normalizedSearchQuery}%`);
-      dataQuery = dataQuery.ilike('title', `%${normalizedSearchQuery}%`);
-    }
+    countQuery = countQuery.ilike('title', `%${normalizedSearchQuery}%`);
+    dataQuery = dataQuery.ilike('title', `%${normalizedSearchQuery}%`);
   }
 
   const { count, error: countError } = await countQuery;

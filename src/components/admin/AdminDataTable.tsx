@@ -137,6 +137,7 @@ export default function AdminDataTable<T>({
         totalItems={resolvedTotalItems}
         pageSize={pageSize}
         pageSizeOptions={normalizedPageSizeOptions}
+        showPageSizeSelector={!serverPagination}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
       />

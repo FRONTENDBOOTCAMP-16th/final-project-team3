@@ -12,6 +12,7 @@ interface AdminTablePaginationProps {
   totalItems: number;
   pageSize: number;
   pageSizeOptions: readonly number[];
+  showPageSizeSelector?: boolean;
   // eslint-disable-next-line no-unused-vars
   onPageChange: (page: number) => void;
   // eslint-disable-next-line no-unused-vars
@@ -56,6 +57,7 @@ export default function AdminTablePagination({
   totalItems,
   pageSize,
   pageSizeOptions,
+  showPageSizeSelector = true,
   onPageChange,
   onPageSizeChange,
 }: AdminTablePaginationProps) {
@@ -74,21 +76,22 @@ export default function AdminTablePagination({
           총 {totalItems}개 중 {startItem}-{endItem}개 표시
         </p>
 
-        <label className="flex items-center gap-2 text-sm text-text-secondary">
-          페이지당
-          <select
-            className="h-9 cursor-pointer rounded-md border border-zinc-200 bg-bg-white px-3 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-btn-focus"
-            value={pageSize}
-            disabled={pageSizeOptions.length <= 1}
-            onChange={(event) => onPageSizeChange(Number(event.target.value))}
-          >
-            {pageSizeOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}개
-              </option>
-            ))}
-          </select>
-        </label>
+        {showPageSizeSelector ? (
+          <label className="flex items-center gap-2 text-sm text-text-secondary">
+            페이지당
+            <select
+              className="h-9 cursor-pointer rounded-md border border-zinc-200 bg-bg-white px-3 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-btn-focus"
+              value={pageSize}
+              onChange={(event) => onPageSizeChange(Number(event.target.value))}
+            >
+              {pageSizeOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}개
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
       </div>
 
       {totalPages > 1 ? (
