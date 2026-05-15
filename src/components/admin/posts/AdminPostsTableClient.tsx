@@ -1,6 +1,5 @@
 'use client';
 
-import { useMemo } from 'react';
 import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
   type AdminTableColumn,
@@ -8,6 +7,7 @@ import AdminDataTable, {
 import AdminPostActions from '@/components/admin/posts/AdminPostsActions';
 import AdminTableToolbar from '@/components/admin/AdminTableToolbar';
 import {
+  ADMIN_POSTS_PAGE_SIZE,
   ADMIN_POST_FILTERS,
   CATEGORY_BADGE_VARIANT_MAP,
 } from '@/components/admin/posts/constants';
@@ -16,13 +16,12 @@ import type {
   AdminPostRow,
 } from '@/components/admin/posts/types';
 import { useAdminTableQueryState } from '@/hooks/useAdminTableQueryState';
-import {
-  filterAdminPosts,
-  getPostStatusBadge,
-} from '@/components/admin/posts/utils';
+import { getPostStatusBadge } from '@/components/admin/posts/utils';
 
 interface AdminPostTableClientProps {
   data: AdminPostRow[];
+  totalCount: number;
+  pageSize?: number;
 }
 
 const POST_COLUMNS: AdminTableColumn<AdminPostRow>[] = [
@@ -72,6 +71,8 @@ const POST_COLUMNS: AdminTableColumn<AdminPostRow>[] = [
 
 export default function AdminPostTableClient({
   data,
+  totalCount,
+  pageSize = ADMIN_POSTS_PAGE_SIZE,
 }: AdminPostTableClientProps) {
   const {
     activeFilter,
@@ -87,10 +88,6 @@ export default function AdminPostTableClient({
     validFilters: ADMIN_POST_FILTERS.map((filter) => filter.value),
   });
 
-  const filteredData = useMemo(() => {
-    return filterAdminPosts(data, activeFilter, searchQuery);
-  }, [data, activeFilter, searchQuery]);
-
   return (
     <>
       <AdminTableToolbar
@@ -104,10 +101,15 @@ export default function AdminPostTableClient({
 
       <AdminDataTable
         columns={POST_COLUMNS}
-        data={filteredData}
+        data={data}
+        emptyMessage="등록된 게시글이 없습니다."
         currentPage={currentPage}
         getRowKey={(row) => row.id}
+        initialPageSize={pageSize}
         onPageChange={setPage}
+        pageSizeOptions={[pageSize]}
+        serverPagination
+        totalItems={totalCount}
       />
     </>
   );

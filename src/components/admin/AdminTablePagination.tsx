@@ -79,6 +79,7 @@ export default function AdminTablePagination({
           <select
             className="h-9 cursor-pointer rounded-md border border-zinc-200 bg-bg-white px-3 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-btn-focus"
             value={pageSize}
+            disabled={pageSizeOptions.length <= 1}
             onChange={(event) => onPageSizeChange(Number(event.target.value))}
           >
             {pageSizeOptions.map((option) => (

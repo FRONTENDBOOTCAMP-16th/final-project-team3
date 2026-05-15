@@ -7,6 +7,7 @@ import type {
 } from './types';
 
 export const UNKNOWN_POST_AUTHOR = '알 수 없음';
+export const ADMIN_POSTS_PAGE_SIZE = 10;
 
 export const ADMIN_POST_FILTERS = [
   { label: '전체', value: 'all' },
@@ -19,6 +20,15 @@ export const CATEGORY_LABEL_MAP: Record<DbPostCategory, AdminPostCategory> = {
   personal: '일반',
   promo: '도장홍보',
   notice: '공지',
+};
+
+export const CATEGORY_QUERY_VALUE_MAP: Record<
+  AdminPostCategory,
+  DbPostCategory
+> = {
+  일반: 'personal',
+  도장홍보: 'promo',
+  공지: 'notice',
 };
 
 export const CATEGORY_BADGE_VARIANT_MAP: Record<
