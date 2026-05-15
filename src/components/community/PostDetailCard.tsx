@@ -1,11 +1,12 @@
 import { timeAgo } from '@/utils/timeAgo';
 import { Heart } from 'lucide-react';
 import Image from 'next/image';
+import { categoryMap } from '@/constants/categoryMap';
 
 export interface PostDetailCardData {
   nickname: string;
   avatar_url?: string | null;
-  role?: string | null;
+  category?: string | null;
   created_at: string;
   title: string;
   image_url?: string | null;
@@ -28,12 +29,7 @@ export default function PostDetailCard({
   onLike,
   isLiked,
 }: PostDetailCardProps) {
-  const roleBadge =
-    post.role === 'manager'
-      ? { label: '도장', className: 'bg-blue-50 text-blue-600' }
-      : post.role === 'admin'
-        ? { label: '관리자', className: 'bg-red-50 text-red-600' }
-        : { label: '일반', className: 'bg-gray-100 text-gray-600' };
+  const badge = categoryMap[post.category ?? ''] ?? categoryMap.personal;
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -55,13 +51,11 @@ export default function PostDetailCard({
               <span className="text-sm font-semibold text-gray-900">
                 {post.nickname}
               </span>
-              {post.role && (
-                <span
-                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${roleBadge.className}`}
-                >
-                  {roleBadge.label}
-                </span>
-              )}
+              <span
+                className={`text-xs px-2 py-0.5 rounded-full font-medium ${badge.badgeClass}`}
+              >
+                {badge.label}
+              </span>
             </div>
             <p
               className="text-xs text-gray-400 mt-0.5 flex items-center gap-1"

@@ -31,6 +31,13 @@ export default function WriteClient() {
 
   useBeforeUnload(isDirty);
 
+  const getFinalCategory = (): PostCategory =>
+    user?.role === 'admin'
+      ? 'notice'
+      : user?.role === 'manager'
+        ? category
+        : 'personal';
+
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {
       showErrorToast('제목과 내용을 모두 입력해주세요.');
@@ -45,7 +52,7 @@ export default function WriteClient() {
         : undefined;
 
       await createPost({
-        category,
+        category: getFinalCategory(),
         title,
         content,
         image_url,
@@ -184,7 +191,7 @@ export default function WriteClient() {
               post={{
                 nickname: user?.name ?? '알 수 없음',
                 avatar_url: user?.image ?? null,
-                role: category === 'promo' ? 'manager' : (user?.role ?? null),
+                category: getFinalCategory(),
                 created_at: new Date().toISOString(),
                 title,
                 image_url: preview,

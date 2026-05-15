@@ -6,6 +6,7 @@ import { useLike } from '@/hooks/useLike';
 import { formatDate } from '@/utils/formatDate';
 import { Heart, MessageCircle } from 'lucide-react';
 import { showErrorToast } from '@/lib/toast';
+import { categoryMap } from '@/constants/categoryMap';
 
 interface PostCardProps {
   post: {
@@ -21,12 +22,6 @@ interface PostCardProps {
   };
   userId: string;
 }
-
-const categoryMap: Record<string, { label: string; color: string }> = {
-  promo: { label: '도장', color: 'bg-[#155DFC]' },
-  notice: { label: '공지', color: 'bg-[#e7000b]' },
-  personal: { label: '일반', color: 'bg-[#364153]' },
-};
 
 const DEFAULT_IMAGES = [
   'https://images.unsplash.com/photo-1682545888368-587f56efd06e?w=800',
@@ -77,7 +72,7 @@ export default function PostCard({ post, userId }: PostCardProps) {
             className="object-cover"
           />
           <span
-            className={`absolute top-2 right-2 px-2 py-1 text-xs text-white rounded-full ${categoryInfo.color}`}
+            className={`absolute top-2 right-2 px-2 py-1 text-xs text-white rounded-full ${categoryInfo.dotColor}`}
             aria-label={`카테고리: ${categoryInfo.label}`}
           >
             {categoryInfo.label}

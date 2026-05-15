@@ -197,7 +197,7 @@ export default function PostDetailClient({
   const postDetailCardData: PostDetailCardData = {
     nickname: post.nickname ?? '알 수 없음',
     avatar_url: post.avatar_url,
-    role: post.role,
+    category: post.category,
     created_at: post.created_at,
     title: post.title,
     image_url: post.image_url,
