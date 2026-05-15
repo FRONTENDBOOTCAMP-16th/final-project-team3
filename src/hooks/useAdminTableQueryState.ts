@@ -44,11 +44,12 @@ export function useAdminTableQueryState<TFilter extends string>({
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const currentPage = useMemo(
+  const pageParamState = useMemo(
     () => parsePositiveIntParam(searchParams.get('page'), defaultPage),
     [defaultPage, searchParams],
   );
+
+  const currentPage = pageParamState.value;
 
   const activeFilter = useMemo(
     () =>
@@ -102,6 +103,19 @@ export function useAdminTableQueryState<TFilter extends string>({
     },
     [currentUrl, pathname, router, searchParams],
   );
+
+  useEffect(() => {
+    if (!pageParamState.shouldNormalize) {
+      return;
+    }
+
+    navigateWithSearchParams(
+      {
+        page: pageParamState.normalizedValue,
+      },
+      'replace',
+    );
+  }, [navigateWithSearchParams, pageParamState]);
 
   useEffect(() => {
     if (debouncedSearchInput !== searchInput) {

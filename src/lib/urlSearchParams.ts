@@ -1,20 +1,48 @@
 import type { ReadonlyURLSearchParams } from 'next/navigation';
 
+interface NormalizedPositiveIntParam {
+  value: number;
+  shouldNormalize: boolean;
+  normalizedValue: string | null;
+}
+
 export function parsePositiveIntParam(
   value: string | null,
   fallback: number = 1,
-) {
+): NormalizedPositiveIntParam {
   if (!value) {
-    return fallback;
+    return {
+      value: fallback,
+      shouldNormalize: false,
+      normalizedValue: fallback <= 1 ? null : String(fallback),
+    };
   }
 
-  const parsedValue = Number.parseInt(value, 10);
+  if (!/^\d+$/.test(value)) {
+    return {
+      value: fallback,
+      shouldNormalize: true,
+      normalizedValue: fallback <= 1 ? null : String(fallback),
+    };
+  }
+
+  const parsedValue = Number(value);
 
   if (!Number.isFinite(parsedValue) || parsedValue < 1) {
-    return fallback;
+    return {
+      value: fallback,
+      shouldNormalize: true,
+      normalizedValue: fallback <= 1 ? null : String(fallback),
+    };
   }
 
-  return parsedValue;
+  const normalizedValue = parsedValue <= 1 ? null : String(parsedValue);
+
+  return {
+    value: parsedValue,
+    shouldNormalize: value !== normalizedValue,
+    normalizedValue,
+  };
 }
 
 export function parseEnumParam<TValue extends string>(
