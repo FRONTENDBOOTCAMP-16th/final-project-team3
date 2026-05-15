@@ -48,3 +48,19 @@ export async function getComments(postId: string): Promise<Comment[]> {
     profiles: undefined,
   })) as Comment[];
 }
+
+export async function getViewCount(id: string): Promise<number> {
+  // 'use cache' 없음 - 항상 최신값
+  const { data } = await supabasePublic
+    .from('posts')
+    .select('view_count')
+    .eq('id', id)
+    .single();
+  return data?.view_count ?? 0;
+}
+
+export async function incrementViewCount(id: string) {
+  await supabasePublic.rpc('increment_view_count', {
+    post_id: id,
+  });
+}

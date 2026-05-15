@@ -20,6 +20,9 @@ interface AdminDataTableProps<T> {
   emptyMessage?: string;
   initialPageSize?: number;
   pageSizeOptions?: readonly number[];
+  currentPage?: number;
+  // eslint-disable-next-line no-unused-vars
+  onPageChange?: (_page: number) => void;
   // eslint-disable-next-line no-unused-vars
   getRowKey?: (_row: T, _index: number) => React.Key;
 }
@@ -30,11 +33,13 @@ export default function AdminDataTable<T>({
   emptyMessage = '데이터가 없습니다.',
   initialPageSize,
   pageSizeOptions,
+  currentPage,
+  onPageChange,
   getRowKey,
 }: AdminDataTableProps<T>) {
   const {
     pageSize,
-    currentPage,
+    currentPage: safeCurrentPage,
     totalPages,
     paginatedData,
     pageSizeOptions: normalizedPageSizeOptions,
@@ -44,6 +49,8 @@ export default function AdminDataTable<T>({
     data,
     initialPageSize,
     pageSizeOptions,
+    currentPage,
+    onPageChange,
   });
 
   return (
@@ -79,7 +86,7 @@ export default function AdminDataTable<T>({
             </tr>
           ) : (
             paginatedData.map((row, rowIndex) => {
-              const originalIndex = (currentPage - 1) * pageSize + rowIndex;
+              const originalIndex = (safeCurrentPage - 1) * pageSize + rowIndex;
 
               return (
                 <tr
@@ -118,7 +125,7 @@ export default function AdminDataTable<T>({
       </table>
 
       <AdminTablePagination
-        currentPage={currentPage}
+        currentPage={safeCurrentPage}
         totalPages={totalPages}
         totalItems={data.length}
         pageSize={pageSize}

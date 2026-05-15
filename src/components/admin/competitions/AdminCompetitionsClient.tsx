@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
@@ -17,6 +17,7 @@ import type {
   AdminCompetitionFilterValue,
   AdminCompetitionRow,
 } from '@/components/admin/competitions/types';
+import { useAdminTableQueryState } from '@/hooks/useAdminTableQueryState';
 import { filterAdminCompetitions } from '@/components/admin/competitions/utils';
 
 interface AdminCompetitionsClientProps {
@@ -81,9 +82,19 @@ const COMPETITION_COLUMNS: AdminTableColumn<AdminCompetitionRow>[] = [
 export default function AdminCompetitionsClient({
   data,
 }: AdminCompetitionsClientProps) {
-  const [activeFilter, setActiveFilter] =
-    useState<AdminCompetitionFilterValue>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const {
+    activeFilter,
+    currentPage,
+    searchQuery,
+    setFilter,
+    setPage,
+    setSearchQuery,
+    commitSearch,
+  } = useAdminTableQueryState<AdminCompetitionFilterValue>({
+    filterParamName: 'status',
+    defaultFilter: 'all',
+    validFilters: ADMIN_COMPETITION_FILTERS.map((filter) => filter.value),
+  });
 
   const filteredData = useMemo(() => {
     return filterAdminCompetitions(data, activeFilter, searchQuery);
@@ -94,17 +105,20 @@ export default function AdminCompetitionsClient({
       <AdminTableToolbar
         filters={ADMIN_COMPETITION_FILTERS}
         activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
+        onFilterChange={setFilter}
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
+        onSearch={commitSearch}
         searchPlaceholder="대회 제목 검색..."
       />
 
       <AdminDataTable
         columns={COMPETITION_COLUMNS}
+        currentPage={currentPage}
         data={filteredData}
         emptyMessage="등록된 대회가 없습니다."
         getRowKey={(row) => row.id}
+        onPageChange={setPage}
       />
     </>
   );

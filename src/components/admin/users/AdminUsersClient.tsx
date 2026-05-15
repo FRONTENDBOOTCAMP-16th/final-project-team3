@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
@@ -18,6 +18,7 @@ import type {
   AdminUserFilterValue,
   AdminUserRow,
 } from '@/components/admin/users/types';
+import { useAdminTableQueryState } from '@/hooks/useAdminTableQueryState';
 import { filterAdminUsers } from '@/components/admin/users/utils';
 
 interface AdminUsersClientProps {
@@ -153,8 +154,19 @@ const USER_COLUMNS: AdminTableColumn<AdminUserRow>[] = [
 ];
 
 export default function AdminUsersClient({ data }: AdminUsersClientProps) {
-  const [activeFilter, setActiveFilter] = useState<AdminUserFilterValue>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const {
+    activeFilter,
+    currentPage,
+    searchQuery,
+    setFilter,
+    setPage,
+    setSearchQuery,
+    commitSearch,
+  } = useAdminTableQueryState<AdminUserFilterValue>({
+    filterParamName: 'status',
+    defaultFilter: 'all',
+    validFilters: ADMIN_USER_FILTERS.map((filter) => filter.value),
+  });
 
   const filteredData = useMemo(() => {
     return filterAdminUsers(data, activeFilter, searchQuery);
@@ -165,17 +177,20 @@ export default function AdminUsersClient({ data }: AdminUsersClientProps) {
       <AdminTableToolbar
         filters={ADMIN_USER_FILTERS}
         activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
+        onFilterChange={setFilter}
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
+        onSearch={commitSearch}
         searchPlaceholder="닉네임, 이름, 이메일 검색..."
       />
 
       <AdminDataTable
         columns={USER_COLUMNS}
+        currentPage={currentPage}
         data={filteredData}
         emptyMessage="등록된 사용자가 없습니다."
         getRowKey={(row) => row.id}
+        onPageChange={setPage}
       />
     </>
   );

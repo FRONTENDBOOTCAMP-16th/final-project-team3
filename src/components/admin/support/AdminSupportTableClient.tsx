@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
@@ -21,6 +21,7 @@ import type {
   AdminReportRow,
   SupportSection,
 } from '@/components/admin/support/types';
+import { useAdminTableQueryState } from '@/hooks/useAdminTableQueryState';
 import {
   filterDojangVerifications,
   filterReports,
@@ -29,7 +30,6 @@ import {
 interface AdminSupportTableClientProps {
   dojangVerifications: AdminDojangVerificationRow[];
   reports: AdminReportRow[];
-  initialSection: SupportSection;
 }
 
 const DOJANG_COLUMNS: AdminTableColumn<AdminDojangVerificationRow>[] = [
@@ -123,11 +123,21 @@ const REPORT_COLUMNS: AdminTableColumn<AdminReportRow>[] = [
 export default function AdminSupportTableClient({
   dojangVerifications,
   reports,
-  initialSection,
 }: AdminSupportTableClientProps) {
-  const [activeSection, setActiveSection] =
-    useState<SupportSection>(initialSection);
-  const [searchQuery, setSearchQuery] = useState('');
+  const {
+    activeFilter: activeSection,
+    currentPage,
+    searchQuery,
+    setFilter,
+    setPage,
+    setSearchQuery,
+    commitSearch,
+  } = useAdminTableQueryState<SupportSection>({
+    filterParamName: 'section',
+    defaultFilter: 'dojang',
+    validFilters: SUPPORT_SECTION_FILTERS.map((filter) => filter.value),
+    resetSearchOnFilterChange: true,
+  });
 
   const filteredDojangVerifications = useMemo(() => {
     return filterDojangVerifications(dojangVerifications, searchQuery);
@@ -137,38 +147,40 @@ export default function AdminSupportTableClient({
     return filterReports(reports, searchQuery);
   }, [reports, searchQuery]);
 
-  const handleSectionChange = (nextSection: SupportSection) => {
-    setActiveSection(nextSection);
-    setSearchQuery('');
-  };
-
   const searchPlaceholder =
-    activeSection === 'dojang' ? '도장명, 주소 검색...' : '게시글 제목 검색...';
+    activeSection === 'dojang'
+      ? '도장명, 주소 검색...'
+      : '신고 게시글 제목 검색...';
 
   return (
     <>
       <AdminTableToolbar
         filters={SUPPORT_SECTION_FILTERS}
         activeFilter={activeSection}
-        onFilterChange={handleSectionChange}
+        onFilterChange={setFilter}
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
+        onSearch={commitSearch}
         searchPlaceholder={searchPlaceholder}
       />
 
       {activeSection === 'dojang' ? (
         <AdminDataTable
           columns={DOJANG_COLUMNS}
+          currentPage={currentPage}
           data={filteredDojangVerifications}
           emptyMessage="도장 인증 요청이 없습니다."
           getRowKey={(row) => row.id}
+          onPageChange={setPage}
         />
       ) : (
         <AdminDataTable
           columns={REPORT_COLUMNS}
+          currentPage={currentPage}
           data={filteredReports}
           emptyMessage="신고 내역이 없습니다."
           getRowKey={(row) => row.id}
+          onPageChange={setPage}
         />
       )}
     </>

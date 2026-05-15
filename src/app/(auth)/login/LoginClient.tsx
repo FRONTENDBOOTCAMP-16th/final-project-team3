@@ -52,14 +52,12 @@ export default function LoginPage() {
       return;
     }
 
-    // profiles 테이블에서 user 정보 가져옴
     const { data: profile } = await supabase
       .from('profiles')
       .select('nickname, role')
       .eq('id', data.user.id)
       .single();
 
-    // Zustand 전역 상태 저장
     useAuthStore.getState().setUser({
       id: data.user.id,
       email: data.user.email ?? '',
@@ -67,7 +65,6 @@ export default function LoginPage() {
       role: profile?.role ?? '',
     });
 
-    // role에 따라 다른 페이지로 이동
     const role = profile?.role ?? '';
     if (role === 'admin') {
       router.push('/admin');

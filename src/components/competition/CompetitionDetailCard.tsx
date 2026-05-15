@@ -77,14 +77,6 @@ export default function CompetitionDetailCard({
               >
                 {data.nickname ?? '알 수 없음'}
               </span>
-              {data.role && (
-                <span
-                  className="text-xs px-1.5 py-0.5 bg-state-basic-bg text-category-text rounded"
-                  aria-label={`역할: ${data.role}`}
-                >
-                  {data.role}
-                </span>
-              )}
             </div>
             <time
               dateTime={data.created_at}
@@ -121,12 +113,6 @@ export default function CompetitionDetailCard({
             fill
             className="object-cover"
           />
-          <span
-            className={`absolute top-3 left-3 px-2.5 py-1 text-xs rounded-full ${statusColor}`}
-            aria-label={`모집 상태: ${status}`}
-          >
-            {status}
-          </span>
         </div>
       )}
 
