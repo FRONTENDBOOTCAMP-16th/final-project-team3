@@ -19,7 +19,10 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import PostDetailCard, {
   PostDetailCardData,
 } from '@/components/community/PostDetailCard';
-import { canManageContent, type ContentUserRole } from '@/lib/contentPermissions';
+import {
+  canManageContent,
+  type ContentUserRole,
+} from '@/lib/contentPermissions';
 import { timeAgo } from '@/utils/timeAgo';
 import { LimitedTextarea } from '../common/LimitedTextarea';
 import { Pencil, Trash2, Flag, Share2 } from 'lucide-react';
@@ -192,7 +195,7 @@ export default function PostDetailClient({
       <button
         onClick={() => router.push('/community')}
         aria-label="커뮤니티 목록으로 이동"
-        className="flex items-center gap-2 px-2.5 py-2 border-2 border-border bg-bg-white text-text-primary text-sm font-medium rounded-xl hover:bg-btn-focus hover:text-btn-focus-text transition-colors duration-200 cursor-pointer"
+        className="flex items-center gap-2 px-2.5 py-2 border-2 border-border bg-btn-basic text-text-primary text-sm font-medium rounded-xl hover:bg-btn-focus hover:text-btn-focus-text  transition-colors duration-200 cursor-pointer"
       >
         <svg
           width="16"

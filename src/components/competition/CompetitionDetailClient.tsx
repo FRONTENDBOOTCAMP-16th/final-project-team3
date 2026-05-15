@@ -62,7 +62,7 @@ export default function CompetitionDetailClient({
       <button
         onClick={() => router.push('/competitions')}
         aria-label="대회일정 목록으로 돌아가기"
-        className="flex items-center gap-2 px-2.5 py-2 border-2 border-border bg-bg-white text-text-primary text-sm font-medium rounded-xl hover:bg-btn-focus hover:text-btn-focus-text transition-colors duration-200 cursor-pointer"
+        className="flex items-center gap-2 px-2.5 py-2 border-2 border-border bg-btn-basic text-text-primary text-sm font-medium rounded-xl hover:bg-btn-focus hover:text-btn-focus-text transition-colors duration-200 cursor-pointer"
       >
         <svg
           width="16"
