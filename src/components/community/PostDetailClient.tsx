@@ -46,7 +46,6 @@ export default function PostDetailClient({
   const { user } = useAuth();
   const { likeCount, isLiked, toggle } = useLike(id, user?.id ?? '');
 
-  const [post] = useState<Post>(initialPost);
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [comment, setComment] = useState('');
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
@@ -75,9 +74,9 @@ export default function PostDetailClient({
 
   const canManagePost = canManageContent({
     currentUserId: userId,
-    authorUserId: post.user_id,
+    authorUserId: initialPost.user_id,
     currentUserRole,
-    authorRole: post.role,
+    authorRole: initialPost.role,
   });
 
   const handleCommentSubmit = async () => {
@@ -179,7 +178,7 @@ export default function PostDetailClient({
 
   const handleShare = async () => {
     const url = window.location.href;
-    const title = post.title ?? '';
+    const title = initialPost.title ?? '';
     if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
       try {
         await navigator.share({ title, url });
@@ -195,16 +194,16 @@ export default function PostDetailClient({
   };
 
   const postDetailCardData: PostDetailCardData = {
-    nickname: post.nickname ?? '알 수 없음',
-    avatar_url: post.avatar_url,
-    category: post.category,
-    created_at: post.created_at,
-    title: post.title,
-    image_url: post.image_url,
-    content: post.content,
+    nickname: initialPost.nickname ?? '알 수 없음',
+    avatar_url: initialPost.avatar_url,
+    category: initialPost.category,
+    created_at: initialPost.created_at,
+    title: initialPost.title,
+    image_url: initialPost.image_url,
+    content: initialPost.content,
     likeCount: likeCount ?? 0,
     commentCount: comments.length,
-    view_count: post.view_count,
+    view_count: initialPost.view_count,
   };
 
   return (

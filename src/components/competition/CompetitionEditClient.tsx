@@ -14,6 +14,7 @@ import CompetitionForm, {
 } from '@/components/competition/CompetitionForm';
 import type { Competition } from '@/types/competition';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
+import ConfirmModal from '../common/ConfirmModal';
 
 interface CompetitionEditClientProps {
   competition: Competition;
@@ -25,6 +26,8 @@ export default function CompetitionEditClient({
   const queryClient = useQueryClient();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
+
   const [values, setValues] = useState<CompetitionFormValues>({
     name: competition.name ?? '',
     location: competition.location ?? '',
@@ -88,6 +91,19 @@ export default function CompetitionEditClient({
       showSuccessToast('대회일정이 수정되었습니다.', '✅');
       await queryClient.invalidateQueries({ queryKey: ['competition'] });
       await new Promise((resolve) => setTimeout(resolve, 700));
+
+      setValues({
+        name: values.name,
+        location: values.location,
+        eventDate: values.eventDate,
+        applyDeadline: values.applyDeadline,
+        applyUrl: values.applyUrl,
+        description: values.description,
+        participants: values.participants,
+        preview: image_url ?? values.preview,
+        imageFile: null,
+      });
+      setIsLoading(false);
       router.push(`/competitions/${competition.id}`);
     } catch {
       showErrorToast('대회 수정에 실패했습니다.');
@@ -102,10 +118,40 @@ export default function CompetitionEditClient({
       </div>
       <CompetitionForm values={values} onChange={setValues} />
       <PostFormActions
-        onCancel={() => router.back()}
+        onCancel={() => {
+          if (isDirty) {
+            setCancelModalOpen(true);
+          } else {
+            showErrorToast('수정된 내용이 없습니다.');
+            router.push(`/competitions/${competition.id}`);
+          }
+        }}
         onSubmit={handleSubmit}
         submitLabel="수정하기"
         isLoading={isLoading}
+      />
+
+      <ConfirmModal
+        isOpen={cancelModalOpen}
+        onClose={() => setCancelModalOpen(false)}
+        onConfirm={() => {
+          setValues({
+            name: competition.name ?? '',
+            location: competition.location ?? '',
+            eventDate: competition.event_data ?? '',
+            applyDeadline: competition.apply_deadline ?? '',
+            applyUrl: competition.apply_url ?? '',
+            description: competition.description ?? '',
+            participants: competition.participants
+              ? String(competition.participants)
+              : '',
+            preview: competition.image_url ?? null,
+            imageFile: null,
+          });
+          router.push(`/competitions/${competition.id}`);
+        }}
+        title="수정 취소"
+        description="수정 중인 내용이 있습니다. 정말 나가시겠습니까?"
       />
     </main>
   );

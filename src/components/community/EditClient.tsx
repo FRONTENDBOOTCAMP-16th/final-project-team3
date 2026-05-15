@@ -11,6 +11,7 @@ import PostFormActions from '@/components/community/PostFormActions';
 import { LimitedInput } from '../common/LimitedInput';
 import { LimitedTextarea } from '../common/LimitedTextarea';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
 interface Props {
   id: string;
@@ -29,6 +30,7 @@ export default function EditClient({ id, initialPost }: Props) {
   );
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
 
   const isDirty =
     title !== initialPost.title ||
@@ -53,12 +55,20 @@ export default function EditClient({ id, initialPost }: Props) {
       const image_url = imageFile
         ? await uploadPostImage(imageFile)
         : undefined;
+
       await updatePost(id, { title, content, image_url });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       showSuccessToast('게시글이 수정되었습니다.', '✅');
       await new Promise((resolve) => setTimeout(resolve, 700));
+
+      setTitle(title);
+      setContent(content);
+      setPreview(image_url ?? preview);
+      setImageFile(null);
+      setIsLoading(false);
+
+      router.refresh();
       router.push(`/community/${id}`);
-      router.refresh(); // 추가
     } catch {
       showErrorToast('게시글 수정에 실패했습니다.');
       setIsLoading(false);
@@ -127,10 +137,31 @@ export default function EditClient({ id, initialPost }: Props) {
       </div>
 
       <PostFormActions
-        onCancel={() => router.back()}
+        onCancel={() => {
+          if (isDirty) {
+            setCancelModalOpen(true);
+          } else {
+            showErrorToast('수정된 내용이 없습니다.');
+            router.push(`/community/${id}`);
+          }
+        }}
         onSubmit={handleSubmit}
         submitLabel="수정하기"
         isLoading={isLoading}
+      />
+
+      <ConfirmModal
+        isOpen={cancelModalOpen}
+        onClose={() => setCancelModalOpen(false)}
+        onConfirm={() => {
+          setTitle(initialPost.title);
+          setContent(initialPost.content);
+          setPreview(initialPost.image_url ?? null);
+          setImageFile(null);
+          router.push(`/community/${id}`);
+        }}
+        title="수정 취소"
+        description="수정 중인 내용이 있습니다. 정말 나가시겠습니까?"
       />
     </div>
   );
