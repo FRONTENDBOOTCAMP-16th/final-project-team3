@@ -37,7 +37,7 @@ const dojangSchema = z
     licenseNumber: z
       .string()
       .min(1, '사업자등록번호를 입력해주세요.')
-      .regex(/^\d+$/, '숫자만 입력해주세요.'),
+      .regex(/^\d{10}$/, '사업자등록번호는 숫자 10자리로 입력해주세요.'),
     ownerName: z.string().min(1, '대표자명을 입력해주세요.'),
     phone: z
       .string()

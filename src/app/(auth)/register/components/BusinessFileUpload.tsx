@@ -3,10 +3,23 @@ interface BusinessFileUploadProps {
   onChange: (file: File | null) => void;
 }
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
 export default function BusinessFileUpload({
   businessFile,
   onChange,
 }: BusinessFileUploadProps) {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+
+    if (file && file.size > MAX_FILE_SIZE) {
+      alert('파일 용량은 5MB를 초과할 수 없습니다.');
+      e.target.value = '';
+      return;
+    }
+    onChange(file);
+  };
+
   return (
     <div>
       <label
@@ -63,7 +76,7 @@ export default function BusinessFileUpload({
               클릭하여 파일 업로드
             </span>
             <span className="text-xs text-text-secondary mt-1">
-              JPG, PNG, GIF, PDF (최대 10MB)
+              JPG, PNG, GIF, PDF (최대 5MB)
             </span>
           </>
         )}
@@ -72,7 +85,7 @@ export default function BusinessFileUpload({
           type="file"
           accept=".jpg,.jpeg,.png,.gif,.pdf"
           className="hidden"
-          onChange={(e) => onChange(e.target.files?.[0] ?? null)}
+          onChange={handleFileChange}
         />
       </div>
     </div>

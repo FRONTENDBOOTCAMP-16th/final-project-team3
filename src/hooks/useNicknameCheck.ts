@@ -9,21 +9,29 @@ export function useNicknameCheck(nickname: string) {
 
   useEffect(() => {
     if (!debouncedNickname || debouncedNickname.length < 2) {
-      setNicknameStatus('idle');
       return;
     }
 
     const check = async () => {
       setNicknameStatus('checking');
-      const res = await fetch(
-        `/api/check-nickname?nickname=${encodeURIComponent(debouncedNickname)}`,
-      );
-      const data = await res.json();
-      setNicknameStatus(data.available ? 'available' : 'taken');
+      try {
+        const res = await fetch(
+          `/api/check-nickname?nickname=${encodeURIComponent(debouncedNickname)}`,
+        );
+        const data = await res.json();
+        setNicknameStatus(data.available ? 'available' : 'taken');
+      } catch {
+        setNicknameStatus('idle');
+      }
     };
 
     check();
   }, [debouncedNickname]);
 
-  return { nicknameStatus };
+  const computedStatus: NicknameStatus =
+    !debouncedNickname || debouncedNickname.length < 2
+      ? 'idle'
+      : nicknameStatus;
+
+  return { nicknameStatus: computedStatus };
 }

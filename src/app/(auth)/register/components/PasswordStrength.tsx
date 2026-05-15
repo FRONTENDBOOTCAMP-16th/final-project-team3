@@ -10,7 +10,7 @@ const conditions = [
 ];
 
 export default function PasswordStrength({ password }: PasswordStrengthProps) {
-  if (!password) return <div className="h-5 mt-1" />;
+  if (!password) return null;
 
   return (
     <div className="flex gap-3 mt-2 flex-wrap">
