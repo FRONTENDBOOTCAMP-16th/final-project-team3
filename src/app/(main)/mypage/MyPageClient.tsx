@@ -75,7 +75,11 @@ export default function MyPageClient() {
           </div>
 
           <div role="tabpanel">
-            {tab === 'posts' ? <PostList /> : <SettingsTab profile={profile} />}
+            {tab === 'posts' ? (
+              <PostList userId={profile.id} />
+            ) : (
+              <SettingsTab profile={profile} />
+            )}
           </div>
         </div>
       </div>

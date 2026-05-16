@@ -5,7 +5,11 @@ import { useMyPosts } from '@/hooks/useMyPage';
 import PostCard from '@/components/community/Postcard';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
-export default function PostList() {
+interface PostListProps {
+  userId: string;
+}
+
+export default function PostList({ userId }: PostListProps) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useMyPosts();
 
@@ -40,7 +44,7 @@ export default function PostList() {
   return (
     <div className="flex flex-col gap-4">
       {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
+        <PostCard key={post.id} post={post} userId={userId} />
       ))}
       <div ref={observerRef} className="h-4" />
       {isFetchingNextPage && <LoadingSpinner />}
