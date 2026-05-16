@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { Mail, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -30,14 +30,6 @@ export default function LoginClient() {
 
   const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
-
-  // 1. 페이지 진입 시 상태 초기화
-  useEffect(() => {
-    setEmail('');
-    setPassword('');
-    setIsLoading(false);
-    setErrors({});
-  }, []);
 
   const handleSubmit = useCallback(async () => {
     const result = loginSchema.safeParse({ email, password });
@@ -108,7 +100,7 @@ export default function LoginClient() {
                 placeholder="이메일을 입력하세요"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                aria-invalid={!!errors.email} // 3. aria-invalid 추가
+                aria-invalid={!!errors.email}
                 className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
               />
             </div>
@@ -136,7 +128,7 @@ export default function LoginClient() {
                 placeholder="비밀번호를 입력하세요"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                aria-invalid={!!errors.password} // 3. aria-invalid 추가
+                aria-invalid={!!errors.password}
                 className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
               />
             </div>

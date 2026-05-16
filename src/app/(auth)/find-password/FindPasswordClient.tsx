@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Mail, Lock, User } from 'lucide-react';
 import Link from 'next/link';
 import { z } from 'zod';
@@ -12,7 +12,6 @@ const step1Schema = z.object({
 
 const step2Schema = z
   .object({
-    // 2. 비밀번호 유효성 가이드 보완
     password: z
       .string()
       .min(
@@ -39,16 +38,6 @@ export default function FindPasswordPage() {
     confirmPassword?: string;
     server?: string;
   }>({});
-
-  // 1. 페이지 진입 시 상태 초기화
-  useEffect(() => {
-    setStep(1);
-    setName('');
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
-    setErrors({});
-  }, []);
 
   const handleStep1 = async () => {
     const result = step1Schema.safeParse({ name, email });
