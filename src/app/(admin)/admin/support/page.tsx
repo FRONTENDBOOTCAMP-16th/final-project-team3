@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 
 import AdminSupportTableClient from '@/components/admin/support/AdminSupportTableClient';
 import type {
-  SupportSection,
   SupportDojangQueryRow,
   SupportPostQueryRow,
   SupportProfileQueryRow,
@@ -135,28 +134,13 @@ async function getAdminSupportData() {
   };
 }
 
-function getInitialSupportSection(
-  sectionParam: string | string[] | undefined,
-): SupportSection {
-  const section = Array.isArray(sectionParam) ? sectionParam[0] : sectionParam;
-
-  return section === 'reports' ? 'reports' : 'dojang';
-}
-
-export default async function AdminSupportPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ section?: string | string[] | undefined }>;
-}) {
-  const resolvedSearchParams = await searchParams;
+export default async function AdminSupportPage() {
   const data = await getAdminSupportData();
-  const initialSection = getInitialSupportSection(resolvedSearchParams.section);
 
   return (
     <AdminSupportTableClient
       dojangVerifications={data.dojangVerifications}
       reports={data.reports}
-      initialSection={initialSection}
     />
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   deletePost,
@@ -19,7 +19,10 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import PostDetailCard, {
   PostDetailCardData,
 } from '@/components/community/PostDetailCard';
-import { canManageContent, type ContentUserRole } from '@/lib/contentPermissions';
+import {
+  canManageContent,
+  type ContentUserRole,
+} from '@/lib/contentPermissions';
 import { timeAgo } from '@/utils/timeAgo';
 import { LimitedTextarea } from '../common/LimitedTextarea';
 
@@ -51,6 +54,24 @@ export default function PostDetailClient({
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [deletePostModalOpen, setDeletePostModalOpen] = useState(false);
   const [deleteCommentId, setDeleteCommentId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const key = `viewed-post-${id}`;
+    if (sessionStorage.getItem(key)) return;
+
+    const incrementView = async () => {
+      try {
+        const res = await fetch(`/api/posts/${id}/view`, { method: 'POST' });
+        if (res.ok) {
+          sessionStorage.setItem(key, 'true'); // 성공했을 때만 저장
+        }
+      } catch {
+        // 네트워크 오류 시 무시 (다음에 재시도 가능)
+      }
+    };
+
+    incrementView();
+  }, [id]);
 
   const canManagePost = canManageContent({
     currentUserId: userId,
