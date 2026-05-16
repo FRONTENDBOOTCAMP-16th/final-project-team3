@@ -1,0 +1,37 @@
+import { useState, useEffect } from 'react';
+import { useDebounce } from '@/hooks/useDebounce';
+
+export type NicknameStatus = 'idle' | 'checking' | 'available' | 'taken';
+
+export function useNicknameCheck(nickname: string) {
+  const [nicknameStatus, setNicknameStatus] = useState<NicknameStatus>('idle');
+  const debouncedNickname = useDebounce(nickname, 500);
+
+  useEffect(() => {
+    if (!debouncedNickname || debouncedNickname.length < 2) {
+      return;
+    }
+
+    const check = async () => {
+      setNicknameStatus('checking');
+      try {
+        const res = await fetch(
+          `/api/check-nickname?nickname=${encodeURIComponent(debouncedNickname)}`,
+        );
+        const data = await res.json();
+        setNicknameStatus(data.available ? 'available' : 'taken');
+      } catch {
+        setNicknameStatus('idle');
+      }
+    };
+
+    check();
+  }, [debouncedNickname]);
+
+  const computedStatus: NicknameStatus =
+    !debouncedNickname || debouncedNickname.length < 2
+      ? 'idle'
+      : nicknameStatus;
+
+  return { nicknameStatus: computedStatus };
+}
