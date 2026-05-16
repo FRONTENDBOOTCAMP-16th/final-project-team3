@@ -1,3 +1,5 @@
+import { showErrorToast } from '@/lib/toast';
+
 interface BusinessFileUploadProps {
   businessFile: File | null;
   onChange: (file: File | null) => void;
@@ -13,7 +15,7 @@ export default function BusinessFileUpload({
     const file = e.target.files?.[0] ?? null;
 
     if (file && file.size > MAX_FILE_SIZE) {
-      alert('파일 용량은 5MB를 초과할 수 없습니다.');
+      showErrorToast('파일 용량은 5MB를 초과할 수 없습니다.');
       e.target.value = '';
       return;
     }
