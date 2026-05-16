@@ -48,6 +48,11 @@ export default function ImageUpload({
           onChange={handleChange}
         />
       </label>
+      {!preview && (
+        <p className="text-xs text-gray-400 mt-2">
+          이미지를 선택하지 않으면 기본 이미지가 표시됩니다.
+        </p>
+      )}
     </div>
   );
 }
