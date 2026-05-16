@@ -1,11 +1,12 @@
 import 'server-only';
 import { supabasePublic } from '@/lib/supabase/public';
-import { cacheTag } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import type { Post, Comment } from '@/types/community';
 
 export async function getPost(id: string): Promise<Post | null> {
   'use cache';
   cacheTag(`post-${id}`);
+  cacheLife('minutes');
 
   const { data, error } = await supabasePublic
     .from('posts')
@@ -29,6 +30,7 @@ export async function getPost(id: string): Promise<Post | null> {
 export async function getComments(postId: string): Promise<Comment[]> {
   'use cache';
   cacheTag(`comments-${postId}`);
+  cacheLife('minutes');
 
   const { data, error } = await supabasePublic
     .from('comments')

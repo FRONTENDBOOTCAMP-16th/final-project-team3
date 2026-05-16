@@ -19,7 +19,7 @@ import { buildCompetitionUrl } from '@/lib/slug';
 import {
   revalidateCompetitions,
   revalidateCompetition,
-} from '@/actions/community/competitions';
+} from '@/actions/competition/competitions';
 
 interface CompetitionEditClientProps {
   competition: Competition;
@@ -93,6 +93,8 @@ export default function CompetitionEditClient({
         image_url,
         participants: values.participants ? Number(values.participants) : 0,
       });
+      await revalidateCompetitions();
+      await revalidateCompetition(competition.id);
       showSuccessToast('대회일정이 수정되었습니다.', '✅');
       await queryClient.invalidateQueries({ queryKey: ['competition'] });
       await new Promise((resolve) => setTimeout(resolve, 700));
@@ -109,8 +111,7 @@ export default function CompetitionEditClient({
         imageFile: null,
       });
       setIsLoading(false);
-      await revalidateCompetitions();
-      await revalidateCompetition(competition.id);
+      router.refresh();
       router.push(buildCompetitionUrl(values.name, competition.id));
     } catch {
       showErrorToast('대회 수정에 실패했습니다.');

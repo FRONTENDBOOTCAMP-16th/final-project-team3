@@ -1,18 +1,14 @@
 import 'server-only';
-import { createClient } from '@supabase/supabase-js';
-import { cacheTag } from 'next/cache';
+import { supabasePublic } from '@/lib/supabase/public';
+import { cacheLife, cacheTag } from 'next/cache';
 import type { Competition } from '@/types/competition';
 
 export async function getCompetition(id: string): Promise<Competition | null> {
   'use cache';
   cacheTag(`competition-${id}`);
+  cacheLife('minutes');
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  );
-
-  const { data, error } = await supabase
+  const { data, error } = await supabasePublic
     .from('competition')
     .select('*, profiles(nickname, avatar_url, role)')
     .eq('id', id)

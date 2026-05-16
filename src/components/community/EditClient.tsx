@@ -13,7 +13,6 @@ import { LimitedTextarea } from '../common/LimitedTextarea';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import { buildPostUrl } from '@/lib/slug';
-import { revalidatePost } from '@/actions/community/posts';
 
 interface Props {
   id: string;
@@ -59,7 +58,6 @@ export default function EditClient({ id, initialPost }: Props) {
         : undefined;
 
       await updatePost(id, { title, content, image_url });
-      await revalidatePost(id);
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       showSuccessToast('게시글이 수정되었습니다.', '✅');
       await new Promise((resolve) => setTimeout(resolve, 700));
@@ -69,7 +67,6 @@ export default function EditClient({ id, initialPost }: Props) {
       setPreview(image_url ?? preview);
       setImageFile(null);
       setIsLoading(false);
-
       router.refresh();
       router.push(buildPostUrl(title, id));
     } catch {
