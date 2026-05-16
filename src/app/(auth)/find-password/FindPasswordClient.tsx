@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, Lock, User } from 'lucide-react';
 import Link from 'next/link';
 import { z } from 'zod';
@@ -12,7 +12,13 @@ const step1Schema = z.object({
 
 const step2Schema = z
   .object({
-    password: z.string().min(6, '비밀번호는 6자 이상이어야 합니다.'),
+    // 2. 비밀번호 유효성 가이드 보완
+    password: z
+      .string()
+      .min(
+        8,
+        '영문, 숫자, 특수문자(!@#$%^&*)를 포함하여 8자 이상 입력해주세요.',
+      ),
     confirmPassword: z.string().min(1, '비밀번호 확인을 입력해주세요.'),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -33,6 +39,16 @@ export default function FindPasswordPage() {
     confirmPassword?: string;
     server?: string;
   }>({});
+
+  // 1. 페이지 진입 시 상태 초기화
+  useEffect(() => {
+    setStep(1);
+    setName('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setErrors({});
+  }, []);
 
   const handleStep1 = async () => {
     const result = step1Schema.safeParse({ name, email });
@@ -117,10 +133,11 @@ export default function FindPasswordPage() {
                   placeholder="이름을 입력하세요"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  aria-invalid={!!errors.name}
                   className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
                 />
               </div>
-              <p className="text-danger text-sm mt-1 h-5">
+              <p className="text-danger text-sm mt-1 h-5" role="alert">
                 {errors.name ?? ''}
               </p>
             </div>
@@ -136,15 +153,16 @@ export default function FindPasswordPage() {
                   placeholder="이메일을 입력하세요"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  aria-invalid={!!errors.email}
                   className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
                 />
               </div>
-              <p className="text-danger text-sm mt-1 h-5">
+              <p className="text-danger text-sm mt-1 h-5" role="alert">
                 {errors.email ?? ''}
               </p>
             </div>
 
-            <p className="text-danger text-sm text-center h-5">
+            <p className="text-danger text-sm text-center h-5" role="alert">
               {errors.server ?? ''}
             </p>
 
@@ -187,10 +205,11 @@ export default function FindPasswordPage() {
                   placeholder="새 비밀번호를 입력하세요"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  aria-invalid={!!errors.password}
                   className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
                 />
               </div>
-              <p className="text-danger text-sm mt-1 h-5">
+              <p className="text-danger text-sm mt-1 h-5" role="alert">
                 {errors.password ?? ''}
               </p>
             </div>
@@ -206,15 +225,16 @@ export default function FindPasswordPage() {
                   placeholder="비밀번호를 다시 입력하세요"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
+                  aria-invalid={!!errors.confirmPassword}
                   className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
                 />
               </div>
-              <p className="text-danger text-sm mt-1 h-5">
+              <p className="text-danger text-sm mt-1 h-5" role="alert">
                 {errors.confirmPassword ?? ''}
               </p>
             </div>
 
-            <p className="text-danger text-sm text-center h-5">
+            <p className="text-danger text-sm text-center h-5" role="alert">
               {errors.server ?? ''}
             </p>
 
