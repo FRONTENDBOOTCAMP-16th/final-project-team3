@@ -7,6 +7,7 @@ import { formatDate } from '@/utils/formatDate';
 import { Heart, MessageCircle } from 'lucide-react';
 import { showErrorToast } from '@/lib/toast';
 import { categoryMap } from '@/constants/categoryMap';
+import { buildPostUrl } from '@/lib/slug';
 
 interface PostCardProps {
   post: {
@@ -53,7 +54,7 @@ export default function PostCard({ post, userId }: PostCardProps) {
 
   return (
     <Link
-      href={`/community/${post.id}`}
+      href={buildPostUrl(post.title, post.id)}
       className="block w-full"
       rel="noopener noreferrer"
       aria-label={`${post.title} 게시글 상세보기`}

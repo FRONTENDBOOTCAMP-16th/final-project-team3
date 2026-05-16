@@ -12,6 +12,8 @@ import { LimitedInput } from '../common/LimitedInput';
 import { LimitedTextarea } from '../common/LimitedTextarea';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import { buildPostUrl } from '@/lib/slug';
+import { revalidatePost } from '@/actions/community/posts';
 
 interface Props {
   id: string;
@@ -57,6 +59,7 @@ export default function EditClient({ id, initialPost }: Props) {
         : undefined;
 
       await updatePost(id, { title, content, image_url });
+      await revalidatePost(id);
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       showSuccessToast('게시글이 수정되었습니다.', '✅');
       await new Promise((resolve) => setTimeout(resolve, 700));
@@ -68,7 +71,7 @@ export default function EditClient({ id, initialPost }: Props) {
       setIsLoading(false);
 
       router.refresh();
-      router.push(`/community/${id}`);
+      router.push(buildPostUrl(title, id));
     } catch {
       showErrorToast('게시글 수정에 실패했습니다.');
       setIsLoading(false);
@@ -142,7 +145,7 @@ export default function EditClient({ id, initialPost }: Props) {
             setCancelModalOpen(true);
           } else {
             showErrorToast('수정된 내용이 없습니다.');
-            router.push(`/community/${id}`);
+            router.push(buildPostUrl(initialPost.title, id));
           }
         }}
         onSubmit={handleSubmit}
@@ -158,7 +161,7 @@ export default function EditClient({ id, initialPost }: Props) {
           setContent(initialPost.content);
           setPreview(initialPost.image_url ?? null);
           setImageFile(null);
-          router.push(`/community/${id}`);
+          router.push(buildPostUrl(initialPost.title, id));
         }}
         title="수정 취소"
         description="수정 중인 내용이 있습니다. 정말 나가시겠습니까?"

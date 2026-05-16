@@ -26,6 +26,7 @@ import {
 import { timeAgo } from '@/utils/timeAgo';
 import { LimitedTextarea } from '../common/LimitedTextarea';
 import { Pencil, Trash2, Flag, Share2 } from 'lucide-react';
+import { buildPostUrl } from '@/lib/slug';
 
 interface Props {
   id: string;
@@ -247,7 +248,9 @@ export default function PostDetailClient({
                 <button
                   title="수정하기"
                   aria-label="게시글 수정"
-                  onClick={() => router.push(`/community/${id}/edit`)}
+                  onClick={() =>
+                    router.push(`${buildPostUrl(initialPost.title, id)}/edit`)
+                  }
                   className="p-1"
                 >
                   <Pencil
