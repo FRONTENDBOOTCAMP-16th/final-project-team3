@@ -1,6 +1,11 @@
+'use client';
+
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Step3Complete() {
+  const router = useRouter();
+
   return (
     <div className="flex flex-col items-center gap-6 py-4">
       <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
@@ -28,6 +33,7 @@ export default function Step3Complete() {
       </div>
       <Link
         href="/login"
+        onClick={() => router.refresh()}
         className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all text-center"
       >
         로그인하러 가기

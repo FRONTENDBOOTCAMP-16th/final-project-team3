@@ -86,23 +86,19 @@ export default function Step1Form({
             className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
           />
         </div>
-        <div className="h-5 mt-1">
-          {errors.name && (
-            <p className="text-danger text-sm" role="alert">
-              {errors.name}
-            </p>
-          )}
-        </div>
+        <p className="text-danger text-sm mt-1 h-5" role="alert">
+          {errors.name ?? ''}
+        </p>
       </div>
 
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-text-primary mb-2"
+          className="block text-sm font-medium text-text-primary mb-2 h-5 "
         >
           이메일
         </label>
-        <div className="relative">
+        <div className="relative ">
           <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
           <input
             id="email"
@@ -111,24 +107,12 @@ export default function Step1Form({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             aria-invalid={!!errors.email}
-            className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
+            className=" w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
           />
         </div>
-        <div className="h-5 mt-1">
-          {errors.email && (
-            <p className="text-danger text-sm" role="alert">
-              {errors.email}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div className="h-5 text-center">
-        {errors.server && (
-          <p className="text-danger text-sm" role="alert">
-            {errors.server}
-          </p>
-        )}
+        <p className="text-danger text-sm mt-1 h-10" role="alert">
+          {errors.email ?? errors.server ?? ''}
+        </p>
       </div>
 
       <button
