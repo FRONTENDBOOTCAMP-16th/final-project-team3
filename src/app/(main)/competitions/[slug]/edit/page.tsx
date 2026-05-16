@@ -5,14 +5,17 @@ import CompetitionEditClient from '@/components/competition/CompetitionEditClien
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { canManageContent } from '@/lib/contentPermissions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { getCompetition } from '@/services/competitionService';
+import { getCompetition } from '@/services/competitionService.server';
+import { extractCompetitionId, buildCompetitionUrl } from '@/lib/slug';
 
-type Props = { params: Promise<{ id: string }> };
+type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const competition = await getCompetition(id);
+  const { slug } = await params;
+  const id = extractCompetitionId(slug);
+  if (!id) return { title: '대회를 찾을 수 없습니다 | Black Belt BJJ' };
 
+  const competition = await getCompetition(id);
   return {
     title: `${competition?.name ?? '대회'} 수정 | Black Belt BJJ`,
     description: `${competition?.name ?? '대회'} 정보를 수정합니다`,
@@ -20,7 +23,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 async function CompetitionEditContent({ params }: Props) {
-  const { id } = await params;
+  const { slug } = await params;
+  const id = extractCompetitionId(slug);
+  if (!id) notFound();
+
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -45,7 +51,7 @@ async function CompetitionEditContent({ params }: Props) {
       authorRole: competition.role,
     })
   ) {
-    redirect(`/competitions/${id}`);
+    redirect(buildCompetitionUrl(competition.name, id));
   }
 
   return <CompetitionEditClient competition={competition} />;

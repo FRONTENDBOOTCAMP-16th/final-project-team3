@@ -3,18 +3,21 @@ import { notFound } from 'next/navigation';
 import {
   getCompetition,
   isPublicCompetitionVisible,
-} from '@/services/competitionService';
+} from '@/services/competitionService.server';
 import CompetitionDetailClient from '@/components/competition/CompetitionDetailClient';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Metadata } from 'next';
+import { extractCompetitionId } from '@/lib/slug';
 
-type Props = { params: Promise<{ id: string }> };
+type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const competition = await getCompetition(id);
+  const { slug } = await params;
+  const id = extractCompetitionId(slug);
+  if (!id) return { title: '대회를 찾을 수 없습니다 | Black Belt BJJ' };
 
+  const competition = await getCompetition(id);
   if (!isPublicCompetitionVisible(competition)) {
     return { title: '대회를 찾을 수 없습니다 | Black Belt BJJ' };
   }
@@ -31,22 +34,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 async function CompetitionDetailContent({ params }: Props) {
-  const { id } = await params;
+  const { slug } = await params;
+  const id = extractCompetitionId(slug);
+  if (!id) notFound();
+
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const currentUserRole =
-    user?.id
-      ? (
-          await supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', user.id)
-            .single()
-        ).data?.role ?? null
-      : null;
+  const currentUserRole = user?.id
+    ? ((
+        await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single()
+      ).data?.role ?? null)
+    : null;
 
   const competition = await getCompetition(id);
   if (!isPublicCompetitionVisible(competition)) notFound();

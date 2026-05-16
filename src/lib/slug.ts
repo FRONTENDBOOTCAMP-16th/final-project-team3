@@ -18,3 +18,14 @@ export function extractPostId(slug: string): string | null {
   );
   return match?.[1] ?? null;
 }
+
+export function buildCompetitionUrl(name: string, id: string): string {
+  return `/competitions/${toSlug(name)}-${id}`;
+}
+
+export function extractCompetitionId(slug: string): string | null {
+  const match = slug.match(
+    /([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/,
+  );
+  return match?.[1] ?? null;
+}

@@ -15,6 +15,7 @@ import {
   type ContentUserRole,
 } from '@/lib/contentPermissions';
 import { Pencil, Trash2, Share2 } from 'lucide-react';
+import { buildCompetitionUrl } from '@/lib/slug';
 
 interface CompetitionDetailClientProps {
   competition: Competition;
@@ -103,7 +104,11 @@ export default function CompetitionDetailClient({
                 <button
                   title="수정하기"
                   aria-label="대회 게시글 수정하기"
-                  onClick={() => router.push(`/competitions/${id}/edit`)}
+                  onClick={() =>
+                    router.push(
+                      `${buildCompetitionUrl(competition.name, id)}/edit`,
+                    )
+                  }
                   className="p-1 cursor-pointer"
                 >
                   <Pencil

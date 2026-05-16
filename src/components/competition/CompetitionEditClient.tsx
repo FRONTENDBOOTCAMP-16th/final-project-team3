@@ -15,6 +15,11 @@ import CompetitionForm, {
 import type { Competition } from '@/types/competition';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 import ConfirmModal from '../common/ConfirmModal';
+import { buildCompetitionUrl } from '@/lib/slug';
+import {
+  revalidateCompetitions,
+  revalidateCompetition,
+} from '@/actions/community/competitions';
 
 interface CompetitionEditClientProps {
   competition: Competition;
@@ -104,7 +109,9 @@ export default function CompetitionEditClient({
         imageFile: null,
       });
       setIsLoading(false);
-      router.push(`/competitions/${competition.id}`);
+      await revalidateCompetitions();
+      await revalidateCompetition(competition.id);
+      router.push(buildCompetitionUrl(values.name, competition.id));
     } catch {
       showErrorToast('대회 수정에 실패했습니다.');
       setIsLoading(false);
@@ -123,7 +130,7 @@ export default function CompetitionEditClient({
             setCancelModalOpen(true);
           } else {
             showErrorToast('수정된 내용이 없습니다.');
-            router.push(`/competitions/${competition.id}`);
+            router.push(buildCompetitionUrl(values.name, competition.id));
           }
         }}
         onSubmit={handleSubmit}
@@ -148,7 +155,7 @@ export default function CompetitionEditClient({
             preview: competition.image_url ?? null,
             imageFile: null,
           });
-          router.push(`/competitions/${competition.id}`);
+          router.push(buildCompetitionUrl(competition.name, competition.id));
         }}
         title="수정 취소"
         description="수정 중인 내용이 있습니다. 정말 나가시겠습니까?"
