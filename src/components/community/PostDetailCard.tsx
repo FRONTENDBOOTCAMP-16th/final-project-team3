@@ -63,7 +63,10 @@ export default function PostDetailCard({
                 </span>
               )}
             </div>
-            <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
+            <p
+              className="text-xs text-gray-400 mt-0.5 flex items-center gap-1"
+              suppressHydrationWarning
+            >
               <Image
                 src="/postTime.svg"
                 alt=""

@@ -1,14 +1,12 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import PostDetailClient from '@/components/community/PostDetailClient';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
-import {
-  isPublicPostVisible,
-  incrementViewCount,
-} from '@/services/communityService';
-import { getPost, getComments } from '@/services/communityService.server';
 import { notFound } from 'next/navigation';
+import PostDetailClient from '@/components/community/PostDetailClient';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import ErrorBoundary from '@/components/common/ErrorBoundary';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { isPublicPostVisible } from '@/services/communityService';
+import { getPost, getComments } from '@/services/communityService.server';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -55,7 +53,15 @@ async function PostDetailContent({ params }: Props) {
 
   if (!isPublicPostVisible(post)) notFound();
 
-  await incrementViewCount(id);
+  const currentUserRole = user?.id
+    ? ((
+        await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single()
+      ).data?.role ?? null)
+    : null;
 
   return (
     <PostDetailClient
@@ -63,14 +69,17 @@ async function PostDetailContent({ params }: Props) {
       initialPost={post}
       initialComments={comments}
       userId={user?.id ?? null}
+      currentUserRole={currentUserRole}
     />
   );
 }
 
 export default function PostDetailPage({ params }: Props) {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <PostDetailContent params={params} />
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={<LoadingSpinner />}>
+        <PostDetailContent params={params} />
+      </Suspense>
+    </ErrorBoundary>
   );
 }

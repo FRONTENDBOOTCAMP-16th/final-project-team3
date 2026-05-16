@@ -6,7 +6,6 @@ export async function proxy(request: NextRequest) {
 
   const supabase = await createSupabaseServerClient();
 
-  // 세션 갱신 (getSession() 쓰면 안 됨!)
   await supabase.auth.getUser();
 
   return supabaseResponse;

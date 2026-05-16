@@ -16,7 +16,6 @@ interface PostCardProps {
     nickname: string;
     avatar_url: string;
     image_url: string;
-    view_count: number;
     created_at: string;
     comment_count: number;
   };
@@ -29,9 +28,23 @@ const categoryMap: Record<string, { label: string; color: string }> = {
   personal: { label: '일반', color: 'bg-[#364153]' },
 };
 
+const DEFAULT_IMAGES = [
+  'https://images.unsplash.com/photo-1682545888368-587f56efd06e?w=800',
+  'https://images.unsplash.com/photo-1681923445357-0679553160da?w=800',
+  'https://images.unsplash.com/photo-1611711605692-acb25d5d8399?w=800',
+  'https://images.unsplash.com/photo-1599677099972-a36c34a72343?w=800',
+  'https://images.unsplash.com/photo-1659137834052-7360235e9db5?w=800',
+];
+
 export default function PostCard({ post, userId }: PostCardProps) {
   const { likeCount, isLiked, toggle } = useLike(post.id, userId);
   const categoryInfo = categoryMap[post.category] ?? categoryMap.personal;
+
+  const defaultImage =
+    DEFAULT_IMAGES[
+      parseInt(post.id.replace(/-/g, '').slice(0, 8), 16) %
+        DEFAULT_IMAGES.length
+    ];
 
   const handleLike = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -55,25 +68,14 @@ export default function PostCard({ post, userId }: PostCardProps) {
         aria-label={`${post.nickname}의 게시글: ${post.title}`}
       >
         <div className="relative w-full h-50 bg-btn-basic shrink-0">
-          {post.image_url ? (
-            <Image
-              src={post.image_url}
-              alt={`${post.title} 게시글 이미지`}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              loading="eager"
-              className="object-cover"
-            />
-          ) : (
-            <div
-              className="w-full h-full flex items-center justify-center"
-              aria-label="이미지 없음"
-            >
-              <span className="text-text-secondary text-sm" aria-hidden="true">
-                이미지 없음
-              </span>
-            </div>
-          )}
+          <Image
+            src={post.image_url || defaultImage}
+            alt={`${post.title} 게시글 이미지`}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            loading="eager"
+            className="object-cover"
+          />
           <span
             className={`absolute top-2 right-2 px-2 py-1 text-xs text-white rounded-full ${categoryInfo.color}`}
             aria-label={`카테고리: ${categoryInfo.label}`}
@@ -98,9 +100,6 @@ export default function PostCard({ post, userId }: PostCardProps) {
             <time dateTime={post.created_at}>
               {formatDate(post.created_at)}
             </time>
-            <span aria-label={`조회수 ${post.view_count}회`}>
-              조회 {post.view_count}
-            </span>
             <span
               className="flex items-center gap-1"
               aria-label={`댓글 ${post.comment_count ?? 0}개`}
