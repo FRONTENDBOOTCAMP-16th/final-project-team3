@@ -4,19 +4,13 @@ import { useEffect, useRef } from 'react';
 import { useMyPosts } from '@/hooks/useMyPage';
 import PostCard from '@/components/community/Postcard';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import Link from 'next/link';
 
-interface PostListProps {
-  userId: string;
-}
-
-export default function PostList({ userId }: PostListProps) {
+export default function PostList() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useMyPosts();
 
   const observerRef = useRef<HTMLDivElement>(null);
 
-  // 무한스크롤 옵저버
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -46,12 +40,9 @@ export default function PostList({ userId }: PostListProps) {
   return (
     <div className="flex flex-col gap-4">
       {posts.map((post) => (
-        <PostCard key={post.id} post={post} userId={userId} />
+        <PostCard key={post.id} post={post} />
       ))}
-
-      {/* 무한스크롤 트리거 */}
       <div ref={observerRef} className="h-4" />
-
       {isFetchingNextPage && <LoadingSpinner />}
     </div>
   );
