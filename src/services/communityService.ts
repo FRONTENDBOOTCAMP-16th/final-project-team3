@@ -100,68 +100,18 @@ export async function uploadPostImage(file: File): Promise<string> {
   return data.publicUrl;
 }
 
-// export async function getComments(postId: string) {
-//   const { data, error } = await supabase
-//     .from('comments')
-//     .select('*, profiles(nickname, avatar_url, belt_level, role)')
-//     .eq('post_id', postId)
-//     .is('deleted_at', null) // soft delete 필터
-//     .order('created_at', { ascending: true });
-
-//   if (error) throw error;
-
-//   return data.map((comment) => ({
-//     ...comment,
-//     nickname: (comment.profiles as PostProfile | null)?.nickname,
-//     avatar_url: (comment.profiles as PostProfile | null)?.avatar_url,
-//     belt_level: (comment.profiles as PostProfile | null)?.belt_level,
-//     role: (comment.profiles as PostProfile | null)?.role,
-//     profiles: undefined,
-//   })) as Comment[];
-// }
-
-export async function createComment({
-  post_id,
-  user_id,
-  content,
-}: {
-  post_id: string;
-  user_id: string;
-  content: string;
-}) {
-  const { data, error } = await supabase
-    .from('comments')
-    .insert({ post_id, user_id, content })
-    .select('*, profiles(nickname, avatar_url, belt_level, role)')
-    .single();
-  if (error) throw error;
-
-  return {
-    ...data,
-    nickname: data.profiles?.nickname,
-    avatar_url: data.profiles?.avatar_url,
-    belt_level: data.profiles?.belt_level,
-    role: data.profiles?.role,
-    profiles: undefined,
-  } as Comment;
-}
-
 export async function updateComment(id: string, content: string) {
-  const { error } = await supabase
-    .from('comments')
-    .update({ content })
-    .eq('id', id);
-  if (error) throw error;
+  const res = await fetch(`/api/comments/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content }),
+  });
+  if (!res.ok) throw new Error('댓글 수정 실패');
 }
 
 export async function deleteComment(id: string) {
-  const { error } = await supabase
-    .from('comments')
-    .update({ deleted_at: new Date().toISOString() })
-    .eq('id', id);
-  if (error) throw error;
-}
-
-export async function incrementViewCount(id: string) {
-  await supabase.rpc('increment_view_count', { post_id: id });
+  const res = await fetch(`/api/comments/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('댓글 삭제 실패');
 }

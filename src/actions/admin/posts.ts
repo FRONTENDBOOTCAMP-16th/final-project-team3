@@ -1,12 +1,11 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
-
 import type { AdminPostStatus } from '@/components/admin/posts/types';
 import { ROUTES } from '@/constants/routes';
 
 import {
   actionResponse,
+  revalidatePostCaches,
   requireAdminSupabaseForAction,
   type AdminActionResult,
 } from './_shared';
@@ -42,12 +41,6 @@ const RESTORE_POST_MESSAGES: ActionMessages = {
   failure: '게시글 복구에 실패했습니다.',
 };
 
-function revalidateAdminPostPaths(postId: string) {
-  revalidatePath(ROUTES.ADMIN_POSTS);
-  revalidatePath(ROUTES.COMMUNITY);
-  revalidatePath(ROUTES.COMMUNITY_DETAIL(postId));
-}
-
 async function updateAdminPost({
   postId,
   payload,
@@ -74,7 +67,7 @@ async function updateAdminPost({
     return actionResponse.failure('게시글을 찾을 수 없습니다.');
   }
 
-  revalidateAdminPostPaths(postId);
+  revalidatePostCaches(postId, [ROUTES.ADMIN_POSTS]);
 
   return actionResponse.success(messages.success);
 }

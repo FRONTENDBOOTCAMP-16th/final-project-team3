@@ -24,6 +24,8 @@ async function getPosts(): Promise<Post[]> {
   const { data, error } = await supabasePublic
     .from('posts')
     .select('*, comments(count), profiles(nickname, avatar_url)')
+    .is('deleted_at', null)
+    .eq('status', 'published')
     .order('created_at', { ascending: false })
     .range(0, 9);
 

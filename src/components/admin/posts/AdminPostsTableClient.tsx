@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
   type AdminTableColumn,
@@ -15,6 +15,7 @@ import type {
   AdminPostFilterValue,
   AdminPostRow,
 } from '@/components/admin/posts/types';
+import { useAdminTableQueryState } from '@/hooks/useAdminTableQueryState';
 import {
   filterAdminPosts,
   getPostStatusBadge,
@@ -72,8 +73,19 @@ const POST_COLUMNS: AdminTableColumn<AdminPostRow>[] = [
 export default function AdminPostTableClient({
   data,
 }: AdminPostTableClientProps) {
-  const [activeFilter, setActiveFilter] = useState<AdminPostFilterValue>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const {
+    activeFilter,
+    currentPage,
+    searchQuery,
+    setFilter,
+    setPage,
+    setSearchQuery,
+    commitSearch,
+  } = useAdminTableQueryState<AdminPostFilterValue>({
+    filterParamName: 'category',
+    defaultFilter: 'all',
+    validFilters: ADMIN_POST_FILTERS.map((filter) => filter.value),
+  });
 
   const filteredData = useMemo(() => {
     return filterAdminPosts(data, activeFilter, searchQuery);
@@ -84,15 +96,18 @@ export default function AdminPostTableClient({
       <AdminTableToolbar
         filters={ADMIN_POST_FILTERS}
         activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
+        onFilterChange={setFilter}
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
+        onSearch={commitSearch}
       />
 
       <AdminDataTable
         columns={POST_COLUMNS}
         data={filteredData}
+        currentPage={currentPage}
         getRowKey={(row) => row.id}
+        onPageChange={setPage}
       />
     </>
   );

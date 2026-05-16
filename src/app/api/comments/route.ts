@@ -1,31 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
-import type { Database } from '@/types/Database.types';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { revalidateTag } from 'next/cache';
 import { checkCommentAbuse } from '@/lib/CommentAbuseGuard';
 
-async function createSupabaseServer() {
-  const cookieStore = await cookies();
-  return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options),
-          );
-        },
-      },
-    },
-  );
-}
-
 export async function POST(req: NextRequest) {
-  const supabase = await createSupabaseServer();
+  const supabase = await createSupabaseServerClient();
 
   const {
     data: { user },
@@ -93,11 +72,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  revalidateTag(`comments-${postId}`, 'max');
   return NextResponse.json({ comment }, { status: 201 });
 }
 
 export async function GET(req: NextRequest) {
-  const supabase = await createSupabaseServer();
+  const supabase = await createSupabaseServerClient();
   const postId = req.nextUrl.searchParams.get('postId');
 
   if (!postId) {

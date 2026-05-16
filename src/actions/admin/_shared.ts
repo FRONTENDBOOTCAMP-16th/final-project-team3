@@ -1,5 +1,8 @@
 import 'server-only';
 
+import { revalidatePath, updateTag } from 'next/cache';
+
+import { ROUTES } from '@/constants/routes';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export type AdminActionResult = {
@@ -51,4 +54,22 @@ export async function requireAdminSupabaseForAction() {
     ok: true as const,
     supabase,
   };
+}
+
+export function revalidatePostCaches(
+  postId: string,
+  additionalPaths: string[] = [],
+) {
+  updateTag('posts-list');
+  updateTag(`post-${postId}`);
+
+  const paths = [
+    ROUTES.COMMUNITY,
+    ROUTES.COMMUNITY_DETAIL(postId),
+    ...additionalPaths,
+  ];
+
+  for (const path of paths) {
+    revalidatePath(path);
+  }
 }
