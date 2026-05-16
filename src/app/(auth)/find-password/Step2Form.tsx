@@ -12,7 +12,10 @@ const step2Schema = z
     password: z
       .string()
       .min(8, '비밀번호는 8자 이상이어야 합니다.')
-      .regex(PASSWORD_REGEX, '영문, 숫자, 특수문자를 모두 포함해야 합니다.'),
+      .regex(
+        PASSWORD_REGEX,
+        '영문, 숫자, 특수문자(!@#$%^&*)를 조합하여 8자 이상 입력해주세요.',
+      ),
     confirmPassword: z.string().min(1, '비밀번호 확인을 입력해주세요.'),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -91,6 +94,7 @@ export default function Step2Form({ name, email, onNext }: Step2FormProps) {
             placeholder="새 비밀번호를 입력하세요"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            aria-invalid={!!errors.password}
             className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
           />
         </div>
@@ -118,6 +122,7 @@ export default function Step2Form({ name, email, onNext }: Step2FormProps) {
             placeholder="비밀번호를 다시 입력하세요"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            aria-invalid={!!errors.confirmPassword}
             className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
           />
         </div>

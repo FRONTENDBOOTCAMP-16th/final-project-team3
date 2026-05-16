@@ -82,6 +82,7 @@ export default function Step1Form({
             placeholder="이름을 입력하세요"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            aria-invalid={!!errors.name}
             className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
           />
         </div>
@@ -109,6 +110,7 @@ export default function Step1Form({
             placeholder="이메일을 입력하세요"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            aria-invalid={!!errors.email}
             className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
           />
         </div>
