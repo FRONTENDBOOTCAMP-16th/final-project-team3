@@ -18,6 +18,7 @@ interface AdminDataTableProps<T> {
   columns: AdminTableColumn<T>[];
   data: T[];
   emptyMessage?: string;
+  caption?: string;
   initialPageSize?: number;
   pageSizeOptions?: readonly number[];
   currentPage?: number;
@@ -33,6 +34,7 @@ export default function AdminDataTable<T>({
   columns,
   data,
   emptyMessage = '데이터가 없습니다.',
+  caption,
   initialPageSize,
   pageSizeOptions,
   currentPage,
@@ -62,7 +64,11 @@ export default function AdminDataTable<T>({
 
   return (
     <section className="w-full max-w-7xl rounded-md border bg-white px-6 py-4 mb-8">
-      <table className="w-full table-fixed border-collapse bg-white">
+      <table
+        className="w-full table-fixed border-collapse bg-white"
+        aria-label={caption}
+      >
+        {caption ? <caption className="sr-only">{caption}</caption> : null}
         <thead>
           <tr>
             {columns.map((column) => (

@@ -183,6 +183,7 @@ export default function AdminUsersClient({
       />
 
       <AdminDataTable
+        caption="관리자 사용자 관리 목록"
         columns={USER_COLUMNS}
         currentPage={currentPage}
         data={data}

@@ -112,6 +112,7 @@ export default function AdminCompetitionsClient({
       />
 
       <AdminDataTable
+        caption="관리자 대회 일정 관리 목록"
         columns={COMPETITION_COLUMNS}
         currentPage={currentPage}
         data={data}

@@ -162,6 +162,7 @@ export default function AdminSupportTableClient({
 
       {activeSection === 'dojang' ? (
         <AdminDataTable
+          caption="관리자 도장 인증 요청 목록"
           columns={DOJANG_COLUMNS}
           currentPage={currentPage}
           data={dojangVerifications}
@@ -175,6 +176,7 @@ export default function AdminSupportTableClient({
         />
       ) : (
         <AdminDataTable
+          caption="관리자 신고 내역 목록"
           columns={REPORT_COLUMNS}
           currentPage={currentPage}
           data={reports}
