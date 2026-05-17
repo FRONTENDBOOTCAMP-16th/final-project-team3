@@ -45,6 +45,7 @@ export default function CompetitionDetailClient({
   const handleDeletePost = async () => {
     try {
       await deleteCompetition(id);
+      setDeleteModalOpen(false);
       showSuccessToast('대회일정이 삭제되었습니다.', '🗑️');
       await queryClient.invalidateQueries({ queryKey: ['competition'] });
       await new Promise((resolve) => setTimeout(resolve, 700));

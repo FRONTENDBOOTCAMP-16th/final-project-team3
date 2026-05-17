@@ -75,6 +75,7 @@ export default function AdminSupportDojangActions({
 
       showSuccessToast(result.message, successIcon);
       setOpen(false);
+      setConfirmAction(null);
       router.refresh();
     });
   };

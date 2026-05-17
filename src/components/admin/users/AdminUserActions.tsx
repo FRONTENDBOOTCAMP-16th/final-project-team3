@@ -92,6 +92,7 @@ export default function AdminUserActions({ user }: AdminUserActionsProps) {
         return;
       }
 
+      setIsConfirmOpen(false);
       showSuccessToast(result.message, isActive ? '🔒' : '🔓');
       router.refresh();
     });

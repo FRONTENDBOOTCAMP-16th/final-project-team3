@@ -52,6 +52,7 @@ export default function AdminCompetitionPostAction({
         return;
       }
 
+      setIsConfirmOpen(false);
       showSuccessToast(result.message, '♻️');
       router.refresh();
     });
