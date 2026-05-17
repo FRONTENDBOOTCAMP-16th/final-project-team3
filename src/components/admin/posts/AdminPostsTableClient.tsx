@@ -96,6 +96,7 @@ export default function AdminPostTableClient({
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
         onSearch={commitSearch}
+        searchAriaLabel="게시글 제목 검색"
       />
 
       <AdminDataTable

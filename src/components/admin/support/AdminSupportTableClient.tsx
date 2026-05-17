@@ -142,6 +142,10 @@ export default function AdminSupportTableClient({
     activeSection === 'dojang'
       ? '도장명, 주소 검색...'
       : '신고 게시글 제목 검색...';
+  const searchAriaLabel =
+    activeSection === 'dojang'
+      ? '도장명 또는 주소 검색'
+      : '신고 게시글 제목 검색';
 
   return (
     <>
@@ -153,6 +157,7 @@ export default function AdminSupportTableClient({
         onSearchQueryChange={setSearchQuery}
         onSearch={commitSearch}
         searchPlaceholder={searchPlaceholder}
+        searchAriaLabel={searchAriaLabel}
       />
 
       {activeSection === 'dojang' ? (
