@@ -51,7 +51,6 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
       content,
       category,
       image_url,
-      view_count,
       created_at,
       profiles (
         nickname,
@@ -72,7 +71,6 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
     content: post.content,
     category: post.category,
     image_url: post.image_url,
-    view_count: post.view_count,
     created_at: post.created_at,
     nickname: (post.profiles as any)?.nickname ?? '',
     avatar_url: (post.profiles as any)?.avatar_url ?? '',
