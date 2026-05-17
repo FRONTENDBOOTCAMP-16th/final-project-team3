@@ -7,13 +7,16 @@ import ErrorBoundary from '@/components/common/ErrorBoundary';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { isPublicPostVisible } from '@/services/communityService';
 import { getPost, getComments } from '@/services/communityService.server';
+import { extractPostId } from '@/lib/slug';
 
-type Props = { params: Promise<{ id: string }> };
+type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const post = await getPost(id);
+  const { slug } = await params;
+  const id = extractPostId(slug);
+  if (!id) return { title: '게시글을 찾을 수 없습니다 | Black Belt BJJ' };
 
+  const post = await getPost(id);
   if (!isPublicPostVisible(post)) {
     return {
       title: '게시글을 찾을 수 없습니다 | Black Belt BJJ',
@@ -22,7 +25,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const description = post.content.slice(0, 120).replace(/\n/g, ' ');
-
   return {
     title: `${post.title} | Black Belt BJJ`,
     description: description ?? '주짓수 커뮤니티 게시글 상세 정보',
@@ -36,9 +38,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 async function PostDetailContent({ params }: Props) {
-  const { id } = await params;
-  const supabase = await createSupabaseServerClient();
+  const { slug } = await params;
+  const id = extractPostId(slug);
+  if (!id) notFound();
 
+  const supabase = await createSupabaseServerClient();
   const [
     post,
     comments,
