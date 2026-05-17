@@ -19,6 +19,10 @@ import type {
 
 const DOJANG_ROLE_SET = new Set<string>(DOJANG_ROLE_VALUES);
 
+export function isDojangUserRole(role: RawUserRole) {
+  return typeof role === 'string' && DOJANG_ROLE_SET.has(role);
+}
+
 export function formatUserDate(dateText: string) {
   return dateText.slice(0, 10);
 }
@@ -52,7 +56,7 @@ export function getUserType(role: RawUserRole): AdminUserType {
     return '관리자';
   }
 
-  if (typeof role === 'string' && DOJANG_ROLE_SET.has(role)) {
+  if (isDojangUserRole(role)) {
     return '도장';
   }
 
@@ -93,11 +97,7 @@ export function getDojangApprovalStatus(
     return '승인대기';
   }
 
-  if (role === 'manager' || role === 'dojang') {
-    return '승인완료';
-  }
-
-  return '승인대기';
+  return '승인완료';
 }
 
 function buildDojangByProfileIdMap(dojangs: DojangQueryRow[]) {
