@@ -1,9 +1,6 @@
-import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import PostDetailClient from '@/components/community/PostDetailClient';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
-import ErrorBoundary from '@/components/common/ErrorBoundary';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { isPublicPostVisible } from '@/services/communityService';
 import { getPost, getComments } from '@/services/communityService.server';
@@ -42,20 +39,16 @@ async function PostDetailContent({ params }: Props) {
   const id = extractPostId(slug);
   if (!id) notFound();
 
+  const post = await getPost(id);
+  if (!isPublicPostVisible(post)) notFound();
+
   const supabase = await createSupabaseServerClient();
   const [
-    post,
     comments,
     {
       data: { user },
     },
-  ] = await Promise.all([
-    getPost(id),
-    getComments(id),
-    supabase.auth.getUser(),
-  ]);
-
-  if (!isPublicPostVisible(post)) notFound();
+  ] = await Promise.all([getComments(id), supabase.auth.getUser()]);
 
   const currentUserRole = user?.id
     ? ((
@@ -79,11 +72,5 @@ async function PostDetailContent({ params }: Props) {
 }
 
 export default function PostDetailPage({ params }: Props) {
-  return (
-    <ErrorBoundary>
-      <Suspense fallback={<LoadingSpinner />}>
-        <PostDetailContent params={params} />
-      </Suspense>
-    </ErrorBoundary>
-  );
+  return <PostDetailContent params={params} />;
 }
