@@ -65,7 +65,6 @@ export default function AdminTableToolbar<TFilter extends string>({
           onSearch={onSearch}
           placeholder={searchPlaceholder}
           inputAriaLabel={searchAriaLabel}
-          buttonAriaLabel={`${searchAriaLabel} 실행`}
         />
       </div>
     </section>
