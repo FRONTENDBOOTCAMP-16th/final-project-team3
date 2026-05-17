@@ -11,7 +11,6 @@ export interface CompetitionDetailCardData {
   apply_deadline: string;
   participants?: number;
   created_at?: string;
-  view_count?: number;
   commentCount?: number;
   nickname?: string | null;
   avatar_url?: string | null;

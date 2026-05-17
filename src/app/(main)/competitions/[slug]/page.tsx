@@ -56,11 +56,6 @@ async function CompetitionDetailContent({ params }: Props) {
   const competition = await getCompetition(id);
   if (!isPublicCompetitionVisible(competition)) notFound();
 
-  await supabase
-    .from('competition')
-    .update({ view_count: (competition.view_count ?? 0) + 1 })
-    .eq('id', id);
-
   return (
     <CompetitionDetailClient
       competition={competition}

@@ -92,7 +92,6 @@ export default function CompetitionDetailClient({
           location: competition.location,
           apply_deadline: competition.apply_deadline,
           created_at: competition.created_at,
-          view_count: competition.view_count,
           nickname: competition.nickname,
           avatar_url: competition.avatar_url,
           role: competition.role,
