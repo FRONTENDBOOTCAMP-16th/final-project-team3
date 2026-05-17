@@ -21,6 +21,15 @@ export const CATEGORY_LABEL_MAP: Record<DbPostCategory, AdminPostCategory> = {
   notice: '공지',
 };
 
+export const CATEGORY_QUERY_VALUE_MAP: Record<
+  AdminPostCategory,
+  DbPostCategory
+> = {
+  일반: 'personal',
+  도장홍보: 'promo',
+  공지: 'notice',
+};
+
 export const CATEGORY_BADGE_VARIANT_MAP: Record<
   AdminPostCategory,
   AdminBadgeVariant

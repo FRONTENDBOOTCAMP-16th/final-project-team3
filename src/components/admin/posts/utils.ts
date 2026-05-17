@@ -27,7 +27,6 @@ export function mapPostQueryRowToAdminPostRow(
     author: getAuthorName(post.profiles),
     status: post.status,
     deleted_at: post.deleted_at,
-    view_count: post.view_count ?? 0,
     report_count: post.report_count ?? 0,
     created_at: formatPostDate(post.created_at),
   };

@@ -51,7 +51,6 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
       content,
       category,
       image_url,
-      view_count,
       created_at,
       profiles (
         nickname,

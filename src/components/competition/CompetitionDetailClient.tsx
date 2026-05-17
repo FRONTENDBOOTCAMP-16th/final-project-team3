@@ -7,11 +7,15 @@ import { getStatus } from '@/utils/formatDate';
 import { handleShare } from '@/utils/share';
 import type { Competition } from '@/types/competition';
 import CompetitionDetailCard from '@/components/competition/CompetitionDetailCard';
-import Image from 'next/image';
 import { deleteCompetition } from '@/services/competitionService';
 import { useState } from 'react';
 import ConfirmModal from '../common/ConfirmModal';
-import { canManageContent, type ContentUserRole } from '@/lib/contentPermissions';
+import {
+  canManageContent,
+  type ContentUserRole,
+} from '@/lib/contentPermissions';
+import { Pencil, Trash2, Share2 } from 'lucide-react';
+import { buildCompetitionUrl } from '@/lib/slug';
 
 interface CompetitionDetailClientProps {
   competition: Competition;
@@ -88,10 +92,8 @@ export default function CompetitionDetailClient({
           location: competition.location,
           apply_deadline: competition.apply_deadline,
           created_at: competition.created_at,
-          view_count: competition.view_count,
           nickname: competition.nickname,
           avatar_url: competition.avatar_url,
-          role: competition.role,
         }}
         headerActions={
           <>
@@ -100,29 +102,27 @@ export default function CompetitionDetailClient({
                 <button
                   title="수정하기"
                   aria-label="대회 게시글 수정하기"
-                  onClick={() => router.push(`/competitions/${id}/edit`)}
-                  className="cursor-pointer"
+                  onClick={() =>
+                    router.push(
+                      `${buildCompetitionUrl(competition.name, id)}/edit`,
+                    )
+                  }
+                  className="p-1 cursor-pointer"
                 >
-                  <Image
-                    src="/postEdit.svg"
-                    alt=""
-                    width={30}
-                    height={30}
-                    aria-hidden="true"
+                  <Pencil
+                    size={20}
+                    className="text-gray-400 hover:text-gray-800"
                   />
                 </button>
                 <button
                   title="삭제하기"
                   aria-label="대회 게시글 삭제하기"
                   onClick={() => setDeleteModalOpen(true)}
-                  className="cursor-pointer"
+                  className="p-1 cursor-pointer"
                 >
-                  <Image
-                    src="/postDelete.svg"
-                    alt=""
-                    width={32}
-                    height={32}
-                    aria-hidden="true"
+                  <Trash2
+                    size={20}
+                    className="text-gray-400 hover:text-red-500"
                   />
                 </button>
               </>
@@ -131,15 +131,9 @@ export default function CompetitionDetailClient({
               title="공유하기"
               aria-label="대회 게시글 링크 공유하기"
               onClick={() => handleShare()}
-              className="w-8 h-8 flex items-center justify-center cursor-pointer"
+              className="p-1 cursor-pointer"
             >
-              <Image
-                src="/postShare.svg"
-                alt=""
-                width={18}
-                height={18}
-                aria-hidden="true"
-              />
+              <Share2 size={18} className="text-gray-400 hover:text-gray-800" />
             </button>
           </>
         }

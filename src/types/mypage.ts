@@ -15,7 +15,6 @@ export interface MyPost {
   nickname: string;
   avatar_url: string;
   image_url: string;
-  view_count: number;
   created_at: string;
   comment_count: number;
 }
