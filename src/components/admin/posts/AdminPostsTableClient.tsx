@@ -7,7 +7,6 @@ import AdminDataTable, {
 import AdminPostActions from '@/components/admin/posts/AdminPostsActions';
 import AdminTableToolbar from '@/components/admin/AdminTableToolbar';
 import {
-  ADMIN_POSTS_PAGE_SIZE,
   ADMIN_POST_FILTERS,
   CATEGORY_BADGE_VARIANT_MAP,
 } from '@/components/admin/posts/constants';
@@ -17,6 +16,7 @@ import type {
 } from '@/components/admin/posts/types';
 import { useAdminTableQueryState } from '@/hooks/useAdminTableQueryState';
 import { getPostStatusBadge } from '@/components/admin/posts/utils';
+import { ADMIN_TABLE_PAGE_SIZE } from '@/lib/adminTableServerPagination';
 
 interface AdminPostTableClientProps {
   data: AdminPostRow[];
@@ -72,7 +72,7 @@ const POST_COLUMNS: AdminTableColumn<AdminPostRow>[] = [
 export default function AdminPostTableClient({
   data,
   totalCount,
-  pageSize = ADMIN_POSTS_PAGE_SIZE,
+  pageSize = ADMIN_TABLE_PAGE_SIZE,
 }: AdminPostTableClientProps) {
   const {
     activeFilter,
