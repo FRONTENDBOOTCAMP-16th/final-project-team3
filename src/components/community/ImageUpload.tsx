@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { showErrorToast } from '@/lib/toast';
 
 interface ImageUploadProps {
   preview: string | null;
@@ -15,9 +16,15 @@ export default function ImageUpload({
 }: ImageUploadProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      onChange(file, URL.createObjectURL(file));
+    if (!file) return;
+
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      showErrorToast('파일 용량은 10MB를 초과할 수 없습니다.');
+      e.target.value = '';
+      return;
     }
+    onChange(file, URL.createObjectURL(file));
   };
 
   return (

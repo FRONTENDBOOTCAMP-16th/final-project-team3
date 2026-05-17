@@ -9,7 +9,6 @@ export interface Post {
   status?: 'published' | 'hidden' | string | null;
   deleted_at?: string | null;
   image_url?: string;
-  view_count: number;
   report_count: number;
   created_at: string;
   updated_at?: string;

@@ -68,7 +68,6 @@ async function getAdminPosts(searchParams: Awaited<AdminPostsPageSearchParams>) 
       title,
       status,
       deleted_at,
-      view_count,
       report_count,
       created_at,
       profiles (
