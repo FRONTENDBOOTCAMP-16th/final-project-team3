@@ -4,6 +4,7 @@ import { ExternalLink, FileText, Power, PowerOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
+import { toggleAdminUserAccountStatus } from '@/actions/admin/users';
 import AdminBadge from '@/components/admin/AdminBadge';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import {
@@ -12,10 +13,7 @@ import {
   USER_TYPE_BADGE_VARIANT_MAP,
 } from '@/components/admin/users/constants';
 import type { AdminUserRow } from '@/components/admin/users/types';
-import {
-  formatOptionalText,
-  getNextAccountStatus,
-} from '@/components/admin/users/utils';
+import { formatOptionalText } from '@/components/admin/users/utils';
 import {
   Dialog,
   DialogContent,
@@ -24,7 +22,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { supabase } from '@/lib/supabase/client';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 
 interface AdminUserActionsProps {
@@ -88,22 +85,14 @@ export default function AdminUserActions({ user }: AdminUserActionsProps) {
 
   const handleToggleAccountStatus = () => {
     startTransition(async () => {
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          account_status: getNextAccountStatus(user.raw_account_status),
-        })
-        .eq('id', user.id);
+      const result = await toggleAdminUserAccountStatus(user.id);
 
-      if (error) {
-        showErrorToast('계정 상태 변경에 실패했습니다.');
+      if (!result.success) {
+        showErrorToast(result.message);
         return;
       }
 
-      showSuccessToast(
-        `${user.nickname} 계정을 ${nextAccountLabel} 상태로 변경했습니다.`,
-        isActive ? '🔒' : '🔓',
-      );
+      showSuccessToast(result.message, isActive ? '🔒' : '🔓');
       router.refresh();
     });
   };
