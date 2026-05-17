@@ -98,7 +98,7 @@ export default function Step2Form({ name, email, onNext }: Step2FormProps) {
             className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
           />
         </div>
-        <p className="text-danger text-sm mt-1 h-10" role="alert">
+        <p className="text-danger text-sm mt-1 h-5" role="alert">
           {errors.password ?? ''}
         </p>
       </div>
@@ -122,7 +122,7 @@ export default function Step2Form({ name, email, onNext }: Step2FormProps) {
             className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
           />
         </div>
-        <p className="text-danger text-sm mt-1 h-5" role="alert">
+        <p className="text-danger text-sm mt-1 h-10" role="alert">
           {errors.confirmPassword ?? errors.server ?? ''}
         </p>
       </div>

@@ -12,6 +12,12 @@ export default function FindPasswordClient() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
+  const handleReset = () => {
+    setStep(1);
+    setName('');
+    setEmail('');
+  };
+
   return (
     <>
       <p className="text-text-secondary text-sm font-medium text-center mb-6">
@@ -41,7 +47,7 @@ export default function FindPasswordClient() {
         {step === 2 && (
           <Step2Form name={name} email={email} onNext={() => setStep(3)} />
         )}
-        {step === 3 && <Step3Complete />}
+        {step === 3 && <Step3Complete onReset={handleReset} />}
       </div>
     </>
   );
