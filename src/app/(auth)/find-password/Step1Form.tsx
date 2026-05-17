@@ -13,8 +13,8 @@ const step1Schema = z.object({
 interface Step1FormProps {
   name: string;
   email: string;
-  setName: (v: string) => void;
-  setEmail: (v: string) => void;
+  setName: React.Dispatch<React.SetStateAction<string>>;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
   onNext: () => void;
 }
 
