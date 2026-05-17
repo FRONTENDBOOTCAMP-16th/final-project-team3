@@ -1,4 +1,5 @@
 import {
+  DOJANG_ROLE_VALUES,
   UNKNOWN_USER_EMAIL,
   UNKNOWN_USER_NAME,
   UNKNOWN_USER_NICKNAME,
@@ -16,7 +17,7 @@ import type {
   RawUserRole,
 } from './types';
 
-const DOJANG_ROLE_SET = new Set(['manager', 'dojang', 'pending']);
+const DOJANG_ROLE_SET = new Set<string>(DOJANG_ROLE_VALUES);
 
 export function formatUserDate(dateText: string) {
   return dateText.slice(0, 10);

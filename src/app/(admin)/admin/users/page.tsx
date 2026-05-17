@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
 
 import AdminUsersClient from '@/components/admin/users/AdminUsersClient';
-import { ADMIN_USER_FILTERS } from '@/components/admin/users/constants';
+import {
+  ADMIN_USER_FILTERS,
+  DOJANG_ROLE_VALUES,
+} from '@/components/admin/users/constants';
 import type {
   DojangQueryRow,
   ProfileQueryRow,
@@ -24,7 +27,6 @@ type AdminUsersPageSearchParams = Promise<
   }
 >;
 
-const DOJANG_ROLE_VALUES = ['manager', 'dojang', 'pending'] as const;
 const EMPTY_DOJANG_QUERY_RESULT: { data: DojangQueryRow[]; error: null } = {
   data: [],
   error: null,

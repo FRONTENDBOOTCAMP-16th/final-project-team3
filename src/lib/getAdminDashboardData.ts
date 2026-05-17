@@ -1,4 +1,5 @@
 import type { AdminDashboardData } from '@/components/admin/dashboard/types';
+import { DOJANG_ROLE_VALUES } from '@/components/admin/users/constants';
 import { createSupabaseServerClient } from './supabase/server';
 
 function getTodayStartIso() {
@@ -28,24 +29,24 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
   ] = await Promise.all([
     supabase
       .from('profiles')
-      .select('*', { count: 'exact', head: true })
+      .select('id', { count: 'exact', head: true })
       .eq('role', 'user'),
     supabase
       .from('profiles')
-      .select('*', { count: 'exact', head: true })
-      .eq('role', 'manager'),
+      .select('id', { count: 'exact', head: true })
+      .in('role', [...DOJANG_ROLE_VALUES]),
     supabase.from('posts').select('*', { count: 'exact', head: true }),
     supabase
       .from('profiles')
-      .select('*', { count: 'exact', head: true })
+      .select('id', { count: 'exact', head: true })
       .gte('created_at', todayStartIso),
     supabase
       .from('dojang')
-      .select('*', { count: 'exact', head: true })
+      .select('id', { count: 'exact', head: true })
       .eq('dojang_status', 'pending'),
     supabase
       .from('reports')
-      .select('*', { count: 'exact', head: true })
+      .select('id', { count: 'exact', head: true })
       .eq('reports_status', 'pending'),
   ]);
 
