@@ -1,7 +1,5 @@
 'use client';
 
-import { useMemo } from 'react';
-
 import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
   type AdminTableColumn,
@@ -22,14 +20,13 @@ import type {
   SupportSection,
 } from '@/components/admin/support/types';
 import { useAdminTableQueryState } from '@/hooks/useAdminTableQueryState';
-import {
-  filterDojangVerifications,
-  filterReports,
-} from '@/components/admin/support/utils';
+import { ADMIN_TABLE_PAGE_SIZE } from '@/lib/adminTableServerPagination';
 
 interface AdminSupportTableClientProps {
   dojangVerifications: AdminDojangVerificationRow[];
   reports: AdminReportRow[];
+  totalCount: number;
+  pageSize?: number;
 }
 
 const DOJANG_COLUMNS: AdminTableColumn<AdminDojangVerificationRow>[] = [
@@ -122,7 +119,9 @@ const REPORT_COLUMNS: AdminTableColumn<AdminReportRow>[] = [
 
 export default function AdminSupportTableClient({
   dojangVerifications,
+  pageSize = ADMIN_TABLE_PAGE_SIZE,
   reports,
+  totalCount,
 }: AdminSupportTableClientProps) {
   const {
     activeFilter: activeSection,
@@ -138,14 +137,6 @@ export default function AdminSupportTableClient({
     validFilters: SUPPORT_SECTION_FILTERS.map((filter) => filter.value),
     resetSearchOnFilterChange: true,
   });
-
-  const filteredDojangVerifications = useMemo(() => {
-    return filterDojangVerifications(dojangVerifications, searchQuery);
-  }, [dojangVerifications, searchQuery]);
-
-  const filteredReports = useMemo(() => {
-    return filterReports(reports, searchQuery);
-  }, [reports, searchQuery]);
 
   const searchPlaceholder =
     activeSection === 'dojang'
@@ -168,19 +159,27 @@ export default function AdminSupportTableClient({
         <AdminDataTable
           columns={DOJANG_COLUMNS}
           currentPage={currentPage}
-          data={filteredDojangVerifications}
+          data={dojangVerifications}
           emptyMessage="도장 인증 요청이 없습니다."
           getRowKey={(row) => row.id}
+          initialPageSize={pageSize}
           onPageChange={setPage}
+          pageSizeOptions={[pageSize]}
+          serverPagination
+          totalItems={totalCount}
         />
       ) : (
         <AdminDataTable
           columns={REPORT_COLUMNS}
           currentPage={currentPage}
-          data={filteredReports}
+          data={reports}
           emptyMessage="신고 내역이 없습니다."
           getRowKey={(row) => row.id}
+          initialPageSize={pageSize}
           onPageChange={setPage}
+          pageSizeOptions={[pageSize]}
+          serverPagination
+          totalItems={totalCount}
         />
       )}
     </>

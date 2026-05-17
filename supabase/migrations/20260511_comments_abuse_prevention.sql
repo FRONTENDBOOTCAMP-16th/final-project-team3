@@ -10,16 +10,6 @@ SECURITY INVOKER AS $$
   UPDATE posts SET report_count = report_count + 1 WHERE id = post_id;
 $$;
 
--- 조회수 증가
-CREATE OR REPLACE FUNCTION increment_view_count(post_id uuid)
-RETURNS void
-LANGUAGE plpgsql
-SECURITY INVOKER AS $$
-BEGIN
-  UPDATE posts SET view_count = view_count + 1 WHERE id = post_id;
-END;
-$$;
-
 -- updated_at 자동 갱신 트리거 함수
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER
@@ -72,6 +62,7 @@ LANGUAGE sql SECURITY DEFINER AS $$
   SELECT user_id
   FROM comments
   WHERE post_id = p_post_id
+  AND deleted_at IS NULL
   ORDER BY created_at DESC
   LIMIT p_limit;
 $$;

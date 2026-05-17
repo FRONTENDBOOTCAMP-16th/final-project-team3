@@ -1,7 +1,5 @@
 'use client';
 
-import { useMemo } from 'react';
-
 import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
   type AdminTableColumn,
@@ -19,10 +17,12 @@ import type {
   AdminUserRow,
 } from '@/components/admin/users/types';
 import { useAdminTableQueryState } from '@/hooks/useAdminTableQueryState';
-import { filterAdminUsers } from '@/components/admin/users/utils';
+import { ADMIN_TABLE_PAGE_SIZE } from '@/lib/adminTableServerPagination';
 
 interface AdminUsersClientProps {
   data: AdminUserRow[];
+  totalCount: number;
+  pageSize?: number;
 }
 
 function UserAvatarCell({
@@ -150,7 +150,11 @@ const USER_COLUMNS: AdminTableColumn<AdminUserRow>[] = [
   },
 ];
 
-export default function AdminUsersClient({ data }: AdminUsersClientProps) {
+export default function AdminUsersClient({
+  data,
+  totalCount,
+  pageSize = ADMIN_TABLE_PAGE_SIZE,
+}: AdminUsersClientProps) {
   const {
     activeFilter,
     currentPage,
@@ -164,10 +168,6 @@ export default function AdminUsersClient({ data }: AdminUsersClientProps) {
     defaultFilter: 'all',
     validFilters: ADMIN_USER_FILTERS.map((filter) => filter.value),
   });
-
-  const filteredData = useMemo(() => {
-    return filterAdminUsers(data, activeFilter, searchQuery);
-  }, [activeFilter, data, searchQuery]);
 
   return (
     <>
@@ -184,10 +184,14 @@ export default function AdminUsersClient({ data }: AdminUsersClientProps) {
       <AdminDataTable
         columns={USER_COLUMNS}
         currentPage={currentPage}
-        data={filteredData}
+        data={data}
         emptyMessage="등록된 사용자가 없습니다."
         getRowKey={(row) => row.id}
+        initialPageSize={pageSize}
         onPageChange={setPage}
+        pageSizeOptions={[pageSize]}
+        serverPagination
+        totalItems={totalCount}
       />
     </>
   );
