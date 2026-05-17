@@ -1,3 +1,5 @@
+'use client';
+
 interface TabButtonProps {
   label: string;
   isActive: boolean;
