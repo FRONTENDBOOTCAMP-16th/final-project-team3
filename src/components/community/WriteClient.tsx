@@ -200,7 +200,6 @@ export default function WriteClient() {
                 content,
                 likeCount: 0,
                 commentCount: 0,
-                view_count: 0,
               }}
             />
           </div>
