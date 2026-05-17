@@ -26,6 +26,14 @@ type AdminSupportSearchParams = AdminTableRouteSearchParams & {
   section?: string | string[] | undefined;
 };
 
+type ReportStatusBucket = 'pending' | 'resolved' | 'ignored';
+
+const REPORT_STATUS_BUCKETS = [
+  'pending',
+  'resolved',
+  'ignored',
+] as const satisfies readonly ReportStatusBucket[];
+
 const EMPTY_SUPPORT_PROFILE_QUERY_RESULT: {
   data: SupportProfileQueryRow[];
   error: null;
@@ -49,6 +57,59 @@ export interface AdminSupportPageData {
   reports: ReturnType<typeof mapReportQueryRowsToAdminReportRows>;
   totalCount: number;
   pageSize: number;
+}
+
+function buildReportsCountQuery(
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  matchingPostIds: string[],
+  statusBucket: ReportStatusBucket,
+) {
+  let query = supabase.from('reports').select('id', {
+    count: 'exact',
+    head: true,
+  });
+
+  if (matchingPostIds.length > 0) {
+    query = query.in('post_id', matchingPostIds);
+  }
+
+  if (statusBucket === 'pending') {
+    return query.or('reports_status.eq.pending,reports_status.is.null');
+  }
+
+  return query.eq('reports_status', statusBucket);
+}
+
+function buildReportsDataQuery(
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  matchingPostIds: string[],
+  statusBucket: ReportStatusBucket,
+) {
+  let query = supabase
+    .from('reports')
+    .select(
+      `
+        id,
+        reporter_id,
+        post_id,
+        reason,
+        created_at,
+        reports_status,
+        handled_at,
+        action_type
+      `,
+    )
+    .order('created_at', { ascending: false });
+
+  if (matchingPostIds.length > 0) {
+    query = query.in('post_id', matchingPostIds);
+  }
+
+  if (statusBucket === 'pending') {
+    return query.or('reports_status.eq.pending,reports_status.is.null');
+  }
+
+  return query.eq('reports_status', statusBucket);
 }
 
 function parseSupportQuery(searchParams: AdminSupportSearchParams) {
@@ -203,52 +264,69 @@ async function getAdminReportsSupportData(
     };
   }
 
-  let countQuery = supabase.from('reports').select('id', {
-    count: 'exact',
-    head: true,
-  });
-  let dataQuery = supabase
-    .from('reports')
-    .select(
-      `
-        id,
-        reporter_id,
-        post_id,
-        reason,
-        created_at,
-        reports_status,
-        handled_at,
-        action_type
-      `,
-    )
-    .order('reports_status', { ascending: true })
-    .order('created_at', { ascending: false });
+  const reportStatusCounts = Object.fromEntries(
+    await Promise.all(
+      REPORT_STATUS_BUCKETS.map(async (statusBucket) => {
+        const { count, error } = await buildReportsCountQuery(
+          supabase,
+          matchingPostIds,
+          statusBucket,
+        );
 
-  if (matchingPostIds.length > 0) {
-    countQuery = countQuery.in('post_id', matchingPostIds);
-    dataQuery = dataQuery.in('post_id', matchingPostIds);
-  }
+        if (error) {
+          throw new Error(error.message);
+        }
 
-  const { count, error: reportsCountError } = await countQuery;
+        return [statusBucket, count ?? 0] as const;
+      }),
+    ),
+  ) as Record<ReportStatusBucket, number>;
 
-  if (reportsCountError) {
-    throw new Error(reportsCountError.message);
-  }
-
-  const totalCount = count ?? 0;
+  const totalCount = REPORT_STATUS_BUCKETS.reduce(
+    (sum, statusBucket) => sum + reportStatusCounts[statusBucket],
+    0,
+  );
   const { from, to, pageSize } = buildAdminPaginationRange({
     requestedPage,
     totalCount,
     pageSize: ADMIN_TABLE_PAGE_SIZE,
   });
+  let remainingOffset = from;
+  let remainingLimit = to - from + 1;
+  const reports: SupportReportQueryRow[] = [];
 
-  const reportsResult = await dataQuery.range(from, to);
+  for (const statusBucket of REPORT_STATUS_BUCKETS) {
+    const bucketCount = reportStatusCounts[statusBucket];
 
-  if (reportsResult.error) {
-    throw new Error(reportsResult.error.message);
+    if (remainingLimit <= 0) {
+      break;
+    }
+
+    if (remainingOffset >= bucketCount) {
+      remainingOffset -= bucketCount;
+      continue;
+    }
+
+    const bucketFrom = remainingOffset;
+    const bucketTo = Math.min(
+      bucketCount - 1,
+      bucketFrom + remainingLimit - 1,
+    );
+    const reportsResult = await buildReportsDataQuery(
+      supabase,
+      matchingPostIds,
+      statusBucket,
+    ).range(bucketFrom, bucketTo);
+
+    if (reportsResult.error) {
+      throw new Error(reportsResult.error.message);
+    }
+
+    reports.push(...(reportsResult.data ?? []));
+    remainingLimit -= bucketTo - bucketFrom + 1;
+    remainingOffset = 0;
   }
 
-  const reports: SupportReportQueryRow[] = reportsResult.data ?? [];
   const profileIds = Array.from(
     new Set(
       reports
