@@ -15,6 +15,7 @@ import CompetitionForm, {
 import CompetitionDetailCard from '@/components/competition/CompetitionDetailCard';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import { revalidateCompetitions } from '@/actions/competition/competitions';
 
 const defaultValues: CompetitionFormValues = {
   name: '',
@@ -77,6 +78,7 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
         participants: values.participants ? Number(values.participants) : 0,
         user_id: userId,
       });
+      await revalidateCompetitions();
       showSuccessToast('대회일정이 추가되었습니다.', '🏆');
       await queryClient.invalidateQueries({ queryKey: ['competition'] });
       await new Promise((resolve) => setTimeout(resolve, 700));
