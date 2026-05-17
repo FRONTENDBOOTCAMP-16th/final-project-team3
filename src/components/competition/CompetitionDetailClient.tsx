@@ -94,7 +94,6 @@ export default function CompetitionDetailClient({
           created_at: competition.created_at,
           nickname: competition.nickname,
           avatar_url: competition.avatar_url,
-          role: competition.role,
         }}
         headerActions={
           <>

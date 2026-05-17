@@ -14,7 +14,6 @@ export interface CompetitionDetailCardData {
   commentCount?: number;
   nickname?: string | null;
   avatar_url?: string | null;
-  role?: string | null;
 }
 
 interface CompetitionDetailCardProps {
