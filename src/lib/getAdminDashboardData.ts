@@ -3,11 +3,21 @@ import { DOJANG_ROLE_VALUES } from '@/components/admin/users/constants';
 import { createSupabaseServerClient } from './supabase/server';
 
 function getTodayStartIso() {
-  const todayStart = new Date();
+  const seoulDateParts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date());
 
-  todayStart.setHours(0, 0, 0, 0);
+  const year =
+    seoulDateParts.find((part) => part.type === 'year')?.value ?? '1970';
+  const month =
+    seoulDateParts.find((part) => part.type === 'month')?.value ?? '01';
+  const day =
+    seoulDateParts.find((part) => part.type === 'day')?.value ?? '01';
 
-  return todayStart.toISOString();
+  return new Date(`${year}-${month}-${day}T00:00:00+09:00`).toISOString();
 }
 
 function normalizeCount(count: number | null) {
