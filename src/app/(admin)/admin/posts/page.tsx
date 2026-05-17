@@ -123,8 +123,10 @@ async function getAdminPosts(searchParams: Awaited<AdminPostsPageSearchParams>) 
     throw new Error(error.message);
   }
 
+  const rows: PostQueryRow[] = data ?? [];
+
   return {
-    rows: mapPostQueryRowsToAdminPostRows((data ?? []) as PostQueryRow[]),
+    rows: mapPostQueryRowsToAdminPostRows(rows),
     totalCount,
     pageSize,
   };

@@ -26,6 +26,22 @@ type AdminSupportSearchParams = AdminTableRouteSearchParams & {
   section?: string | string[] | undefined;
 };
 
+const EMPTY_SUPPORT_PROFILE_QUERY_RESULT: {
+  data: SupportProfileQueryRow[];
+  error: null;
+} = {
+  data: [],
+  error: null,
+};
+
+const EMPTY_SUPPORT_POST_QUERY_RESULT: {
+  data: SupportPostQueryRow[];
+  error: null;
+} = {
+  data: [],
+  error: null,
+};
+
 export interface AdminSupportPageData {
   dojangVerifications: ReturnType<
     typeof mapDojangQueryRowsToAdminDojangVerificationRows
@@ -122,7 +138,7 @@ async function getAdminDojangSupportData(
     throw new Error(dojangResult.error.message);
   }
 
-  const dojangs = (dojangResult.data ?? []) as SupportDojangQueryRow[];
+  const dojangs: SupportDojangQueryRow[] = dojangResult.data ?? [];
   const profileIds = Array.from(
     new Set(dojangs.map((dojang) => dojang.profile_id)),
   );
@@ -138,16 +154,18 @@ async function getAdminDojangSupportData(
           `,
           )
           .in('id', profileIds)
-      : { data: [] as SupportProfileQueryRow[], error: null };
+      : EMPTY_SUPPORT_PROFILE_QUERY_RESULT;
 
   if (profilesResult.error) {
     throw new Error(profilesResult.error.message);
   }
 
+  const profiles: SupportProfileQueryRow[] = profilesResult.data ?? [];
+
   return {
     dojangVerifications: mapDojangQueryRowsToAdminDojangVerificationRows(
       dojangs,
-      (profilesResult.data ?? []) as SupportProfileQueryRow[],
+      profiles,
     ),
     reports: [],
     totalCount,
@@ -230,7 +248,7 @@ async function getAdminReportsSupportData(
     throw new Error(reportsResult.error.message);
   }
 
-  const reports = (reportsResult.data ?? []) as SupportReportQueryRow[];
+  const reports: SupportReportQueryRow[] = reportsResult.data ?? [];
   const profileIds = Array.from(
     new Set(
       reports
@@ -257,7 +275,7 @@ async function getAdminReportsSupportData(
           `,
           )
           .in('id', profileIds)
-      : Promise.resolve({ data: [] as SupportProfileQueryRow[], error: null }),
+      : Promise.resolve(EMPTY_SUPPORT_PROFILE_QUERY_RESULT),
     postIds.length > 0
       ? supabase
           .from('posts')
@@ -270,7 +288,7 @@ async function getAdminReportsSupportData(
           `,
           )
           .in('id', postIds)
-      : Promise.resolve({ data: [] as SupportPostQueryRow[], error: null }),
+      : Promise.resolve(EMPTY_SUPPORT_POST_QUERY_RESULT),
   ]);
 
   if (profilesResult.error) {
@@ -281,12 +299,15 @@ async function getAdminReportsSupportData(
     throw new Error(postsResult.error.message);
   }
 
+  const profiles: SupportProfileQueryRow[] = profilesResult.data ?? [];
+  const posts: SupportPostQueryRow[] = postsResult.data ?? [];
+
   return {
     dojangVerifications: [],
     reports: mapReportQueryRowsToAdminReportRows(
       reports,
-      (postsResult.data ?? []) as SupportPostQueryRow[],
-      (profilesResult.data ?? []) as SupportProfileQueryRow[],
+      posts,
+      profiles,
     ),
     totalCount,
     pageSize,
