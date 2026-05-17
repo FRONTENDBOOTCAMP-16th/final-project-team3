@@ -1,7 +1,7 @@
 'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   deletePost,
@@ -55,22 +55,6 @@ export default function PostDetailClient({
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [deletePostModalOpen, setDeletePostModalOpen] = useState(false);
   const [deleteCommentId, setDeleteCommentId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const key = `viewed-post-${id}`;
-    if (sessionStorage.getItem(key)) return;
-
-    const incrementView = async () => {
-      try {
-        const res = await fetch(`/api/posts/${id}/view`, { method: 'POST' });
-        if (res.ok) {
-          sessionStorage.setItem(key, 'true');
-        }
-      } catch {}
-    };
-
-    incrementView();
-  }, [id]);
 
   const canManagePost = canManageContent({
     currentUserId: userId,
@@ -203,7 +187,6 @@ export default function PostDetailClient({
     content: initialPost.content,
     likeCount: likeCount ?? 0,
     commentCount: comments.length,
-    view_count: initialPost.view_count,
   };
 
   return (

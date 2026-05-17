@@ -13,7 +13,6 @@ export interface PostDetailCardData {
   content: string;
   likeCount: number;
   commentCount: number;
-  view_count: number;
 }
 
 interface PostDetailCardProps {
@@ -131,7 +130,6 @@ export default function PostDetailCard({
           />
           <span>댓글 {post.commentCount}</span>
         </div>
-        <span className="text-xs text-gray-500">조회 {post.view_count}</span>
       </div>
     </div>
   );
