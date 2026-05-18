@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Step1Form from './Step1Form';
 import Step2Form from './Step2Form';
 import Step3Complete from './Step3Complete';
@@ -17,6 +17,13 @@ export default function FindPasswordClient() {
     setName('');
     setEmail('');
   };
+
+  useEffect(() => {
+    setStep(1);
+    setName('');
+    setEmail('');
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+  }, []);
 
   return (
     <>
