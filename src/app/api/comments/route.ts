@@ -65,7 +65,6 @@ export async function POST(req: NextRequest) {
         { status: 429 },
       );
     }
-    console.error('[comments] insert error:', insertError);
     return NextResponse.json(
       { error: '댓글 저장에 실패했습니다.' },
       { status: 500 },

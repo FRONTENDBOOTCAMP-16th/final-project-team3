@@ -10,6 +10,7 @@ export interface Post {
   deleted_at?: string | null;
   image_url?: string;
   report_count: number;
+  comment_count: number;
   created_at: string;
   updated_at?: string;
   nickname?: string;
