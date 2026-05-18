@@ -20,6 +20,7 @@ async function getCompetitions() {
   const { data } = await supabasePublic
     .from('competition')
     .select('*')
+    .is('deleted_at', null)
     .order('event_data', { ascending: true })
     .range(0, 9);
 

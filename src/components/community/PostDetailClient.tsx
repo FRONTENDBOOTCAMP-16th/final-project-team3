@@ -94,6 +94,8 @@ export default function PostDetailClient({
           avatar_url: user?.image ?? null,
         },
       ]);
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.removeQueries({ queryKey: ['mypage', 'commentCount'] });
       setComment('');
     } catch {
       showErrorToast('네트워크 오류가 발생했습니다.');
@@ -104,6 +106,7 @@ export default function PostDetailClient({
     try {
       await deletePost(id);
       await queryClient.invalidateQueries({ queryKey: ['posts'] });
+      setDeletePostModalOpen(false);
       showSuccessToast('게시글이 삭제되었습니다.', '🗑️');
       await new Promise((resolve) => setTimeout(resolve, 700));
       router.push('/community');
@@ -134,6 +137,7 @@ export default function PostDetailClient({
     try {
       await deleteComment(commentId);
       setComments((prev) => prev.filter((c) => c.id !== commentId));
+      setDeleteCommentId(null);
       showSuccessToast('댓글이 삭제되었습니다.', '🗑️');
     } catch {
       showErrorToast('댓글 삭제에 실패했습니다.');

@@ -10,19 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { getStatus } from '@/utils/formatDate';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { useState } from 'react';
-
-interface Competition {
-  id: string;
-  name: string;
-  location: string;
-  event_data: string;
-  apply_deadline: string;
-  description: string;
-  image_url: string;
-  participants: number;
-  apply_url: string;
-  comment_count?: number;
-}
+import type { Competition } from '@/types/competition';
 
 interface CompetitionClientProps {
   initialCompetitions: Competition[];
@@ -43,12 +31,12 @@ export default function CompetitionClient({
   const isAdmin = user?.role === 'admin';
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useCompetiton();
+    useCompetiton(initialCompetitions);
 
   // 모든 페이지 데이터를 하나의 배열로 합치기
   const competitions = useMemo(
-    () => data?.pages.flatMap((page) => page) ?? initialCompetitions,
-    [data, initialCompetitions],
+    () => data?.pages.flatMap((page) => page) ?? [],
+    [data],
   );
 
   useEffect(() => {

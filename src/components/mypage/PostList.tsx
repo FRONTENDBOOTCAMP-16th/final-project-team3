@@ -15,7 +15,6 @@ export default function PostList({ userId }: PostListProps) {
 
   const observerRef = useRef<HTMLDivElement>(null);
 
-  // 무한스크롤 옵저버
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -47,10 +46,7 @@ export default function PostList({ userId }: PostListProps) {
       {posts.map((post) => (
         <PostCard key={post.id} post={post} userId={userId} />
       ))}
-
-      {/* 무한스크롤 트리거 */}
       <div ref={observerRef} className="h-4" />
-
       {isFetchingNextPage && <LoadingSpinner />}
     </div>
   );

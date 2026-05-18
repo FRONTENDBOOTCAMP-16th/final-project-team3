@@ -18,3 +18,18 @@ export interface MyPost {
   created_at: string;
   comment_count: number;
 }
+
+export interface MyPostQueryRow {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  image_url: string;
+  view_count: number;
+  created_at: string;
+  profiles: {
+    nickname: string;
+    avatar_url: string;
+  } | null;
+  comments: { count: number }[];
+}

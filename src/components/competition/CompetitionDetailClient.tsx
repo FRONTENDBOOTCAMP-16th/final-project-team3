@@ -7,7 +7,6 @@ import { getStatus } from '@/utils/formatDate';
 import { handleShare } from '@/utils/share';
 import type { Competition } from '@/types/competition';
 import CompetitionDetailCard from '@/components/competition/CompetitionDetailCard';
-import { deleteCompetition } from '@/services/competitionService';
 import { useState } from 'react';
 import ConfirmModal from '../common/ConfirmModal';
 import {
@@ -16,6 +15,7 @@ import {
 } from '@/lib/contentPermissions';
 import { Pencil, Trash2, Share2 } from 'lucide-react';
 import { buildCompetitionUrl } from '@/lib/slug';
+import { deleteManagedCompetition } from '@/actions/competition/competitions';
 
 interface CompetitionDetailClientProps {
   competition: Competition;
@@ -44,8 +44,15 @@ export default function CompetitionDetailClient({
 
   const handleDeletePost = async () => {
     try {
-      await deleteCompetition(id);
-      showSuccessToast('대회일정이 삭제되었습니다.', '🗑️');
+      const result = await deleteManagedCompetition(id);
+
+      if (!result.success) {
+        showErrorToast(result.message);
+        return;
+      }
+
+      setDeleteModalOpen(false);
+      showSuccessToast(result.message, '🗑️');
       await queryClient.invalidateQueries({ queryKey: ['competition'] });
       await new Promise((resolve) => setTimeout(resolve, 700));
       router.push('/competitions');

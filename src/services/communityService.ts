@@ -1,14 +1,9 @@
 import { supabase } from '@/lib/supabase/client';
-import type { Post, Comment, PostCategory } from '@/types/community';
+import type { Post, PostCategory } from '@/types/community';
 
 interface ProfileBase {
   nickname: string;
   avatar_url: string;
-}
-
-interface PostProfile extends ProfileBase {
-  belt_level: string;
-  role: string;
 }
 
 export async function getPosts(page = 0, pageSize = 10) {
@@ -17,7 +12,7 @@ export async function getPosts(page = 0, pageSize = 10) {
 
   const { data, error } = await supabase
     .from('posts')
-    .select('*, comments(count), profiles(nickname, avatar_url)')
+    .select('*, active_comment_counts(count), profiles(nickname, avatar_url)')
     .is('deleted_at', null)
     .eq('status', 'published')
     .order('created_at', { ascending: false })
@@ -27,7 +22,8 @@ export async function getPosts(page = 0, pageSize = 10) {
 
   return data.map((post) => ({
     ...post,
-    comment_count: (post.comments as { count: number }[])[0]?.count ?? 0,
+    comment_count:
+      (post.active_comment_counts as { count: number }[])[0]?.count ?? 0,
     nickname: (post.profiles as ProfileBase | null)?.nickname,
     avatar_url: (post.profiles as ProfileBase | null)?.avatar_url,
     profiles: undefined,

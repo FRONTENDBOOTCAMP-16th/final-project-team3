@@ -9,6 +9,7 @@ export const ROUTES = {
   ADMIN_COMPETITIONS: "/admin/competitions",
   ADMIN_POSTS: "/admin/posts",
   ADMIN_SUPPORT: "/admin/support",
+  ADMIN_USERS: "/admin/users",
   DOJANGS: "/dojangs",
   COMPETITIONS: "/competitions",
   COMPETITIONS_DETAIL: (id: string) => `/competitions/${id}`,

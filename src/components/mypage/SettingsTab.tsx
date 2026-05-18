@@ -15,20 +15,13 @@ import {
 import { useRouter } from 'next/navigation';
 import { LimitedInput } from '@/components/common/LimitedInput';
 import { LimitedTextarea } from '@/components/common/LimitedTextarea';
+import { BELTS, BELT_COLORS } from '@/constants/belt';
 
 interface SettingsTabProps {
   profile: Profile;
 }
 
-const BELTS: BeltLevel[] = ['White', 'Blue', 'Purple', 'Brown', 'Black'];
-
-const BELT_COLORS: Record<BeltLevel, string> = {
-  White: '#e8e8e8',
-  Blue: '#2e6fdb',
-  Purple: '#7c4ddb',
-  Brown: '#8b5a2b',
-  Black: '#1a1a1a',
-};
+const isAdmin = (role: string | null) => role === 'admin';
 
 export default function SettingsTab({ profile }: SettingsTabProps) {
   const [nickname, setNickname] = useState(profile.nickname ?? '');
@@ -37,24 +30,29 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
     profile.belt_level ?? 'White',
   );
   const [isEditing, setIsEditing] = useState(false);
-  const isChanged =
-    nickname !== (profile.nickname ?? '') ||
-    bio !== (profile.bio ?? '') ||
-    beltLevel !== (profile.belt_level ?? 'White');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
 
+  const isChanged =
+    nickname !== (profile.nickname ?? '') ||
+    bio !== (profile.bio ?? '') ||
+    beltLevel !== (profile.belt_level ?? 'White');
+
   const router = useRouter();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateMyProfile();
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteMyAccount();
+
+  const deleteDescription = `${isAdmin(profile.role) ? '관리자 계정을 삭제하면' : '계정을 삭제하면'} 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.`;
+
   const handleCancel = () => {
     setNickname(profile.nickname ?? '');
     setBio(profile.bio ?? '');
     setBeltLevel(profile.belt_level ?? 'White');
     setIsEditing(false);
   };
+
   const handleUpdate = () => {
     updateProfile(
       {
@@ -92,6 +90,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
                 <button
                   onClick={() => setShowSaveConfirm(true)}
                   disabled={isUpdating || !isChanged}
+                  aria-busy={isUpdating}
                   className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all disabled:opacity-50 cursor-pointer"
                 >
                   <Pencil className="w-4 h-4" />
@@ -116,7 +115,6 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           )}
         </div>
 
-        {/* 닉네임 */}
         <LimitedInput
           label="닉네임"
           value={nickname}
@@ -126,7 +124,6 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           disabled={!isEditing}
         />
 
-        {/* 이름 */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-text-primary">이름</label>
           <div className="flex items-center gap-2 bg-input-bg rounded-xl px-4 py-3">
@@ -135,12 +132,12 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
               type="text"
               value={profile.name ?? ''}
               readOnly
+              aria-readonly="true"
               className="flex-1 bg-transparent text-sm text-text-secondary outline-none cursor-not-allowed"
             />
           </div>
         </div>
 
-        {/* 이메일 */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-text-primary">
             이메일
@@ -151,13 +148,13 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
               type="email"
               value={profile.email_value ?? ''}
               readOnly
+              aria-readonly="true"
               className="flex-1 bg-transparent text-sm text-text-secondary outline-none cursor-not-allowed"
             />
           </div>
         </div>
 
-        {/* 벨트 */}
-        {profile.role !== 'admin' && (
+        {!isAdmin(profile.role) && (
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-text-primary">
               벨트
@@ -167,7 +164,10 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             >
               <span
                 className="w-3 h-3 rounded-full mr-2 shrink-0"
-                style={{ backgroundColor: BELT_COLORS[beltLevel] }}
+                style={{
+                  backgroundColor: BELT_COLORS[beltLevel],
+                  border: beltLevel === 'White' ? '1px solid #d1d5db' : 'none',
+                }}
               />
               <select
                 disabled={!isEditing}
@@ -185,7 +185,6 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           </div>
         )}
 
-        {/* 소개 */}
         <LimitedTextarea
           label="소개"
           value={bio}
@@ -196,26 +195,24 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           disabled={!isEditing}
         />
       </div>
-      {/* 회원 탈퇴 */}
+
       <div className="flex flex-col gap-3 p-6 bg-bg-white rounded-2xl shadow-sm">
         <div className="flex items-center gap-2">
-          <span className="text-danger">⚠️</span>
+          <span className="text-danger" aria-hidden="true">
+            ⚠️
+          </span>
           <span className="text-base font-bold text-text-primary">
-            {profile.role === 'admin' ? '관리자 계정 삭제' : '회원 탈퇴'}
+            {isAdmin(profile.role) ? '관리자 계정 삭제' : '회원 탈퇴'}
           </span>
         </div>
-        <p className="text-sm text-text-secondary">
-          {profile.role === 'admin'
-            ? '관리자 계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.'
-            : '계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.'}
-        </p>
+        <p className="text-sm text-text-secondary">{deleteDescription}</p>
         <button
           onClick={() => setShowDeleteConfirm(true)}
           className="w-fit bg-danger text-btn-focus-text px-10 py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
         >
-          {profile.role === 'admin' ? '관리자 계정 삭제하기' : '회원탈퇴하기'}
+          {isAdmin(profile.role) ? '관리자 계정 삭제하기' : '회원탈퇴하기'}
         </button>
-        {/* 저장 확인 모달 */}
+
         <Dialog open={showSaveConfirm} onOpenChange={setShowSaveConfirm}>
           <DialogContent>
             <DialogHeader>
@@ -242,7 +239,6 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           </DialogContent>
         </Dialog>
 
-        {/* 취소 확인 모달 */}
         <Dialog open={showCancelConfirm} onOpenChange={setShowCancelConfirm}>
           <DialogContent>
             <DialogHeader>
@@ -270,20 +266,16 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             </div>
           </DialogContent>
         </Dialog>
-        {/* 탈퇴 확인 Dialog */}
+
         <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {profile.role === 'admin'
+                {isAdmin(profile.role)
                   ? '정말 관리자 계정을 삭제하시겠습니까?'
                   : '정말 탈퇴하시겠습니까?'}
               </DialogTitle>
-              <DialogDescription>
-                {profile.role === 'admin'
-                  ? '관리자 계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.'
-                  : '계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.'}
-              </DialogDescription>
+              <DialogDescription>{deleteDescription}</DialogDescription>
             </DialogHeader>
             <div className="flex gap-2 mt-4">
               <button
@@ -307,11 +299,12 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
                   })
                 }
                 disabled={isDeleting}
+                aria-busy={isDeleting}
                 className="flex-1 px-6 py-3 bg-danger text-btn-focus-text rounded-xl text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50 cursor-pointer"
               >
                 {isDeleting ? (
                   <span className="animate-pulse">
-                    {profile.role === 'admin' ? '삭제 중...' : '탈퇴 중...'}
+                    {isAdmin(profile.role) ? '삭제 중...' : '탈퇴 중...'}
                   </span>
                 ) : (
                   '확인'
@@ -320,7 +313,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             </div>
           </DialogContent>
         </Dialog>
-        {/* 탈퇴 완료 모달 */}
+
         <Dialog open={showDeleteSuccess} onOpenChange={setShowDeleteSuccess}>
           <DialogContent>
             <DialogHeader>

@@ -85,3 +85,25 @@ export async function uploadBusinessFile(file: File): Promise<string> {
     .getPublicUrl(fileName);
   return data.publicUrl;
 }
+// 로그인
+export async function loginUser({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
+  const { error, data } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  if (error) throw error;
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('nickname, role')
+    .eq('id', data.user.id)
+    .single();
+
+  return { user: data.user, profile };
+}
