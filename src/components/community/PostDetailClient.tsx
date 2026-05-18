@@ -95,6 +95,8 @@ export default function PostDetailClient({
           avatar_url: user?.image ?? null,
         },
       ]);
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.removeQueries({ queryKey: ['mypage', 'commentCount'] });
       setComment('');
     } catch {
       showErrorToast('네트워크 오류가 발생했습니다.');

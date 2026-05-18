@@ -17,6 +17,8 @@ import { ProfileUpdateForm } from '@/types/mypage';
 const myPageKeys = {
   profile: ['mypage', 'profile'] as const,
   posts: ['mypage', 'posts'] as const,
+  postCount: ['mypage', 'postCount'] as const,
+  commentCount: ['mypage', 'commentCount'] as const,
 };
 
 export const useMyProfile = () => {
@@ -40,6 +42,7 @@ export const useMyPosts = () => {
   return useInfiniteQuery({
     queryKey: myPageKeys.posts,
     queryFn: ({ pageParam = 0 }) => fetchMyPosts(pageParam),
+    staleTime: 0,
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.length === 10 ? allPages.length : undefined;
     },
@@ -55,14 +58,16 @@ export const useDeleteMyAccount = () => {
 
 export const useMyPostCount = () => {
   return useQuery({
-    queryKey: ['mypage', 'postCount'],
+    queryKey: myPageKeys.postCount,
     queryFn: fetchMyPostCount,
+    staleTime: 0,
   });
 };
 
 export const useMyCommentCount = () => {
   return useQuery({
-    queryKey: ['mypage', 'commentCount'],
+    queryKey: myPageKeys.commentCount,
     queryFn: fetchMyCommentCount,
+    staleTime: 0,
   });
 };

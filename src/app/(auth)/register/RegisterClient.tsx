@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import GeneralForm from './GeneralForm';
 import DojangForm from './DojangForm';
 
@@ -8,6 +8,11 @@ export type RegisterTab = 'general' | 'dojang';
 
 export default function RegisterClient() {
   const [tab, setTab] = useState<RegisterTab>('general');
+
+  useEffect(() => {
+    setTab('general');
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+  }, []);
 
   return (
     <>
