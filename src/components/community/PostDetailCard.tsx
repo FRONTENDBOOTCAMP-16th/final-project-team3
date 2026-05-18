@@ -31,15 +31,13 @@ export default function PostDetailCard({
       <div className="flex items-center justify-between px-5 pt-5 pb-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden shrink-0">
-            {post.avatar_url && (
-              <Image
-                src={post.avatar_url}
-                alt={`${post.nickname} 프로필 이미지`}
-                width={40}
-                height={40}
-                className="w-full h-full object-cover"
-              />
-            )}
+            <Image
+              src={post.avatar_url || '/basic.svg'}
+              alt={`${post.nickname} 프로필 이미지`}
+              width={40}
+              height={40}
+              className="w-full h-full object-cover"
+            />
           </div>
           <div>
             <div className="flex items-center gap-1.5">

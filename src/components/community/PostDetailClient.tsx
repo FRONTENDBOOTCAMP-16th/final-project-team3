@@ -365,15 +365,13 @@ export default function PostDetailClient({
               {index > 0 && <div className="border-t border-gray-50 mb-4" />}
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-full bg-gray-200 shrink-0 overflow-hidden">
-                  {c.avatar_url && (
-                    <Image
-                      src={c.avatar_url}
-                      alt={`${c.nickname} 프로필 이미지`}
-                      width={32}
-                      height={32}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
+                  <Image
+                    src={c.avatar_url || '/basic.svg'}
+                    alt={`${c.nickname} 프로필 이미지`}
+                    width={32}
+                    height={32}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1">
