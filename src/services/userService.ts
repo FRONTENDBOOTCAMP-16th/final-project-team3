@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase/client';
 import { Profile } from '@/types/user';
-import { ProfileUpdateForm, MyPost } from '@/types/mypage';
+import { ProfileUpdateForm, MyPost, MyPostQueryRow } from '@/types/mypage';
 
 async function getAuthUser() {
   const {
@@ -94,7 +94,6 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
     };
   });
 }
-
 export async function deleteMyAccount(): Promise<void> {
   const user = await getAuthUser();
 
