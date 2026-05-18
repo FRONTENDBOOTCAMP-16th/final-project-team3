@@ -109,7 +109,6 @@ export async function deleteMyAccount(): Promise<void> {
   await supabase.auth.signOut();
 }
 
-// 비로그인 시 0을 반환해야 하므로 getAuthUser() 대신 직접 호출
 export async function fetchMyPostCount(): Promise<number> {
   const {
     data: { user },
@@ -126,7 +125,6 @@ export async function fetchMyPostCount(): Promise<number> {
   return count ?? 0;
 }
 
-// 비로그인 시 0을 반환해야 하므로 getAuthUser() 대신 직접 호출
 export async function fetchMyCommentCount(): Promise<number> {
   const {
     data: { user },
