@@ -212,6 +212,10 @@ export function useAdminTableQueryState<TFilter extends string>({
   );
 
   const commitSearch = useCallback(() => {
+    if (isPending) {
+      return;
+    }
+
     const normalizedSearch =
       searchInput.trim() === '' ? null : searchInput.trim();
 
@@ -222,7 +226,12 @@ export function useAdminTableQueryState<TFilter extends string>({
       },
       navigationMode?.search ?? 'replace',
     );
-  }, [navigateWithSearchParams, navigationMode?.search, searchInput]);
+  }, [
+    isPending,
+    navigateWithSearchParams,
+    navigationMode?.search,
+    searchInput,
+  ]);
 
   return {
     currentPage,
