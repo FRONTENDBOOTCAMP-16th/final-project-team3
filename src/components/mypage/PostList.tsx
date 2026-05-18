@@ -4,7 +4,6 @@ import { useEffect, useRef } from 'react';
 import { useMyPosts } from '@/hooks/useMyPage';
 import PostCard from '@/components/community/Postcard';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import Link from 'next/link';
 
 interface PostListProps {
   userId: string;
@@ -16,7 +15,6 @@ export default function PostList({ userId }: PostListProps) {
 
   const observerRef = useRef<HTMLDivElement>(null);
 
-  // 무한스크롤 옵저버
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -49,7 +47,6 @@ export default function PostList({ userId }: PostListProps) {
         <PostCard key={post.id} post={post} userId={userId} />
       ))}
 
-      {/* 무한스크롤 트리거 */}
       <div ref={observerRef} className="h-4" />
 
       {isFetchingNextPage && <LoadingSpinner />}

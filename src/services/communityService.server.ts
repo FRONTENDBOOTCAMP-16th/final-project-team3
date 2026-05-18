@@ -50,7 +50,6 @@ export async function getComments(postId: string): Promise<Comment[]> {
 }
 
 export async function getViewCount(id: string): Promise<number> {
-  // 'use cache' 없음 - 항상 최신값
   const { data } = await supabasePublic
     .from('posts')
     .select('view_count')

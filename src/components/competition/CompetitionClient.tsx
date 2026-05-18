@@ -45,7 +45,6 @@ export default function CompetitionClient({
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useCompetiton();
 
-  // 모든 페이지 데이터를 하나의 배열로 합치기
   const competitions = useMemo(
     () => data?.pages.flatMap((page) => page) ?? initialCompetitions,
     [data, initialCompetitions],
@@ -151,7 +150,6 @@ export default function CompetitionClient({
             </ul>
           )}
 
-          {/* 무한스크롤 로딩 */}
           {hasNextPage && (
             <div
               ref={observerRef}

@@ -1,14 +1,9 @@
 import { supabase } from '@/lib/supabase/client';
-import type { Post, Comment, PostCategory } from '@/types/community';
+import type { Post, PostCategory } from '@/types/community';
 
 interface ProfileBase {
   nickname: string;
   avatar_url: string;
-}
-
-interface PostProfile extends ProfileBase {
-  belt_level: string;
-  role: string;
 }
 
 export async function getPosts(page = 0, pageSize = 10) {

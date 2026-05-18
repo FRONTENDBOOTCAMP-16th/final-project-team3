@@ -4,12 +4,13 @@ interface User {
   id: string;
   email: string;
   nickname: string;
-  role: string; // 추가
+  role: string;
 }
 
 interface AuthStore {
   user: User | null;
   isLoggedIn: boolean;
+
   setUser: (user: User) => void;
   logout: () => void;
 }

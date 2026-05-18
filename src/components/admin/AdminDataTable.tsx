@@ -10,7 +10,7 @@ export interface AdminTableColumn<T> {
   width?: string;
   align?: 'left' | 'center';
   truncate?: boolean;
-  // eslint-disable-next-line no-unused-vars
+
   render?: (_row: T) => React.ReactNode;
 }
 
@@ -21,9 +21,9 @@ interface AdminDataTableProps<T> {
   initialPageSize?: number;
   pageSizeOptions?: readonly number[];
   currentPage?: number;
-  // eslint-disable-next-line no-unused-vars
+
   onPageChange?: (_page: number) => void;
-  // eslint-disable-next-line no-unused-vars
+
   getRowKey?: (_row: T, _index: number) => React.Key;
 }
 
@@ -93,7 +93,7 @@ export default function AdminDataTable<T>({
                   key={
                     getRowKey ? getRowKey(row, originalIndex) : originalIndex
                   }
-                  className="group transition-colors duration-200 hover:bg-[var(--color-table-top)]"
+                  className="group transition-colors duration-200 hover:bg-(--color-table-top)"
                 >
                   {columns.map((column) => (
                     <td

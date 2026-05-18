@@ -9,10 +9,10 @@ interface AdminTableToolbarProps<TFilter extends string> {
     value: TFilter;
   }[];
   activeFilter: TFilter;
-  // eslint-disable-next-line no-unused-vars
+
   onFilterChange: (_value: TFilter) => void;
   searchQuery: string;
-  // eslint-disable-next-line no-unused-vars
+
   onSearchQueryChange: (_value: string) => void;
   onSearch?: () => void;
   searchPlaceholder?: string;
@@ -43,7 +43,7 @@ export default function AdminTableToolbar<TFilter extends string>({
                 type="button"
                 onClick={() => onFilterChange(filter.value)}
                 className={cn(
-                  'h-12 min-w-[84px] cursor-pointer rounded-md border px-4 py-2 text-sm font-medium transition-colors duration-200',
+                  'h-12 min-w-21 cursor-pointer rounded-md border px-4 py-2 text-sm font-medium transition-colors duration-200',
                   isActive
                     ? 'bg-btn-focus text-btn-focus-text'
                     : 'bg-btn-bagic text-btn-text hover:bg-btn-focus hover:text-btn-focus-text',

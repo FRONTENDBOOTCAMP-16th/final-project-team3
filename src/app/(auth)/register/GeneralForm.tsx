@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Mail, Lock, User } from 'lucide-react';
@@ -48,7 +48,7 @@ export default function GeneralForm() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
   } = useForm<GeneralFormType>({
     resolver: zodResolver(generalSchema),
@@ -62,9 +62,9 @@ export default function GeneralForm() {
     },
   });
 
-  const nickname = watch('nickname');
-  const beltValue = watch('belt');
-  const password = watch('password');
+  const nickname = useWatch({ control, name: 'nickname' });
+  const beltValue = useWatch({ control, name: 'belt' });
+  const password = useWatch({ control, name: 'password' });
   const { nicknameStatus } = useNicknameCheck(nickname);
 
   const onSubmit = async (data: GeneralFormType) => {

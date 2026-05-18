@@ -5,7 +5,7 @@ interface UseTablePaginationParams<T> {
   initialPageSize?: number;
   pageSizeOptions?: readonly number[];
   currentPage?: number;
-  // eslint-disable-next-line no-unused-vars
+
   onPageChange?: (_page: number) => void;
 }
 

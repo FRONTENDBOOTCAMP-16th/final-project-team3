@@ -4,6 +4,7 @@ import Image from 'next/image';
 
 interface ImageUploadProps {
   preview: string | null;
+
   onChange: (file: File, previewUrl: string) => void;
   label?: string;
 }

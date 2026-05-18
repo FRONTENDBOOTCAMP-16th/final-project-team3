@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Mail, Lock, User, Phone, MapPin, CreditCard } from 'lucide-react';
@@ -65,8 +65,8 @@ export default function DojangForm() {
   const {
     register,
     handleSubmit,
-    watch,
     setValue,
+    control,
     formState: { errors },
   } = useForm<DojangFormType>({
     resolver: zodResolver(dojangSchema),
@@ -84,9 +84,9 @@ export default function DojangForm() {
     },
   });
 
-  const nickname = watch('nickname');
-  const beltValue = watch('belt');
-  const password = watch('password');
+  const nickname = useWatch({ control, name: 'nickname' });
+  const beltValue = useWatch({ control, name: 'belt' });
+  const password = useWatch({ control, name: 'password' });
   const { nicknameStatus } = useNicknameCheck(nickname);
 
   const handleAddressSearch = () => {

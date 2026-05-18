@@ -2,11 +2,28 @@ import { supabase } from '@/lib/supabase/client';
 import { Profile } from '@/types/user';
 import { ProfileUpdateForm, MyPost } from '@/types/mypage';
 
-export async function fetchMyProfile(): Promise<Profile> {
+interface PostQueryRow {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  image_url: string;
+  view_count: number;
+  created_at: string;
+  profiles: { nickname: string; avatar_url: string } | null;
+  comments: { count: number }[];
+}
+
+async function getAuthUser() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error('로그인이 필요합니다.');
+  return user;
+}
+
+export async function fetchMyProfile(): Promise<Profile> {
+  const user = await getAuthUser();
 
   const { data, error } = await supabase
     .from('profiles')
@@ -19,10 +36,7 @@ export async function fetchMyProfile(): Promise<Profile> {
 }
 
 export async function updateMyProfile(form: ProfileUpdateForm): Promise<void> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error('로그인이 필요합니다.');
+  const user = await getAuthUser();
 
   const { error } = await supabase
     .from('profiles')
@@ -33,10 +47,7 @@ export async function updateMyProfile(form: ProfileUpdateForm): Promise<void> {
 }
 
 export async function fetchMyPosts(page: number): Promise<MyPost[]> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error('로그인이 필요합니다.');
+  const user = await getAuthUser();
 
   const limit = 10;
   const from = page * limit;
@@ -66,25 +77,25 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
 
   if (error) throw error;
 
-  return (data ?? []).map((post) => ({
-    id: post.id,
-    title: post.title,
-    content: post.content,
-    category: post.category,
-    image_url: post.image_url,
-    view_count: post.view_count,
-    created_at: post.created_at,
-    nickname: (post.profiles as any)?.nickname ?? '',
-    avatar_url: (post.profiles as any)?.avatar_url ?? '',
-    comment_count: (post.comments as any)?.[0]?.count ?? 0,
-  }));
+  return (data ?? []).map((post) => {
+    const p = post as unknown as PostQueryRow;
+    return {
+      id: p.id,
+      title: p.title,
+      content: p.content,
+      category: p.category,
+      image_url: p.image_url,
+      view_count: p.view_count,
+      created_at: p.created_at,
+      nickname: p.profiles?.nickname ?? '',
+      avatar_url: p.profiles?.avatar_url ?? '',
+      comment_count: p.comments?.[0]?.count ?? 0,
+    };
+  });
 }
 
 export async function deleteMyAccount(): Promise<void> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error('로그인이 필요합니다.');
+  const user = await getAuthUser();
 
   const res = await fetch('/api/delete-account', {
     method: 'DELETE',
@@ -92,9 +103,7 @@ export async function deleteMyAccount(): Promise<void> {
     body: JSON.stringify({ userId: user.id }),
   });
 
-  if (!res.ok) {
-    throw new Error('회원탈퇴에 실패했습니다.');
-  }
+  if (!res.ok) throw new Error('회원탈퇴에 실패했습니다.');
 
   await supabase.auth.signOut();
 }

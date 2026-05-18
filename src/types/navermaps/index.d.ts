@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 declare namespace naver.maps {
   interface MapOptions {
     center?: LatLng;

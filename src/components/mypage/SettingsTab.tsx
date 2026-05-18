@@ -116,7 +116,6 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           )}
         </div>
 
-        {/* 닉네임 */}
         <LimitedInput
           label="닉네임"
           value={nickname}
@@ -126,7 +125,6 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           disabled={!isEditing}
         />
 
-        {/* 이름 */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-text-primary">이름</label>
           <div className="flex items-center gap-2 bg-input-bg rounded-xl px-4 py-3">
@@ -140,7 +138,6 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           </div>
         </div>
 
-        {/* 이메일 */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-text-primary">
             이메일
@@ -156,7 +153,6 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           </div>
         </div>
 
-        {/* 벨트 */}
         {profile.role !== 'admin' && (
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-text-primary">
@@ -185,7 +181,6 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           </div>
         )}
 
-        {/* 소개 */}
         <LimitedTextarea
           label="소개"
           value={bio}
@@ -196,7 +191,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           disabled={!isEditing}
         />
       </div>
-      {/* 회원 탈퇴 */}
+
       <div className="flex flex-col gap-3 p-6 bg-bg-white rounded-2xl shadow-sm">
         <div className="flex items-center gap-2">
           <span className="text-danger">⚠️</span>
@@ -215,7 +210,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
         >
           {profile.role === 'admin' ? '관리자 계정 삭제하기' : '회원탈퇴하기'}
         </button>
-        {/* 저장 확인 모달 */}
+
         <Dialog open={showSaveConfirm} onOpenChange={setShowSaveConfirm}>
           <DialogContent>
             <DialogHeader>
@@ -242,7 +237,6 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
           </DialogContent>
         </Dialog>
 
-        {/* 취소 확인 모달 */}
         <Dialog open={showCancelConfirm} onOpenChange={setShowCancelConfirm}>
           <DialogContent>
             <DialogHeader>
@@ -270,7 +264,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             </div>
           </DialogContent>
         </Dialog>
-        {/* 탈퇴 확인 Dialog */}
+
         <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
           <DialogContent>
             <DialogHeader>
@@ -320,7 +314,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             </div>
           </DialogContent>
         </Dialog>
-        {/* 탈퇴 완료 모달 */}
+
         <Dialog open={showDeleteSuccess} onOpenChange={setShowDeleteSuccess}>
           <DialogContent>
             <DialogHeader>

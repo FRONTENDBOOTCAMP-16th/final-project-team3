@@ -4,7 +4,6 @@ import { Input } from '../ui/input';
 
 interface SearchInputProps {
   searchQuery: string;
-  // eslint-disable-next-line no-unused-vars
   setSearchQuery: (_query: string) => void;
   onSearch?: () => void;
   placeholder?: string;

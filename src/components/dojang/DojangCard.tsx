@@ -11,43 +11,27 @@ interface KakaoPlace {
 
 interface DojangCardProps {
   dojang: KakaoPlace;
-  isVerified: boolean;
   isSelected: boolean;
 }
 
-export default function DojangCard({
-  dojang,
-  isVerified,
-  isSelected,
-}: DojangCardProps) {
+export default function DojangCard({ dojang, isSelected }: DojangCardProps) {
   return (
     <article
       className={`p-4 border rounded-lg bg-white hover:shadow-md transition-all cursor-pointer
         ${isSelected ? 'border-btn-focus border-2 shadow-md' : 'border-gray-200'}`}
-      aria-label={`${dojang.place_name} 도장${isVerified ? ', 인증 도장' : ''}${isSelected ? ', 선택됨' : ''}`}
+      aria-label={`${dojang.place_name}${isSelected ? ', 선택됨' : ''}`}
       aria-current={isSelected}
     >
-      {/* 도장 이름 + 인증 배지 */}
       <div className="flex items-center gap-2">
         <h3 className="font-bold text-base line-clamp-1">
           {dojang.place_name}
         </h3>
-        {isVerified && (
-          <span
-            className="shrink-0 px-2 py-0.5 text-xs text-white bg-[#155DFC] rounded-full"
-            aria-label="인증된 도장"
-          >
-            ✓ 인증
-          </span>
-        )}
       </div>
 
-      {/* 주소 */}
       <address className="text-sm text-gray-500 mt-1 not-italic">
         {dojang.address_name}
       </address>
 
-      {/* 전화번호 */}
       {dojang.phone && (
         <a
           href={'tel:' + dojang.phone}
@@ -57,8 +41,6 @@ export default function DojangCard({
           {dojang.phone}
         </a>
       )}
-
-      {/* 상세보기 버튼 */}
 
       <a
         href={dojang.place_url}

@@ -30,13 +30,6 @@ export default function CompetitionDetailCard({
   const status = getStatus(data.apply_deadline);
   const dday = getDday(data.apply_deadline);
 
-  const statusColor =
-    {
-      모집중: 'bg-green-500',
-      마감임박: 'bg-orange-500',
-      모집완료: 'bg-gray-400',
-    }[status] ?? 'bg-gray-400';
-
   const ddayColor =
     dday === 'D-DAY'
       ? 'text-red-500'
@@ -49,7 +42,6 @@ export default function CompetitionDetailCard({
       className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
       aria-label={`${data.name} 대회 상세`}
     >
-      {/* 상단: 프로필 + 버튼 */}
       <div className="flex items-center justify-between px-5 pt-5 pb-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden shrink-0">
@@ -94,14 +86,12 @@ export default function CompetitionDetailCard({
         )}
       </div>
 
-      {/* 제목 */}
       <div className="px-5 pb-3">
         <h1 className="text-base font-bold text-gray-900">
           {data.name || '대회 제목'}
         </h1>
       </div>
 
-      {/* 이미지 */}
       {data.image_url && (
         <div className="relative w-full aspect-video bg-gray-100">
           <Image
@@ -113,7 +103,6 @@ export default function CompetitionDetailCard({
         </div>
       )}
 
-      {/* 날짜/장소/신청마감 요약 바 */}
       <dl
         className="grid grid-cols-3 divide-x divide-gray-100 border-y border-gray-100 text-center py-3 px-2"
         aria-label="대회 정보"
@@ -146,14 +135,12 @@ export default function CompetitionDetailCard({
         </div>
       </dl>
 
-      {/* 본문 */}
       <div className="px-5 py-4">
         <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
           {data.description || '대회 설명이 여기에 표시됩니다.'}
         </p>
       </div>
 
-      {/* 구분선 */}
       <div className="border-t border-gray-100 mx-5 mb-3" aria-hidden="true" />
     </article>
   );

@@ -41,7 +41,6 @@ export default function MyPageClient() {
 
   return (
     <main className="w-full min-h-screen">
-      {/* 헤더 */}
       <div className="fixed top-0 left-50 right-0 z-10 bg-white shadow-sm flex justify-center">
         <div className="w-full max-w-7xl px-6 py-6">
           <h1 className="text-4xl font-bold text-text-primary">마이페이지</h1>
@@ -51,9 +50,7 @@ export default function MyPageClient() {
         </div>
       </div>
 
-      {/* 컨텐츠 */}
       <div className="flex gap-6 p-6 pt-32">
-        {/* 프로필 카드 */}
         <div className="w-96 shrink-0">
           <ProfileCard
             profile={profile}
@@ -62,9 +59,7 @@ export default function MyPageClient() {
           />
         </div>
 
-        {/* 오른쪽 컨텐츠 */}
         <div className="flex-1 flex flex-col gap-4">
-          {/* 탭 */}
           <div className="flex gap-2">
             <button
               onClick={() => handleTabChange('posts')}
@@ -88,7 +83,6 @@ export default function MyPageClient() {
             </button>
           </div>
 
-          {/* 탭 컨텐츠 */}
           {tab === 'posts' ? (
             <PostList userId={profile.id} />
           ) : (

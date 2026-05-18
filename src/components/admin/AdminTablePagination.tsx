@@ -12,9 +12,9 @@ interface AdminTablePaginationProps {
   totalItems: number;
   pageSize: number;
   pageSizeOptions: readonly number[];
-  // eslint-disable-next-line no-unused-vars
+
   onPageChange: (page: number) => void;
-  // eslint-disable-next-line no-unused-vars
+
   onPageSizeChange: (pageSize: number) => void;
 }
 
