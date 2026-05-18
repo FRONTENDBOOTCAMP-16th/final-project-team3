@@ -132,7 +132,6 @@ export default function CompetitionClient({
               }
             >
               {filteredCompetitions.length > 0 ? (
-                // ✅ index 추가
                 filteredCompetitions.map((competition, index) => (
                   <li key={competition.id} className="h-full">
                     <CompetitionCard competition={competition} index={index} />

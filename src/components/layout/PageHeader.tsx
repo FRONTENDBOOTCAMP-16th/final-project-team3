@@ -91,14 +91,12 @@ export default function Pageheader({
       </div>
 
       {tabs && tabs.length > 0 && (
-        // ✅ role="tablist" 유지
         <div
           className="flex gap-2"
           role="tablist"
           aria-label={`${title} 카테고리 탭`}
         >
           {tabs.map((tab) => (
-            // ✅ <Button> → <button> 으로 교체 (ARIA 충돌 해결)
             <button
               key={tab}
               role="tab"
