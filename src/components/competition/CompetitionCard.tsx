@@ -3,6 +3,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getDday, getStatus } from '@/utils/formatDate';
 import { buildCompetitionUrl } from '@/lib/slug';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import LoadingSpinner from '../common/LoadingSpinner';
 
 interface CompetitionCardProps {
   competition: {
@@ -22,7 +25,20 @@ interface CompetitionCardProps {
 export default function CompetitionCard({ competition }: CompetitionCardProps) {
   const actualStatus = getStatus(competition.apply_deadline);
   const dday = getDday(competition.apply_deadline);
+  const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
 
+  useEffect(() => {
+    // eslint-disable-next-line -- cacheComponents Activity 전환 시 로딩 상태 초기화
+    setIsPending(false);
+  }, []);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isPending) return;
+    setIsPending(true);
+    router.push(buildCompetitionUrl(competition.name, competition.id));
+  };
   const statusColor =
     {
       모집중: 'bg-green-500',
@@ -39,13 +55,20 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
 
   return (
     <article
-      className="rounded-lg overflow-hidden bg-bg-white border border-gray-200 flex flex-col h-full cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+      className="rounded-lg overflow-hidden bg-bg-white border border-gray-200 flex flex-col h-full cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200 relative"
       aria-label={`${competition.name} 대회`}
+      aria-busy={isPending}
     >
+      {isPending && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/40 rounded-lg">
+          <LoadingSpinner label="대회 정보 불러오는 중" />
+        </div>
+      )}
       <Link
         href={buildCompetitionUrl(competition.name, competition.id)}
         className="flex flex-col flex-1"
         aria-label={`${competition.name} 대회 상세보기`}
+        onClick={handleClick}
       >
         <div className="relative shrink-0">
           {competition.image_url ? (
