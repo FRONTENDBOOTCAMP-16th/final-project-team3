@@ -14,7 +14,6 @@ function getAuthorRole(post: PostPermissionRow) {
     : null;
 }
 
-// app/api/posts/[id]/route.ts
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -30,20 +29,24 @@ export async function PUT(
 
   const { title, content, image_url } = await req.json(); // 허용 필드만 구조분해
 
-  const [{ data: profile }, { data: post, error: postError }] = await Promise.all([
-    supabase.from('profiles').select('role').eq('id', user.id).single(),
-    supabase
-      .from('posts')
-      .select('user_id, profiles(role)')
-      .eq('id', id)
-      .maybeSingle(),
-  ]);
+  const [{ data: profile }, { data: post, error: postError }] =
+    await Promise.all([
+      supabase.from('profiles').select('role').eq('id', user.id).single(),
+      supabase
+        .from('posts')
+        .select('user_id, profiles(role)')
+        .eq('id', id)
+        .maybeSingle(),
+    ]);
 
   if (postError)
     return NextResponse.json({ error: postError.message }, { status: 500 });
 
   if (!post)
-    return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 });
+    return NextResponse.json(
+      { error: '게시글을 찾을 수 없습니다.' },
+      { status: 404 },
+    );
 
   const authorRole = getAuthorRole(post as PostPermissionRow);
 
@@ -84,20 +87,24 @@ export async function DELETE(
   if (!user)
     return NextResponse.json({ error: '로그인 필요' }, { status: 401 });
 
-  const [{ data: profile }, { data: post, error: postError }] = await Promise.all([
-    supabase.from('profiles').select('role').eq('id', user.id).single(),
-    supabase
-      .from('posts')
-      .select('user_id, profiles(role)')
-      .eq('id', id)
-      .maybeSingle(),
-  ]);
+  const [{ data: profile }, { data: post, error: postError }] =
+    await Promise.all([
+      supabase.from('profiles').select('role').eq('id', user.id).single(),
+      supabase
+        .from('posts')
+        .select('user_id, profiles(role)')
+        .eq('id', id)
+        .maybeSingle(),
+    ]);
 
   if (postError)
     return NextResponse.json({ error: postError.message }, { status: 500 });
 
   if (!post)
-    return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 });
+    return NextResponse.json(
+      { error: '게시글을 찾을 수 없습니다.' },
+      { status: 404 },
+    );
 
   const authorRole = getAuthorRole(post as PostPermissionRow);
 

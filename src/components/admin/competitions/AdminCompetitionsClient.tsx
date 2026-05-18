@@ -1,7 +1,5 @@
 'use client';
 
-import { useMemo } from 'react';
-
 import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
   type AdminTableColumn,
@@ -18,10 +16,12 @@ import type {
   AdminCompetitionRow,
 } from '@/components/admin/competitions/types';
 import { useAdminTableQueryState } from '@/hooks/useAdminTableQueryState';
-import { filterAdminCompetitions } from '@/components/admin/competitions/utils';
+import { ADMIN_TABLE_PAGE_SIZE } from '@/lib/adminTableServerPagination';
 
 interface AdminCompetitionsClientProps {
   data: AdminCompetitionRow[];
+  totalCount: number;
+  pageSize?: number;
 }
 
 const COMPETITION_COLUMNS: AdminTableColumn<AdminCompetitionRow>[] = [
@@ -81,6 +81,8 @@ const COMPETITION_COLUMNS: AdminTableColumn<AdminCompetitionRow>[] = [
 
 export default function AdminCompetitionsClient({
   data,
+  totalCount,
+  pageSize = ADMIN_TABLE_PAGE_SIZE,
 }: AdminCompetitionsClientProps) {
   const {
     activeFilter,
@@ -95,10 +97,6 @@ export default function AdminCompetitionsClient({
     defaultFilter: 'all',
     validFilters: ADMIN_COMPETITION_FILTERS.map((filter) => filter.value),
   });
-
-  const filteredData = useMemo(() => {
-    return filterAdminCompetitions(data, activeFilter, searchQuery);
-  }, [activeFilter, data, searchQuery]);
 
   return (
     <>
@@ -115,10 +113,14 @@ export default function AdminCompetitionsClient({
       <AdminDataTable
         columns={COMPETITION_COLUMNS}
         currentPage={currentPage}
-        data={filteredData}
+        data={data}
         emptyMessage="등록된 대회가 없습니다."
         getRowKey={(row) => row.id}
+        initialPageSize={pageSize}
         onPageChange={setPage}
+        pageSizeOptions={[pageSize]}
+        serverPagination
+        totalItems={totalCount}
       />
     </>
   );
