@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ScrollToTop from '@/components/common/ScrollToTop';
 import Sidebar from '@/components/layout/Sidebar';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { ADMIN_LAYOUT_METADATA } from '@/constants/adminMeta';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
@@ -23,25 +23,19 @@ async function requireAdminAccess() {
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
-  if (profileError || profile.role !== 'admin') notFound();
+  if (profileError || !profile || profile.role !== 'admin') notFound();
 }
 
 async function AdminContent({ children }: { children: React.ReactNode }) {
   await requireAdminAccess();
 
-  return (
-    <div className="flex min-h-screen bg-bg-page">
-      <div className="w-50 shrink-0" />
-      <Sidebar />
-      <AdminHeader />
-      <main className="flex-1 flex justify-center min-w-0">
-        <div className="w-full max-w-7xl pt-28">{children}</div>
-      </main>
-      <ScrollToTop />
-    </div>
-  );
+  return <>{children}</>;
+}
+
+function AdminContentLoading() {
+  return <LoadingSpinner className="min-h-[calc(100vh-7rem)]" />;
 }
 
 export default function AdminLayout({
@@ -50,8 +44,18 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <AdminContent>{children}</AdminContent>
-    </Suspense>
+    <div className="flex min-h-screen bg-bg-page">
+      <div className="w-50 shrink-0" />
+      <Sidebar />
+      <AdminHeader />
+      <main className="flex-1 flex justify-center min-w-0">
+        <div className="w-full max-w-7xl pt-28">
+          <Suspense fallback={<AdminContentLoading />}>
+            <AdminContent>{children}</AdminContent>
+          </Suspense>
+        </div>
+      </main>
+      <ScrollToTop />
+    </div>
   );
 }

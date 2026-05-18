@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 import WriteClient from '@/components/community/WriteClient';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 export const metadata: Metadata = {
   title: '게시글 작성 | Black Belt BJJ',
@@ -23,9 +21,5 @@ async function WriteContent() {
 }
 
 export default function WritePage() {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <WriteContent />
-    </Suspense>
-  );
+  return <WriteContent />;
 }

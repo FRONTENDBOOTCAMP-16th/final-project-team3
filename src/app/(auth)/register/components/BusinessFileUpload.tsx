@@ -2,10 +2,11 @@ import { showErrorToast } from '@/lib/toast';
 
 interface BusinessFileUploadProps {
   businessFile: File | null;
+  // eslint-disable-next-line no-unused-vars
   onChange: (file: File | null) => void;
 }
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 export default function BusinessFileUpload({
   businessFile,

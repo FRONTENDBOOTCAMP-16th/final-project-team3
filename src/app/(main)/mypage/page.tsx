@@ -1,6 +1,4 @@
-import { Suspense } from 'react';
 import MyPageClient from './MyPageClient';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -10,9 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <MyPageClient />
-    </Suspense>
-  );
+  return <MyPageClient />;
 }

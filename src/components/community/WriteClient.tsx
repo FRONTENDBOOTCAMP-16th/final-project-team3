@@ -198,7 +198,6 @@ export default function WriteClient() {
                 title,
                 image_url: preview,
                 content,
-                likeCount: 0,
                 commentCount: 0,
               }}
             />

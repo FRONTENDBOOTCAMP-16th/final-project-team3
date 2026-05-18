@@ -1,20 +1,12 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
-
-import { ROUTES } from '@/constants/routes';
-
 import {
   actionResponse,
+  revalidateCompetitionCaches,
   requireAdminSupabaseForAction,
   type AdminActionResult,
 } from './_shared';
-
-function revalidateAdminCompetitionPaths(competitionId: string) {
-  revalidatePath(ROUTES.ADMIN_COMPETITIONS);
-  revalidatePath(ROUTES.COMPETITIONS);
-  revalidatePath(ROUTES.COMPETITIONS_DETAIL(competitionId));
-}
+import { ROUTES } from '@/constants/routes';
 
 export async function restoreAdminCompetition(
   competitionId: string,
@@ -40,7 +32,7 @@ export async function restoreAdminCompetition(
     return actionResponse.failure('대회 게시글을 찾을 수 없습니다.');
   }
 
-  revalidateAdminCompetitionPaths(competitionId);
+  revalidateCompetitionCaches(competitionId, [ROUTES.ADMIN_COMPETITIONS]);
 
   return actionResponse.success('대회 게시글을 복구했습니다.');
 }

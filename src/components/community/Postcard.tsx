@@ -2,12 +2,11 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useLike } from '@/hooks/useLike';
 import { formatDate } from '@/utils/formatDate';
-import { Heart, MessageCircle } from 'lucide-react';
-import { showErrorToast } from '@/lib/toast';
+import { MessageCircle } from 'lucide-react';
 import { categoryMap } from '@/constants/categoryMap';
 import { buildPostUrl } from '@/lib/slug';
+import PostLikeButton from '@/components/community/PostLikeButton';
 
 interface PostCardProps {
   post: {
@@ -33,7 +32,6 @@ const DEFAULT_IMAGES = [
 ];
 
 export default function PostCard({ post, userId }: PostCardProps) {
-  const { likeCount, isLiked, toggle } = useLike(post.id, userId);
   const categoryInfo = categoryMap[post.category] ?? categoryMap.personal;
 
   const defaultImage =
@@ -41,16 +39,6 @@ export default function PostCard({ post, userId }: PostCardProps) {
       parseInt(post.id.replace(/-/g, '').slice(0, 8), 16) %
         DEFAULT_IMAGES.length
     ];
-
-  const handleLike = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!userId) {
-      showErrorToast('로그인이 필요합니다');
-      return;
-    }
-    toggle();
-  };
 
   return (
     <Link
@@ -125,26 +113,7 @@ export default function PostCard({ post, userId }: PostCardProps) {
             </div>
 
             <div className="w-12 flex items-center justify-end">
-              <button
-                onClick={handleLike}
-                aria-pressed={isLiked}
-                aria-label={`좋아요 ${likeCount}개${isLiked ? ', 좋아요 취소하기' : ', 좋아요 누르기'}`}
-                className="flex items-center gap-1 transition-all duration-200 cursor-pointer"
-              >
-                <Heart
-                  size={16}
-                  aria-hidden="true"
-                  className={
-                    isLiked ? 'fill-danger text-danger' : 'text-text-secondary'
-                  }
-                />
-                <span
-                  className={`text-sm w-2 text-right ${isLiked ? 'text-danger' : 'text-text-secondary'}`}
-                  aria-hidden="true"
-                >
-                  {likeCount}
-                </span>
-              </button>
+              <PostLikeButton postId={post.id} userId={userId} />
             </div>
           </div>
         </div>

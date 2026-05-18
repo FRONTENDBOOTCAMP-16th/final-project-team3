@@ -2,14 +2,9 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/Database.types';
 
 export const ABUSE_CONFIG = {
-  COOLTIME_MS: 10_000,
-
   DUPLICATE_CHECK_RANGE: 3,
-
   CONSECUTIVE_LIMIT: 2,
-
-  MIN_LENGTH: 5,
-
+  MIN_LENGTH: 3,
   MAX_LENGTH: 1000,
 } as const;
 
@@ -20,7 +15,6 @@ export type AbuseCheckResult =
 export type AbuseErrorCode =
   | 'TOO_SHORT'
   | 'TOO_LONG'
-  | 'COOLTIME'
   | 'DUPLICATE'
   | 'CONSECUTIVE_LIMIT';
 
@@ -55,32 +49,17 @@ export async function checkCommentAbuse(params: {
     };
   }
 
-  const [lastTimeResult, recentContentResult, recentCommentersResult] =
-    await Promise.all([
-      supabase.rpc('get_last_comment_time', { p_user_id: userId }),
-      supabase.rpc('get_recent_comments_content', {
-        p_user_id: userId,
-        p_post_id: postId,
-        p_limit: ABUSE_CONFIG.DUPLICATE_CHECK_RANGE,
-      }),
-      supabase.rpc('get_recent_commenters', {
-        p_post_id: postId,
-        p_limit: ABUSE_CONFIG.CONSECUTIVE_LIMIT,
-      }),
-    ]);
-
-  const lastTime = lastTimeResult.data;
-  if (lastTime) {
-    const elapsed = Date.now() - new Date(lastTime as string).getTime();
-    if (elapsed < ABUSE_CONFIG.COOLTIME_MS) {
-      const remainSec = Math.ceil((ABUSE_CONFIG.COOLTIME_MS - elapsed) / 1000);
-      return {
-        ok: false,
-        code: 'COOLTIME',
-        message: `${remainSec}초 후에 다시 작성할 수 있습니다.`,
-      };
-    }
-  }
+  const [recentContentResult, recentCommentersResult] = await Promise.all([
+    supabase.rpc('get_recent_comments_content', {
+      p_user_id: userId,
+      p_post_id: postId,
+      p_limit: ABUSE_CONFIG.DUPLICATE_CHECK_RANGE,
+    }),
+    supabase.rpc('get_recent_commenters', {
+      p_post_id: postId,
+      p_limit: ABUSE_CONFIG.CONSECUTIVE_LIMIT,
+    }),
+  ]);
 
   type ContentRow =
     Database['public']['Functions']['get_recent_comments_content']['Returns'][number];

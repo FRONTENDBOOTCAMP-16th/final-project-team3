@@ -10,6 +10,7 @@ import type {
 export const UNKNOWN_USER_NICKNAME = '알 수 없음';
 export const UNKNOWN_USER_NAME = '-';
 export const UNKNOWN_USER_EMAIL = '-';
+export const DOJANG_ROLE_VALUES = ['manager'] as const;
 
 export const ADMIN_USER_FILTERS = [
   { label: '전체', value: 'all' },

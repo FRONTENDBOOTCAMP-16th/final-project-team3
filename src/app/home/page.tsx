@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import LogoutButton from '@/components/layout/LogoutButton';
 import { LogIn } from 'lucide-react';
+import BfcacheRefresher from '@/components/common/BfcacheRefresher';
 
 export const metadata: Metadata = {
   title: '블랙벨트 | 주짓수 올인원 네트워크',
@@ -54,6 +55,7 @@ export default function Home() {
       aria-label="블랙벨트 홈"
       className="min-h-screen bg-white flex flex-col items-center justify-center px-6 py-16 relative overflow-hidden"
     >
+      <BfcacheRefresher />
       <div className="flex flex-col items-center mb-6 animate-fade-in">
         <div className="mb-4">
           <Image

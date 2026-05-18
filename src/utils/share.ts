@@ -6,9 +6,7 @@ export async function handleShare() {
   if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
     try {
       await navigator.share({ url });
-    } catch {
-      // 취소 무시
-    }
+    } catch {}
   } else {
     try {
       await navigator.clipboard.writeText(url);

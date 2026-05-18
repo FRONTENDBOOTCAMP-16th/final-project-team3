@@ -11,7 +11,7 @@ export interface Competition {
   description?: string;
   image_url?: string;
   user_id?: string;
-  created_at: string;
+  created_at?: string;
   participants?: number;
   nickname?: string;
   avatar_url?: string;

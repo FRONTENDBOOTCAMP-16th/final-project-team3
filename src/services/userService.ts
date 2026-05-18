@@ -94,7 +94,6 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
     };
   });
 }
-
 export async function deleteMyAccount(): Promise<void> {
   const user = await getAuthUser();
 

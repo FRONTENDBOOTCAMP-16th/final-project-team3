@@ -18,6 +18,7 @@ export interface CompetitionFormValues {
 
 interface CompetitionFormProps {
   values: CompetitionFormValues;
+  // eslint-disable-next-line no-unused-vars
   onChange: (values: CompetitionFormValues) => void;
 }
 
