@@ -1,7 +1,7 @@
 'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   deletePost,
@@ -54,12 +54,12 @@ export default function PostDetailClient({
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [deletePostModalOpen, setDeletePostModalOpen] = useState(false);
   const [deleteCommentId, setDeleteCommentId] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useLayoutEffect(() => {
-    return () => {
-      setComment('');
-    };
-  }, []);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setComment('');
+  }, [id]);
 
   const canManagePost = canManageContent({
     currentUserId: userId,
@@ -77,6 +77,8 @@ export default function PostDetailClient({
       showErrorToast('댓글을 입력해주세요.');
       return;
     }
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
     const tempId = `temp-${Date.now()}`;
     const optimisticComment: Comment = {
@@ -129,6 +131,8 @@ export default function PostDetailClient({
       setComments((prev) => prev.filter((c) => c.id !== tempId));
       setComment(optimisticComment.content);
       showErrorToast('네트워크 오류가 발생했습니다.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -338,6 +342,7 @@ export default function PostDetailClient({
             <button
               onClick={handleCommentSubmit}
               aria-label="댓글 전송"
+              disabled={isSubmitting}
               className="w-10 h-10 flex items-center justify-center shrink-0 transition-colors cursor-pointer"
             >
               <Image
