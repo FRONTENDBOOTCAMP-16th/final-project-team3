@@ -106,10 +106,8 @@ export default function PostDetailClient({
   const handleDeletePost = async () => {
     try {
       await deletePost(id);
-      queryClient.resetQueries({ queryKey: ['posts'] });
-      queryClient.removeQueries({ queryKey: ['mypage', 'posts'] });
-      queryClient.removeQueries({ queryKey: ['mypage', 'postCount'] });
-      router.refresh();
+      await queryClient.invalidateQueries({ queryKey: ['posts'] });
+      setDeletePostModalOpen(false);
       showSuccessToast('게시글이 삭제되었습니다.', '🗑️');
       await new Promise((resolve) => setTimeout(resolve, 700));
       router.push('/community');
@@ -140,9 +138,7 @@ export default function PostDetailClient({
     try {
       await deleteComment(commentId);
       setComments((prev) => prev.filter((c) => c.id !== commentId));
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
-      queryClient.removeQueries({ queryKey: ['mypage', 'commentCount'] });
-
+      setDeleteCommentId(null);
       showSuccessToast('댓글이 삭제되었습니다.', '🗑️');
     } catch {
       showErrorToast('댓글 삭제에 실패했습니다.');

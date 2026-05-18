@@ -47,7 +47,11 @@ export default function Sidebar() {
       style={{ boxShadow: '4px 0 10px rgba(0,0,0,0.08)' }}
       aria-label="사이드바 내비게이션"
     >
-      <Link href="/" aria-label="홈으로 이동">
+      <Link
+        href="/"
+        aria-label="홈으로 이동"
+        className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-focus focus-visible:ring-offset-2"
+      >
         <div className="flex items-center justify-center py-6 cursor-pointer">
           <Image
             src="/blackbelt.svg"
@@ -67,15 +71,16 @@ export default function Sidebar() {
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
-            <Link
+            <Button
               key={item.href}
-              href={item.href}
-              className="cursor-pointer"
-              aria-current={isActive ? 'page' : undefined}
+              asChild
+              variant="ghost"
+              className={`w-full h-12 justify-start gap-3 bg-bg-white text-btn-text hover:bg-btn-focus hover:text-btn-focus-text cursor-pointer
+                ${isActive ? 'bg-btn-focus text-btn-focus-text hover:bg-btn-focus hover:text-btn-focus-text' : ''}`}
             >
-              <Button
-                className={`w-full h-12 justify-start gap-3 bg-bg-white text-btn-text hover:bg-btn-basic cursor-pointer
-                  ${isActive ? 'bg-btn-focus text-btn-focus-text hover:bg-btn-focus' : ''}`}
+              <Link
+                href={item.href}
+                aria-current={isActive ? 'page' : undefined}
                 aria-label={item.label}
               >
                 <Image
@@ -86,8 +91,8 @@ export default function Sidebar() {
                   aria-hidden="true"
                 />
                 <span className="text-[1rem]">{item.label}</span>
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           );
         })}
       </nav>
@@ -101,21 +106,22 @@ export default function Sidebar() {
               const isActive = pathname === item.href;
               const Icon = item.icon;
               return (
-                <Link
+                <Button
                   key={item.href}
-                  href={item.href}
-                  className="cursor-pointer"
-                  aria-current={isActive ? 'page' : undefined}
+                  asChild
+                  variant="ghost"
+                  className={`w-full h-12 justify-start gap-3 cursor-pointer bg-bg-white text-btn-text hover:bg-btn-focus hover:text-btn-focus-text
+                    ${isActive ? 'bg-btn-focus text-btn-focus-text hover:bg-btn-focus hover:text-btn-focus-text' : ''}`}
                 >
-                  <Button
-                    className={`w-full h-12 justify-start gap-3 cursor-pointer bg-bg-white text-btn-text hover:bg-btn-basic
-                      ${isActive ? 'bg-btn-focus text-btn-focus-text hover:bg-btn-focus' : ''}`}
+                  <Link
+                    href={item.href}
+                    aria-current={isActive ? 'page' : undefined}
                     aria-label={item.label}
                   >
                     <Icon size={18} aria-hidden="true" />
                     <span className="text-[1rem]">{item.label}</span>
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               );
             })}
           </nav>
@@ -127,7 +133,7 @@ export default function Sidebar() {
           <div className="flex flex-col gap-2">
             <Link
               href="/mypage"
-              className="cursor-pointer"
+              className="cursor-pointer rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-focus focus-visible:ring-offset-2"
               aria-label={`${user.name ?? '사용자'} 마이페이지로 이동`}
             >
               <div className="flex items-center gap-3 px-2 py-1 rounded-lg hover:bg-btn-basic transition-colors cursor-pointer">
@@ -164,16 +170,15 @@ export default function Sidebar() {
             </Button>
           </div>
         ) : (
-          <Link
-            href="/login"
-            className="cursor-pointer"
-            aria-label="로그인 페이지로 이동"
+          <Button
+            asChild
+            className="w-full h-12 gap-2 bg-btn-focus text-btn-focus-text cursor-pointer"
           >
-            <Button className="w-full h-12 gap-2 bg-btn-focus text-btn-focus-text cursor-pointer">
+            <Link href="/login" aria-label="로그인 페이지로 이동">
               <LogIn size={16} aria-hidden="true" />
               로그인
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         )}
       </div>
     </aside>

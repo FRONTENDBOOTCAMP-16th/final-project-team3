@@ -96,9 +96,11 @@ export default function AdminPostTableClient({
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
         onSearch={commitSearch}
+        searchAriaLabel="게시글 제목 검색"
       />
 
       <AdminDataTable
+        caption="관리자 게시글 관리 목록"
         columns={POST_COLUMNS}
         data={data}
         emptyMessage="등록된 게시글이 없습니다."

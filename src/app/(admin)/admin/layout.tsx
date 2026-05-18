@@ -23,9 +23,9 @@ async function requireAdminAccess() {
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
-  if (profileError || profile.role !== 'admin') notFound();
+  if (profileError || !profile || profile.role !== 'admin') notFound();
 }
 
 async function AdminContent({ children }: { children: React.ReactNode }) {

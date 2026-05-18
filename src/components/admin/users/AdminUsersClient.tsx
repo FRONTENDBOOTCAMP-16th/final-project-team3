@@ -179,9 +179,11 @@ export default function AdminUsersClient({
         onSearchQueryChange={setSearchQuery}
         onSearch={commitSearch}
         searchPlaceholder="닉네임, 이름, 이메일 검색..."
+        searchAriaLabel="닉네임, 이름 또는 이메일 검색"
       />
 
       <AdminDataTable
+        caption="관리자 사용자 관리 목록"
         columns={USER_COLUMNS}
         currentPage={currentPage}
         data={data}
