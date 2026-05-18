@@ -66,7 +66,6 @@ export default function GeneralForm() {
   useEffect(() => {
     reset();
     setServerError('');
-    // eslint-disable-next-line react-hooks/set-state-in-effect
   }, [reset]);
 
   const nickname = watch('nickname');

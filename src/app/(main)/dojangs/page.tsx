@@ -1,6 +1,4 @@
 import DojangClient from '@/components/dojang/DojangClient';
-import { supabasePublic } from '@/lib/supabase/public';
-import { cacheTag, cacheLife } from 'next/cache';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -12,20 +10,6 @@ export const metadata: Metadata = {
   },
 };
 
-async function getDojangs() {
-  'use cache';
-  cacheTag('dojangs');
-  cacheLife('hours');
-
-  const { data } = await supabasePublic.from('dojang').select('name');
-  return data?.map((d) => d.name) ?? [];
-}
-
-async function DojangContent() {
-  const initialVerifiedDojangs = await getDojangs();
-  return <DojangClient initialVerifiedDojangs={initialVerifiedDojangs} />;
-}
-
 export default function DojangsPage() {
-  return <DojangContent />;
+  return <DojangClient />;
 }

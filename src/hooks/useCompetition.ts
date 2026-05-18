@@ -18,7 +18,7 @@ function createCompetitionsSeed(competitions: Competition[]) {
   );
 }
 
-export function useCompetiton(initialCompetitions: Competition[]) {
+export function useCompetition(initialCompetitions: Competition[]) {
   const initialCompetitionsSeed = createCompetitionsSeed(initialCompetitions);
 
   return useInfiniteQuery({

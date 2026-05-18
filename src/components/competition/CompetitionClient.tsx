@@ -5,12 +5,24 @@ import Pageheader from '@/components/layout/PageHeader';
 import CompetitionCard from '@/components/competition/CompetitionCard';
 import { useDebounce } from '@/hooks/useDebounce';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { useCompetiton } from '@/hooks/useCompetition';
+import { useCompetition } from '@/hooks/useCompetition';
 import { useAuth } from '@/hooks/useAuth';
 import { getStatus } from '@/utils/formatDate';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { useState } from 'react';
-import type { Competition } from '@/types/competition';
+
+interface Competition {
+  id: string;
+  name: string;
+  location: string;
+  event_data: string;
+  apply_deadline: string;
+  description: string;
+  image_url: string;
+  participants: number;
+  apply_url: string;
+  comment_count?: number;
+}
 
 interface CompetitionClientProps {
   initialCompetitions: Competition[];
@@ -31,12 +43,11 @@ export default function CompetitionClient({
   const isAdmin = user?.role === 'admin';
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useCompetiton(initialCompetitions);
+    useCompetition(initialCompetitions);
 
-  // 모든 페이지 데이터를 하나의 배열로 합치기
   const competitions = useMemo(
-    () => data?.pages.flatMap((page) => page) ?? [],
-    [data],
+    () => data?.pages.flatMap((page) => page) ?? initialCompetitions,
+    [data, initialCompetitions],
   );
 
   useEffect(() => {
@@ -137,7 +148,6 @@ export default function CompetitionClient({
             </ul>
           )}
 
-          {/* 무한스크롤 로딩 */}
           {hasNextPage && (
             <div
               ref={observerRef}

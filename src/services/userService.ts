@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase/client';
 import { Profile } from '@/types/user';
-import { ProfileUpdateForm, MyPost, MyPostQueryRow } from '@/types/mypage';
+import { ProfileUpdateForm, MyPost } from '@/types/mypage';
 
 async function getAuthUser() {
   const {

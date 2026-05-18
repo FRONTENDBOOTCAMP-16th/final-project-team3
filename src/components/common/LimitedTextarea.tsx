@@ -5,15 +5,17 @@ import { useCallback } from 'react';
 interface LimitedTextareaProps {
   id?: string;
   value: string;
+  // eslint-disable-next-line no-unused-vars
   onChange: (value: string) => void;
   maxLength: number;
   warnAt?: number;
   placeholder?: string;
   label?: string;
   rows?: number;
-  allowNewline?: boolean; // false면 댓글처럼 줄바꿈 차단
+  allowNewline?: boolean;
   disabled?: boolean;
   className?: string;
+  // eslint-disable-next-line no-unused-vars
   onKeyDown?: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
 }
 
