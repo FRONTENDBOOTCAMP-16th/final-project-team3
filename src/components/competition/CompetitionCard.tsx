@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { getDday, getStatus } from '@/utils/formatDate';
+import { buildCompetitionUrl } from '@/lib/slug';
 
 interface CompetitionCardProps {
   competition: {
@@ -42,7 +43,7 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
       aria-label={`${competition.name} 대회`}
     >
       <Link
-        href={`/competitions/${competition.id}`}
+        href={buildCompetitionUrl(competition.name, competition.id)}
         className="flex flex-col flex-1"
         aria-label={`${competition.name} 대회 상세보기`}
       >

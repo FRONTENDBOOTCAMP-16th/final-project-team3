@@ -11,10 +11,32 @@ export async function POST(req: Request) {
   if (!user)
     return NextResponse.json({ error: '로그인 필요' }, { status: 401 });
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  const role = profile?.role ?? 'user';
+
   const body = await req.json();
+  const { category, title, content, image_url } = body;
+
+  const allowedCategory =
+    role === 'admin' ? 'notice' : role === 'manager' ? 'promo' : 'personal';
+
+  const finalCategory =
+    role === 'admin' ? (category ?? 'personal') : allowedCategory;
+
   const { data, error } = await supabase
     .from('posts')
-    .insert({ ...body, user_id: user.id })
+    .insert({
+      title,
+      content,
+      image_url,
+      category: finalCategory,
+      user_id: user.id,
+    })
     .select()
     .single();
 

@@ -5,7 +5,8 @@ interface UseTablePaginationParams<T> {
   initialPageSize?: number;
   pageSizeOptions?: readonly number[];
   currentPage?: number;
-
+  totalItems?: number;
+  serverPagination?: boolean;
   onPageChange?: (_page: number) => void;
 }
 
@@ -17,6 +18,8 @@ export function useAdminTablePagination<T>({
   initialPageSize = DEFAULT_PAGE_SIZE,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   currentPage,
+  totalItems,
+  serverPagination = false,
   onPageChange,
 }: UseTablePaginationParams<T>) {
   const normalizedPageSizeOptions = useMemo(() => {
@@ -35,7 +38,10 @@ export function useAdminTablePagination<T>({
   const [internalCurrentPage, setInternalCurrentPage] = useState(1);
   const resolvedCurrentPage = currentPage ?? internalCurrentPage;
 
-  const totalPages = Math.max(1, Math.ceil(data.length / pageSize));
+  const totalItemCount = serverPagination
+    ? (totalItems ?? data.length)
+    : data.length;
+  const totalPages = Math.max(1, Math.ceil(totalItemCount / pageSize));
   const safeCurrentPage = Math.min(resolvedCurrentPage, totalPages);
 
   useEffect(() => {
@@ -47,11 +53,15 @@ export function useAdminTablePagination<T>({
   }, [onPageChange, resolvedCurrentPage, safeCurrentPage]);
 
   const paginatedData = useMemo(() => {
+    if (serverPagination) {
+      return data;
+    }
+
     const startIndex = (safeCurrentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
 
     return data.slice(startIndex, endIndex);
-  }, [data, pageSize, safeCurrentPage]);
+  }, [data, pageSize, safeCurrentPage, serverPagination]);
 
   const handlePageChange = useCallback(
     (page: number) => {
@@ -78,6 +88,7 @@ export function useAdminTablePagination<T>({
   return {
     pageSize,
     currentPage: safeCurrentPage,
+    totalItems: totalItemCount,
     totalPages,
     paginatedData,
     pageSizeOptions: normalizedPageSizeOptions,

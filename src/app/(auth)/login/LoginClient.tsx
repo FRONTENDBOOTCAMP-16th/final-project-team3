@@ -80,6 +80,7 @@ export default function LoginPage() {
         주짓수 커뮤니티에 오신 것을 환영합니다
       </p>
 
+      {/* 카드 */}
       <div className="max-w-150 w-full bg-bg-white rounded-[32px] p-8 shadow-sm border-none">
         <h2 className="text-2xl font-bold text-center text-text-primary mb-8">
           로그인

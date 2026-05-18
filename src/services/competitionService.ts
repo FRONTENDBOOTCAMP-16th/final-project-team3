@@ -1,5 +1,4 @@
 import { supabase } from '@/lib/supabase/client';
-import type { Competition } from '@/types/competition';
 
 export async function createCompetition({
   name,
@@ -52,34 +51,6 @@ export async function uploadCompetitionImage(file: File): Promise<string> {
     .from('competition-images')
     .getPublicUrl(fileName);
   return data.publicUrl;
-}
-
-export async function getCompetition(id: string): Promise<Competition | null> {
-  const { data, error } = await supabase
-    .from('competition')
-    .select('*, profiles(nickname, avatar_url, role)')
-    .eq('id', id)
-    .maybeSingle();
-
-  if (error) throw error;
-  if (!data) return null;
-
-  return {
-    ...data,
-    nickname: data.profiles?.nickname,
-    avatar_url: data.profiles?.avatar_url,
-    role: data.profiles?.role,
-    profiles: undefined,
-  } as Competition;
-}
-
-export function isPublicCompetitionVisible(
-  competition: Competition | null | undefined,
-): competition is Competition {
-  return Boolean(
-    competition &&
-    (competition.deleted_at === null || competition.deleted_at === undefined),
-  );
 }
 
 export async function updateCompetition(

@@ -1,86 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Mail, Lock, User } from 'lucide-react';
-import Link from 'next/link';
-import { z } from 'zod';
+import { useState } from 'react';
+import Step1Form from './Step1Form';
+import Step2Form from './Step2Form';
+import Step3Complete from './Step3Complete';
 
-const step1Schema = z.object({
-  name: z.string().min(1, '이름을 입력해주세요.'),
-  email: z.string().email('올바른 이메일 형식으로 작성해주세요.'),
-});
+export type FindPasswordStep = 1 | 2 | 3;
 
-const step2Schema = z
-  .object({
-    password: z.string().min(6, '비밀번호는 6자 이상이어야 합니다.'),
-    confirmPassword: z.string().min(1, '비밀번호 확인을 입력해주세요.'),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: '비밀번호가 일치하지 않습니다.',
-    path: ['confirmPassword'],
-  });
-
-export default function FindPasswordPage() {
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+export default function FindPasswordClient() {
+  const [step, setStep] = useState<FindPasswordStep>(1);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errors, setErrors] = useState<{
-    name?: string;
-    email?: string;
-    password?: string;
-    confirmPassword?: string;
-    server?: string;
-  }>({});
 
-  const handleStep1 = async () => {
-    const result = step1Schema.safeParse({ name, email });
-    if (!result.success) {
-      const fieldErrors = result.error.flatten().fieldErrors;
-      setErrors({ name: fieldErrors.name?.[0], email: fieldErrors.email?.[0] });
-      return;
-    }
-    setErrors({});
-
-    const res = await fetch('/api/reset-password', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, checkOnly: true }),
-    });
-
-    if (!res.ok) {
-      setErrors({ server: '이름 또는 이메일이 올바르지 않습니다.' });
-      return;
-    }
-    setStep(2);
-  };
-
-  const handleStep2 = async () => {
-    const result = step2Schema.safeParse({ password, confirmPassword });
-    if (!result.success) {
-      const fieldErrors = result.error.flatten().fieldErrors;
-      setErrors({
-        password: fieldErrors.password?.[0],
-        confirmPassword: fieldErrors.confirmPassword?.[0],
-      });
-      return;
-    }
-    setErrors({});
-
-    const res = await fetch('/api/reset-password', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password }),
-    });
-
-    if (!res.ok) {
-      setErrors({
-        server: '비밀번호 재설정에 실패했습니다. 다시 시도해주세요.',
-      });
-      return;
-    }
-    setStep(3);
+  const handleReset = () => {
+    setStep(1);
+    setName('');
+    setEmail('');
   };
 
   return (
@@ -89,7 +24,9 @@ export default function FindPasswordPage() {
         주짓수 커뮤니티에 오신 것을 환영합니다
       </p>
 
-      <div className="max-w-150 w-full bg-bg-white rounded-[32px] p-8 shadow-sm border-none">
+      <div
+        className={`max-w-150 w-full bg-bg-white rounded-[32px] p-8 shadow-sm border-none ${step === 3 ? 'h-auto' : 'h-[500px]'}`}
+      >
         <h2 className="text-2xl font-bold text-center text-text-primary mb-8">
           {step === 1
             ? '비밀번호 찾기'
@@ -99,178 +36,18 @@ export default function FindPasswordPage() {
         </h2>
 
         {step === 1 && (
-          <form
-            className="space-y-5"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleStep1();
-            }}
-          >
-            <div>
-              <label className="block text-sm font-medium text-text-primary mb-2">
-                이름
-              </label>
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
-                <input
-                  type="text"
-                  placeholder="이름을 입력하세요"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
-                />
-              </div>
-              <p className="text-danger text-sm mt-1 h-5">
-                {errors.name ?? ''}
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-text-primary mb-2">
-                이메일
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
-                <input
-                  type="email"
-                  placeholder="이메일을 입력하세요"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
-                />
-              </div>
-              <p className="text-danger text-sm mt-1 h-5">
-                {errors.email ?? ''}
-              </p>
-            </div>
-
-            <p className="text-danger text-sm text-center h-5">
-              {errors.server ?? ''}
-            </p>
-
-            <button
-              type="submit"
-              className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer"
-            >
-              비밀번호 재설정
-            </button>
-
-            <p className="text-center text-sm text-text-secondary">
-              로그인으로 돌아가기{' '}
-              <Link
-                href="/login"
-                className="font-bold hover:underline"
-                style={{ color: 'var(--color-auth-register)' }}
-              >
-                로그인
-              </Link>
-            </p>
-          </form>
+          <Step1Form
+            name={name}
+            email={email}
+            setName={setName}
+            setEmail={setEmail}
+            onNext={() => setStep(2)}
+          />
         )}
-
         {step === 2 && (
-          <form
-            className="space-y-5"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleStep2();
-            }}
-          >
-            <div>
-              <label className="block text-sm font-medium text-text-primary mb-2">
-                새 비밀번호
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
-                <input
-                  type="password"
-                  placeholder="새 비밀번호를 입력하세요"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
-                />
-              </div>
-              <p className="text-danger text-sm mt-1 h-5">
-                {errors.password ?? ''}
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-text-primary mb-2">
-                비밀번호 확인
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
-                <input
-                  type="password"
-                  placeholder="비밀번호를 다시 입력하세요"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
-                />
-              </div>
-              <p className="text-danger text-sm mt-1 h-5">
-                {errors.confirmPassword ?? ''}
-              </p>
-            </div>
-
-            <p className="text-danger text-sm text-center h-5">
-              {errors.server ?? ''}
-            </p>
-
-            <button
-              type="submit"
-              className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer"
-            >
-              재설정 완료
-            </button>
-
-            <p className="text-center text-sm text-text-secondary">
-              로그인으로 돌아가기{' '}
-              <Link
-                href="/login"
-                className="font-bold hover:underline"
-                style={{ color: 'var(--color-auth-register)' }}
-              >
-                로그인
-              </Link>
-            </p>
-          </form>
+          <Step2Form name={name} email={email} onNext={() => setStep(3)} />
         )}
-
-        {step === 3 && (
-          <div className="flex flex-col items-center gap-6 py-4">
-            <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-              <svg
-                className="w-8 h-8 text-green-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <div className="text-center flex flex-col gap-2">
-              <p className="text-lg font-bold text-text-primary">
-                비밀번호가 재설정되었습니다.
-              </p>
-              <p className="text-sm text-text-secondary">
-                새 비밀번호로 다시 로그인해주세요.
-              </p>
-            </div>
-            <Link
-              href="/login"
-              className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all text-center"
-            >
-              로그인하러 가기
-            </Link>
-          </div>
-        )}
+        {step === 3 && <Step3Complete onReset={handleReset} />}
       </div>
     </>
   );

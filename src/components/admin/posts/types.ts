@@ -18,7 +18,6 @@ export interface AdminPostRow {
   author: string;
   status: AdminPostStatus;
   deleted_at: string | null;
-  view_count: number;
   report_count: number;
   created_at: string;
 }
@@ -33,7 +32,6 @@ export type PostQueryRow = {
   title: string;
   status: AdminPostStatus;
   deleted_at: string | null;
-  view_count: number | null;
   report_count: number | null;
   created_at: string;
   profiles: ProfileRow | ProfileRow[] | null;

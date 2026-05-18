@@ -21,7 +21,8 @@ interface AdminDataTableProps<T> {
   initialPageSize?: number;
   pageSizeOptions?: readonly number[];
   currentPage?: number;
-
+  totalItems?: number;
+  serverPagination?: boolean;
   onPageChange?: (_page: number) => void;
 
   getRowKey?: (_row: T, _index: number) => React.Key;
@@ -34,12 +35,15 @@ export default function AdminDataTable<T>({
   initialPageSize,
   pageSizeOptions,
   currentPage,
+  totalItems,
+  serverPagination,
   onPageChange,
   getRowKey,
 }: AdminDataTableProps<T>) {
   const {
     pageSize,
     currentPage: safeCurrentPage,
+    totalItems: resolvedTotalItems,
     totalPages,
     paginatedData,
     pageSizeOptions: normalizedPageSizeOptions,
@@ -50,6 +54,8 @@ export default function AdminDataTable<T>({
     initialPageSize,
     pageSizeOptions,
     currentPage,
+    totalItems,
+    serverPagination,
     onPageChange,
   });
 
@@ -127,9 +133,10 @@ export default function AdminDataTable<T>({
       <AdminTablePagination
         currentPage={safeCurrentPage}
         totalPages={totalPages}
-        totalItems={data.length}
+        totalItems={resolvedTotalItems}
         pageSize={pageSize}
         pageSizeOptions={normalizedPageSizeOptions}
+        showPageSizeSelector={!serverPagination}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
       />
