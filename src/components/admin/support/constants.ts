@@ -16,7 +16,7 @@ export const SUPPORT_SECTION_FILTERS = [
 export const UNKNOWN_DOJANG_NAME = '알 수 없는 도장';
 export const UNKNOWN_EMAIL = '-';
 export const UNKNOWN_TEXT = '-';
-export const UNKNOWN_POST_TITLE = '알 수 없는 게시글';
+export const UNKNOWN_POST_TITLE = '삭제된 게시글';
 export const UNKNOWN_REPORTER = '알 수 없음';
 export const UNKNOWN_REPORT_REASON = '사유 없음';
 
