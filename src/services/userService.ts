@@ -18,6 +18,8 @@ interface PostQueryRow {
   category: string;
   image_url: string;
   view_count: number;
+  status: string;
+  deleted_at: string | null;
   created_at: string;
   profiles: { nickname: string; avatar_url: string } | null;
   active_comment_counts: { count: number }[];
@@ -103,6 +105,8 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
       content,
       category,
       image_url,
+      status,
+      deleted_at,
       created_at,
       profiles (
         nickname,
@@ -119,21 +123,21 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
 
   if (error) throw error;
 
-  return (data ?? []).map((post) => {
-    const p = post as unknown as PostQueryRow;
-    return {
-      id: p.id,
-      title: p.title,
-      content: p.content,
-      category: p.category,
-      image_url: p.image_url,
-      view_count: p.view_count,
-      created_at: p.created_at,
-      nickname: p.profiles?.nickname ?? '',
-      avatar_url: p.profiles?.avatar_url ?? '',
-      comment_count: p.active_comment_counts?.[0]?.count ?? 0,
-    };
-  });
+  return (data ?? [])
+    .map((post) => post as unknown as PostQueryRow)
+    .filter((post) => post.deleted_at === null && post.status === 'published')
+    .map((post) => ({
+      id: post.id,
+      title: post.title,
+      content: post.content,
+      category: post.category,
+      image_url: post.image_url,
+      view_count: post.view_count,
+      created_at: post.created_at,
+      nickname: post.profiles?.nickname ?? '',
+      avatar_url: post.profiles?.avatar_url ?? '',
+      comment_count: post.active_comment_counts?.[0]?.count ?? 0,
+    }));
 }
 export async function deleteMyAccount(): Promise<void> {
   const user = await getAuthUser();

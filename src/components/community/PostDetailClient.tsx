@@ -12,6 +12,7 @@ import { reportPost, ReportReason } from '@/services/reportService';
 import type { Post, Comment } from '@/types/community';
 import Image from 'next/image';
 import { useAuth } from '@/hooks/useAuth';
+import { myPageKeys } from '@/hooks/useMyPage';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ReportModal from '@/components/community/ReportModal';
 import ConfirmModal from '@/components/common/ConfirmModal';
@@ -140,6 +141,8 @@ export default function PostDetailClient({
     try {
       await deletePost(id);
       await queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.removeQueries({ queryKey: myPageKeys.posts });
+      queryClient.removeQueries({ queryKey: myPageKeys.postCount });
       setDeletePostModalOpen(false);
       showSuccessToast('게시글이 삭제되었습니다.', '🗑️');
       await new Promise((resolve) => setTimeout(resolve, 700));

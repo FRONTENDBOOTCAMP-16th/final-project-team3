@@ -14,7 +14,7 @@ import {
 } from '@/services/userService';
 import { ProfileUpdateForm } from '@/types/mypage';
 
-const myPageKeys = {
+export const myPageKeys = {
   profile: ['mypage', 'profile'] as const,
   posts: ['mypage', 'posts'] as const,
   postCount: ['mypage', 'postCount'] as const,
