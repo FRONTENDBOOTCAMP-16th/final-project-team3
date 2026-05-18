@@ -1,4 +1,4 @@
-export type Role = 'user' | 'dojang' | 'admin';
+export type Role = 'user' | 'manager' | 'dojang' | 'admin';
 
 export type BeltLevel = 'White' | 'Blue' | 'Purple' | 'Brown' | 'Black';
 
@@ -7,7 +7,7 @@ export interface Profile {
   nickname: string;
   avatar_url?: string;
   bio?: string;
-  belt_level: BeltLevel;
+  belt_level: BeltLevel | null;
   role: Role;
   phone_value?: string;
   email_value?: string;
@@ -23,5 +23,5 @@ export interface ProfileUpdateForm {
   nickname: string;
   bio: string;
   avatar_url: string | null;
-  belt_level: BeltLevel;
+  belt_level: BeltLevel | null;
 }

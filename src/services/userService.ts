@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase/client';
 import { Profile } from '@/types/user';
 import { ProfileUpdateForm, MyPost } from '@/types/mypage';
+import { normalizeBeltLevel } from '@/constants/belt';
 
 async function getAuthUser() {
   const {
@@ -32,18 +33,58 @@ export async function fetchMyProfile(): Promise<Profile> {
     .single();
 
   if (error) throw error;
-  return data;
+  return {
+    ...data,
+    belt_level: normalizeBeltLevel(data.belt_level),
+  };
 }
 
-export async function updateMyProfile(form: ProfileUpdateForm): Promise<void> {
-  const user = await getAuthUser();
+const MIN_NICKNAME_LENGTH = 2;
 
-  const { error } = await supabase
+export async function updateMyProfile(
+  form: ProfileUpdateForm,
+): Promise<Profile> {
+  const user = await getAuthUser();
+  const nickname = form.nickname.trim();
+
+  if (nickname.length < MIN_NICKNAME_LENGTH) {
+    throw new Error('닉네임은 2자 이상이어야 합니다.');
+  }
+
+  const nicknameCheckParams = new URLSearchParams({
+    nickname,
+    excludeUserId: user.id,
+  });
+  const nicknameCheckResponse = await fetch(
+    `/api/check-nickname?${nicknameCheckParams.toString()}`,
+  );
+  const nicknameCheckData = await nicknameCheckResponse.json();
+
+  if (!nicknameCheckResponse.ok) {
+    throw new Error(
+      nicknameCheckData.error ?? '닉네임 확인 중 오류가 발생했습니다.',
+    );
+  }
+  if (!nicknameCheckData.available) {
+    throw new Error('이미 사용 중인 닉네임입니다.');
+  }
+
+  const { data, error } = await supabase
     .from('profiles')
-    .update(form)
-    .eq('id', user.id);
+    .update({
+      ...form,
+      nickname,
+      belt_level: normalizeBeltLevel(form.belt_level),
+    })
+    .eq('id', user.id)
+    .select('*')
+    .single();
 
   if (error) throw error;
+  return {
+    ...data,
+    belt_level: normalizeBeltLevel(data.belt_level),
+  };
 }
 
 export async function fetchMyPosts(page: number): Promise<MyPost[]> {
