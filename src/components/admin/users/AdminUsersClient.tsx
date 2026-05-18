@@ -1,7 +1,5 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-
 import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
   type AdminTableColumn,
@@ -18,10 +16,13 @@ import type {
   AdminUserFilterValue,
   AdminUserRow,
 } from '@/components/admin/users/types';
-import { filterAdminUsers } from '@/components/admin/users/utils';
+import { useAdminTableQueryState } from '@/hooks/useAdminTableQueryState';
+import { ADMIN_TABLE_PAGE_SIZE } from '@/lib/adminTableServerPagination';
 
 interface AdminUsersClientProps {
   data: AdminUserRow[];
+  totalCount: number;
+  pageSize?: number;
 }
 
 function UserAvatarCell({
@@ -149,30 +150,50 @@ const USER_COLUMNS: AdminTableColumn<AdminUserRow>[] = [
   },
 ];
 
-export default function AdminUsersClient({ data }: AdminUsersClientProps) {
-  const [activeFilter, setActiveFilter] = useState<AdminUserFilterValue>('all');
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const filteredData = useMemo(() => {
-    return filterAdminUsers(data, activeFilter, searchQuery);
-  }, [activeFilter, data, searchQuery]);
+export default function AdminUsersClient({
+  data,
+  totalCount,
+  pageSize = ADMIN_TABLE_PAGE_SIZE,
+}: AdminUsersClientProps) {
+  const {
+    activeFilter,
+    currentPage,
+    searchQuery,
+    setFilter,
+    setPage,
+    setSearchQuery,
+    commitSearch,
+  } = useAdminTableQueryState<AdminUserFilterValue>({
+    filterParamName: 'status',
+    defaultFilter: 'all',
+    validFilters: ADMIN_USER_FILTERS.map((filter) => filter.value),
+  });
 
   return (
     <>
       <AdminTableToolbar
         filters={ADMIN_USER_FILTERS}
         activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
+        onFilterChange={setFilter}
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
+        onSearch={commitSearch}
         searchPlaceholder="닉네임, 이름, 이메일 검색..."
+        searchAriaLabel="닉네임, 이름 또는 이메일 검색"
       />
 
       <AdminDataTable
+        caption="관리자 사용자 관리 목록"
         columns={USER_COLUMNS}
-        data={filteredData}
+        currentPage={currentPage}
+        data={data}
         emptyMessage="등록된 사용자가 없습니다."
         getRowKey={(row) => row.id}
+        initialPageSize={pageSize}
+        onPageChange={setPage}
+        pageSizeOptions={[pageSize]}
+        serverPagination
+        totalItems={totalCount}
       />
     </>
   );

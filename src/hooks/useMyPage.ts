@@ -17,9 +17,10 @@ import { ProfileUpdateForm } from '@/types/mypage';
 const myPageKeys = {
   profile: ['mypage', 'profile'] as const,
   posts: ['mypage', 'posts'] as const,
+  postCount: ['mypage', 'postCount'] as const,
+  commentCount: ['mypage', 'commentCount'] as const,
 };
 
-// 내 프로필 조회
 export const useMyProfile = () => {
   return useQuery({
     queryKey: myPageKeys.profile,
@@ -27,7 +28,6 @@ export const useMyProfile = () => {
   });
 };
 
-// 내 프로필 수정
 export const useUpdateMyProfile = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -38,11 +38,11 @@ export const useUpdateMyProfile = () => {
   });
 };
 
-// 내가 쓴 게시글 무한스크롤
 export const useMyPosts = () => {
   return useInfiniteQuery({
     queryKey: myPageKeys.posts,
     queryFn: ({ pageParam = 0 }) => fetchMyPosts(pageParam),
+    staleTime: 0,
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.length === 10 ? allPages.length : undefined;
     },
@@ -50,25 +50,24 @@ export const useMyPosts = () => {
   });
 };
 
-// 회원 탈퇴
 export const useDeleteMyAccount = () => {
   return useMutation({
     mutationFn: deleteMyAccount,
   });
 };
 
-// 내 게시글 수 조회
 export const useMyPostCount = () => {
   return useQuery({
-    queryKey: ['mypage', 'postCount'],
+    queryKey: myPageKeys.postCount,
     queryFn: fetchMyPostCount,
+    staleTime: 0,
   });
 };
 
-// 내 댓글 수 조회
 export const useMyCommentCount = () => {
   return useQuery({
-    queryKey: ['mypage', 'commentCount'],
+    queryKey: myPageKeys.commentCount,
     queryFn: fetchMyCommentCount,
+    staleTime: 0,
   });
 };

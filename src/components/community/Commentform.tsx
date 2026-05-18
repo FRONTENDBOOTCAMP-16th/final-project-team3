@@ -1,13 +1,11 @@
 'use client';
-// components/CommentForm.tsx
-// 클라이언트 컴포넌트 — 낙관적 UX + 서버 에러 처리
 
-import { useState, useRef, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { ABUSE_CONFIG } from '@/lib/CommentAbuseGuard';
 
 interface CommentFormProps {
   postId: string;
-  onCommentPosted?: () => void; // 성공 후 목록 리프레시 콜백
+  onCommentPosted?: () => void;
 }
 
 type Status =
@@ -18,29 +16,11 @@ type Status =
 export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
   const [content, setContent] = useState('');
   const [status, setStatus] = useState<Status>({ type: 'idle' });
-  const [coolRemainSec, setCoolRemainSec] = useState(0);
   const [isPending, startTransition] = useTransition();
-  const coolTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const charCount = content.trim().length;
   const isOverLimit = charCount > ABUSE_CONFIG.MAX_LENGTH;
-  const canSubmit =
-    !isPending && coolRemainSec === 0 && !isOverLimit && charCount >= 1;
-
-  // 쿨타임 카운트다운 시작
-  function startCooldown(sec: number) {
-    setCoolRemainSec(sec);
-    if (coolTimer.current) clearInterval(coolTimer.current);
-    coolTimer.current = setInterval(() => {
-      setCoolRemainSec((prev) => {
-        if (prev <= 1) {
-          clearInterval(coolTimer.current!);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  }
+  const canSubmit = !isPending && !isOverLimit && charCount >= 1;
 
   async function handleSubmit() {
     if (!canSubmit) return;
@@ -57,11 +37,6 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
         const data = await res.json();
 
         if (!res.ok) {
-          // 쿨타임 에러면 남은 시간 파싱해서 카운트다운 표시
-          if (data.code === 'COOLTIME') {
-            const match = data.error.match(/(\d+)초/);
-            if (match) startCooldown(Number(match[1]));
-          }
           setStatus({ type: 'error', message: data.error });
           return;
         }
@@ -69,10 +44,6 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
         setContent('');
         setStatus({ type: 'success' });
         onCommentPosted?.();
-
-        // 성공 후 쿨타임 카운트다운 시작
-        startCooldown(ABUSE_CONFIG.COOLTIME_MS / 1000);
-
         setTimeout(() => setStatus({ type: 'idle' }), 2000);
       } catch {
         setStatus({ type: 'error', message: '네트워크 오류가 발생했습니다.' });
@@ -89,7 +60,6 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      {/* 텍스트 입력 */}
       <div className="relative">
         <textarea
           value={content}
@@ -102,7 +72,6 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
                      disabled:opacity-50 disabled:bg-gray-50"
         />
-        {/* 글자 수 표시 */}
         <span
           className={`absolute bottom-2 right-3 text-xs
             ${isOverLimit ? 'text-red-500 font-medium' : 'text-gray-400'}`}
@@ -111,7 +80,6 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
         </span>
       </div>
 
-      {/* 에러 / 성공 메시지 */}
       {status.type === 'error' && (
         <p className="text-sm text-red-500 flex items-center gap-1">
           <span>⚠️</span> {status.message}
@@ -123,14 +91,8 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
         </p>
       )}
 
-      {/* 작성 버튼 + 쿨타임 표시 */}
       <div className="flex items-center justify-between">
-        <p className="text-xs text-gray-400">
-          {coolRemainSec > 0
-            ? `${coolRemainSec}초 후 작성 가능`
-            : 'Ctrl+Enter로 빠르게 작성'}
-        </p>
-
+        <p className="text-xs text-gray-400">Ctrl+Enter로 빠르게 작성</p>
         <button
           onClick={handleSubmit}
           disabled={!canSubmit}
@@ -138,25 +100,9 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
                      hover:bg-blue-700 active:scale-95 transition-all
                      disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
         >
-          {isPending
-            ? '작성 중...'
-            : coolRemainSec > 0
-              ? `${coolRemainSec}s`
-              : '작성'}
+          {isPending ? '작성 중...' : '작성'}
         </button>
       </div>
-
-      {/* 쿨타임 진행바 */}
-      {coolRemainSec > 0 && (
-        <div className="h-0.5 w-full rounded bg-gray-100 overflow-hidden">
-          <div
-            className="h-full bg-blue-400 transition-all duration-1000"
-            style={{
-              width: `${(coolRemainSec / (ABUSE_CONFIG.COOLTIME_MS / 1000)) * 100}%`,
-            }}
-          />
-        </div>
-      )}
     </div>
   );
 }

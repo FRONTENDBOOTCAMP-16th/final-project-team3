@@ -3,7 +3,6 @@ import { cookies } from 'next/headers';
 
 export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
-
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -17,9 +16,7 @@ export async function createSupabaseServerClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options),
             );
-          } catch {
-            // proxy.ts에서 세션 갱신을 처리하므로 무시
-          }
+          } catch {}
         },
       },
     },

@@ -1,6 +1,7 @@
 import CommunityClient from '@/components/community/CommunityClient';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { supabasePublic } from '@/lib/supabase/public';
+import { cacheTag, cacheLife } from 'next/cache';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Post } from '@/types/community';
 import type { Metadata } from 'next';
 
@@ -13,25 +14,16 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = 'force-dynamic';
-
 async function getPosts(): Promise<Post[]> {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-      },
-    },
-  );
+  'use cache';
+  cacheTag('posts-list');
+  cacheLife('minutes');
 
-  const { data, error } = await supabase
+  const { data, error } = await supabasePublic
     .from('posts')
-    .select('*, comments(count), profiles(nickname, avatar_url)')
+    .select('*, active_comment_counts(count), profiles(nickname, avatar_url)')
+    .is('deleted_at', null)
+    .eq('status', 'published')
     .order('created_at', { ascending: false })
     .range(0, 9);
 
@@ -39,7 +31,8 @@ async function getPosts(): Promise<Post[]> {
 
   return data.map((post) => ({
     ...post,
-    comment_count: (post.comments as { count: number }[])[0]?.count ?? 0,
+    comment_count:
+      (post.active_comment_counts as { count: number }[])[0]?.count ?? 0,
     nickname: (post.profiles as { nickname: string; avatar_url: string } | null)
       ?.nickname,
     avatar_url: (
@@ -49,7 +42,11 @@ async function getPosts(): Promise<Post[]> {
   })) as Post[];
 }
 
-export default async function CommunityPage() {
+async function CommunityContent() {
   const initialPosts = await getPosts();
   return <CommunityClient initialPosts={initialPosts} />;
+}
+
+export default function CommunityPage() {
+  return <CommunityContent />;
 }

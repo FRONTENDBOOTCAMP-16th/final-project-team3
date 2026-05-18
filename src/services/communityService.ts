@@ -1,15 +1,9 @@
-import { cache } from 'react';
-import { supabase } from '@/lib/supabase';
-import type { Post, Comment, PostCategory } from '@/types/community';
+import { supabase } from '@/lib/supabase/client';
+import type { Post, PostCategory } from '@/types/community';
 
 interface ProfileBase {
   nickname: string;
   avatar_url: string;
-}
-
-interface PostProfile extends ProfileBase {
-  belt_level: string;
-  role: string;
 }
 
 export async function getPosts(page = 0, pageSize = 10) {
@@ -18,9 +12,9 @@ export async function getPosts(page = 0, pageSize = 10) {
 
   const { data, error } = await supabase
     .from('posts')
-    .select('*, comments(count), profiles(nickname, avatar_url)')
-    .is('deleted_at', null) // soft delete 필터
-    .eq('status', 'published') // 발행된 게시글만
+    .select('*, active_comment_counts(count), profiles(nickname, avatar_url)')
+    .is('deleted_at', null)
+    .eq('status', 'published')
     .order('created_at', { ascending: false })
     .range(from, to);
 
@@ -28,31 +22,26 @@ export async function getPosts(page = 0, pageSize = 10) {
 
   return data.map((post) => ({
     ...post,
-    comment_count: (post.comments as { count: number }[])[0]?.count ?? 0,
+    comment_count:
+      (post.active_comment_counts as { count: number }[])[0]?.count ?? 0,
     nickname: (post.profiles as ProfileBase | null)?.nickname,
     avatar_url: (post.profiles as ProfileBase | null)?.avatar_url,
     profiles: undefined,
   }));
 }
 
-export const getPost = cache(async (id: string) => {
-  const { data, error } = await supabase
-    .from('posts')
-    .select('*, profiles(nickname, avatar_url, belt_level, role)')
-    .eq('id', id)
-    .is('deleted_at', null) // soft delete 필터
-    .single();
-  if (error) throw error;
+export function isPublicPostVisible(
+  post: Post | null | undefined,
+): post is Post {
+  if (!post) {
+    return false;
+  }
 
-  return {
-    ...data,
-    nickname: data.profiles?.nickname,
-    avatar_url: data.profiles?.avatar_url,
-    belt_level: data.profiles?.belt_level,
-    role: data.profiles?.role,
-    profiles: undefined,
-  } as Post;
-});
+  return (
+    (post.deleted_at === null || post.deleted_at === undefined) &&
+    post.status !== 'hidden'
+  );
+}
 
 export async function createPost({
   category,
@@ -67,30 +56,33 @@ export async function createPost({
   image_url?: string;
   user_id: string;
 }) {
-  const { data, error } = await supabase
-    .from('posts')
-    .insert({ category, title, content, image_url, user_id })
-    .select()
-    .single();
-  if (error) throw error;
-  return data as Post;
+  const res = await fetch('/api/posts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ category, title, content, image_url, user_id }),
+  });
+  if (!res.ok) throw new Error('게시글 작성 실패');
+  const { post } = await res.json();
+  return post as Post;
 }
 
 export async function updatePost(
   id: string,
   fields: { title: string; content: string; image_url?: string },
 ) {
-  const { error } = await supabase.from('posts').update(fields).eq('id', id);
-  if (error) throw error;
+  const res = await fetch(`/api/posts/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(fields),
+  });
+  if (!res.ok) throw new Error('게시글 수정 실패');
 }
 
-// soft delete
 export async function deletePost(id: string) {
-  const { error } = await supabase
-    .from('posts')
-    .update({ deleted_at: new Date().toISOString() })
-    .eq('id', id);
-  if (error) throw error;
+  const res = await fetch(`/api/posts/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('게시글 삭제 실패');
 }
 
 export async function uploadPostImage(file: File): Promise<string> {
@@ -104,69 +96,18 @@ export async function uploadPostImage(file: File): Promise<string> {
   return data.publicUrl;
 }
 
-export async function getComments(postId: string) {
-  const { data, error } = await supabase
-    .from('comments')
-    .select('*, profiles(nickname, avatar_url, belt_level, role)')
-    .eq('post_id', postId)
-    .is('deleted_at', null) // soft delete 필터
-    .order('created_at', { ascending: true });
-
-  if (error) throw error;
-
-  return data.map((comment) => ({
-    ...comment,
-    nickname: (comment.profiles as PostProfile | null)?.nickname,
-    avatar_url: (comment.profiles as PostProfile | null)?.avatar_url,
-    belt_level: (comment.profiles as PostProfile | null)?.belt_level,
-    role: (comment.profiles as PostProfile | null)?.role,
-    profiles: undefined,
-  })) as Comment[];
-}
-
-export async function createComment({
-  post_id,
-  user_id,
-  content,
-}: {
-  post_id: string;
-  user_id: string;
-  content: string;
-}) {
-  const { data, error } = await supabase
-    .from('comments')
-    .insert({ post_id, user_id, content })
-    .select('*, profiles(nickname, avatar_url, belt_level, role)')
-    .single();
-  if (error) throw error;
-
-  return {
-    ...data,
-    nickname: data.profiles?.nickname,
-    avatar_url: data.profiles?.avatar_url,
-    belt_level: data.profiles?.belt_level,
-    role: data.profiles?.role,
-    profiles: undefined,
-  } as Comment;
-}
-
 export async function updateComment(id: string, content: string) {
-  const { error } = await supabase
-    .from('comments')
-    .update({ content })
-    .eq('id', id);
-  if (error) throw error;
+  const res = await fetch(`/api/comments/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content }),
+  });
+  if (!res.ok) throw new Error('댓글 수정 실패');
 }
 
-// soft delete
 export async function deleteComment(id: string) {
-  const { error } = await supabase
-    .from('comments')
-    .update({ deleted_at: new Date().toISOString() })
-    .eq('id', id);
-  if (error) throw error;
-}
-
-export async function incrementViewCount(id: string) {
-  await supabase.rpc('increment_view_count', { post_id: id });
+  const res = await fetch(`/api/comments/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('댓글 삭제 실패');
 }

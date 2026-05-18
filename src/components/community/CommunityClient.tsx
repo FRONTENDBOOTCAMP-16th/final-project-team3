@@ -32,13 +32,9 @@ export default function CommunityClient({
   const { user, loading } = useAuth();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    usePosts();
+    usePosts(initialPosts);
 
-  // 모든 페이지 데이터를 하나의 배열로 합치기
-  const posts = useMemo(
-    () => data?.pages.flatMap((page) => page) ?? initialPosts,
-    [data, initialPosts],
-  );
+  const posts = useMemo(() => data.pages.flatMap((page) => page), [data]);
 
   useEffect(() => {
     if (headerRef.current) {
@@ -67,7 +63,6 @@ export default function CommunityClient({
     });
   }, [posts, activeTab, debouncedSearch]);
 
-  // 스크롤 복원
   useEffect(() => {
     const lastPostId = sessionStorage.getItem('lastPostId');
     if (isScrollRestoredRef.current || !lastPostId) return;
@@ -172,7 +167,6 @@ export default function CommunityClient({
             </div>
           )}
 
-          {/* 무한스크롤 로딩 */}
           {hasNextPage && (
             <div
               ref={observerRef}

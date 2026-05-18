@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import type { Metadata } from 'next';
 import WriteClient from '@/components/community/WriteClient';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
@@ -11,7 +9,7 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-export default async function WritePage() {
+async function WriteContent() {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -20,4 +18,8 @@ export default async function WritePage() {
   if (!user) redirect('/login');
 
   return <WriteClient />;
+}
+
+export default function WritePage() {
+  return <WriteContent />;
 }

@@ -1,7 +1,6 @@
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import CompetitionWriteClient from '@/components/competition/CompetitionWriteClient';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -9,19 +8,12 @@ export const metadata: Metadata = {
   description: '새로운 주짓수 대회 일정을 등록하세요',
 };
 
-export const dynamic = 'force-dynamic';
-
-export default async function CompetitionWritePage() {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll() } },
-  );
-
+async function CompetitionWriteContent() {
+  const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
   if (!user) redirect('/login');
 
   const { data: profile } = await supabase
@@ -35,4 +27,8 @@ export default async function CompetitionWritePage() {
   }
 
   return <CompetitionWriteClient userId={user.id} />;
+}
+
+export default function CompetitionWritePage() {
+  return <CompetitionWriteContent />;
 }

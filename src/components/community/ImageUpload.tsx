@@ -1,9 +1,11 @@
 'use client';
 
 import Image from 'next/image';
+import { showErrorToast } from '@/lib/toast';
 
 interface ImageUploadProps {
   preview: string | null;
+  // eslint-disable-next-line no-unused-vars
   onChange: (file: File, previewUrl: string) => void;
   label?: string;
 }
@@ -15,9 +17,15 @@ export default function ImageUpload({
 }: ImageUploadProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      onChange(file, URL.createObjectURL(file));
+    if (!file) return;
+
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      showErrorToast('파일 용량은 10MB를 초과할 수 없습니다.');
+      e.target.value = '';
+      return;
     }
+    onChange(file, URL.createObjectURL(file));
   };
 
   return (
@@ -48,6 +56,11 @@ export default function ImageUpload({
           onChange={handleChange}
         />
       </label>
+      {!preview && (
+        <p className="text-xs text-gray-400 mt-2">
+          이미지를 선택하지 않으면 기본 이미지가 표시됩니다.
+        </p>
+      )}
     </div>
   );
 }

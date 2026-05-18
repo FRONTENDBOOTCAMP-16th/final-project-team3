@@ -1,50 +1,72 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import { showSuccessToast } from '@/lib/toast';
+import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { getStatus } from '@/utils/formatDate';
 import { handleShare } from '@/utils/share';
 import type { Competition } from '@/types/competition';
 import CompetitionDetailCard from '@/components/competition/CompetitionDetailCard';
-import Image from 'next/image';
-import { deleteCompetition } from '@/services/competitionService';
+import { useState } from 'react';
+import ConfirmModal from '../common/ConfirmModal';
+import {
+  canManageContent,
+  type ContentUserRole,
+} from '@/lib/contentPermissions';
+import { Pencil, Trash2, Share2 } from 'lucide-react';
+import { buildCompetitionUrl } from '@/lib/slug';
+import { deleteManagedCompetition } from '@/actions/competition/competitions';
 
 interface CompetitionDetailClientProps {
   competition: Competition;
   userId: string | null;
+  currentUserRole: ContentUserRole;
 }
 
 export default function CompetitionDetailClient({
   competition,
   userId,
+  currentUserRole,
 }: CompetitionDetailClientProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { id } = competition;
 
-  const isOwner = userId === competition.user_id;
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const canManageCompetition = canManageContent({
+    currentUserId: userId,
+    authorUserId: competition.user_id,
+    currentUserRole,
+    authorRole: competition.role,
+  });
   const status = getStatus(competition.apply_deadline);
 
   const handleDeletePost = async () => {
-    if (!confirm('대회 게시글을 삭제하시겠습니까?')) return;
     try {
-      await deleteCompetition(id);
-      showSuccessToast('삭제되었습니다.', '🗑️');
+      const result = await deleteManagedCompetition(id);
+
+      if (!result.success) {
+        showErrorToast(result.message);
+        return;
+      }
+
+      setDeleteModalOpen(false);
+      showSuccessToast(result.message, '🗑️');
       await queryClient.invalidateQueries({ queryKey: ['competition'] });
+      await new Promise((resolve) => setTimeout(resolve, 700));
       router.push('/competitions');
       router.refresh();
-    } catch (e) {
-      console.error(e);
+    } catch {
+      showErrorToast('대회일정 삭제에 실패했습니다.');
     }
   };
+
   return (
     <main
       className="max-w-2xl mx-auto p-4 space-y-4"
       aria-label={`${competition.name} 대회 상세`}
     >
-      {/* 뒤로가기 */}
       <button
         onClick={() => router.push('/competitions')}
         aria-label="대회일정 목록으로 돌아가기"
@@ -68,7 +90,6 @@ export default function CompetitionDetailClient({
         목록으로
       </button>
 
-      {/* 게시글 카드 */}
       <CompetitionDetailCard
         data={{
           name: competition.name,
@@ -78,41 +99,37 @@ export default function CompetitionDetailClient({
           location: competition.location,
           apply_deadline: competition.apply_deadline,
           created_at: competition.created_at,
-          view_count: competition.view_count,
           nickname: competition.nickname,
           avatar_url: competition.avatar_url,
-          role: competition.role,
         }}
         headerActions={
           <>
-            {isOwner && (
+            {canManageCompetition && (
               <>
                 <button
                   title="수정하기"
                   aria-label="대회 게시글 수정하기"
-                  onClick={() => router.push(`/competitions/${id}/edit`)}
-                  className="cursor-pointer"
+                  onClick={() =>
+                    router.push(
+                      `${buildCompetitionUrl(competition.name, id)}/edit`,
+                    )
+                  }
+                  className="p-1 cursor-pointer"
                 >
-                  <Image
-                    src="/postEdit.svg"
-                    alt=""
-                    width={30}
-                    height={30}
-                    aria-hidden="true"
+                  <Pencil
+                    size={20}
+                    className="text-gray-400 hover:text-gray-800"
                   />
                 </button>
                 <button
                   title="삭제하기"
                   aria-label="대회 게시글 삭제하기"
-                  onClick={handleDeletePost}
-                  className="cursor-pointer"
+                  onClick={() => setDeleteModalOpen(true)}
+                  className="p-1 cursor-pointer"
                 >
-                  <Image
-                    src="/postDelete.svg"
-                    alt=""
-                    width={32}
-                    height={32}
-                    aria-hidden="true"
+                  <Trash2
+                    size={20}
+                    className="text-gray-400 hover:text-red-500"
                   />
                 </button>
               </>
@@ -121,21 +138,13 @@ export default function CompetitionDetailClient({
               title="공유하기"
               aria-label="대회 게시글 링크 공유하기"
               onClick={() => handleShare()}
-              className="w-8 h-8 flex items-center justify-center cursor-pointer"
+              className="p-1 cursor-pointer"
             >
-              <Image
-                src="/postShare.svg"
-                alt=""
-                width={18}
-                height={18}
-                aria-hidden="true"
-              />
+              <Share2 size={18} className="text-gray-400 hover:text-gray-800" />
             </button>
           </>
         }
       />
-
-      {/* 신청하기 버튼 */}
 
       <a
         href={
@@ -160,6 +169,14 @@ export default function CompetitionDetailClient({
       >
         {status === '모집완료' ? '모집 완료' : '대회 신청하기'}
       </a>
+
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDeletePost}
+        title="대회 게시글 삭제"
+        description="정말 삭제하시겠습니까? 삭제된 게시글은 복구할 수 없습니다."
+      />
     </main>
   );
 }

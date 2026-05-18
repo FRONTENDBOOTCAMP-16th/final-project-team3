@@ -1,14 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabase/client';
 import { getCurrentUser, AuthUser } from '../lib/auth';
-import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 
 export function useAuth() {
   const [user, setUser] = useState<AuthUser>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -32,11 +30,21 @@ export function useAuth() {
     return () => subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        getCurrentUser().then(setUser);
+      }
+    };
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
+
   const logout = async () => {
     queryClient.clear();
     await supabase.auth.signOut();
     setUser(null);
-    router.push('/community');
+    window.location.href = '/community';
   };
 
   return { user, loading, logout };

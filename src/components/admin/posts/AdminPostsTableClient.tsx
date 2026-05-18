@@ -1,6 +1,5 @@
 'use client';
 
-import { useMemo, useState } from 'react';
 import AdminBadge from '@/components/admin/AdminBadge';
 import AdminDataTable, {
   type AdminTableColumn,
@@ -15,13 +14,14 @@ import type {
   AdminPostFilterValue,
   AdminPostRow,
 } from '@/components/admin/posts/types';
-import {
-  filterAdminPosts,
-  getPostStatusBadge,
-} from '@/components/admin/posts/utils';
+import { useAdminTableQueryState } from '@/hooks/useAdminTableQueryState';
+import { getPostStatusBadge } from '@/components/admin/posts/utils';
+import { ADMIN_TABLE_PAGE_SIZE } from '@/lib/adminTableServerPagination';
 
 interface AdminPostTableClientProps {
   data: AdminPostRow[];
+  totalCount: number;
+  pageSize?: number;
 }
 
 const POST_COLUMNS: AdminTableColumn<AdminPostRow>[] = [
@@ -50,7 +50,6 @@ const POST_COLUMNS: AdminTableColumn<AdminPostRow>[] = [
       return <AdminBadge label={label} variant={variant} />;
     },
   },
-  { key: 'view_count', header: '조회수', width: '10%', align: 'center' },
   { key: 'report_count', header: '신고수', width: '8%', align: 'center' },
   { key: 'created_at', header: '작성일', width: '10%', align: 'center' },
   {
@@ -71,28 +70,47 @@ const POST_COLUMNS: AdminTableColumn<AdminPostRow>[] = [
 
 export default function AdminPostTableClient({
   data,
+  totalCount,
+  pageSize = ADMIN_TABLE_PAGE_SIZE,
 }: AdminPostTableClientProps) {
-  const [activeFilter, setActiveFilter] = useState<AdminPostFilterValue>('all');
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const filteredData = useMemo(() => {
-    return filterAdminPosts(data, activeFilter, searchQuery);
-  }, [data, activeFilter, searchQuery]);
+  const {
+    activeFilter,
+    currentPage,
+    searchQuery,
+    setFilter,
+    setPage,
+    setSearchQuery,
+    commitSearch,
+  } = useAdminTableQueryState<AdminPostFilterValue>({
+    filterParamName: 'category',
+    defaultFilter: 'all',
+    validFilters: ADMIN_POST_FILTERS.map((filter) => filter.value),
+  });
 
   return (
     <>
       <AdminTableToolbar
         filters={ADMIN_POST_FILTERS}
         activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
+        onFilterChange={setFilter}
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
+        onSearch={commitSearch}
+        searchAriaLabel="게시글 제목 검색"
       />
 
       <AdminDataTable
+        caption="관리자 게시글 관리 목록"
         columns={POST_COLUMNS}
-        data={filteredData}
+        data={data}
+        emptyMessage="등록된 게시글이 없습니다."
+        currentPage={currentPage}
         getRowKey={(row) => row.id}
+        initialPageSize={pageSize}
+        onPageChange={setPage}
+        pageSizeOptions={[pageSize]}
+        serverPagination
+        totalItems={totalCount}
       />
     </>
   );

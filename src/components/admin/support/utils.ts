@@ -10,6 +10,7 @@ import type {
   AdminDojangVerificationRow,
   AdminDojangVerificationStatus,
   AdminReportActionResult,
+  AdminReportPostStatus,
   AdminReportProcessStatus,
   AdminReportRow,
   RawDojangStatus,
@@ -97,6 +98,32 @@ export function getReportActionLabel(
   return '조치 없음';
 }
 
+export function getReportActionResultLabel(
+  reportStatus: RawReportStatus,
+  actionType: RawReportActionType,
+): AdminReportActionResult {
+  if (reportStatus === 'pending' || reportStatus === null) {
+    return '-';
+  }
+
+  return getReportActionLabel(actionType);
+}
+
+export function getReportPostStatusLabel(
+  postStatus: string | null | undefined,
+  postDeletedAt: string | null | undefined,
+): AdminReportPostStatus {
+  if (postDeletedAt) {
+    return '삭제';
+  }
+
+  if (postStatus === 'hidden') {
+    return '숨김';
+  }
+
+  return '게시중';
+}
+
 function buildProfilesMap(profiles: SupportProfileQueryRow[]) {
   return new Map(profiles.map((profile) => [profile.id, profile] as const));
 }
@@ -154,10 +181,17 @@ export function mapReportQueryRowsToAdminReportRows(
       reporter: reporter?.nickname?.trim() || UNKNOWN_REPORTER,
       reported_at: formatSupportDate(report.created_at),
       process_status: getReportStatusLabel(report.reports_status),
-      action_result: getReportActionLabel(report.action_type),
+      action_result: getReportActionResultLabel(
+        report.reports_status,
+        report.action_type,
+      ),
       handled_at: formatSupportDate(report.handled_at),
       raw_status: report.reports_status,
       raw_action_type: report.action_type,
+      post_status_label: getReportPostStatusLabel(
+        post?.status,
+        post?.deleted_at,
+      ),
       post_status: post?.status ?? null,
       post_deleted_at: post?.deleted_at ?? null,
     };

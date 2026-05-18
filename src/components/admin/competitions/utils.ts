@@ -4,6 +4,7 @@ import {
 } from './constants';
 import type {
   AdminCompetitionFilterValue,
+  AdminCompetitionPublishStatus,
   AdminCompetitionRow,
   AdminCompetitionStatus,
   CompetitionQueryRow,
@@ -46,6 +47,12 @@ export function getCompetitionStatus(
   return '모집중';
 }
 
+export function getCompetitionPublishStatus(
+  deletedAt: string | null,
+): AdminCompetitionPublishStatus {
+  return deletedAt ? '삭제' : '게시중';
+}
+
 export function mapCompetitionQueryRowToAdminCompetitionRow(
   competition: CompetitionQueryRow,
 ): AdminCompetitionRow {
@@ -54,10 +61,10 @@ export function mapCompetitionQueryRowToAdminCompetitionRow(
     name: competition.name,
     location: competition.location ?? UNKNOWN_COMPETITION_LOCATION,
     status: getCompetitionStatus(competition.apply_deadline),
+    publish_status: getCompetitionPublishStatus(competition.deleted_at),
     event_date: formatDate(competition.event_data),
     apply_deadline: formatDate(competition.apply_deadline),
     created_at: formatDate(competition.created_at),
-    apply_url: competition.apply_url,
   };
 }
 

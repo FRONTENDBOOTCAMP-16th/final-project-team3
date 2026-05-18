@@ -18,8 +18,14 @@ interface AdminDataTableProps<T> {
   columns: AdminTableColumn<T>[];
   data: T[];
   emptyMessage?: string;
+  caption?: string;
   initialPageSize?: number;
   pageSizeOptions?: readonly number[];
+  currentPage?: number;
+  totalItems?: number;
+  serverPagination?: boolean;
+  // eslint-disable-next-line no-unused-vars
+  onPageChange?: (_page: number) => void;
   // eslint-disable-next-line no-unused-vars
   getRowKey?: (_row: T, _index: number) => React.Key;
 }
@@ -28,13 +34,19 @@ export default function AdminDataTable<T>({
   columns,
   data,
   emptyMessage = '데이터가 없습니다.',
+  caption,
   initialPageSize,
   pageSizeOptions,
+  currentPage,
+  totalItems,
+  serverPagination,
+  onPageChange,
   getRowKey,
 }: AdminDataTableProps<T>) {
   const {
     pageSize,
-    currentPage,
+    currentPage: safeCurrentPage,
+    totalItems: resolvedTotalItems,
     totalPages,
     paginatedData,
     pageSizeOptions: normalizedPageSizeOptions,
@@ -44,11 +56,19 @@ export default function AdminDataTable<T>({
     data,
     initialPageSize,
     pageSizeOptions,
+    currentPage,
+    totalItems,
+    serverPagination,
+    onPageChange,
   });
 
   return (
     <section className="w-full max-w-7xl rounded-md border bg-white px-6 py-4 mb-8">
-      <table className="w-full table-fixed border-collapse bg-white">
+      <table
+        className="w-full table-fixed border-collapse bg-white"
+        aria-label={caption}
+      >
+        {caption ? <caption className="sr-only">{caption}</caption> : null}
         <thead>
           <tr>
             {columns.map((column) => (
@@ -79,7 +99,7 @@ export default function AdminDataTable<T>({
             </tr>
           ) : (
             paginatedData.map((row, rowIndex) => {
-              const originalIndex = (currentPage - 1) * pageSize + rowIndex;
+              const originalIndex = (safeCurrentPage - 1) * pageSize + rowIndex;
 
               return (
                 <tr
@@ -118,11 +138,12 @@ export default function AdminDataTable<T>({
       </table>
 
       <AdminTablePagination
-        currentPage={currentPage}
+        currentPage={safeCurrentPage}
         totalPages={totalPages}
-        totalItems={data.length}
+        totalItems={resolvedTotalItems}
         pageSize={pageSize}
         pageSizeOptions={normalizedPageSizeOptions}
+        showPageSizeSelector={!serverPagination}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
       />

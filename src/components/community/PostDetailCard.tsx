@@ -1,39 +1,30 @@
 import { timeAgo } from '@/utils/timeAgo';
-import { Heart } from 'lucide-react';
 import Image from 'next/image';
+import { categoryMap } from '@/constants/categoryMap';
 
 export interface PostDetailCardData {
   nickname: string;
   avatar_url?: string | null;
-  role?: string | null;
+  category?: string | null;
   created_at: string;
   title: string;
   image_url?: string | null;
   content: string;
-  likeCount: number;
   commentCount: number;
-  view_count: number;
 }
 
 interface PostDetailCardProps {
   post: PostDetailCardData;
   headerActions?: React.ReactNode;
-  onLike?: () => void;
-  isLiked?: boolean;
+  likeAction?: React.ReactNode;
 }
 
 export default function PostDetailCard({
   post,
   headerActions,
-  onLike,
-  isLiked,
+  likeAction,
 }: PostDetailCardProps) {
-  const roleBadge =
-    post.role === 'manager'
-      ? { label: '도장', className: 'bg-blue-50 text-blue-600' }
-      : post.role === 'admin'
-        ? { label: '관리자', className: 'bg-red-50 text-red-600' }
-        : { label: '일반', className: 'bg-gray-100 text-gray-600' };
+  const badge = categoryMap[post.category ?? ''] ?? categoryMap.personal;
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -55,15 +46,16 @@ export default function PostDetailCard({
               <span className="text-sm font-semibold text-gray-900">
                 {post.nickname}
               </span>
-              {post.role && (
-                <span
-                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${roleBadge.className}`}
-                >
-                  {roleBadge.label}
-                </span>
-              )}
+              <span
+                className={`text-xs px-2 py-0.5 rounded-full font-medium ${badge.badgeClass}`}
+              >
+                {badge.label}
+              </span>
             </div>
-            <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
+            <p
+              className="text-xs text-gray-400 mt-0.5 flex items-center gap-1"
+              suppressHydrationWarning
+            >
               <Image
                 src="/postTime.svg"
                 alt=""
@@ -108,21 +100,7 @@ export default function PostDetailCard({
       </div>
 
       <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
-        <button
-          onClick={onLike}
-          disabled={!onLike}
-          aria-pressed={isLiked}
-          aria-label={`좋아요 ${post.likeCount}개`}
-          className="flex items-center gap-1.5 text-xs transition-colors cursor-pointer"
-        >
-          <Heart
-            size={16}
-            className={isLiked ? 'fill-danger text-danger' : 'text-gray-500'}
-          />
-          <span className={isLiked ? 'text-danger' : 'text-gray-500'}>
-            좋아요 {post.likeCount}
-          </span>
-        </button>
+        {likeAction}
 
         <div className="flex items-center gap-1.5 text-xs text-gray-500">
           <Image
@@ -134,7 +112,6 @@ export default function PostDetailCard({
           />
           <span>댓글 {post.commentCount}</span>
         </div>
-        <span className="text-xs text-gray-500">조회 {post.view_count}</span>
       </div>
     </div>
   );

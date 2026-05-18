@@ -1,5 +1,4 @@
-import { supabase } from '@/lib/supabase';
-import type { Competition } from '@/types/competition';
+import { supabase } from '@/lib/supabase/client';
 
 export async function createCompetition({
   name,
@@ -52,24 +51,6 @@ export async function uploadCompetitionImage(file: File): Promise<string> {
     .from('competition-images')
     .getPublicUrl(fileName);
   return data.publicUrl;
-}
-
-export async function getCompetition(id: string): Promise<Competition> {
-  const { data, error } = await supabase
-    .from('competition')
-    .select('*, profiles(nickname, avatar_url, role)')
-    .eq('id', id)
-    .is('deleted_at', null) // soft delete 필터
-    .single();
-  if (error) throw error;
-
-  return {
-    ...data,
-    nickname: data.profiles?.nickname,
-    avatar_url: data.profiles?.avatar_url,
-    role: data.profiles?.role,
-    profiles: undefined,
-  } as Competition;
 }
 
 export async function updateCompetition(

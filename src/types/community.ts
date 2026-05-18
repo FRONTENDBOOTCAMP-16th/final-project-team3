@@ -6,12 +6,13 @@ export interface Post {
   title: string;
   content: string;
   category: PostCategory;
+  status?: 'published' | 'hidden' | string | null;
+  deleted_at?: string | null;
   image_url?: string;
-  view_count: number;
   report_count: number;
+  comment_count: number;
   created_at: string;
   updated_at?: string;
-  // profiles join (flat)
   nickname?: string;
   avatar_url?: string;
   belt_level?: string;
@@ -25,7 +26,6 @@ export interface Comment {
   user_id: string;
   content: string;
   created_at: string;
-  // profiles join (flat)
   nickname?: string;
   avatar_url?: string;
   belt_level?: string;

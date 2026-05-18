@@ -1,9 +1,5 @@
-import { Suspense } from 'react';
 import MyPageClient from './MyPageClient';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { Metadata } from 'next';
-
-export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: '마이페이지 | Black Belt BJJ',
@@ -12,9 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <MyPageClient />
-    </Suspense>
-  );
+  return <MyPageClient />;
 }
