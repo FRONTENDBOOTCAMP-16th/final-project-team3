@@ -34,7 +34,7 @@ export default function PostLikeButtonContent({
         isLiked ? ', 좋아요 취소하기' : ', 좋아요 누르기'
       }`}
       className={cn(
-        'flex items-center gap-1 transition-all duration-200 cursor-pointer',
+        'flex items-center gap-1 transition-all duration-200 cursor-pointer p-3 -m-3',
         isDetail && 'gap-1.5 text-xs',
       )}
     >

@@ -20,9 +20,13 @@ interface CompetitionCardProps {
     apply_url: string;
     comment_count?: number;
   };
+  index?: number;
 }
 
-export default function CompetitionCard({ competition }: CompetitionCardProps) {
+export default function CompetitionCard({
+  competition,
+  index,
+}: CompetitionCardProps) {
   const actualStatus = getStatus(competition.apply_deadline);
   const dday = getDday(competition.apply_deadline);
   const [isPending, setIsPending] = useState(false);
@@ -41,22 +45,22 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
   };
   const statusColor =
     {
-      모집중: 'bg-green-500',
-      마감임박: 'bg-orange-500',
-      모집완료: 'bg-gray-400',
-    }[actualStatus] ?? 'bg-gray-400';
+      모집중: 'bg-green-700',
+      마감임박: 'bg-orange-600',
+      모집완료: 'bg-gray-500',
+    }[actualStatus] ?? 'bg-gray-500';
 
   const ddayColor =
     dday === 'D-DAY'
       ? 'text-danger'
       : dday.startsWith('D-')
-        ? 'text-blue-500'
-        : 'text-gray-400';
+        ? 'text-blue-700'
+        : 'text-gray-600';
 
   return (
     <article
+      aria-labelledby={`competition-${competition.id}`}
       className="rounded-lg overflow-hidden bg-bg-white border border-gray-200 flex flex-col h-full cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200 relative"
-      aria-label={`${competition.name} 대회`}
       aria-busy={isPending}
     >
       {isPending && (
@@ -70,28 +74,30 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
         aria-label={`${competition.name} 대회 상세보기`}
         onClick={handleClick}
       >
-        <div className="relative shrink-0">
+        <div className="relative shrink-0 h-50">
           {competition.image_url ? (
             <Image
               src={competition.image_url}
               alt={`${competition.name} 대회 이미지`}
-              width={400}
-              height={200}
-              className="w-full h-50 object-cover"
+              fill
+              sizes="(max-width: 1280px) 50vw, 640px"
+              priority={index === 0}
+              className="object-cover"
             />
           ) : (
             <div
               className="w-full h-50 bg-gray-100 flex items-center justify-center"
-              aria-label="이미지 없음"
+              aria-hidden="true"
             >
-              <span className="text-gray-400 text-sm" aria-hidden="true">
-                이미지 없음
-              </span>
+              <span className="text-gray-400 text-sm">이미지 없음</span>
             </div>
           )}
 
           <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/70 to-transparent p-3">
-            <h2 className="font-bold text-white text-base line-clamp-1">
+            <h2
+              id={`competition-${competition.id}`}
+              className="font-bold text-white text-base line-clamp-1"
+            >
               {competition.name}
             </h2>
           </div>
@@ -173,25 +179,25 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
       <div className="px-4 pb-4">
         <div className="border-t border-gray-200 mb-3" aria-hidden="true" />
 
-        <a
-          href={competition.apply_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={
-            actualStatus === '모집완료'
-              ? `${competition.name} 모집 완료`
-              : `${competition.name} 신청하기`
-          }
-          aria-disabled={actualStatus === '모집완료'}
-          className={`w-full py-2 text-sm font-bold text-white text-center rounded-lg transition-all block
-            ${
-              actualStatus === '모집완료'
-                ? 'bg-gray-400 cursor-not-allowed pointer-events-none'
-                : 'bg-[#2c2c2c] hover:bg-black'
-            }`}
-        >
-          {actualStatus === '모집완료' ? '모집 완료' : '신청하기'}
-        </a>
+        {actualStatus === '모집완료' ? (
+          <span
+            role="button"
+            aria-disabled="true"
+            className="w-full py-2 text-sm font-bold text-white text-center rounded-lg bg-gray-400 cursor-not-allowed block"
+          >
+            모집 완료
+          </span>
+        ) : (
+          <a
+            href={competition.apply_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${competition.name} 신청하기`}
+            className="w-full py-2 text-sm font-bold text-white text-center rounded-lg transition-all block bg-[#2c2c2c] hover:bg-black"
+          >
+            신청하기
+          </a>
+        )}
       </div>
     </article>
   );
