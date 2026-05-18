@@ -31,17 +31,11 @@ async function requireAdminAccess() {
 async function AdminContent({ children }: { children: React.ReactNode }) {
   await requireAdminAccess();
 
-  return (
-    <div className="flex min-h-screen bg-bg-page">
-      <div className="w-50 shrink-0" />
-      <Sidebar />
-      <AdminHeader />
-      <main className="flex-1 flex justify-center min-w-0">
-        <div className="w-full max-w-7xl pt-28">{children}</div>
-      </main>
-      <ScrollToTop />
-    </div>
-  );
+  return <>{children}</>;
+}
+
+function AdminContentLoading() {
+  return <LoadingSpinner className="min-h-[calc(100vh-7rem)]" />;
 }
 
 export default function AdminLayout({
@@ -50,8 +44,18 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Suspense fallback={<LoadingSpinner className="min-h-screen" />}>
-      <AdminContent>{children}</AdminContent>
-    </Suspense>
+    <div className="flex min-h-screen bg-bg-page">
+      <div className="w-50 shrink-0" />
+      <Sidebar />
+      <AdminHeader />
+      <main className="flex-1 flex justify-center min-w-0">
+        <div className="w-full max-w-7xl pt-28">
+          <Suspense fallback={<AdminContentLoading />}>
+            <AdminContent>{children}</AdminContent>
+          </Suspense>
+        </div>
+      </main>
+      <ScrollToTop />
+    </div>
   );
 }
