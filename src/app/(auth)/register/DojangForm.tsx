@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -67,6 +67,7 @@ export default function DojangForm() {
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<DojangFormType>({
     resolver: zodResolver(dojangSchema),
@@ -83,6 +84,13 @@ export default function DojangForm() {
       address: '',
     },
   });
+
+  useEffect(() => {
+    reset();
+    setServerError('');
+    setBusinessFile(null);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+  }, [reset]);
 
   const nickname = watch('nickname');
   const beltValue = watch('belt');
