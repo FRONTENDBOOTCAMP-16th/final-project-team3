@@ -1,7 +1,6 @@
 import { Suspense } from 'react';
 import CommunityClient from '@/components/community/CommunityClient';
 import { supabasePublic } from '@/lib/supabase/public';
-import { cacheTag, cacheLife } from 'next/cache';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Post } from '@/types/community';
 import type { Metadata } from 'next';
@@ -17,13 +16,9 @@ export const metadata: Metadata = {
 };
 
 async function getPosts(): Promise<Post[]> {
-  'use cache';
-  cacheTag('posts-list');
-  cacheLife('minutes');
-
   const { data, error } = await supabasePublic
     .from('posts')
-    .select('*, comments(count), profiles(nickname, avatar_url)')
+    .select('*, active_comment_counts(count), profiles(nickname, avatar_url)')
     .is('deleted_at', null)
     .eq('status', 'published')
     .order('created_at', { ascending: false })
@@ -33,7 +28,8 @@ async function getPosts(): Promise<Post[]> {
 
   return data.map((post) => ({
     ...post,
-    comment_count: (post.comments as { count: number }[])[0]?.count ?? 0,
+    comment_count:
+      (post.active_comment_counts as { count: number }[])[0]?.count ?? 0,
     nickname: (post.profiles as { nickname: string; avatar_url: string } | null)
       ?.nickname,
     avatar_url: (

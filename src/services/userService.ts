@@ -19,7 +19,7 @@ interface PostQueryRow {
   view_count: number;
   created_at: string;
   profiles: { nickname: string; avatar_url: string } | null;
-  comments: { count: number }[];
+  active_comment_counts: { count: number }[];
 }
 
 export async function fetchMyProfile(): Promise<Profile> {
@@ -67,10 +67,12 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
         nickname,
         avatar_url
       ),
-      comments (count)
+      active_comment_counts (count)
     `,
     )
     .eq('user_id', user.id)
+    .is('deleted_at', null)
+    .eq('status', 'published')
     .order('created_at', { ascending: false })
     .range(from, to);
 
@@ -88,7 +90,7 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
       created_at: p.created_at,
       nickname: p.profiles?.nickname ?? '',
       avatar_url: p.profiles?.avatar_url ?? '',
-      comment_count: p.comments?.[0]?.count ?? 0,
+      comment_count: p.active_comment_counts?.[0]?.count ?? 0,
     };
   });
 }
@@ -117,7 +119,9 @@ export async function fetchMyPostCount(): Promise<number> {
   const { count } = await supabase
     .from('posts')
     .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id);
+    .eq('user_id', user.id)
+    .is('deleted_at', null)
+    .eq('status', 'published');
 
   return count ?? 0;
 }
@@ -129,10 +133,22 @@ export async function fetchMyCommentCount(): Promise<number> {
   } = await supabase.auth.getUser();
   if (!user) return 0;
 
+  const { data: posts } = await supabase
+    .from('posts')
+    .select('id')
+    .is('deleted_at', null)
+    .eq('status', 'published');
+
+  if (!posts || posts.length === 0) return 0;
+
+  const postIds = posts.map((p) => p.id);
+
   const { count } = await supabase
     .from('comments')
     .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id);
+    .eq('user_id', user.id)
+    .in('post_id', postIds)
+    .is('deleted_at', null);
 
   return count ?? 0;
 }

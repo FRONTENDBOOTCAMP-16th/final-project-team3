@@ -42,6 +42,7 @@ export const useMyPosts = () => {
   return useInfiniteQuery({
     queryKey: myPageKeys.posts,
     queryFn: ({ pageParam = 0 }) => fetchMyPosts(pageParam),
+    staleTime: 0,
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.length === 10 ? allPages.length : undefined;
     },
@@ -59,6 +60,7 @@ export const useMyPostCount = () => {
   return useQuery({
     queryKey: myPageKeys.postCount,
     queryFn: fetchMyPostCount,
+    staleTime: 0,
   });
 };
 
@@ -66,5 +68,6 @@ export const useMyCommentCount = () => {
   return useQuery({
     queryKey: myPageKeys.commentCount,
     queryFn: fetchMyCommentCount,
+    staleTime: 0,
   });
 };
