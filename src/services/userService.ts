@@ -2,11 +2,28 @@ import { supabase } from '@/lib/supabase/client';
 import { Profile } from '@/types/user';
 import { ProfileUpdateForm, MyPost } from '@/types/mypage';
 
-export async function fetchMyProfile(): Promise<Profile> {
+async function getAuthUser() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error('로그인이 필요합니다.');
+  return user;
+}
+
+interface PostQueryRow {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  image_url: string;
+  view_count: number;
+  created_at: string;
+  profiles: { nickname: string; avatar_url: string } | null;
+  active_comment_counts: { count: number }[];
+}
+
+export async function fetchMyProfile(): Promise<Profile> {
+  const user = await getAuthUser();
 
   const { data, error } = await supabase
     .from('profiles')
@@ -19,10 +36,7 @@ export async function fetchMyProfile(): Promise<Profile> {
 }
 
 export async function updateMyProfile(form: ProfileUpdateForm): Promise<void> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error('로그인이 필요합니다.');
+  const user = await getAuthUser();
 
   const { error } = await supabase
     .from('profiles')
@@ -33,10 +47,7 @@ export async function updateMyProfile(form: ProfileUpdateForm): Promise<void> {
 }
 
 export async function fetchMyPosts(page: number): Promise<MyPost[]> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error('로그인이 필요합니다.');
+  const user = await getAuthUser();
 
   const limit = 10;
   const from = page * limit;
@@ -56,33 +67,36 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
         nickname,
         avatar_url
       ),
-      comments (count)
+      active_comment_counts (count)
     `,
     )
     .eq('user_id', user.id)
+    .is('deleted_at', null)
+    .eq('status', 'published')
     .order('created_at', { ascending: false })
     .range(from, to);
 
   if (error) throw error;
 
-  return (data ?? []).map((post) => ({
-    id: post.id,
-    title: post.title,
-    content: post.content,
-    category: post.category,
-    image_url: post.image_url,
-    created_at: post.created_at,
-    nickname: (post.profiles as any)?.nickname ?? '',
-    avatar_url: (post.profiles as any)?.avatar_url ?? '',
-    comment_count: (post.comments as any)?.[0]?.count ?? 0,
-  }));
+  return (data ?? []).map((post) => {
+    const p = post as unknown as PostQueryRow;
+    return {
+      id: p.id,
+      title: p.title,
+      content: p.content,
+      category: p.category,
+      image_url: p.image_url,
+      view_count: p.view_count,
+      created_at: p.created_at,
+      nickname: p.profiles?.nickname ?? '',
+      avatar_url: p.profiles?.avatar_url ?? '',
+      comment_count: p.active_comment_counts?.[0]?.count ?? 0,
+    };
+  });
 }
 
 export async function deleteMyAccount(): Promise<void> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error('로그인이 필요합니다.');
+  const user = await getAuthUser();
 
   const res = await fetch('/api/delete-account', {
     method: 'DELETE',
@@ -90,9 +104,7 @@ export async function deleteMyAccount(): Promise<void> {
     body: JSON.stringify({ userId: user.id }),
   });
 
-  if (!res.ok) {
-    throw new Error('회원탈퇴에 실패했습니다.');
-  }
+  if (!res.ok) throw new Error('회원탈퇴에 실패했습니다.');
 
   await supabase.auth.signOut();
 }
@@ -106,7 +118,9 @@ export async function fetchMyPostCount(): Promise<number> {
   const { count } = await supabase
     .from('posts')
     .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id);
+    .eq('user_id', user.id)
+    .is('deleted_at', null)
+    .eq('status', 'published');
 
   return count ?? 0;
 }
@@ -117,10 +131,22 @@ export async function fetchMyCommentCount(): Promise<number> {
   } = await supabase.auth.getUser();
   if (!user) return 0;
 
+  const { data: posts } = await supabase
+    .from('posts')
+    .select('id')
+    .is('deleted_at', null)
+    .eq('status', 'published');
+
+  if (!posts || posts.length === 0) return 0;
+
+  const postIds = posts.map((p) => p.id);
+
   const { count } = await supabase
     .from('comments')
     .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id);
+    .eq('user_id', user.id)
+    .in('post_id', postIds)
+    .is('deleted_at', null);
 
   return count ?? 0;
 }
