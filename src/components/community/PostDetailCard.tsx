@@ -6,6 +6,7 @@ import { categoryMap } from '@/constants/categoryMap';
 export interface PostDetailCardData {
   nickname: string;
   avatar_url?: string | null;
+  role?: string | null;
   category?: string | null;
   created_at: string;
   title: string;
@@ -13,6 +14,7 @@ export interface PostDetailCardData {
   content: string;
   likeCount: number;
   commentCount: number;
+  view_count?: number;
 }
 
 interface PostDetailCardProps {

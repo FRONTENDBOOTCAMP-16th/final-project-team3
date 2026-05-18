@@ -1,7 +1,7 @@
 'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   deletePost,
@@ -25,8 +25,6 @@ import {
 } from '@/lib/contentPermissions';
 import { timeAgo } from '@/utils/timeAgo';
 import { LimitedTextarea } from '../common/LimitedTextarea';
-import { Pencil, Trash2, Flag, Share2 } from 'lucide-react';
-import { buildPostUrl } from '@/lib/slug';
 
 interface Props {
   id: string;
@@ -48,6 +46,7 @@ export default function PostDetailClient({
   const { user } = useAuth();
   const { likeCount, isLiked, toggle } = useLike(id, user?.id ?? '');
 
+  const [post] = useState<Post>(initialPost);
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [comment, setComment] = useState('');
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
@@ -56,11 +55,27 @@ export default function PostDetailClient({
   const [deletePostModalOpen, setDeletePostModalOpen] = useState(false);
   const [deleteCommentId, setDeleteCommentId] = useState<string | null>(null);
 
+  useEffect(() => {
+    const key = `viewed-post-${id}`;
+    if (sessionStorage.getItem(key)) return;
+
+    const incrementView = async () => {
+      try {
+        const res = await fetch(`/api/posts/${id}/view`, { method: 'POST' });
+        if (res.ok) {
+          sessionStorage.setItem(key, 'true');
+        }
+      } catch {}
+    };
+
+    incrementView();
+  }, [id]);
+
   const canManagePost = canManageContent({
     currentUserId: userId,
-    authorUserId: initialPost.user_id,
+    authorUserId: post.user_id,
     currentUserRole,
-    authorRole: initialPost.role,
+    authorRole: post.role,
   });
 
   const handleCommentSubmit = async () => {
@@ -162,7 +177,7 @@ export default function PostDetailClient({
 
   const handleShare = async () => {
     const url = window.location.href;
-    const title = initialPost.title ?? '';
+    const title = post.title ?? '';
     if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
       try {
         await navigator.share({ title, url });
@@ -178,15 +193,16 @@ export default function PostDetailClient({
   };
 
   const postDetailCardData: PostDetailCardData = {
-    nickname: initialPost.nickname ?? '알 수 없음',
-    avatar_url: initialPost.avatar_url,
-    category: initialPost.category,
-    created_at: initialPost.created_at,
-    title: initialPost.title,
-    image_url: initialPost.image_url,
-    content: initialPost.content,
+    nickname: post.nickname ?? '알 수 없음',
+    avatar_url: post.avatar_url,
+    role: post.role,
+    created_at: post.created_at,
+    title: post.title,
+    image_url: post.image_url,
+    content: post.content,
     likeCount: likeCount ?? 0,
     commentCount: comments.length,
+    view_count: post.view_count,
   };
 
   return (
@@ -231,26 +247,16 @@ export default function PostDetailClient({
                 <button
                   title="수정하기"
                   aria-label="게시글 수정"
-                  onClick={() =>
-                    router.push(`${buildPostUrl(initialPost.title, id)}/edit`)
-                  }
-                  className="p-1"
+                  onClick={() => router.push(`/community/${id}/edit`)}
                 >
-                  <Pencil
-                    size={20}
-                    className="text-gray-400 hover:text-gray-800"
-                  />
+                  <Image src="/postEdit.svg" alt="" width={30} height={30} />
                 </button>
                 <button
                   title="삭제하기"
                   aria-label="게시글 삭제"
                   onClick={() => setDeletePostModalOpen(true)}
-                  className="p-1"
                 >
-                  <Trash2
-                    size={20}
-                    className="text-gray-400 hover:text-red-500"
-                  />
+                  <Image src="/postDelete.svg" alt="" width={32} height={32} />
                 </button>
               </>
             ) : (
@@ -258,18 +264,18 @@ export default function PostDetailClient({
                 title="신고하기"
                 aria-label="게시글 신고"
                 onClick={() => setReportModalOpen(true)}
-                className="p-1"
+                className="w-8 h-8 flex items-center justify-center"
               >
-                <Flag size={20} className="text-gray-400 hover:text-gray-800" />
+                <Image src="/postReport.svg" alt="" width={27} height={27} />
               </button>
             )}
             <button
               title="공유하기"
               aria-label="게시글 공유"
               onClick={handleShare}
-              className="p-1"
+              className="w-8 h-8 flex items-center justify-center"
             >
-              <Share2 size={18} className="text-gray-400 hover:text-gray-800" />
+              <Image src="/postShare.svg" alt="" width={18} height={18} />
             </button>
           </>
         }

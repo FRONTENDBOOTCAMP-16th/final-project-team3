@@ -11,7 +11,7 @@ interface LimitedTextareaProps {
   placeholder?: string;
   label?: string;
   rows?: number;
-  allowNewline?: boolean; // false면 댓글처럼 줄바꿈 차단
+  allowNewline?: boolean;
   disabled?: boolean;
   className?: string;
   onKeyDown?: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
