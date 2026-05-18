@@ -1,10 +1,9 @@
-import { Suspense } from 'react';
 import CommunityClient from '@/components/community/CommunityClient';
 import { supabasePublic } from '@/lib/supabase/public';
+import { cacheTag, cacheLife } from 'next/cache';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Post } from '@/types/community';
 import type { Metadata } from 'next';
-import ErrorBoundary from '@/components/common/ErrorBoundary';
 
 export const metadata: Metadata = {
   title: '커뮤니티 | Black Belt BJJ',
@@ -16,6 +15,10 @@ export const metadata: Metadata = {
 };
 
 async function getPosts(): Promise<Post[]> {
+  'use cache';
+  cacheTag('posts-list');
+  cacheLife('minutes');
+
   const { data, error } = await supabasePublic
     .from('posts')
     .select('*, active_comment_counts(count), profiles(nickname, avatar_url)')
@@ -45,11 +48,5 @@ async function CommunityContent() {
 }
 
 export default function CommunityPage() {
-  return (
-    <ErrorBoundary>
-      <Suspense fallback={<LoadingSpinner />}>
-        <CommunityContent />
-      </Suspense>
-    </ErrorBoundary>
-  );
+  return <CommunityContent />;
 }
