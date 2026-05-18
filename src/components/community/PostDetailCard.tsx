@@ -1,5 +1,4 @@
 import { timeAgo } from '@/utils/timeAgo';
-import { Heart } from 'lucide-react';
 import Image from 'next/image';
 import { categoryMap } from '@/constants/categoryMap';
 
@@ -11,22 +10,19 @@ export interface PostDetailCardData {
   title: string;
   image_url?: string | null;
   content: string;
-  likeCount: number;
   commentCount: number;
 }
 
 interface PostDetailCardProps {
   post: PostDetailCardData;
   headerActions?: React.ReactNode;
-  onLike?: () => void;
-  isLiked?: boolean;
+  likeAction?: React.ReactNode;
 }
 
 export default function PostDetailCard({
   post,
   headerActions,
-  onLike,
-  isLiked,
+  likeAction,
 }: PostDetailCardProps) {
   const badge = categoryMap[post.category ?? ''] ?? categoryMap.personal;
 
@@ -104,21 +100,7 @@ export default function PostDetailCard({
       </div>
 
       <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
-        <button
-          onClick={onLike}
-          disabled={!onLike}
-          aria-pressed={isLiked}
-          aria-label={`좋아요 ${post.likeCount}개`}
-          className="flex items-center gap-1.5 text-xs transition-colors cursor-pointer"
-        >
-          <Heart
-            size={16}
-            className={isLiked ? 'fill-danger text-danger' : 'text-gray-500'}
-          />
-          <span className={isLiked ? 'text-danger' : 'text-gray-500'}>
-            좋아요 {post.likeCount}
-          </span>
-        </button>
+        {likeAction}
 
         <div className="flex items-center gap-1.5 text-xs text-gray-500">
           <Image

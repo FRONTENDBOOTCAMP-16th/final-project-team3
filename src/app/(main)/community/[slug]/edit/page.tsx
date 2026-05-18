@@ -1,11 +1,9 @@
-import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import EditClient from '@/components/community/EditClient';
 import { canManageContent } from '@/lib/contentPermissions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getPost } from '@/services/communityService.server';
 import { notFound, redirect } from 'next/navigation';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { extractPostId, buildPostUrl } from '@/lib/slug';
 
 type Props = { params: Promise<{ slug: string }> };
@@ -62,9 +60,5 @@ async function EditContent({ params }: Props) {
 }
 
 export default function EditPage({ params }: Props) {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <EditContent params={params} />
-    </Suspense>
-  );
+  return <EditContent params={params} />;
 }
