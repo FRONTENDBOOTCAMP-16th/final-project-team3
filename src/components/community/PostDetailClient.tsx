@@ -1,7 +1,7 @@
 'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   deletePost,
@@ -55,6 +55,12 @@ export default function PostDetailClient({
   const [deletePostModalOpen, setDeletePostModalOpen] = useState(false);
   const [deleteCommentId, setDeleteCommentId] = useState<string | null>(null);
 
+  useLayoutEffect(() => {
+    return () => {
+      setComment('');
+    };
+  }, []);
+
   const canManagePost = canManageContent({
     currentUserId: userId,
     authorUserId: initialPost.user_id,
@@ -72,32 +78,56 @@ export default function PostDetailClient({
       return;
     }
 
+    const tempId = `temp-${Date.now()}`;
+    const optimisticComment: Comment = {
+      id: tempId,
+      post_id: id,
+      user_id: userId ?? '',
+      content: comment,
+      created_at: new Date().toISOString(),
+      deleted_at: null,
+      nickname: user?.name ?? '알 수 없음',
+      avatar_url: user?.image ?? undefined,
+    };
+
+    setComments((prev) => [...prev, optimisticComment]);
+    setComment('');
+
     try {
       const res = await fetch('/api/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ postId: id, content: comment }),
+        body: JSON.stringify({
+          postId: id,
+          content: optimisticComment.content,
+        }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
+        setComments((prev) => prev.filter((c) => c.id !== tempId));
+        setComment(optimisticComment.content);
         showErrorToast(data.error ?? '댓글 작성에 실패했습니다.');
         return;
       }
 
-      setComments((prev) => [
-        ...prev,
-        {
-          ...data.comment,
-          nickname: user?.name ?? '알 수 없음',
-          avatar_url: user?.image ?? null,
-        },
-      ]);
+      setComments((prev) =>
+        prev.map((c) =>
+          c.id === tempId
+            ? {
+                ...data.comment,
+                nickname: user?.name ?? '알 수 없음',
+                avatar_url: user?.image ?? null,
+              }
+            : c,
+        ),
+      );
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       queryClient.removeQueries({ queryKey: ['mypage', 'commentCount'] });
-      setComment('');
     } catch {
+      setComments((prev) => prev.filter((c) => c.id !== tempId));
+      setComment(optimisticComment.content);
       showErrorToast('네트워크 오류가 발생했습니다.');
     }
   };
@@ -299,7 +329,11 @@ export default function PostDetailClient({
               rows={1}
               placeholder="댓글을 입력하세요..."
               className="flex-1"
-              onKeyDown={(e) => e.key === 'Enter' && handleCommentSubmit()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+                  handleCommentSubmit();
+                }
+              }}
             />
             <button
               onClick={handleCommentSubmit}
