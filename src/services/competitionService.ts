@@ -73,7 +73,6 @@ export async function updateCompetition(
   if (error) throw error;
 }
 
-// soft delete
 export async function deleteCompetition(id: string) {
   const { error } = await supabase
     .from('competition')

@@ -32,17 +32,19 @@ export default function ScrollToTop() {
       {!isTop && (
         <button
           onClick={scrollToTop}
+          aria-label="맨 위로 이동"
           className="w-12 h-12 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-btn-focus hover:text-btn-focus-text transition-all"
         >
-          <ArrowUp size={20} />
+          <ArrowUp size={20} aria-hidden="true" />
         </button>
       )}
       {!isBottom && (
         <button
           onClick={scrollToBottom}
+          aria-label="맨 아래로 이동"
           className="w-12 h-12 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-btn-focus hover:text-btn-focus-text transition-all"
         >
-          <ArrowDown size={20} />
+          <ArrowDown size={20} aria-hidden="true" />
         </button>
       )}
     </div>

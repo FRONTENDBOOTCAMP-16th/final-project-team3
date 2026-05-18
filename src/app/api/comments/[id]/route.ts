@@ -27,7 +27,6 @@ export async function PUT(req: NextRequest, { params }: Props) {
     );
   }
 
-  // 권한 체크
   const { data: comment } = await supabase
     .from('comments')
     .select('user_id, post_id')
@@ -69,7 +68,6 @@ export async function DELETE(_req: NextRequest, { params }: Props) {
     );
   }
 
-  // 권한 체크
   const { data: comment } = await supabase
     .from('comments')
     .select('user_id, post_id')
