@@ -1,5 +1,3 @@
-// src/types/database.types.ts
-
 export type Json =
   | string
   | number

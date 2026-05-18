@@ -27,7 +27,7 @@ export async function PUT(
   if (!user)
     return NextResponse.json({ error: '로그인 필요' }, { status: 401 });
 
-  const { title, content, image_url } = await req.json(); // 허용 필드만 구조분해
+  const { title, content, image_url } = await req.json();
 
   const [{ data: profile }, { data: post, error: postError }] =
     await Promise.all([

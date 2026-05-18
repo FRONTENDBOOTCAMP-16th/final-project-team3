@@ -16,13 +16,7 @@ interface KakaoPlace {
   y: string;
 }
 
-interface DojangClientProps {
-  initialVerifiedDojangs: string[];
-}
-
-export default function DojangClient({
-  initialVerifiedDojangs,
-}: DojangClientProps) {
+export default function DojangClient() {
   const [searchQuery, setSearchQuery] = useState('');
   const [dojangs, setDojangs] = useState<KakaoPlace[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -115,7 +109,6 @@ export default function DojangClient({
           clearMarkers();
         }
       } catch {
-        // 위치 기반 검색 실패 시 무시
       } finally {
         setIsLoading(false);
         setIsLocating(false);
@@ -153,7 +146,6 @@ export default function DojangClient({
     if (window.naver && window.naver.maps) initMap();
   }, [initMap]);
 
-  // 검색어 지웠을 때 위치 기반으로 복귀
   useEffect(() => {
     if (debouncedSearch.trim()) return;
     if (locationDenied) return;
@@ -191,7 +183,6 @@ export default function DojangClient({
           clearMarkers();
         }
       } catch {
-        // 검색 실패 시 무시
       } finally {
         setIsLoading(false);
       }
@@ -233,7 +224,6 @@ export default function DojangClient({
           aria-label="도장 찾기"
         >
           <div className="w-full max-w-7xl px-6 flex flex-col gap-4">
-            {/* 지도 */}
             <div className="relative">
               {!mapLoaded && (
                 <div
@@ -256,7 +246,6 @@ export default function DojangClient({
               />
             </div>
 
-            {/* 위치 감지 중 로딩 */}
             {isLocating && !searchQuery.trim() && (
               <div
                 className="flex items-center justify-center gap-2 py-4 text-text-secondary text-sm"
@@ -267,7 +256,6 @@ export default function DojangClient({
               </div>
             )}
 
-            {/* 도장 목록 */}
             {isLoading ? (
               <div role="status" aria-label="도장 검색 중">
                 <div className="flex items-center justify-center py-20">
@@ -291,9 +279,6 @@ export default function DojangClient({
                   >
                     <DojangCard
                       dojang={dojang}
-                      isVerified={initialVerifiedDojangs.includes(
-                        dojang.place_name,
-                      )}
                       isSelected={selectedDojangId === dojang.id}
                     />
                   </li>

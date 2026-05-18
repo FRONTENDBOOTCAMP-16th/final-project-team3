@@ -47,7 +47,6 @@ export default function Sidebar() {
       style={{ boxShadow: '4px 0 10px rgba(0,0,0,0.08)' }}
       aria-label="사이드바 내비게이션"
     >
-      {/* 로고 */}
       <Link href="/" aria-label="홈으로 이동">
         <div className="flex items-center justify-center py-6 cursor-pointer">
           <Image
