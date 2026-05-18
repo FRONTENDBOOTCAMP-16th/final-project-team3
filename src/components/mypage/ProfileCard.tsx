@@ -34,6 +34,8 @@ export default function ProfileCard({
               className="w-3 h-3 rounded-full shrink-0"
               style={{
                 backgroundColor: BELT_COLORS[profile.belt_level as BeltLevel],
+                border:
+                  profile.belt_level === 'White' ? '1px solid #d1d5db' : 'none',
               }}
             />
             <span className="text-sm text-btn-text">{profile.belt_level}</span>

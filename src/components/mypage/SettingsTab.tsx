@@ -164,7 +164,10 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             >
               <span
                 className="w-3 h-3 rounded-full mr-2 shrink-0"
-                style={{ backgroundColor: BELT_COLORS[beltLevel] }}
+                style={{
+                  backgroundColor: BELT_COLORS[beltLevel],
+                  border: beltLevel === 'White' ? '1px solid #d1d5db' : 'none',
+                }}
               />
               <select
                 disabled={!isEditing}
