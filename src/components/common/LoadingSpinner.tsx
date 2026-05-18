@@ -11,10 +11,7 @@ export default function LoadingSpinner({
 }: LoadingSpinnerProps = {}) {
   return (
     <div
-      className={cn(
-        'col-span-2 flex items-center justify-center py-20',
-        className,
-      )}
+      className={cn('flex items-center justify-center py-20', className)}
       role="status"
       aria-live="polite"
     >

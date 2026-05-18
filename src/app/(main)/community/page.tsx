@@ -4,6 +4,7 @@ import { cacheTag, cacheLife } from 'next/cache';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Post } from '@/types/community';
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: '커뮤니티 | Black Belt BJJ',
@@ -48,5 +49,9 @@ async function CommunityContent() {
 }
 
 export default function CommunityPage() {
-  return <CommunityContent />;
+  return (
+    <Suspense fallback={<LoadingSpinner label="게시글 불러오는 중" />}>
+      <CommunityContent />
+    </Suspense>
+  );
 }

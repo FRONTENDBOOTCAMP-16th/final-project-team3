@@ -3,6 +3,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getDday, getStatus } from '@/utils/formatDate';
 import { buildCompetitionUrl } from '@/lib/slug';
+import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import LoadingSpinner from '../common/LoadingSpinner';
 
 interface CompetitionCardProps {
   competition: {
@@ -26,6 +29,18 @@ export default function CompetitionCard({
 }: CompetitionCardProps) {
   const actualStatus = getStatus(competition.apply_deadline);
   const dday = getDday(competition.apply_deadline);
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) {
+      return;
+    }
+    e.preventDefault();
+    startTransition(() => {
+      router.push(buildCompetitionUrl(competition.name, competition.id));
+    });
+  };
 
   const statusColor =
     {
@@ -44,12 +59,19 @@ export default function CompetitionCard({
   return (
     <article
       aria-labelledby={`competition-${competition.id}`}
-      className="rounded-lg overflow-hidden bg-bg-white border border-gray-200 flex flex-col h-full cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+      className="rounded-lg overflow-hidden bg-bg-white border border-gray-200 flex flex-col h-full cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200 relative"
+      aria-busy={isPending}
     >
+      {isPending && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/40 rounded-lg">
+          <LoadingSpinner label="대회 정보 불러오는 중" />
+        </div>
+      )}
       <Link
         href={buildCompetitionUrl(competition.name, competition.id)}
         className="flex flex-col flex-1"
         aria-label={`${competition.name} 대회 상세보기`}
+        onClick={handleClick}
       >
         <div className="relative shrink-0 h-50">
           {competition.image_url ? (

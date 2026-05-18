@@ -22,11 +22,16 @@ export async function POST(req: Request) {
   const body = await req.json();
   const { category, title, content, image_url } = body;
 
-  const allowedCategory =
-    role === 'admin' ? 'notice' : role === 'manager' ? 'promo' : 'personal';
+  const allowedCategories: Record<string, string[]> = {
+    admin: ['notice'],
+    manager: ['personal', 'promo'],
+    user: ['personal'],
+  };
 
-  const finalCategory =
-    role === 'admin' ? (category ?? 'personal') : allowedCategory;
+  const userCategories = allowedCategories[role] ?? ['personal'];
+  const finalCategory = userCategories.includes(category)
+    ? category
+    : userCategories[0];
 
   const { data, error } = await supabase
     .from('posts')

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 async function getCompetitions() {
   'use cache';
   cacheTag('competitions');
-  cacheLife('hours');
+  cacheLife('minutes');
 
   const { data } = await supabasePublic
     .from('competition')
