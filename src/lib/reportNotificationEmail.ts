@@ -79,10 +79,6 @@ export async function sendReportNotificationEmail(
   const from = process.env.REPORT_EMAIL_FROM;
 
   if (!apiKey || !to || !from) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      'Report notification email skipped: missing RESEND_API_KEY, ADMIN_REPORT_EMAIL, or REPORT_EMAIL_FROM.',
-    );
     return;
   }
 

@@ -119,15 +119,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (postId) {
-    const { error: reportCountError } = await supabase.rpc(
-      'increment_report_count',
-      { post_id: postId },
-    );
-
-    if (reportCountError) {
-      // eslint-disable-next-line no-console
-      console.warn('Failed to increment report count:', reportCountError);
-    }
+    await supabase.rpc('increment_report_count', { post_id: postId });
   }
 
   const [postResult, reporterProfileResult] = await Promise.all([
@@ -140,19 +132,6 @@ export async function POST(req: NextRequest) {
       .eq('id', user.id)
       .maybeSingle(),
   ]);
-
-  if (postResult.error) {
-    // eslint-disable-next-line no-console
-    console.warn('Failed to load reported post for email:', postResult.error);
-  }
-
-  if (reporterProfileResult.error) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      'Failed to load reporter profile for email:',
-      reporterProfileResult.error,
-    );
-  }
 
   const postTitle = postResult.data?.title?.trim() || '삭제된 게시글';
   const reporterName =
@@ -178,10 +157,7 @@ export async function POST(req: NextRequest) {
       adminSupportUrl,
       postUrl,
     });
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.warn(error);
-  }
+  } catch {}
 
   revalidatePath(ROUTES.ADMIN_SUPPORT);
 
