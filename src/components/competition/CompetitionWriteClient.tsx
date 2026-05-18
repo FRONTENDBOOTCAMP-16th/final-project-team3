@@ -14,6 +14,7 @@ import CompetitionForm, {
 } from '@/components/competition/CompetitionForm';
 import CompetitionDetailCard from '@/components/competition/CompetitionDetailCard';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
 const defaultValues: CompetitionFormValues = {
   name: '',
@@ -33,6 +34,7 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
   const [tab, setTab] = useState<'write' | 'preview'>('write');
   const [values, setValues] = useState<CompetitionFormValues>(defaultValues);
   const [isLoading, setIsLoading] = useState(false);
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
 
   const isDirty =
     values.name.trim() !== '' ||
@@ -138,10 +140,29 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
         ))}
 
       <PostFormActions
-        onCancel={() => router.back()}
+        onCancel={() => {
+          if (isDirty) {
+            setCancelModalOpen(true);
+          } else {
+            showErrorToast('작성된 내용이 없습니다.');
+            router.push('/competitions');
+          }
+        }}
         onSubmit={handleSubmit}
         submitLabel="추가하기"
         isLoading={isLoading}
+      />
+
+      <ConfirmModal
+        isOpen={cancelModalOpen}
+        onClose={() => setCancelModalOpen(false)}
+        onConfirm={() => {
+          setValues(defaultValues);
+          setTab('write');
+          router.push('/competitions');
+        }}
+        title="작성 취소"
+        description="작성 중인 내용이 있습니다. 정말 나가시겠습니까?"
       />
     </div>
   );

@@ -13,6 +13,7 @@ import PostDetailCard from '@/components/community/PostDetailCard';
 import { LimitedInput } from '../common/LimitedInput';
 import { LimitedTextarea } from '../common/LimitedTextarea';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
 export default function WriteClient() {
   const router = useRouter();
@@ -25,11 +26,19 @@ export default function WriteClient() {
   const { user } = useAuth();
   const [category, setCategory] = useState<PostCategory>('personal');
   const queryClient = useQueryClient();
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
 
   const isDirty =
     title.trim() !== '' || content.trim() !== '' || imageFile !== null;
 
   useBeforeUnload(isDirty);
+
+  const getFinalCategory = (): PostCategory =>
+    user?.role === 'admin'
+      ? 'notice'
+      : user?.role === 'manager'
+        ? category
+        : 'personal';
 
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {
@@ -45,7 +54,7 @@ export default function WriteClient() {
         : undefined;
 
       await createPost({
-        category,
+        category: getFinalCategory(),
         title,
         content,
         image_url,
@@ -184,24 +193,45 @@ export default function WriteClient() {
               post={{
                 nickname: user?.name ?? '알 수 없음',
                 avatar_url: user?.image ?? null,
-                role: category === 'promo' ? 'manager' : (user?.role ?? null),
+                category: getFinalCategory(),
                 created_at: new Date().toISOString(),
                 title,
                 image_url: preview,
                 content,
                 likeCount: 0,
                 commentCount: 0,
-                view_count: 0,
               }}
             />
           </div>
         ))}
 
       <PostFormActions
-        onCancel={() => router.back()}
+        onCancel={() => {
+          if (isDirty) {
+            setCancelModalOpen(true);
+          } else {
+            showErrorToast('작성된 내용이 없습니다.');
+            router.push('/community');
+          }
+        }}
         onSubmit={handleSubmit}
         submitLabel="작성하기"
         isLoading={isLoading}
+      />
+      <ConfirmModal
+        isOpen={cancelModalOpen}
+        onClose={() => setCancelModalOpen(false)}
+        onConfirm={() => {
+          setTitle('');
+          setContent('');
+          setImageFile(null);
+          setPreview(null);
+          setCategory('personal');
+          setTab('write');
+          router.push('/community');
+        }}
+        title="작성 취소"
+        description="작성 중인 내용이 있습니다. 정말 나가시겠습니까?"
       />
     </div>
   );

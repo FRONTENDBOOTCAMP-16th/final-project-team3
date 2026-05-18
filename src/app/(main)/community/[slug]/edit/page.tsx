@@ -6,16 +6,17 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getPost } from '@/services/communityService.server';
 import { notFound, redirect } from 'next/navigation';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { extractPostId, buildPostUrl } from '@/lib/slug';
 
-type Props = { params: Promise<{ id: string }> };
+type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const post = await getPost(id);
+  const { slug } = await params;
+  const id = extractPostId(slug);
+  if (!id) return { title: '게시글을 찾을 수 없습니다 | Black Belt BJJ' };
 
-  if (!post) {
-    return { title: '게시글을 찾을 수 없습니다 | Black Belt BJJ' };
-  }
+  const post = await getPost(id);
+  if (!post) return { title: '게시글을 찾을 수 없습니다 | Black Belt BJJ' };
 
   return {
     title: `${post.title} 수정 | Black Belt BJJ`,
@@ -25,9 +26,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 async function EditContent({ params }: Props) {
-  const { id } = await params;
-  const supabase = await createSupabaseServerClient();
+  const { slug } = await params;
+  const id = extractPostId(slug);
+  if (!id) notFound();
 
+  const supabase = await createSupabaseServerClient();
   const [
     post,
     {
@@ -52,7 +55,7 @@ async function EditContent({ params }: Props) {
       authorRole: post.role,
     })
   ) {
-    redirect(`/community/${id}`);
+    redirect(buildPostUrl(post.title, id));
   }
 
   return <EditClient id={id} initialPost={post} />;
