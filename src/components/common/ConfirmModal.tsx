@@ -54,7 +54,7 @@ export default function ConfirmModal({
             type="button"
             onClick={onClose}
             disabled={disabled}
-            className="flex-1 rounded-lg bg-gray-100 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex-1 rounded-lg bg-gray-100 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
           >
             {cancelLabel}
           </button>
@@ -62,7 +62,7 @@ export default function ConfirmModal({
             type="button"
             onClick={onConfirm}
             disabled={disabled}
-            className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${confirmButtonVariantClassMap[confirmVariant]}`}
+            className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer ${confirmButtonVariantClassMap[confirmVariant]}`}
           >
             {confirmLabel}
           </button>
