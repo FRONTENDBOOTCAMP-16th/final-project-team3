@@ -7,7 +7,7 @@ import { MessageCircle } from 'lucide-react';
 import { categoryMap } from '@/constants/categoryMap';
 import { buildPostUrl } from '@/lib/slug';
 import PostLikeButton from '@/components/community/PostLikeButton';
-import { useEffect, useState } from 'react';
+import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import LoadingSpinner from '../common/LoadingSpinner';
 
@@ -36,8 +36,8 @@ const DEFAULT_IMAGES = [
 
 export default function PostCard({ post, userId }: PostCardProps) {
   const categoryInfo = categoryMap[post.category] ?? categoryMap.personal;
-  const [isPending, setIsPending] = useState(false);
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const defaultImage =
     DEFAULT_IMAGES[
@@ -45,16 +45,14 @@ export default function PostCard({ post, userId }: PostCardProps) {
         DEFAULT_IMAGES.length
     ];
 
-  useEffect(() => {
-    // eslint-disable-next-line -- cacheComponents Activity 전환 시 로딩 상태 초기화
-    setIsPending(false);
-  }, []);
-
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) {
+      return;
+    }
     e.preventDefault();
-    if (isPending) return;
-    setIsPending(true);
-    router.push(buildPostUrl(post.title, post.id));
+    startTransition(() => {
+      router.push(buildPostUrl(post.title, post.id));
+    });
   };
 
   return (

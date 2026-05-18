@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getDday, getStatus } from '@/utils/formatDate';
 import { buildCompetitionUrl } from '@/lib/slug';
-import { useEffect, useState } from 'react';
+import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import LoadingSpinner from '../common/LoadingSpinner';
 
@@ -29,20 +29,19 @@ export default function CompetitionCard({
 }: CompetitionCardProps) {
   const actualStatus = getStatus(competition.apply_deadline);
   const dday = getDday(competition.apply_deadline);
-  const [isPending, setIsPending] = useState(false);
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    // eslint-disable-next-line -- cacheComponents Activity 전환 시 로딩 상태 초기화
-    setIsPending(false);
-  }, []);
-
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) {
+      return;
+    }
     e.preventDefault();
-    if (isPending) return;
-    setIsPending(true);
-    router.push(buildCompetitionUrl(competition.name, competition.id));
+    startTransition(() => {
+      router.push(buildCompetitionUrl(competition.name, competition.id));
+    });
   };
+
   const statusColor =
     {
       모집중: 'bg-green-700',
