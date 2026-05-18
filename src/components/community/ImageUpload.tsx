@@ -5,6 +5,7 @@ import { showErrorToast } from '@/lib/toast';
 
 interface ImageUploadProps {
   preview: string | null;
+  // eslint-disable-next-line no-unused-vars
   onChange: (file: File, previewUrl: string) => void;
   label?: string;
 }
