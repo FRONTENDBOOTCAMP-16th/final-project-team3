@@ -36,7 +36,7 @@ function PostLikeFallback({ variant }: { variant: PostLikeButtonVariant }) {
   return (
     <div className="flex items-center gap-1 text-text-secondary">
       <Heart size={16} aria-hidden="true" />
-      <span className="text-sm">좋아요 -</span>
+      <span className="text-sm">-</span>
     </div>
   );
 }
