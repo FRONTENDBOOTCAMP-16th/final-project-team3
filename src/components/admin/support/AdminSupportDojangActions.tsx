@@ -4,6 +4,7 @@ import { ExternalLink, FileText } from 'lucide-react';
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { updateAdminDojangStatus } from '@/actions/admin/dojang';
 import AdminBadge from '@/components/admin/AdminBadge';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import { DOJANG_STATUS_BADGE_VARIANT_MAP } from '@/components/admin/support/constants';
@@ -17,7 +18,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { supabase } from '@/lib/supabase/client';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 
 interface AdminSupportDojangActionsProps {
@@ -35,8 +35,6 @@ type ConfirmDojangAction = {
   description: string;
   confirmLabel: string;
   confirmVariant: 'default' | 'danger' | 'success' | 'warning';
-  failureMessage: string;
-  successMessage: string;
   successIcon: string;
 } | null;
 
@@ -62,23 +60,22 @@ export default function AdminSupportDojangActions({
 
   const updateDojangStatus = async (
     nextStatus: 'pending' | 'approved' | 'rejected',
-    failureMessage: string,
-    successMessage: string,
     successIcon: string,
   ) => {
     startTransition(async () => {
-      const { error } = await supabase
-        .from('dojang')
-        .update({ dojang_status: nextStatus })
-        .eq('id', row.id);
+      const result = await updateAdminDojangStatus({
+        dojangId: row.id,
+        nextStatus,
+      });
 
-      if (error) {
-        showErrorToast(failureMessage);
+      if (!result.success) {
+        showErrorToast(result.message);
         return;
       }
 
-      showSuccessToast(successMessage, successIcon);
+      showSuccessToast(result.message, successIcon);
       setOpen(false);
+      setConfirmAction(null);
       router.refresh();
     });
   };
@@ -159,8 +156,6 @@ export default function AdminSupportDojangActions({
                     description: `${row.dojang_name} 인증 요청을 승인하시겠습니까?`,
                     confirmLabel: '승인',
                     confirmVariant: 'success',
-                    failureMessage: '도장 승인에 실패했습니다.',
-                    successMessage: '도장 인증 요청을 승인했습니다.',
                     successIcon: '✅',
                   })
                 }
@@ -178,8 +173,6 @@ export default function AdminSupportDojangActions({
                     description: `${row.dojang_name} 인증 요청을 거부하시겠습니까?`,
                     confirmLabel: '거부',
                     confirmVariant: 'danger',
-                    failureMessage: '도장 거부 처리에 실패했습니다.',
-                    successMessage: '도장 인증 요청을 거부했습니다.',
                     successIcon: '🚫',
                   })
                 }
@@ -202,8 +195,6 @@ export default function AdminSupportDojangActions({
                     description: `${row.dojang_name} 인증 상태를 검토중으로 변경하시겠습니까?`,
                     confirmLabel: '승인 취소',
                     confirmVariant: 'warning',
-                    failureMessage: '승인 취소에 실패했습니다.',
-                    successMessage: '도장 인증 상태를 검토중으로 변경했습니다.',
                     successIcon: '↩️',
                   })
                 }
@@ -221,8 +212,6 @@ export default function AdminSupportDojangActions({
                     description: `${row.dojang_name} 인증 상태를 거부로 변경하시겠습니까?`,
                     confirmLabel: '거부',
                     confirmVariant: 'danger',
-                    failureMessage: '도장 거부 처리에 실패했습니다.',
-                    successMessage: '도장 인증 상태를 거부로 변경했습니다.',
                     successIcon: '🚫',
                   })
                 }
@@ -245,8 +234,6 @@ export default function AdminSupportDojangActions({
                     description: `${row.dojang_name} 인증 상태를 다시 검토중으로 변경하시겠습니까?`,
                     confirmLabel: '재검토',
                     confirmVariant: 'default',
-                    failureMessage: '재검토 처리에 실패했습니다.',
-                    successMessage: '도장 인증 상태를 재검토로 변경했습니다.',
                     successIcon: '🔄',
                   })
                 }
@@ -264,8 +251,6 @@ export default function AdminSupportDojangActions({
                     description: `${row.dojang_name} 인증 요청을 승인하시겠습니까?`,
                     confirmLabel: '승인',
                     confirmVariant: 'success',
-                    failureMessage: '도장 승인에 실패했습니다.',
-                    successMessage: '도장 인증 요청을 승인했습니다.',
                     successIcon: '✅',
                   })
                 }
@@ -286,8 +271,6 @@ export default function AdminSupportDojangActions({
           onConfirm={() =>
             updateDojangStatus(
               confirmAction.nextStatus,
-              confirmAction.failureMessage,
-              confirmAction.successMessage,
               confirmAction.successIcon,
             )
           }

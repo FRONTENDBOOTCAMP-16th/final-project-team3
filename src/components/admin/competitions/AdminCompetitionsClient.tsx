@@ -108,9 +108,11 @@ export default function AdminCompetitionsClient({
         onSearchQueryChange={setSearchQuery}
         onSearch={commitSearch}
         searchPlaceholder="대회 제목 검색..."
+        searchAriaLabel="대회 제목 검색"
       />
 
       <AdminDataTable
+        caption="관리자 대회 일정 관리 목록"
         columns={COMPETITION_COLUMNS}
         currentPage={currentPage}
         data={data}

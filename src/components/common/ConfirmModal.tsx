@@ -60,10 +60,7 @@ export default function ConfirmModal({
           </button>
           <button
             type="button"
-            onClick={() => {
-              onConfirm();
-              onClose();
-            }}
+            onClick={onConfirm}
             disabled={disabled}
             className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${confirmButtonVariantClassMap[confirmVariant]}`}
           >
