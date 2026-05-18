@@ -118,10 +118,10 @@ async function getAdminCompetitions(
     throw new Error(error.message);
   }
 
+  const rows: CompetitionQueryRow[] = data ?? [];
+
   return {
-    rows: mapCompetitionQueryRowsToAdminCompetitionRows(
-      (data ?? []) as CompetitionQueryRow[],
-    ),
+    rows: mapCompetitionQueryRowsToAdminCompetitionRows(rows),
     totalCount,
     pageSize,
   };

@@ -11,8 +11,10 @@ interface PageheaderProps {
   description: string;
   tabs?: string[];
   activeTab?: string;
+  // eslint-disable-next-line no-unused-vars
   setActiveTab?: (tab: string) => void;
   searchQuery: string;
+  // eslint-disable-next-line no-unused-vars
   setSearchQuery: (query: string) => void;
   writeLink?: string;
   writeLinkText?: string;
@@ -59,31 +61,19 @@ export default function Pageheader({
       </div>
 
       <div className="flex items-center gap-2" role="search">
-        <div className="flex-1 relative flex items-center">
-          <button
-            className="absolute left-3 z-10"
-            onClick={onSearch}
-            aria-label="검색"
-          >
-            <Image
-              src="/glasses.svg"
-              alt=""
-              width={18}
-              height={18}
-              aria-hidden="true"
-            />
-          </button>
-          <SearchInput
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            onSearch={onSearch}
-            placeholder={searchPlaceholder ?? '게시글 검색...'}
-          />
-        </div>
+        <SearchInput
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          onSearch={onSearch}
+          placeholder={searchPlaceholder ?? '게시글 검색...'}
+        />
         {writeLink && (
-          <Link href={writeLink}>
-            <Button
-              className="bg-btn-focus text-btn-focus-text shrink-0 w-31 h-12 flex items-center gap-2 cursor-pointer"
+          <Button
+            asChild
+            className="bg-btn-focus text-btn-focus-text shrink-0 w-31 h-12 flex items-center gap-2 cursor-pointer"
+          >
+            <Link
+              href={writeLink}
               onClick={handleWriteClick}
               aria-label={`${writeLinkText ?? '글쓰기'} 페이지로 이동`}
             >
@@ -95,8 +85,8 @@ export default function Pageheader({
                 aria-hidden="true"
               />
               {writeLinkText ?? '글쓰기'}
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         )}
       </div>
 

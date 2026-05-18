@@ -1,8 +1,6 @@
-import { Suspense } from 'react';
 import CompetitionClient from '@/components/competition/CompetitionClient';
 import { supabasePublic } from '@/lib/supabase/public';
 import { cacheTag, cacheLife } from 'next/cache';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -22,6 +20,7 @@ async function getCompetitions() {
   const { data } = await supabasePublic
     .from('competition')
     .select('*')
+    .is('deleted_at', null)
     .order('event_data', { ascending: true })
     .range(0, 9);
 
@@ -34,9 +33,5 @@ async function CompetitionsContent() {
 }
 
 export default function CompetitionsPage() {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <CompetitionsContent />
-    </Suspense>
-  );
+  return <CompetitionsContent />;
 }

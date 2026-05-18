@@ -142,6 +142,10 @@ export default function AdminSupportTableClient({
     activeSection === 'dojang'
       ? '도장명, 주소 검색...'
       : '신고 게시글 제목 검색...';
+  const searchAriaLabel =
+    activeSection === 'dojang'
+      ? '도장명 또는 주소 검색'
+      : '신고 게시글 제목 검색';
 
   return (
     <>
@@ -153,10 +157,12 @@ export default function AdminSupportTableClient({
         onSearchQueryChange={setSearchQuery}
         onSearch={commitSearch}
         searchPlaceholder={searchPlaceholder}
+        searchAriaLabel={searchAriaLabel}
       />
 
       {activeSection === 'dojang' ? (
         <AdminDataTable
+          caption="관리자 도장 인증 요청 목록"
           columns={DOJANG_COLUMNS}
           currentPage={currentPage}
           data={dojangVerifications}
@@ -170,6 +176,7 @@ export default function AdminSupportTableClient({
         />
       ) : (
         <AdminDataTable
+          caption="관리자 신고 내역 목록"
           columns={REPORT_COLUMNS}
           currentPage={currentPage}
           data={reports}

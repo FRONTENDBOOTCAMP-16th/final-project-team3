@@ -16,6 +16,7 @@ interface AdminTableToolbarProps<TFilter extends string> {
   onSearchQueryChange: (_value: string) => void;
   onSearch?: () => void;
   searchPlaceholder?: string;
+  searchAriaLabel?: string;
 }
 
 export default function AdminTableToolbar<TFilter extends string>({
@@ -26,6 +27,7 @@ export default function AdminTableToolbar<TFilter extends string>({
   onSearchQueryChange,
   onSearch,
   searchPlaceholder,
+  searchAriaLabel = '검색어 입력',
 }: AdminTableToolbarProps<TFilter>) {
   return (
     <section
@@ -42,6 +44,8 @@ export default function AdminTableToolbar<TFilter extends string>({
                 key={filter.value}
                 type="button"
                 onClick={() => onFilterChange(filter.value)}
+                aria-label={`${filter.label} 필터`}
+                aria-pressed={isActive}
                 className={cn(
                   'h-12 min-w-[84px] cursor-pointer rounded-md border px-4 py-2 text-sm font-medium transition-colors duration-200',
                   isActive
@@ -60,6 +64,7 @@ export default function AdminTableToolbar<TFilter extends string>({
           setSearchQuery={onSearchQueryChange}
           onSearch={onSearch}
           placeholder={searchPlaceholder}
+          inputAriaLabel={searchAriaLabel}
         />
       </div>
     </section>

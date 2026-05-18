@@ -1,8 +1,6 @@
-import { Suspense } from 'react';
 import DojangClient from '@/components/dojang/DojangClient';
 import { supabasePublic } from '@/lib/supabase/public';
 import { cacheTag, cacheLife } from 'next/cache';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -29,9 +27,5 @@ async function DojangContent() {
 }
 
 export default function DojangsPage() {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <DojangContent />
-    </Suspense>
-  );
+  return <DojangContent />;
 }

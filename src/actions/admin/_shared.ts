@@ -73,3 +73,21 @@ export function revalidatePostCaches(
     revalidatePath(path);
   }
 }
+
+export function revalidateCompetitionCaches(
+  competitionId: string,
+  additionalPaths: string[] = [],
+) {
+  updateTag('competitions');
+  updateTag(`competition-${competitionId}`);
+
+  const paths = [
+    ROUTES.COMPETITIONS,
+    ROUTES.COMPETITIONS_DETAIL(competitionId),
+    ...additionalPaths,
+  ];
+
+  for (const path of paths) {
+    revalidatePath(path);
+  }
+}

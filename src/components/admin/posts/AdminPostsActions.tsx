@@ -58,6 +58,7 @@ export default function AdminPostActions({
         return;
       }
 
+      setConfirmAction(null);
       showSuccessToast(result.message, status === 'hidden' ? '👀' : '🙈');
       queryClient.removeQueries({ queryKey: ['posts'] });
       router.refresh();
@@ -73,6 +74,7 @@ export default function AdminPostActions({
         return;
       }
 
+      setConfirmAction(null);
       showSuccessToast(result.message, '🗑️');
       queryClient.removeQueries({ queryKey: ['posts'] });
       router.refresh();
@@ -88,6 +90,7 @@ export default function AdminPostActions({
         return;
       }
 
+      setConfirmAction(null);
       showSuccessToast(result.message, '♻️');
       queryClient.removeQueries({ queryKey: ['posts'] });
       router.refresh();

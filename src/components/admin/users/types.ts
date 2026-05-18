@@ -1,8 +1,6 @@
 export type RawUserRole =
   | 'user'
   | 'manager'
-  | 'dojang'
-  | 'pending'
   | 'admin'
   | string
   | null;

@@ -12,7 +12,6 @@ import { reportPost, ReportReason } from '@/services/reportService';
 import type { Post, Comment } from '@/types/community';
 import Image from 'next/image';
 import { useAuth } from '@/hooks/useAuth';
-import { useLike } from '@/hooks/useLike';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ReportModal from '@/components/community/ReportModal';
 import ConfirmModal from '@/components/common/ConfirmModal';
@@ -27,6 +26,7 @@ import { timeAgo } from '@/utils/timeAgo';
 import { LimitedTextarea } from '../common/LimitedTextarea';
 import { Pencil, Trash2, Flag, Share2 } from 'lucide-react';
 import { buildPostUrl } from '@/lib/slug';
+import PostLikeButton from '@/components/community/PostLikeButton';
 
 interface Props {
   id: string;
@@ -46,7 +46,6 @@ export default function PostDetailClient({
   const router = useRouter();
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { likeCount, isLiked, toggle } = useLike(id, user?.id ?? '');
 
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [comment, setComment] = useState('');
@@ -106,10 +105,8 @@ export default function PostDetailClient({
   const handleDeletePost = async () => {
     try {
       await deletePost(id);
-      queryClient.resetQueries({ queryKey: ['posts'] });
-      queryClient.removeQueries({ queryKey: ['mypage', 'posts'] });
-      queryClient.removeQueries({ queryKey: ['mypage', 'postCount'] });
-      router.refresh();
+      await queryClient.invalidateQueries({ queryKey: ['posts'] });
+      setDeletePostModalOpen(false);
       showSuccessToast('게시글이 삭제되었습니다.', '🗑️');
       await new Promise((resolve) => setTimeout(resolve, 700));
       router.push('/community');
@@ -140,9 +137,7 @@ export default function PostDetailClient({
     try {
       await deleteComment(commentId);
       setComments((prev) => prev.filter((c) => c.id !== commentId));
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
-      queryClient.removeQueries({ queryKey: ['mypage', 'commentCount'] });
-
+      setDeleteCommentId(null);
       showSuccessToast('댓글이 삭제되었습니다.', '🗑️');
     } catch {
       showErrorToast('댓글 삭제에 실패했습니다.');
@@ -193,7 +188,6 @@ export default function PostDetailClient({
     title: initialPost.title,
     image_url: initialPost.image_url,
     content: initialPost.content,
-    likeCount: likeCount ?? 0,
     commentCount: comments.length,
   };
 
@@ -224,14 +218,9 @@ export default function PostDetailClient({
 
       <PostDetailCard
         post={postDetailCardData}
-        isLiked={isLiked}
-        onLike={() => {
-          if (!userId) {
-            showErrorToast('로그인이 필요합니다.');
-            return;
-          }
-          toggle();
-        }}
+        likeAction={
+          <PostLikeButton postId={id} userId={userId} variant="detail" />
+        }
         headerActions={
           <>
             {canManagePost ? (
