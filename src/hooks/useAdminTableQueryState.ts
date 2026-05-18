@@ -1,6 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useTransition,
+} from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import {
@@ -44,6 +50,7 @@ export function useAdminTableQueryState<TFilter extends string>({
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
   const pageParamState = useMemo(
     () => parsePositiveIntParam(searchParams.get('page'), defaultPage),
     [defaultPage, searchParams],
@@ -51,7 +58,7 @@ export function useAdminTableQueryState<TFilter extends string>({
 
   const currentPage = pageParamState.value;
 
-  const activeFilter = useMemo(
+  const appliedFilter = useMemo(
     () =>
       parseEnumParam(
         searchParams.get(filterParamName),
@@ -60,6 +67,8 @@ export function useAdminTableQueryState<TFilter extends string>({
       ),
     [defaultFilter, filterParamName, searchParams, validFilters],
   );
+  const [optimisticFilter, setOptimisticFilter] = useState(appliedFilter);
+  const activeFilter = isPending ? optimisticFilter : appliedFilter;
 
   const appliedSearchQuery = useMemo(
     () => searchParams.get('search') ?? defaultSearch,
@@ -72,6 +81,13 @@ export function useAdminTableQueryState<TFilter extends string>({
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearchInput(appliedSearchQuery);
   }, [appliedSearchQuery]);
+
+  useEffect(() => {
+    if (!isPending) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setOptimisticFilter(appliedFilter);
+    }
+  }, [appliedFilter, isPending]);
 
   const debouncedSearchInput = useDebounce(searchInput, searchDebounceMs);
   const currentQueryString = searchParams.toString();
@@ -95,11 +111,15 @@ export function useAdminTableQueryState<TFilter extends string>({
       }
 
       if (mode === 'push') {
-        router.push(nextUrl, { scroll: false });
+        startTransition(() => {
+          router.push(nextUrl, { scroll: false });
+        });
         return;
       }
 
-      router.replace(nextUrl, { scroll: false });
+      startTransition(() => {
+        router.replace(nextUrl, { scroll: false });
+      });
     },
     [currentUrl, pathname, router, searchParams],
   );
@@ -166,6 +186,7 @@ export function useAdminTableQueryState<TFilter extends string>({
           ? null
           : undefined;
 
+      setOptimisticFilter(nextFilter);
       navigateWithSearchParams(
         {
           [filterParamName]:
@@ -208,6 +229,7 @@ export function useAdminTableQueryState<TFilter extends string>({
     activeFilter,
     searchQuery: searchInput,
     appliedSearchQuery,
+    isPending,
     setPage,
     setFilter,
     setSearchQuery: setSearchInput,
