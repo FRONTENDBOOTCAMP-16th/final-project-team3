@@ -36,7 +36,7 @@ export default function MyPageClient() {
     }
   }, [isLoading, profile, authUser, router]);
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading) return <LoadingSpinner className="min-h-screen" />;
   if (!profile) return null;
 
   return (

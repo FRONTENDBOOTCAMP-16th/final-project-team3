@@ -1,8 +1,6 @@
-import { Suspense } from 'react';
 import CompetitionClient from '@/components/competition/CompetitionClient';
 import { supabasePublic } from '@/lib/supabase/public';
 import { cacheTag, cacheLife } from 'next/cache';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -34,9 +32,5 @@ async function CompetitionsContent() {
 }
 
 export default function CompetitionsPage() {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <CompetitionsContent />
-    </Suspense>
-  );
+  return <CompetitionsContent />;
 }

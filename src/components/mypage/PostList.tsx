@@ -4,7 +4,6 @@ import { useEffect, useRef } from 'react';
 import { useMyPosts } from '@/hooks/useMyPage';
 import PostCard from '@/components/community/Postcard';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import Link from 'next/link';
 
 interface PostListProps {
   userId: string;

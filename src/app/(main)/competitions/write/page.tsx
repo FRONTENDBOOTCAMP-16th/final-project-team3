@@ -1,8 +1,6 @@
-import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 import CompetitionWriteClient from '@/components/competition/CompetitionWriteClient';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -32,9 +30,5 @@ async function CompetitionWriteContent() {
 }
 
 export default function CompetitionWritePage() {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <CompetitionWriteContent />
-    </Suspense>
-  );
+  return <CompetitionWriteContent />;
 }

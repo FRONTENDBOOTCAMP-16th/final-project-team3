@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ScrollToTop from '@/components/common/ScrollToTop';
 import Sidebar from '@/components/layout/Sidebar';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { ADMIN_LAYOUT_METADATA } from '@/constants/adminMeta';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
@@ -50,7 +50,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<LoadingSpinner className="min-h-screen" />}>
       <AdminContent>{children}</AdminContent>
     </Suspense>
   );

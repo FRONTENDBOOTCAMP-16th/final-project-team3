@@ -1,8 +1,6 @@
-import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import CompetitionEditClient from '@/components/competition/CompetitionEditClient';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { canManageContent } from '@/lib/contentPermissions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getCompetition } from '@/services/competitionService.server';
@@ -58,9 +56,5 @@ async function CompetitionEditContent({ params }: Props) {
 }
 
 export default function CompetitionEditPage({ params }: Props) {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <CompetitionEditContent params={params} />
-    </Suspense>
-  );
+  return <CompetitionEditContent params={params} />;
 }

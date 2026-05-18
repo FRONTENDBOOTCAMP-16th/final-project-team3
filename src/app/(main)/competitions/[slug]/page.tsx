@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import {
   getCompetition,
@@ -6,7 +5,6 @@ import {
 } from '@/services/competitionService.server';
 import CompetitionDetailClient from '@/components/competition/CompetitionDetailClient';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { Metadata } from 'next';
 import { extractCompetitionId } from '@/lib/slug';
 
@@ -66,9 +64,5 @@ async function CompetitionDetailContent({ params }: Props) {
 }
 
 export default function CompetitionDetailPage({ params }: Props) {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <CompetitionDetailContent params={params} />
-    </Suspense>
-  );
+  return <CompetitionDetailContent params={params} />;
 }

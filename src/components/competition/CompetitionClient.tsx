@@ -122,9 +122,7 @@ export default function CompetitionClient({
       >
         <div className="w-full max-w-7xl px-6">
           {isLoading ? (
-            <div role="status" aria-label="대회 목록 불러오는 중">
-              <LoadingSpinner />
-            </div>
+            <LoadingSpinner label="대회 목록 불러오는 중" />
           ) : (
             <ul
               className="grid grid-cols-2 gap-4"
