@@ -54,17 +54,6 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (insertError) {
-    if (insertError.message.includes('COOLTIME')) {
-      const match = insertError.message.match(/(\d+)/);
-      const remain = match ? match[1] : '잠시';
-      return NextResponse.json(
-        {
-          error: `${remain}초 후에 다시 작성할 수 있습니다.`,
-          code: 'COOLTIME',
-        },
-        { status: 429 },
-      );
-    }
     return NextResponse.json(
       { error: '댓글 저장에 실패했습니다.' },
       { status: 500 },
