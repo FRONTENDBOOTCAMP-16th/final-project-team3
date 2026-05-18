@@ -1,4 +1,3 @@
-// services/reportService.ts
 import { supabase } from '@/lib/supabase/client';
 
 export type ReportReason =

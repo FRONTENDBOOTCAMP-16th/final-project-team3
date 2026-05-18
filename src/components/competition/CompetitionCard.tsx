@@ -17,25 +17,29 @@ interface CompetitionCardProps {
     apply_url: string;
     comment_count?: number;
   };
+  index?: number;
 }
 
-export default function CompetitionCard({ competition }: CompetitionCardProps) {
+export default function CompetitionCard({
+  competition,
+  index,
+}: CompetitionCardProps) {
   const actualStatus = getStatus(competition.apply_deadline);
   const dday = getDday(competition.apply_deadline);
 
   const statusColor =
     {
-      모집중: 'bg-green-500',
-      마감임박: 'bg-orange-500',
-      모집완료: 'bg-gray-400',
-    }[actualStatus] ?? 'bg-gray-400';
+      모집중: 'bg-green-700',
+      마감임박: 'bg-orange-600',
+      모집완료: 'bg-gray-500',
+    }[actualStatus] ?? 'bg-gray-500';
 
   const ddayColor =
     dday === 'D-DAY'
       ? 'text-danger'
       : dday.startsWith('D-')
-        ? 'text-blue-500'
-        : 'text-gray-400';
+        ? 'text-blue-700'
+        : 'text-gray-600';
 
   return (
     <article
@@ -47,14 +51,15 @@ export default function CompetitionCard({ competition }: CompetitionCardProps) {
         className="flex flex-col flex-1"
         aria-label={`${competition.name} 대회 상세보기`}
       >
-        <div className="relative shrink-0">
+        <div className="relative shrink-0 h-50">
           {competition.image_url ? (
             <Image
               src={competition.image_url}
               alt={`${competition.name} 대회 이미지`}
-              width={400}
-              height={200}
-              className="w-full h-50 object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority={index === 0}
+              className="object-cover"
             />
           ) : (
             <div

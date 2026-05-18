@@ -171,16 +171,21 @@ export default function CommunityClient({
             <div
               ref={observerRef}
               className="h-20 flex items-center justify-center"
-              aria-label="더 많은 게시글 불러오는 중"
-              aria-live="polite"
             >
-              {isFetchingNextPage && (
-                <div
-                  className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"
-                  role="status"
-                  aria-label="로딩 중"
-                />
-              )}
+              <div
+                role="status"
+                aria-live="polite"
+                aria-label={
+                  isFetchingNextPage ? '더 많은 게시글 불러오는 중' : ''
+                }
+              >
+                {isFetchingNextPage && (
+                  <div
+                    className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"
+                    aria-hidden="true"
+                  />
+                )}
+              </div>
             </div>
           )}
         </div>

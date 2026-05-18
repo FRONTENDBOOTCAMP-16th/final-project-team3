@@ -91,26 +91,28 @@ export default function Pageheader({
       </div>
 
       {tabs && tabs.length > 0 && (
+        // ✅ role="tablist" 유지
         <div
           className="flex gap-2"
           role="tablist"
           aria-label={`${title} 카테고리 탭`}
         >
           {tabs.map((tab) => (
-            <Button
+            // ✅ <Button> → <button> 으로 교체 (ARIA 충돌 해결)
+            <button
               key={tab}
               role="tab"
               aria-selected={activeTab === tab}
               aria-controls={`tabpanel-${tab}`}
               onClick={() => setActiveTab && setActiveTab(tab)}
-              className={`cursor-pointer ${
+              className={`cursor-pointer rounded-lg h-10 px-6 transition-all duration-200 font-medium text-sm ${
                 activeTab === tab
                   ? 'bg-btn-focus text-btn-focus-text'
                   : 'bg-btn-basic text-btn-text hover:bg-gray-200'
-              } h-10 p-6 transition-all duration-200`}
+              }`}
             >
               {tab}
-            </Button>
+            </button>
           ))}
         </div>
       )}
