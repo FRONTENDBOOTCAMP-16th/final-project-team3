@@ -1,15 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
 import type { ErrorInfo } from 'next/error';
 import ErrorScreen from '@/components/error/ErrorScreen';
 
-export default function ErrorPage({ error, unstable_retry }: ErrorInfo) {
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.error(error);
-  }, [error]);
-
+export default function ErrorPage({ unstable_retry }: ErrorInfo) {
   return (
     <ErrorScreen
       variant="error"
