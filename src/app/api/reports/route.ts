@@ -3,7 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { ROUTES } from '@/constants/routes';
 import { sendReportNotificationEmail } from '@/lib/reportNotificationEmail';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import {
+  createSupabaseServerClient,
+  createSupabaseServiceRoleClient,
+} from '@/lib/supabase/server';
 import { REPORT_REASONS, type ReportReason } from '@/services/reportService';
 
 interface ReportRequestBody {
@@ -64,10 +67,13 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  let existingReportQuery = supabase
+  const adminSupabase = createSupabaseServiceRoleClient();
+
+  let existingReportQuery = adminSupabase
     .from('reports')
     .select('id')
-    .eq('reporter_id', user.id);
+    .eq('reporter_id', user.id)
+    .limit(1);
 
   if (commentId) {
     existingReportQuery = existingReportQuery.eq('comment_id', commentId);
@@ -75,8 +81,8 @@ export async function POST(req: NextRequest) {
     existingReportQuery = existingReportQuery.eq('post_id', postId);
   }
 
-  const { data: existingReport, error: existingReportError } =
-    await existingReportQuery.maybeSingle();
+  const { data: existingReports, error: existingReportError } =
+    await existingReportQuery;
 
   if (existingReportError) {
     return NextResponse.json(
@@ -85,7 +91,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  if (existingReport) {
+  if ((existingReports?.length ?? 0) > 0) {
     return NextResponse.json(
       { error: '이미 신고한 게시물입니다.', code: 'ALREADY_REPORTED' },
       { status: 409 },
@@ -105,7 +111,7 @@ export async function POST(req: NextRequest) {
     payload.comment_id = commentId;
   }
 
-  const { data: report, error: insertError } = await supabase
+  const { data: report, error: insertError } = await adminSupabase
     .from('reports')
     .insert(payload)
     .select('id')
@@ -119,14 +125,18 @@ export async function POST(req: NextRequest) {
   }
 
   if (postId) {
-    await supabase.rpc('increment_report_count', { post_id: postId });
+    await adminSupabase.rpc('increment_report_count', { post_id: postId });
   }
 
   const [postResult, reporterProfileResult] = await Promise.all([
     postId
-      ? supabase.from('posts').select('title').eq('id', postId).maybeSingle()
+      ? adminSupabase
+          .from('posts')
+          .select('title')
+          .eq('id', postId)
+          .maybeSingle()
       : Promise.resolve({ data: null, error: null }),
-    supabase
+    adminSupabase
       .from('profiles')
       .select('nickname, email_value')
       .eq('id', user.id)
@@ -157,7 +167,9 @@ export async function POST(req: NextRequest) {
       adminSupportUrl,
       postUrl,
     });
-  } catch {}
+  } catch {
+    // 이메일 발송 실패는 신고 접수 성공 여부에 영향을 주지 않습니다.
+  }
 
   revalidatePath(ROUTES.ADMIN_SUPPORT);
 
