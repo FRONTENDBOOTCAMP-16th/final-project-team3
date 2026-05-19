@@ -1,17 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
 import type { ErrorInfo } from 'next/error';
 
 import ErrorScreen from '@/components/error/ErrorScreen';
 import '@/app/globals.css';
 
-export default function GlobalErrorPage({ error, unstable_retry }: ErrorInfo) {
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.error(error);
-  }, [error]);
-
+export default function GlobalErrorPage({ unstable_retry }: ErrorInfo) {
   return (
     <html lang="ko">
       <body className="bg-bg-page">
