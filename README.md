@@ -132,7 +132,6 @@ dojang        — 도장 (id, profile_id → profiles, business_number, represen
 **문제**: 매 요청마다 Supabase DB를 조회해 불필요한 부하 발생
 
 **해결**: Next.js 16의 `use cache` 디렉티브와 `revalidateTag`를 활용한 캐싱 전략 수립
-
 - 공개 데이터(커뮤니티 목록, 대회일정, 도장찾기) → `use cache` + `cacheTag` 적용
 - 인증 필요 데이터 → 캐싱 없이 `Suspense` 스트리밍으로 처리
 - 글 작성 / 수정 / 삭제 시 Route Handler에서 `revalidateTag`로 캐시 즉시 무효화
@@ -155,148 +154,29 @@ revalidateTag('posts-list');
 
 **해결**: Supabase 클라이언트를 목적에 따라 3가지로 분리
 
-| 파일                 | 용도                                      |
-| -------------------- | ----------------------------------------- |
-| `supabase/client.ts` | 브라우저용 (클라이언트 컴포넌트)          |
-| `supabase/server.ts` | 서버용 (인증 필요, cookies 사용)          |
+| 파일 | 용도 |
+|------|------|
+| `supabase/client.ts` | 브라우저용 (클라이언트 컴포넌트) |
+| `supabase/server.ts` | 서버용 (인증 필요, cookies 사용) |
 | `supabase/public.ts` | 공개 데이터용 (캐싱 가능, cookies 불필요) |
 
 ### 3. 조회수 트리거 이슈 + Hydration 오류
 
 **문제**:
-
 - 조회수 증가 RPC 호출 시 `'You cannot change view count'` 에러 발생
 - 이후 캐싱된 `view_count`와 실제 DB 값 불일치로 Hydration 에러 발생
 
 **원인**: DB 트리거 `prevent_non_admin_post_system_update`에서 어드민이 아닌 경우 `view_count` 변경 차단. 트리거를 수정해 RPC로 조회수를 올릴 수 있게 됐지만, `'use cache'`로 캐싱된 값과 실시간 DB 값이 달라 Hydration 불일치 발생
 
 **해결**:
-
 - 트리거 함수에서 `view_count` 변경 차단 로직 제거 후 RPC 함수에 `SECURITY DEFINER` 적용
 - 실시간 반영이 필요한 조회수는 캐싱 대상에서 제외, 목록 페이지에서 조회수 표시 제거
 
-### 5. Soft Delete 처리
-
-**문제**: 게시글/댓글 삭제 시 DB에서 완전 삭제하면 복구 불가, 신고/분쟁 대응 어려움
-
-**해결**: `deleted_at` 컬럼 기반 Soft Delete 적용
-
-```typescript
-// Hard Delete → Soft Delete
-export async function deletePost(id: string) {
-  const { error } = await supabase
-    .from('posts')
-    .update({ deleted_at: new Date().toISOString() })
-    .eq('id', id);
-  if (error) throw error;
-}
-
-// 조회 시 삭제된 항목 제외
-const { data } = await supabase
-  .from('posts')
-  .select('*')
-  .is('deleted_at', null);
-```
-
-적용 대상: `posts`, `comments`, `competition` 테이블
-
-### 6. 무한 스크롤 최적화
-
-**문제**: 전체 데이터를 한 번에 가져온 후 클라이언트에서 `slice` 처리 → 게시글 수 증가 시 성능 저하
-
-**해결**: TanStack Query `useInfiniteQuery` + Supabase `.range()`로 실제 페이지네이션 구현
-
-```typescript
-export function usePosts() {
-  return useInfiniteQuery({
-    queryKey: ['posts'],
-    queryFn: ({ pageParam = 0 }) => getPosts(pageParam, 10),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.length < 10) return undefined;
-      return allPages.length;
-    },
-  });
-}
-```
-
-### 7. 탭 상태 새로고침 시 초기화 문제
-
-**문제**: `useState`로 탭 상태 관리 시 새로고침하면 항상 '전체' 탭으로 초기화
-
-**해결**: URL 쿼리 파라미터로 탭 상태 관리
-
-```typescript
-const searchParams = useSearchParams();
-const activeTab = searchParams.get('tab') ?? '전체';
-
-const handleTabChange = (tab: string) => {
-  const params = new URLSearchParams(searchParams.toString());
-  params.set('tab', tab);
-  router.replace(`?${params.toString()}`, { scroll: false });
-};
-```
-
-### 8. 접근성(a11y) 개선
-
-시맨틱 HTML 태그 적용, ARIA 속성 추가로 스크린리더 지원 강화
-
-- `div` → `article`, `main`, `section`, `ul/li` 등 시맨틱 태그 교체
-- 모든 인터랙티브 요소에 `aria-label` 추가
-- 아이콘 이미지에 `aria-hidden="true"` 추가
-- 폼 입력 필드에 `<label>` + `htmlFor` + `aria-required` 추가
-- 동적 콘텐츠에 `aria-live` 추가
-- 날짜/시간 표시를 `<time dateTime>` 태그로 변경
-
-### 9. SSR 구조 전환
-
-**문제**: 클라이언트에서 `useAuth`로 권한 체크 시 렌더링 후 리다이렉트 발생 → 권한 없는 페이지가 잠깐 노출
-
-**해결**: 서버 컴포넌트에서 권한 체크 후 미인가 시 즉시 리다이렉트
-
-```typescript
-const {
-  data: { user },
-} = await supabase.auth.getUser();
-if (!user) redirect('/login');
-
-const { data: profile } = await supabase
-  .from('profiles')
-  .select('role')
-  .eq('id', user.id)
-  .single();
-
-if (profile?.role !== 'admin' && profile?.role !== 'manager') {
-  redirect('/competitions');
-}
-```
-
-적용 페이지: `competitions/write`, `competitions/[id]/edit`, `community/[id]`
-
-### 10. Next.js 16 `params` Promise 타입 변경
-
-**문제**: 게시글/대회일정 상세 페이지 진입 시 `params.id`가 `undefined`로 전달돼 빈 화면 렌더링
-
-**원인**: Next.js 16부터 `params`가 Promise 타입으로 변경됨. 동기적으로 직접 접근하면 `undefined` 반환
-
-**해결**: `React.use()`로 params unwrap
-
-```typescript
-// 기존
-export default function PostDetailPage({ params }: { params: { id: string } }) {
-
-// 수정
-import { use } from 'react';
-export default function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
-```
-
-### 11. 수정 후 이전 데이터 잔류 (라우터 캐시 문제)
+### 4. 수정 후 이전 데이터 잔류 (라우터 캐시 문제)
 
 **문제**: 게시글/대회일정 수정 완료 후 상세 페이지로 이동하면 수정 전 데이터가 표시됨. 새로고침해야 최신 데이터 반영
 
 **원인**:
-
 - `revalidateTag`는 서버 캐시만 무효화하고, 브라우저 메모리의 라우터 캐시(Router Cache)는 별도로 동작
 - `cacheLife` 없이 `'use cache'`만 쓰면 `revalidateTag`와 연동 안 됨
 - `router.refresh()`를 `router.push()` 전에 호출해도 이동 대상 페이지엔 효과 없음
@@ -343,7 +223,7 @@ router.refresh();
 router.push(buildPostUrl(title, id));
 ```
 
-### 12. 댓글 어뷰징 방지 및 Race Condition
+### 5. 댓글 어뷰징 방지 및 Race Condition
 
 **문제**: 클라이언트에서 Supabase를 직접 호출하는 구조여서 쿨타임·중복·연속 차단이 브라우저 Console에서 fetch를 직접 날리면 전혀 동작하지 않음. `Promise.all`로 동시 요청 시 쿨타임 체크가 거의 동시에 실행되어 모두 통과하는 Race Condition 문제도 발생
 
@@ -364,6 +244,73 @@ function normalize(text: string): string {
 }
 ```
 
+### 6. 관리자 테이블 클라이언트 페이지네이션 → 서버 페이지네이션 전환
+
+**문제**: 전체 데이터를 한 번에 가져온 후 클라이언트에서 `slice`로 페이지네이션 처리. 데이터 증가 시 성능 저하, 검색·필터 상태가 `useState`에만 있어 새로고침 시 초기화됨
+
+**원인**: 서버 요청 단계에서 `page` / `search` / `filter`가 반영되지 않아 URL이 현재 테이블 상태를 표현하지 못함
+
+**해결**: URL 쿼리 파라미터로 상태 관리 + Supabase `.range()`로 서버 페이지네이션 전환
+
+```typescript
+const page = Number(searchParams.page ?? 1);
+const status = searchParams.status ?? 'all';
+const search = searchParams.search?.trim() ?? '';
+
+const from = (page - 1) * PAGE_SIZE;
+const to = from + PAGE_SIZE - 1;
+
+let query = supabase.from('profiles').select('*');
+if (status !== 'all') query = query.eq('role', status);
+if (search) query = query.ilike('nickname', `%${search}%`);
+
+const { data } = await query.range(from, to);
+```
+
+불필요한 전체 데이터 조회 제거, 새로고침 후에도 테이블 상태 유지, URL 공유 가능
+
+### 7. 회원가입 페이지 재진입 시 이전 입력값 잔류
+
+**문제**: 회원가입 페이지에 재진입하면 이전에 입력했던 값이 그대로 남아있음
+
+**원인**: Next.js 클라이언트 내비게이션 특성상 컴포넌트가 언마운트되지 않고 상태가 메모리에 유지됨
+
+**해결**: `react-hook-form`의 `reset()`을 `useEffect`에서 호출해 마운트 시 초기화
+
+```typescript
+useEffect(() => {
+  reset();
+  setServerError('');
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+}, [reset]);
+```
+
+### 8. 도장 회원가입 파일 업로드 순서 문제
+
+**문제**: 도장 회원가입 시 사업자등록증 파일 업로드 후 회원가입 API를 호출했을 때 `businessFileUrl`이 `undefined`인 상태로 `profiles` 테이블에 저장됨
+
+**원인**: 파일 URL을 받아오기 전에 회원가입 API가 먼저 호출되는 비동기 순서 오류
+
+```typescript
+// 문제 코드 — URL 없이 API 먼저 호출됨
+await registerDojang({ businessFileUrl }); // undefined 상태로 전달
+businessFileUrl = await uploadBusinessFile(businessFile); // 나중에 실행
+```
+
+**해결**: 파일 업로드를 먼저 완료한 후 URL을 받아 API 호출하도록 순서 수정. `File` 객체는 브라우저 전용 타입이라 Zod 스키마 검증이 어려워 `onSubmit` 내부에서 직접 체크
+
+```typescript
+const onSubmit = async (data: DojangFormType) => {
+  if (!businessFile) {
+    setServerError('사업자등록증을 첨부해주세요.');
+    return;
+  }
+  // 1. 파일 먼저 업로드 → URL 수령
+  const businessFileUrl = await uploadBusinessFile(businessFile);
+  // 2. URL 확보 후 회원가입 API 호출
+  await registerDojang({ ...data, businessFileUrl });
+};
+```
 ---
 
 ## 🏗 아키텍처
