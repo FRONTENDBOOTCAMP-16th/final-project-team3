@@ -85,7 +85,7 @@ export async function uploadBusinessFile(file: File): Promise<string> {
     .getPublicUrl(fileName);
   return data.publicUrl;
 }
-// 로그인
+
 export async function loginUser({
   email,
   password,

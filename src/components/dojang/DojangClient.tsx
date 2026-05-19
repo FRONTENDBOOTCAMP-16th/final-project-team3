@@ -193,8 +193,10 @@ export default function DojangClient() {
 
   return (
     <>
+      {/* ✅ strategy="lazyOnload" 추가 */}
       <Script
         src={`https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID}`}
+        strategy="lazyOnload"
         onLoad={initMap}
       />
 
@@ -223,7 +225,7 @@ export default function DojangClient() {
           className="pb-6 flex justify-center"
           aria-label="도장 찾기"
         >
-          <div className="w-full max-w-7xl px-6 flex flex-col gap-4">
+          <div className="w-full max-w-7xl px-6 flex flex-col gap-4 min-h-screen">
             <div className="relative">
               {!mapLoaded && (
                 <div
@@ -239,8 +241,8 @@ export default function DojangClient() {
               )}
               <div
                 ref={mapRef}
-                className="w-full h-100 rounded-lg overflow-hidden border border-gray-200"
-                style={{ zIndex: 0 }}
+                className="w-full rounded-lg overflow-hidden border border-gray-200"
+                style={{ zIndex: 0, height: '400px', minHeight: '400px' }}
                 role="application"
                 aria-label="도장 위치 지도"
               />

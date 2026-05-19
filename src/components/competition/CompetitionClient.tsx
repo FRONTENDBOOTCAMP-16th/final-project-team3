@@ -132,9 +132,9 @@ export default function CompetitionClient({
               }
             >
               {filteredCompetitions.length > 0 ? (
-                filteredCompetitions.map((competition) => (
+                filteredCompetitions.map((competition, index) => (
                   <li key={competition.id} className="h-full">
-                    <CompetitionCard competition={competition} />
+                    <CompetitionCard competition={competition} index={index} />
                   </li>
                 ))
               ) : (
@@ -148,19 +148,23 @@ export default function CompetitionClient({
             </ul>
           )}
 
+          {/* ✅ aria-live 수정 */}
           {hasNextPage && (
             <div
               ref={observerRef}
               className="h-20 flex items-center justify-center"
-              aria-live="polite"
             >
-              {isFetchingNextPage && (
-                <div
-                  className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"
-                  role="status"
-                  aria-label="로딩 중"
-                />
-              )}
+              <div role="status" aria-live="polite" aria-atomic="true">
+                {isFetchingNextPage && (
+                  <>
+                    <div
+                      className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"
+                      aria-hidden="true"
+                    />
+                    <span className="sr-only">더 많은 대회를 불러오는 중</span>
+                  </>
+                )}
+              </div>
             </div>
           )}
         </div>

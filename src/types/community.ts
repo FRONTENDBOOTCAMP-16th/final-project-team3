@@ -26,6 +26,7 @@ export interface Comment {
   user_id: string;
   content: string;
   created_at: string;
+  deleted_at?: string | null;
   nickname?: string;
   avatar_url?: string;
   belt_level?: string;

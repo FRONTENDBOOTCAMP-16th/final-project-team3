@@ -33,6 +33,6 @@ export function useCompetition(initialCompetitions: Competition[]) {
       if (lastPage.length < PAGE_SIZE) return undefined;
       return allPages.length;
     },
-    staleTime: 1000 * 30,
+    staleTime: 0,
   });
 }
