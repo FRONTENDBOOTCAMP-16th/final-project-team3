@@ -1,8 +1,17 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { normalizeBeltLevel } from '@/constants/belt';
 
 export async function POST(req: NextRequest) {
   const { email, password, name, nickname, belt } = await req.json();
+  const beltLevel = normalizeBeltLevel(belt);
+
+  if (!beltLevel) {
+    return NextResponse.json(
+      { error: '벨트를 선택해주세요.' },
+      { status: 400 },
+    );
+  }
 
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -23,7 +32,7 @@ export async function POST(req: NextRequest) {
     id: data.user.id,
     name,
     nickname,
-    belt_level: belt,
+    belt_level: beltLevel,
     email_value: email,
     role: 'user',
   });
