@@ -81,6 +81,7 @@ export default function AdminPostTableClient({
     setPage,
     setSearchQuery,
     commitSearch,
+    isPending,
   } = useAdminTableQueryState<AdminPostFilterValue>({
     filterParamName: 'category',
     defaultFilter: 'all',
@@ -97,6 +98,7 @@ export default function AdminPostTableClient({
         onSearchQueryChange={setSearchQuery}
         onSearch={commitSearch}
         searchAriaLabel="게시글 제목 검색"
+        isPending={isPending}
       />
 
       <AdminDataTable
@@ -107,6 +109,7 @@ export default function AdminPostTableClient({
         currentPage={currentPage}
         getRowKey={(row) => row.id}
         initialPageSize={pageSize}
+        isLoading={isPending}
         onPageChange={setPage}
         pageSizeOptions={[pageSize]}
         serverPagination

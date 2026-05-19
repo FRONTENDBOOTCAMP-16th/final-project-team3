@@ -43,8 +43,7 @@ type ConfirmReportAction = {
 
 const actionButtonClass =
   'inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors duration-200 hover:bg-gray-100 cursor-pointer';
-const actionPlaceholderClass =
-  'inline-flex h-[34px] w-[34px] items-center justify-center text-sm text-zinc-400';
+const disabledDetailTitle = '삭제/숨김 처리된 게시글은 상세보기할 수 없습니다.';
 
 function DetailItem({ label, value }: DetailItemProps) {
   return (
@@ -134,7 +133,19 @@ export default function AdminSupportReportActions({
           <FileText size={18} />
         </button>
       ) : (
-        <span className={actionPlaceholderClass}>-</span>
+        <span
+          title={disabledDetailTitle}
+          className="inline-flex cursor-not-allowed"
+        >
+          <button
+            type="button"
+            aria-label={`${row.post_title} 상세보기 불가`}
+            className={`${actionButtonClass} cursor-not-allowed opacity-35 hover:bg-transparent`}
+            disabled
+          >
+            <FileText size={18} />
+          </button>
+        </span>
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>
