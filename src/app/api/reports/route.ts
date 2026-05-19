@@ -30,11 +30,6 @@ function buildAbsoluteUrl(origin: string, path: string) {
   return new URL(path, origin).toString();
 }
 
-function logReportError(message: string, error: unknown) {
-  // eslint-disable-next-line no-console
-  console.error(`[api/reports] ${message}`, error);
-}
-
 export async function POST(req: NextRequest) {
   const supabase = await createSupabaseServerClient();
   const {
@@ -90,7 +85,6 @@ export async function POST(req: NextRequest) {
     await existingReportQuery;
 
   if (existingReportError) {
-    logReportError('Failed to check duplicate report.', existingReportError);
     return NextResponse.json(
       { error: '신고 중복 확인에 실패했습니다.' },
       { status: 500 },
@@ -124,7 +118,6 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (insertError) {
-    logReportError('Failed to insert report.', insertError);
     return NextResponse.json(
       { error: '신고 저장에 실패했습니다.' },
       { status: 500 },
@@ -132,14 +125,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (postId) {
-    const { error: incrementError } = await adminSupabase.rpc(
-      'increment_report_count',
-      { post_id: postId },
-    );
-
-    if (incrementError) {
-      logReportError('Failed to increment report count.', incrementError);
-    }
+    await adminSupabase.rpc('increment_report_count', { post_id: postId });
   }
 
   const [postResult, reporterProfileResult] = await Promise.all([
@@ -156,17 +142,6 @@ export async function POST(req: NextRequest) {
       .eq('id', user.id)
       .maybeSingle(),
   ]);
-
-  if (postResult.error) {
-    logReportError('Failed to load reported post.', postResult.error);
-  }
-
-  if (reporterProfileResult.error) {
-    logReportError(
-      'Failed to load reporter profile.',
-      reporterProfileResult.error,
-    );
-  }
 
   const postTitle = postResult.data?.title?.trim() || '삭제된 게시글';
   const reporterName =
@@ -192,8 +167,8 @@ export async function POST(req: NextRequest) {
       adminSupportUrl,
       postUrl,
     });
-  } catch (emailError) {
-    logReportError('Failed to send report notification email.', emailError);
+  } catch {
+    // 이메일 발송 실패는 신고 접수 성공 여부에 영향을 주지 않습니다.
   }
 
   revalidatePath(ROUTES.ADMIN_SUPPORT);
