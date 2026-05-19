@@ -29,7 +29,7 @@ export const ADMIN_META: Record<AdminPageKey, AdminMeta> = {
   },
   support: {
     title: '고객지원',
-    description: '도장 인증, 신고 내역, 문의 내역을 관리합니다',
+    description: '도장 인증, 신고 내역을 관리합니다',
     metadataTitle: '고객 지원',
   },
   competitions: {

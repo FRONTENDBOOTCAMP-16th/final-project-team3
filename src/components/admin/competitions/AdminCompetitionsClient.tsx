@@ -92,6 +92,7 @@ export default function AdminCompetitionsClient({
     setPage,
     setSearchQuery,
     commitSearch,
+    isPending,
   } = useAdminTableQueryState<AdminCompetitionFilterValue>({
     filterParamName: 'status',
     defaultFilter: 'all',
@@ -109,6 +110,7 @@ export default function AdminCompetitionsClient({
         onSearch={commitSearch}
         searchPlaceholder="대회 제목 검색..."
         searchAriaLabel="대회 제목 검색"
+        isPending={isPending}
       />
 
       <AdminDataTable
@@ -119,6 +121,7 @@ export default function AdminCompetitionsClient({
         emptyMessage="등록된 대회가 없습니다."
         getRowKey={(row) => row.id}
         initialPageSize={pageSize}
+        isLoading={isPending}
         onPageChange={setPage}
         pageSizeOptions={[pageSize]}
         serverPagination
