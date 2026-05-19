@@ -7,6 +7,9 @@ import { MessageCircle } from 'lucide-react';
 import { categoryMap } from '@/constants/categoryMap';
 import { buildPostUrl } from '@/lib/slug';
 import PostLikeButton from '@/components/community/PostLikeButton';
+import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import LoadingSpinner from '../common/LoadingSpinner';
 
 interface PostCardProps {
   post: {
@@ -33,6 +36,8 @@ const DEFAULT_IMAGES = [
 
 export default function PostCard({ post, userId }: PostCardProps) {
   const categoryInfo = categoryMap[post.category] ?? categoryMap.personal;
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const defaultImage =
     DEFAULT_IMAGES[
@@ -40,17 +45,35 @@ export default function PostCard({ post, userId }: PostCardProps) {
         DEFAULT_IMAGES.length
     ];
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) {
+      return;
+    }
+    e.preventDefault();
+    startTransition(() => {
+      router.push(buildPostUrl(post.title, post.id));
+    });
+  };
+
   return (
     <Link
       href={buildPostUrl(post.title, post.id)}
       className="block w-full"
       rel="noopener noreferrer"
       aria-label={`${post.title} 게시글 상세보기`}
+      onClick={handleClick}
     >
       <article
-        className="rounded-lg overflow-hidden border bg-bg-white border-gray-200 flex flex-col h-97.5 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+        className="rounded-lg overflow-hidden border bg-bg-white border-gray-200 flex flex-col h-97.5 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200 relative"
         aria-label={`${post.nickname}의 게시글: ${post.title}`}
+        aria-busy={isPending}
       >
+        {isPending && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/40 rounded-lg">
+            <LoadingSpinner label="게시글 불러오는 중" />
+          </div>
+        )}
+
         <div className="relative w-full h-50 bg-btn-basic shrink-0">
           <Image
             src={post.image_url || defaultImage}

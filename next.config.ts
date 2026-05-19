@@ -3,6 +3,7 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   cacheComponents: true,
   experimental: {
+    optimizeCss: true,
     staleTimes: {
       dynamic: 0,
       static: 30,

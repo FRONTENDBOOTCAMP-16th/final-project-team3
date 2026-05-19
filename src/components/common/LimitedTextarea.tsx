@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 
 interface LimitedTextareaProps {
   id?: string;
@@ -37,6 +37,7 @@ export function LimitedTextarea({
   const len = value.length;
   const isWarn = len >= threshold && len < maxLength;
   const isError = len >= maxLength;
+  const isComposingRef = useRef(false);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -50,6 +51,7 @@ export function LimitedTextarea({
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (!allowNewline && e.key === 'Enter') e.preventDefault();
+      if (isComposingRef.current) return;
       onKeyDown?.(e);
     },
     [allowNewline, onKeyDown],
@@ -79,6 +81,12 @@ export function LimitedTextarea({
           id={id}
           value={value}
           onChange={handleChange}
+          onCompositionStart={() => {
+            isComposingRef.current = true;
+          }}
+          onCompositionEnd={() => {
+            isComposingRef.current = false;
+          }}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           disabled={disabled}

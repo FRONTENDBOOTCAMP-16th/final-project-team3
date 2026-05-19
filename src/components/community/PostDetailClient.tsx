@@ -1,7 +1,7 @@
 'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   deletePost,
@@ -12,6 +12,7 @@ import { reportPost, ReportReason } from '@/services/reportService';
 import type { Post, Comment } from '@/types/community';
 import Image from 'next/image';
 import { useAuth } from '@/hooks/useAuth';
+import { myPageKeys } from '@/hooks/useMyPage';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ReportModal from '@/components/community/ReportModal';
 import ConfirmModal from '@/components/common/ConfirmModal';
@@ -54,6 +55,13 @@ export default function PostDetailClient({
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [deletePostModalOpen, setDeletePostModalOpen] = useState(false);
   const [deleteCommentId, setDeleteCommentId] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setComment('');
+  }, [id]);
 
   const canManagePost = canManageContent({
     currentUserId: userId,
@@ -71,34 +79,67 @@ export default function PostDetailClient({
       showErrorToast('댓글을 입력해주세요.');
       return;
     }
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
+
+    const tempId = `temp-${Date.now()}`;
+    const optimisticComment: Comment = {
+      id: tempId,
+      post_id: id,
+      user_id: userId ?? '',
+      content: comment,
+      created_at: new Date().toISOString(),
+      deleted_at: null,
+      nickname: user?.name ?? '알 수 없음',
+      avatar_url: user?.image ?? undefined,
+    };
+
+    setComments((prev) => [...prev, optimisticComment]);
+    setComment('');
 
     try {
       const res = await fetch('/api/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ postId: id, content: comment }),
+        body: JSON.stringify({
+          postId: id,
+          content: optimisticComment.content,
+        }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
+        setComments((prev) => prev.filter((c) => c.id !== tempId));
+        setComment(optimisticComment.content);
         showErrorToast(data.error ?? '댓글 작성에 실패했습니다.');
         return;
       }
 
-      setComments((prev) => [
-        ...prev,
-        {
-          ...data.comment,
-          nickname: user?.name ?? '알 수 없음',
-          avatar_url: user?.image ?? null,
-        },
-      ]);
+      setComments((prev) => {
+        const alreadyReplaced = prev.some((c) => c.id === data.comment.id);
+        if (alreadyReplaced) return prev;
+        return prev.map((c) =>
+          c.id === tempId
+            ? {
+                ...data.comment,
+                nickname: user?.name ?? '알 수 없음',
+                avatar_url: user?.image ?? null,
+              }
+            : c,
+        );
+      });
+
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       queryClient.removeQueries({ queryKey: ['mypage', 'commentCount'] });
-      setComment('');
     } catch {
+      setComments((prev) => prev.filter((c) => c.id !== tempId));
+      setComment(optimisticComment.content);
       showErrorToast('네트워크 오류가 발생했습니다.');
+    } finally {
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
     }
   };
 
@@ -106,6 +147,8 @@ export default function PostDetailClient({
     try {
       await deletePost(id);
       await queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.removeQueries({ queryKey: myPageKeys.posts });
+      queryClient.removeQueries({ queryKey: myPageKeys.postCount });
       setDeletePostModalOpen(false);
       showSuccessToast('게시글이 삭제되었습니다.', '🗑️');
       await new Promise((resolve) => setTimeout(resolve, 700));
@@ -299,11 +342,16 @@ export default function PostDetailClient({
               rows={1}
               placeholder="댓글을 입력하세요..."
               className="flex-1"
-              onKeyDown={(e) => e.key === 'Enter' && handleCommentSubmit()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleCommentSubmit();
+                }
+              }}
             />
             <button
               onClick={handleCommentSubmit}
               aria-label="댓글 전송"
+              disabled={isSubmitting}
               className="w-10 h-10 flex items-center justify-center shrink-0 transition-colors cursor-pointer"
             >
               <Image
@@ -323,15 +371,13 @@ export default function PostDetailClient({
               {index > 0 && <div className="border-t border-gray-50 mb-4" />}
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-full bg-gray-200 shrink-0 overflow-hidden">
-                  {c.avatar_url && (
-                    <Image
-                      src={c.avatar_url}
-                      alt={`${c.nickname} 프로필 이미지`}
-                      width={32}
-                      height={32}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
+                  <Image
+                    src={c.avatar_url || '/basic.svg'}
+                    alt={`${c.nickname} 프로필 이미지`}
+                    width={32}
+                    height={32}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1">
@@ -360,9 +406,9 @@ export default function PostDetailClient({
                         allowNewline={false}
                         rows={1}
                         className="flex-1"
-                        onKeyDown={(e) =>
-                          e.key === 'Enter' && handleEditComment(c.id)
-                        }
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleEditComment(c.id);
+                        }}
                       />
                       <button
                         onClick={() => handleEditComment(c.id)}

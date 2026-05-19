@@ -1,11 +1,11 @@
 import { forwardRef } from 'react';
 
 const BELTS = [
-  { value: 'white', label: 'White  (입문자)', color: '#e8e8e8' },
-  { value: 'blue', label: 'Blue   (파란띠)', color: '#2e6fdb' },
-  { value: 'purple', label: 'Purple (보라띠)', color: '#7c4ddb' },
-  { value: 'brown', label: 'Brown  (갈색띠)', color: '#8b5a2b' },
-  { value: 'black', label: 'Black  (검은띠)', color: '#1a1a1a' },
+  { value: 'White', label: 'White  (입문자)', color: '#e8e8e8' },
+  { value: 'Blue', label: 'Blue   (파란띠)', color: '#2e6fdb' },
+  { value: 'Purple', label: 'Purple (보라띠)', color: '#7c4ddb' },
+  { value: 'Brown', label: 'Brown  (갈색띠)', color: '#8b5a2b' },
+  { value: 'Black', label: 'Black  (검은띠)', color: '#1a1a1a' },
 ];
 
 const BeltSelect = forwardRef<

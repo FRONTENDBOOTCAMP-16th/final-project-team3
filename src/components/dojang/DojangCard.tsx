@@ -17,7 +17,7 @@ interface DojangCardProps {
 export default function DojangCard({ dojang, isSelected }: DojangCardProps) {
   return (
     <article
-      className={`p-4 border rounded-lg bg-white hover:shadow-md transition-all cursor-pointer
+      className={`p-4 border rounded-lg bg-white hover:shadow-md transition-all cursor-pointer h-full flex flex-col
         ${isSelected ? 'border-btn-focus border-2 shadow-md' : 'border-gray-200'}`}
       aria-label={`${dojang.place_name} 도장${isSelected ? ', 선택됨' : ''}`}
       aria-current={isSelected}
@@ -32,7 +32,8 @@ export default function DojangCard({ dojang, isSelected }: DojangCardProps) {
         {dojang.address_name}
       </address>
 
-      {dojang.phone && (
+      {/* ✅ 전화번호 없을 때 빈 공간 확보 */}
+      {dojang.phone ? (
         <a
           href={'tel:' + dojang.phone}
           className="text-sm text-gray-400 mt-1 block hover:text-gray-600 transition-colors"
@@ -40,7 +41,12 @@ export default function DojangCard({ dojang, isSelected }: DojangCardProps) {
         >
           {dojang.phone}
         </a>
+      ) : (
+        <div className="mt-1 h-5" />
       )}
+
+      {/* ✅ 버튼을 항상 아래로 밀기 */}
+      <div className="flex-1" />
 
       <a
         href={dojang.place_url}

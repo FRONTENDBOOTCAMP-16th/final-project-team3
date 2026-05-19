@@ -3,7 +3,7 @@ import { BeltLevel } from './user';
 export interface ProfileUpdateForm {
   nickname: string;
   bio: string;
-  belt_level: BeltLevel;
+  belt_level: BeltLevel | null;
   avatar_url: string | null;
 }
 

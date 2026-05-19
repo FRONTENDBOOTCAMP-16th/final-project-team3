@@ -131,6 +131,7 @@ export default function AdminSupportTableClient({
     setPage,
     setSearchQuery,
     commitSearch,
+    isPending,
   } = useAdminTableQueryState<SupportSection>({
     filterParamName: 'section',
     defaultFilter: 'dojang',
@@ -158,6 +159,7 @@ export default function AdminSupportTableClient({
         onSearch={commitSearch}
         searchPlaceholder={searchPlaceholder}
         searchAriaLabel={searchAriaLabel}
+        isPending={isPending}
       />
 
       {activeSection === 'dojang' ? (
@@ -169,6 +171,7 @@ export default function AdminSupportTableClient({
           emptyMessage="도장 인증 요청이 없습니다."
           getRowKey={(row) => row.id}
           initialPageSize={pageSize}
+          isLoading={isPending}
           onPageChange={setPage}
           pageSizeOptions={[pageSize]}
           serverPagination
@@ -183,6 +186,7 @@ export default function AdminSupportTableClient({
           emptyMessage="신고 내역이 없습니다."
           getRowKey={(row) => row.id}
           initialPageSize={pageSize}
+          isLoading={isPending}
           onPageChange={setPage}
           pageSizeOptions={[pageSize]}
           serverPagination

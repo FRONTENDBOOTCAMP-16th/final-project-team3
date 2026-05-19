@@ -14,7 +14,7 @@ import {
 } from '@/services/userService';
 import { ProfileUpdateForm } from '@/types/mypage';
 
-const myPageKeys = {
+export const myPageKeys = {
   profile: ['mypage', 'profile'] as const,
   posts: ['mypage', 'posts'] as const,
   postCount: ['mypage', 'postCount'] as const,
@@ -32,8 +32,8 @@ export const useUpdateMyProfile = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: ProfileUpdateForm) => updateMyProfile(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: myPageKeys.profile });
+    onSuccess: (profile) => {
+      queryClient.setQueryData(myPageKeys.profile, profile);
     },
   });
 };

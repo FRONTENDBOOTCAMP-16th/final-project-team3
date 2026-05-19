@@ -169,6 +169,7 @@ export function mapReportQueryRowsToAdminReportRows(
 
   return reports.map<AdminReportRow>((report) => {
     const post = report.post_id ? postsMap.get(report.post_id) : null;
+    const isMissingPost = Boolean(report.post_id) && !post;
     const reporter = report.reporter_id
       ? profilesMap.get(report.reporter_id)
       : null;
@@ -188,10 +189,9 @@ export function mapReportQueryRowsToAdminReportRows(
       handled_at: formatSupportDate(report.handled_at),
       raw_status: report.reports_status,
       raw_action_type: report.action_type,
-      post_status_label: getReportPostStatusLabel(
-        post?.status,
-        post?.deleted_at,
-      ),
+      post_status_label: isMissingPost
+        ? '삭제'
+        : getReportPostStatusLabel(post?.status, post?.deleted_at),
       post_status: post?.status ?? null,
       post_deleted_at: post?.deleted_at ?? null,
     };
@@ -201,9 +201,11 @@ export function mapReportQueryRowsToAdminReportRows(
 export function sortSupportReportQueryRows(reports: SupportReportQueryRow[]) {
   return [...reports].sort((left, right) => {
     const leftPriority =
-      REPORT_STATUS_PRIORITY_MAP[left.reports_status ?? ''] ?? Number.MAX_SAFE_INTEGER;
+      REPORT_STATUS_PRIORITY_MAP[left.reports_status ?? ''] ??
+      Number.MAX_SAFE_INTEGER;
     const rightPriority =
-      REPORT_STATUS_PRIORITY_MAP[right.reports_status ?? ''] ?? Number.MAX_SAFE_INTEGER;
+      REPORT_STATUS_PRIORITY_MAP[right.reports_status ?? ''] ??
+      Number.MAX_SAFE_INTEGER;
 
     if (leftPriority !== rightPriority) {
       return leftPriority - rightPriority;

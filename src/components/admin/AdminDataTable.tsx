@@ -24,6 +24,7 @@ interface AdminDataTableProps<T> {
   currentPage?: number;
   totalItems?: number;
   serverPagination?: boolean;
+  isLoading?: boolean;
   // eslint-disable-next-line no-unused-vars
   onPageChange?: (_page: number) => void;
   // eslint-disable-next-line no-unused-vars
@@ -40,6 +41,7 @@ export default function AdminDataTable<T>({
   currentPage,
   totalItems,
   serverPagination,
+  isLoading = false,
   onPageChange,
   getRowKey,
 }: AdminDataTableProps<T>) {
@@ -63,9 +65,15 @@ export default function AdminDataTable<T>({
   });
 
   return (
-    <section className="w-full max-w-7xl rounded-md border bg-white px-6 py-4 mb-8">
+    <section
+      className="relative w-full max-w-7xl rounded-md border bg-white px-6 py-4 mb-8"
+      aria-busy={isLoading}
+    >
       <table
-        className="w-full table-fixed border-collapse bg-white"
+        className={cn(
+          'w-full table-fixed border-collapse bg-white transition-opacity duration-150',
+          isLoading && 'opacity-45',
+        )}
         aria-label={caption}
       >
         {caption ? <caption className="sr-only">{caption}</caption> : null}
@@ -144,9 +152,26 @@ export default function AdminDataTable<T>({
         pageSize={pageSize}
         pageSizeOptions={normalizedPageSizeOptions}
         showPageSizeSelector={!serverPagination}
+        disabled={isLoading}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
       />
+
+      {isLoading ? (
+        <div
+          className="absolute inset-0 z-10 flex items-center justify-center rounded-md bg-white/55 backdrop-blur-[1px]"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-center gap-3 rounded-md border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-text-secondary shadow-sm">
+            <span
+              className="size-5 rounded-full border-2 border-zinc-200 border-t-btn-focus animate-spin"
+              aria-hidden="true"
+            />
+            데이터를 불러오는 중입니다
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }
