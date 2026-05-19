@@ -1,14 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import {
+  MIN_NICKNAME_LENGTH,
+  NICKNAME_MIN_LENGTH_MESSAGE,
+} from '@/constants/user';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const nickname = searchParams.get('nickname')?.trim();
   const excludeUserId = searchParams.get('excludeUserId');
 
-  if (!nickname || nickname.length < 2) {
+  if (!nickname || nickname.length < MIN_NICKNAME_LENGTH) {
     return NextResponse.json(
-      { error: '닉네임은 2자 이상이어야 합니다.' },
+      { error: NICKNAME_MIN_LENGTH_MESSAGE },
       { status: 400 },
     );
   }

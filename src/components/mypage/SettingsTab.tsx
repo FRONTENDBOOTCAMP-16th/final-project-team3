@@ -16,6 +16,10 @@ import { useRouter } from 'next/navigation';
 import { LimitedInput } from '@/components/common/LimitedInput';
 import { LimitedTextarea } from '@/components/common/LimitedTextarea';
 import { BELTS, BELT_COLORS, normalizeBeltLevel } from '@/constants/belt';
+import {
+  MIN_NICKNAME_LENGTH,
+  NICKNAME_MIN_LENGTH_MESSAGE,
+} from '@/constants/user';
 
 interface SettingsTabProps {
   profile: Profile;
@@ -24,7 +28,6 @@ interface SettingsTabProps {
 const isAdmin = (role: string | null) => role === 'admin';
 type SelectedBeltLevel = BeltLevel | '';
 
-const MIN_NICKNAME_LENGTH = 2;
 const getProfileBeltValue = (beltLevel: Profile['belt_level']) =>
   normalizeBeltLevel(beltLevel) ?? '';
 
@@ -46,7 +49,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
     if (!isEditing) return '';
     if (trimmedNickname.length === 0) return '닉네임을 입력해주세요.';
     if (trimmedNickname.length < MIN_NICKNAME_LENGTH) {
-      return '닉네임은 2자 이상이어야 합니다.';
+      return NICKNAME_MIN_LENGTH_MESSAGE;
     }
     return '';
   }, [isEditing, trimmedNickname.length]);

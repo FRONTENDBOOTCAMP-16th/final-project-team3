@@ -2,6 +2,10 @@ import { supabase } from '@/lib/supabase/client';
 import { Profile } from '@/types/user';
 import { ProfileUpdateForm, MyPost } from '@/types/mypage';
 import { normalizeBeltLevel } from '@/constants/belt';
+import {
+  MIN_NICKNAME_LENGTH,
+  NICKNAME_MIN_LENGTH_MESSAGE,
+} from '@/constants/user';
 
 async function getAuthUser() {
   const {
@@ -41,8 +45,6 @@ export async function fetchMyProfile(): Promise<Profile> {
   };
 }
 
-const MIN_NICKNAME_LENGTH = 2;
-
 export async function updateMyProfile(
   form: ProfileUpdateForm,
 ): Promise<Profile> {
@@ -50,7 +52,7 @@ export async function updateMyProfile(
   const nickname = form.nickname.trim();
 
   if (nickname.length < MIN_NICKNAME_LENGTH) {
-    throw new Error('닉네임은 2자 이상이어야 합니다.');
+    throw new Error(NICKNAME_MIN_LENGTH_MESSAGE);
   }
 
   const nicknameCheckParams = new URLSearchParams({
