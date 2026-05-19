@@ -1,6 +1,11 @@
 import { supabase } from '@/lib/supabase/client';
 import { Profile } from '@/types/user';
 import { ProfileUpdateForm, MyPost } from '@/types/mypage';
+import { normalizeBeltLevel } from '@/constants/belt';
+import {
+  MIN_NICKNAME_LENGTH,
+  NICKNAME_MIN_LENGTH_MESSAGE,
+} from '@/constants/user';
 
 async function getAuthUser() {
   const {
@@ -17,6 +22,8 @@ interface PostQueryRow {
   category: string;
   image_url: string;
   view_count: number;
+  status: string;
+  deleted_at: string | null;
   created_at: string;
   profiles: { nickname: string; avatar_url: string } | null;
   active_comment_counts: { count: number }[];
@@ -32,18 +39,56 @@ export async function fetchMyProfile(): Promise<Profile> {
     .single();
 
   if (error) throw error;
-  return data;
+  return {
+    ...data,
+    belt_level: normalizeBeltLevel(data.belt_level),
+  };
 }
 
-export async function updateMyProfile(form: ProfileUpdateForm): Promise<void> {
+export async function updateMyProfile(
+  form: ProfileUpdateForm,
+): Promise<Profile> {
   const user = await getAuthUser();
+  const nickname = form.nickname.trim();
 
-  const { error } = await supabase
+  if (nickname.length < MIN_NICKNAME_LENGTH) {
+    throw new Error(NICKNAME_MIN_LENGTH_MESSAGE);
+  }
+
+  const nicknameCheckParams = new URLSearchParams({
+    nickname,
+    excludeUserId: user.id,
+  });
+  const nicknameCheckResponse = await fetch(
+    `/api/check-nickname?${nicknameCheckParams.toString()}`,
+  );
+  const nicknameCheckData = await nicknameCheckResponse.json();
+
+  if (!nicknameCheckResponse.ok) {
+    throw new Error(
+      nicknameCheckData.error ?? '닉네임 확인 중 오류가 발생했습니다.',
+    );
+  }
+  if (!nicknameCheckData.available) {
+    throw new Error('이미 사용 중인 닉네임입니다.');
+  }
+
+  const { data, error } = await supabase
     .from('profiles')
-    .update(form)
-    .eq('id', user.id);
+    .update({
+      ...form,
+      nickname,
+      belt_level: normalizeBeltLevel(form.belt_level),
+    })
+    .eq('id', user.id)
+    .select('*')
+    .single();
 
   if (error) throw error;
+  return {
+    ...data,
+    belt_level: normalizeBeltLevel(data.belt_level),
+  };
 }
 
 export async function fetchMyPosts(page: number): Promise<MyPost[]> {
@@ -62,6 +107,8 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
       content,
       category,
       image_url,
+      status,
+      deleted_at,
       created_at,
       profiles (
         nickname,
@@ -78,21 +125,21 @@ export async function fetchMyPosts(page: number): Promise<MyPost[]> {
 
   if (error) throw error;
 
-  return (data ?? []).map((post) => {
-    const p = post as unknown as PostQueryRow;
-    return {
-      id: p.id,
-      title: p.title,
-      content: p.content,
-      category: p.category,
-      image_url: p.image_url,
-      view_count: p.view_count,
-      created_at: p.created_at,
-      nickname: p.profiles?.nickname ?? '',
-      avatar_url: p.profiles?.avatar_url ?? '',
-      comment_count: p.active_comment_counts?.[0]?.count ?? 0,
-    };
-  });
+  return (data ?? [])
+    .map((post) => post as unknown as PostQueryRow)
+    .filter((post) => post.deleted_at === null && post.status === 'published')
+    .map((post) => ({
+      id: post.id,
+      title: post.title,
+      content: post.content,
+      category: post.category,
+      image_url: post.image_url,
+      view_count: post.view_count,
+      created_at: post.created_at,
+      nickname: post.profiles?.nickname ?? '',
+      avatar_url: post.profiles?.avatar_url ?? '',
+      comment_count: post.active_comment_counts?.[0]?.count ?? 0,
+    }));
 }
 export async function deleteMyAccount(): Promise<void> {
   const user = await getAuthUser();

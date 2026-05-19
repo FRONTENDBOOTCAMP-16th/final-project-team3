@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import { Profile, BeltLevel } from '@/types/user';
-import { BELT_COLORS } from '@/constants/belt';
+import { Profile } from '@/types/user';
+import { BELT_COLORS, normalizeBeltLevel } from '@/constants/belt';
 
 interface ProfileCardProps {
   profile: Profile;
@@ -13,6 +13,8 @@ export default function ProfileCard({
   postCount = 0,
   commentCount = 0,
 }: ProfileCardProps) {
+  const beltLevel = normalizeBeltLevel(profile.belt_level);
+
   return (
     <div className="flex flex-col items-center gap-4 p-6 bg-bg-white rounded-2xl shadow-sm">
       <div className="relative w-36 h-36">
@@ -28,17 +30,16 @@ export default function ProfileCard({
         <h2 className="text-2xl font-bold text-text-primary">
           {profile.nickname ?? '닉네임 없음'}
         </h2>
-        {profile.belt_level && profile.role !== 'admin' && (
+        {beltLevel && profile.role !== 'admin' && (
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-btn-basic rounded-full mt-1">
             <span
               className="w-3 h-3 rounded-full shrink-0"
               style={{
-                backgroundColor: BELT_COLORS[profile.belt_level as BeltLevel],
-                border:
-                  profile.belt_level === 'White' ? '1px solid #d1d5db' : 'none',
+                backgroundColor: BELT_COLORS[beltLevel],
+                border: beltLevel === 'White' ? '1px solid #d1d5db' : 'none',
               }}
             />
-            <span className="text-sm text-btn-text">{profile.belt_level}</span>
+            <span className="text-sm text-btn-text">{beltLevel}</span>
           </div>
         )}
       </div>

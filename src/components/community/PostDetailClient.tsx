@@ -12,6 +12,7 @@ import { reportPost, ReportReason } from '@/services/reportService';
 import type { Post, Comment } from '@/types/community';
 import Image from 'next/image';
 import { useAuth } from '@/hooks/useAuth';
+import { myPageKeys } from '@/hooks/useMyPage';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import ReportModal from '@/components/community/ReportModal';
 import ConfirmModal from '@/components/common/ConfirmModal';
@@ -146,6 +147,8 @@ export default function PostDetailClient({
     try {
       await deletePost(id);
       await queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.removeQueries({ queryKey: myPageKeys.posts });
+      queryClient.removeQueries({ queryKey: myPageKeys.postCount });
       setDeletePostModalOpen(false);
       showSuccessToast('게시글이 삭제되었습니다.', '🗑️');
       await new Promise((resolve) => setTimeout(resolve, 700));
@@ -368,15 +371,13 @@ export default function PostDetailClient({
               {index > 0 && <div className="border-t border-gray-50 mb-4" />}
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-full bg-gray-200 shrink-0 overflow-hidden">
-                  {c.avatar_url && (
-                    <Image
-                      src={c.avatar_url}
-                      alt={`${c.nickname} 프로필 이미지`}
-                      width={32}
-                      height={32}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
+                  <Image
+                    src={c.avatar_url || '/basic.svg'}
+                    alt={`${c.nickname} 프로필 이미지`}
+                    width={32}
+                    height={32}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1">

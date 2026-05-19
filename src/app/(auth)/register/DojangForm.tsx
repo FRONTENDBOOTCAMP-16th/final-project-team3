@@ -17,6 +17,12 @@ import NicknameField from './components/NicknameField';
 import BusinessFileUpload from './components/BusinessFileUpload';
 import PasswordStrength from './components/PasswordStrength';
 import { useNicknameCheck } from '@/hooks/useNicknameCheck';
+import {
+  MAX_NICKNAME_LENGTH,
+  MIN_NICKNAME_LENGTH,
+  NICKNAME_MAX_LENGTH_MESSAGE,
+  NICKNAME_MIN_LENGTH_MESSAGE,
+} from '@/constants/user';
 
 const PASSWORD_REGEX = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/;
 
@@ -25,8 +31,8 @@ const dojangSchema = z
     name: z.string().optional(),
     nickname: z
       .string()
-      .min(2, '닉네임은 2자 이상이어야 합니다.')
-      .max(10, '닉네임은 10자 이하여야 합니다.'),
+      .min(MIN_NICKNAME_LENGTH, NICKNAME_MIN_LENGTH_MESSAGE)
+      .max(MAX_NICKNAME_LENGTH, NICKNAME_MAX_LENGTH_MESSAGE),
     email: z.string().email('올바른 이메일 형식으로 입력해주세요.'),
     password: z
       .string()

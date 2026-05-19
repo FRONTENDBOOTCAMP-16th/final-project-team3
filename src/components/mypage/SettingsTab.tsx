@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useUpdateMyProfile, useDeleteMyAccount } from '@/hooks/useMyPage';
 import { Profile, BeltLevel } from '@/types/user';
 import { Pencil, User, Mail } from 'lucide-react';
@@ -15,30 +15,52 @@ import {
 import { useRouter } from 'next/navigation';
 import { LimitedInput } from '@/components/common/LimitedInput';
 import { LimitedTextarea } from '@/components/common/LimitedTextarea';
-import { BELTS, BELT_COLORS } from '@/constants/belt';
+import { BELTS, BELT_COLORS, normalizeBeltLevel } from '@/constants/belt';
+import {
+  MIN_NICKNAME_LENGTH,
+  NICKNAME_MIN_LENGTH_MESSAGE,
+} from '@/constants/user';
 
 interface SettingsTabProps {
   profile: Profile;
 }
 
 const isAdmin = (role: string | null) => role === 'admin';
+type SelectedBeltLevel = BeltLevel | '';
+
+const getProfileBeltValue = (beltLevel: Profile['belt_level']) =>
+  normalizeBeltLevel(beltLevel) ?? '';
 
 export default function SettingsTab({ profile }: SettingsTabProps) {
   const [nickname, setNickname] = useState(profile.nickname ?? '');
   const [bio, setBio] = useState(profile.bio ?? '');
-  const [beltLevel, setBeltLevel] = useState<BeltLevel>(
-    profile.belt_level ?? 'White',
+  const [beltLevel, setBeltLevel] = useState<SelectedBeltLevel>(
+    getProfileBeltValue(profile.belt_level),
   );
+  const [formError, setFormError] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
 
+  const trimmedNickname = nickname.trim();
+  const nicknameError = useMemo(() => {
+    if (!isEditing) return '';
+    if (trimmedNickname.length === 0) return '닉네임을 입력해주세요.';
+    if (trimmedNickname.length < MIN_NICKNAME_LENGTH) {
+      return NICKNAME_MIN_LENGTH_MESSAGE;
+    }
+    return '';
+  }, [isEditing, trimmedNickname.length]);
+  const hasNicknameWhitespace =
+    isEditing && nickname.length > 0 && nickname !== trimmedNickname;
+  const profileBeltValue = getProfileBeltValue(profile.belt_level);
+
   const isChanged =
-    nickname !== (profile.nickname ?? '') ||
+    trimmedNickname !== (profile.nickname ?? '') ||
     bio !== (profile.bio ?? '') ||
-    beltLevel !== (profile.belt_level ?? 'White');
+    beltLevel !== profileBeltValue;
 
   const router = useRouter();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateMyProfile();
@@ -46,28 +68,55 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
 
   const deleteDescription = `${isAdmin(profile.role) ? '관리자 계정을 삭제하면' : '계정을 삭제하면'} 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.`;
 
+  const handleStartEditing = () => {
+    setNickname(profile.nickname ?? '');
+    setBio(profile.bio ?? '');
+    setBeltLevel(getProfileBeltValue(profile.belt_level));
+    setFormError('');
+    setIsEditing(true);
+  };
+
   const handleCancel = () => {
     setNickname(profile.nickname ?? '');
     setBio(profile.bio ?? '');
-    setBeltLevel(profile.belt_level ?? 'White');
+    setBeltLevel(getProfileBeltValue(profile.belt_level));
+    setFormError('');
     setIsEditing(false);
+  };
+
+  const handleOpenSaveConfirm = () => {
+    setFormError('');
+    if (nicknameError) {
+      setFormError(nicknameError);
+      return;
+    }
+    setShowSaveConfirm(true);
   };
 
   const handleUpdate = () => {
     updateProfile(
       {
-        nickname,
+        nickname: trimmedNickname,
         bio,
         avatar_url: profile.avatar_url ?? null,
-        belt_level: beltLevel,
+        belt_level: isAdmin(profile.role)
+          ? profile.belt_level
+          : beltLevel || null,
       },
       {
         onSuccess: () => {
           showSuccessToast('프로필이 수정되었습니다.');
+          setNickname(trimmedNickname);
+          setFormError('');
           setIsEditing(false);
         },
-        onError: () => {
-          showErrorToast('수정에 실패했습니다. 다시 시도해주세요.');
+        onError: (error) => {
+          const message =
+            error instanceof Error
+              ? error.message
+              : '수정에 실패했습니다. 다시 시도해주세요.';
+          setFormError(message);
+          showErrorToast(message);
         },
       },
     );
@@ -88,8 +137,8 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
                   취소
                 </button>
                 <button
-                  onClick={() => setShowSaveConfirm(true)}
-                  disabled={isUpdating || !isChanged}
+                  onClick={handleOpenSaveConfirm}
+                  disabled={isUpdating || !isChanged || Boolean(nicknameError)}
                   aria-busy={isUpdating}
                   className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all disabled:opacity-50 cursor-pointer"
                 >
@@ -99,7 +148,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
               </div>
             ) : (
               <button
-                onClick={() => setIsEditing(true)}
+                onClick={handleStartEditing}
                 className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all cursor-pointer"
               >
                 <Pencil className="w-4 h-4" />
@@ -118,11 +167,27 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
         <LimitedInput
           label="닉네임"
           value={nickname}
-          onChange={setNickname}
+          onChange={(value) => {
+            setNickname(value);
+            setFormError('');
+          }}
           maxLength={10}
           placeholder="닉네임을 입력하세요"
           disabled={!isEditing}
         />
+        {isEditing && (
+          <div className="-mt-3 min-h-5">
+            {formError || nicknameError ? (
+              <p className="text-sm text-danger" role="alert">
+                {formError || nicknameError}
+              </p>
+            ) : hasNicknameWhitespace ? (
+              <p className="text-sm text-text-secondary">
+                닉네임 앞뒤 공백은 제거되어 저장됩니다.
+              </p>
+            ) : null}
+          </div>
+        )}
 
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-text-primary">이름</label>
@@ -165,16 +230,21 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
               <span
                 className="w-3 h-3 rounded-full mr-2 shrink-0"
                 style={{
-                  backgroundColor: BELT_COLORS[beltLevel],
-                  border: beltLevel === 'White' ? '1px solid #d1d5db' : 'none',
+                  backgroundColor: beltLevel
+                    ? BELT_COLORS[beltLevel]
+                    : 'transparent',
+                  border: '1px solid #d1d5db',
                 }}
               />
               <select
                 disabled={!isEditing}
                 value={beltLevel}
-                onChange={(e) => setBeltLevel(e.target.value as BeltLevel)}
+                onChange={(e) =>
+                  setBeltLevel(e.target.value as SelectedBeltLevel)
+                }
                 className="flex-1 bg-transparent text-sm text-input-text outline-none appearance-none cursor-pointer"
               >
+                <option value="">벨트를 선택하세요</option>
                 {BELTS.map((belt) => (
                   <option key={belt} value={belt}>
                     {belt}
