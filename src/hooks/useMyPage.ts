@@ -34,7 +34,6 @@ export const useUpdateMyProfile = () => {
     mutationFn: (data: ProfileUpdateForm) => updateMyProfile(data),
     onSuccess: (profile) => {
       queryClient.setQueryData(myPageKeys.profile, profile);
-      queryClient.invalidateQueries({ queryKey: myPageKeys.profile });
     },
   });
 };
