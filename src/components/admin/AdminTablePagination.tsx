@@ -13,6 +13,7 @@ interface AdminTablePaginationProps {
   pageSize: number;
   pageSizeOptions: readonly number[];
   showPageSizeSelector?: boolean;
+  disabled?: boolean;
   // eslint-disable-next-line no-unused-vars
   onPageChange: (page: number) => void;
   // eslint-disable-next-line no-unused-vars
@@ -58,6 +59,7 @@ export default function AdminTablePagination({
   pageSize,
   pageSizeOptions,
   showPageSizeSelector = true,
+  disabled = false,
   onPageChange,
   onPageSizeChange,
 }: AdminTablePaginationProps) {
@@ -82,6 +84,7 @@ export default function AdminTablePagination({
             <select
               className="h-9 cursor-pointer rounded-md border border-zinc-200 bg-bg-white px-3 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-btn-focus"
               value={pageSize}
+              disabled={disabled}
               onChange={(event) => onPageSizeChange(Number(event.target.value))}
             >
               {pageSizeOptions.map((option) => (
@@ -106,7 +109,7 @@ export default function AdminTablePagination({
               navigationButtonClass,
               'cursor-pointer border-zinc-200 bg-bg-white text-btn-text hover:bg-btn-basic',
             )}
-            disabled={currentPage === 1}
+            disabled={disabled || currentPage === 1}
             onClick={() => onPageChange(currentPage - 1)}
           >
             <ChevronLeft className="size-4" />
@@ -140,6 +143,7 @@ export default function AdminTablePagination({
                       : 'border-zinc-200 bg-bg-white text-btn-text hover:bg-btn-basic',
                   )}
                   onClick={() => onPageChange(item)}
+                  disabled={disabled}
                 >
                   {item}
                 </button>
@@ -154,7 +158,7 @@ export default function AdminTablePagination({
               navigationButtonClass,
               'cursor-pointer border-zinc-200 bg-bg-white text-btn-text hover:bg-btn-basic',
             )}
-            disabled={currentPage === totalPages}
+            disabled={disabled || currentPage === totalPages}
             onClick={() => onPageChange(currentPage + 1)}
           >
             <ChevronRight className="size-4" />

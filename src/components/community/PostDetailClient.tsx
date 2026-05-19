@@ -1,7 +1,7 @@
 'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   deletePost,
@@ -56,6 +56,7 @@ export default function PostDetailClient({
   const [deletePostModalOpen, setDeletePostModalOpen] = useState(false);
   const [deleteCommentId, setDeleteCommentId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -78,7 +79,8 @@ export default function PostDetailClient({
       showErrorToast('댓글을 입력해주세요.');
       return;
     }
-    if (isSubmitting) return;
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
     setIsSubmitting(true);
 
     const tempId = `temp-${Date.now()}`;
@@ -115,8 +117,10 @@ export default function PostDetailClient({
         return;
       }
 
-      setComments((prev) =>
-        prev.map((c) =>
+      setComments((prev) => {
+        const alreadyReplaced = prev.some((c) => c.id === data.comment.id);
+        if (alreadyReplaced) return prev;
+        return prev.map((c) =>
           c.id === tempId
             ? {
                 ...data.comment,
@@ -124,8 +128,9 @@ export default function PostDetailClient({
                 avatar_url: user?.image ?? null,
               }
             : c,
-        ),
-      );
+        );
+      });
+
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       queryClient.removeQueries({ queryKey: ['mypage', 'commentCount'] });
     } catch {
@@ -133,6 +138,7 @@ export default function PostDetailClient({
       setComment(optimisticComment.content);
       showErrorToast('네트워크 오류가 발생했습니다.');
     } finally {
+      isSubmittingRef.current = false;
       setIsSubmitting(false);
     }
   };
@@ -337,7 +343,7 @@ export default function PostDetailClient({
               placeholder="댓글을 입력하세요..."
               className="flex-1"
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+                if (e.key === 'Enter') {
                   handleCommentSubmit();
                 }
               }}
@@ -400,9 +406,9 @@ export default function PostDetailClient({
                         allowNewline={false}
                         rows={1}
                         className="flex-1"
-                        onKeyDown={(e) =>
-                          e.key === 'Enter' && handleEditComment(c.id)
-                        }
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleEditComment(c.id);
+                        }}
                       />
                       <button
                         onClick={() => handleEditComment(c.id)}

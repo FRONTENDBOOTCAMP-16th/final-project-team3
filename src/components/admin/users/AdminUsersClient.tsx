@@ -163,6 +163,7 @@ export default function AdminUsersClient({
     setPage,
     setSearchQuery,
     commitSearch,
+    isPending,
   } = useAdminTableQueryState<AdminUserFilterValue>({
     filterParamName: 'status',
     defaultFilter: 'all',
@@ -180,6 +181,7 @@ export default function AdminUsersClient({
         onSearch={commitSearch}
         searchPlaceholder="닉네임, 이름, 이메일 검색..."
         searchAriaLabel="닉네임, 이름 또는 이메일 검색"
+        isPending={isPending}
       />
 
       <AdminDataTable
@@ -190,6 +192,7 @@ export default function AdminUsersClient({
         emptyMessage="등록된 사용자가 없습니다."
         getRowKey={(row) => row.id}
         initialPageSize={pageSize}
+        isLoading={isPending}
         onPageChange={setPage}
         pageSizeOptions={[pageSize]}
         serverPagination
