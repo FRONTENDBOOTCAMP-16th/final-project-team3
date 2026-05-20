@@ -82,6 +82,7 @@ export default function AdminDataTable<T>({
             {columns.map((column) => (
               <th
                 key={String(column.key)}
+                scope="col"
                 className={cn(
                   'border-b px-4 py-3 text-sm font-semibold',
                   column.align === 'center' && 'text-center',
