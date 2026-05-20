@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { Mail, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -30,14 +30,6 @@ export default function LoginClient() {
 
   const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
-
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => {
-    setEmail('');
-    setPassword('');
-    setIsLoading(false);
-    setErrors({});
-  }, []);
 
   const handleSubmit = useCallback(async () => {
     const result = loginSchema.safeParse({ email, password });
@@ -82,9 +74,9 @@ export default function LoginClient() {
       </p>
 
       <div className="max-w-150 w-full bg-bg-white rounded-[32px] p-8 shadow-sm border-none">
-        <h2 className="text-2xl font-bold text-center text-text-primary mb-8">
+        <h1 className="text-2xl font-bold text-center text-text-primary mb-8">
           로그인
-        </h2>
+        </h1>
 
         <form
           className="space-y-5"
