@@ -94,6 +94,7 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
       <div className="flex items-center justify-between">
         <p className="text-xs text-gray-400">Ctrl+Enter로 빠르게 작성</p>
         <button
+          type="button"
           onClick={handleSubmit}
           disabled={!canSubmit}
           className="px-4 py-1.5 rounded-lg bg-blue-600 text-white text-sm font-medium

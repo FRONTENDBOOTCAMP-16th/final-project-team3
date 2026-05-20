@@ -16,6 +16,7 @@ export default function PostFormActions({
   return (
     <div className="flex gap-3">
       <button
+        type="button"
         onClick={onCancel}
         disabled={isLoading}
         className="flex-1 py-3 rounded-xl bg-btn-basic border border-gray-300 text-black hover:bg-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
@@ -23,6 +24,7 @@ export default function PostFormActions({
         취소
       </button>
       <button
+        type="button"
         onClick={onSubmit}
         disabled={isLoading}
         className={`flex-3 py-3 rounded-xl text-white text-sm font-medium transition-colors duration-200 ${
