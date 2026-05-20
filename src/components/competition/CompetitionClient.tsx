@@ -148,7 +148,6 @@ export default function CompetitionClient({
             </ul>
           )}
 
-          {/* ✅ aria-live 수정 */}
           {hasNextPage && (
             <div
               ref={observerRef}

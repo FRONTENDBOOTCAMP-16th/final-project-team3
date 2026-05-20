@@ -65,7 +65,6 @@ export default function PostCard({ post, userId }: PostCardProps) {
     >
       <article
         className="rounded-lg overflow-hidden border bg-bg-white border-gray-200 flex flex-col h-97.5 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200 relative"
-        aria-label={`${post.nickname}의 게시글: ${post.title}`}
         aria-busy={isPending}
       >
         {isPending && (

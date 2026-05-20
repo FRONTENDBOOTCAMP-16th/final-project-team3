@@ -28,6 +28,7 @@ export default function PostLikeButtonContent({
 
   return (
     <button
+      type="button"
       onClick={handleLike}
       aria-pressed={isLiked}
       aria-label={`좋아요 ${likeCount ?? 0}개${
