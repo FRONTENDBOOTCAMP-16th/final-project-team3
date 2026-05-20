@@ -32,7 +32,6 @@ export default function DojangCard({ dojang, isSelected }: DojangCardProps) {
         {dojang.address_name}
       </address>
 
-      {/* ✅ 전화번호 없을 때 빈 공간 확보 */}
       {dojang.phone ? (
         <a
           href={'tel:' + dojang.phone}
@@ -45,7 +44,6 @@ export default function DojangCard({ dojang, isSelected }: DojangCardProps) {
         <div className="mt-1 h-5" />
       )}
 
-      {/* ✅ 버튼을 항상 아래로 밀기 */}
       <div className="flex-1" />
 
       <a

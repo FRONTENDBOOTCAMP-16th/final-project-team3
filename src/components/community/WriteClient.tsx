@@ -84,6 +84,7 @@ export default function WriteClient() {
 
       <div role="tablist" className="flex bg-gray-100 rounded-xl p-1 mb-6">
         <button
+          type="button"
           role="tab"
           aria-selected={tab === 'write'}
           onClick={() => setTab('write')}
@@ -94,6 +95,7 @@ export default function WriteClient() {
           작성
         </button>
         <button
+          type="button"
           role="tab"
           aria-selected={tab === 'preview'}
           onClick={() => setTab('preview')}
@@ -115,6 +117,7 @@ export default function WriteClient() {
               <div className="flex gap-2">
                 {(['personal', 'promo'] as PostCategory[]).map((type) => (
                   <button
+                    type="button"
                     key={type}
                     aria-pressed={category === type}
                     onClick={() => setCategory(type)}

@@ -21,7 +21,7 @@ interface AdminTablePaginationProps {
 }
 
 const navigationButtonClass =
-  'inline-flex h-9 min-w-9 items-center justify-center rounded-md border px-3 text-sm font-medium transition-colors duration-50 disabled:cursor-not-allowed disabled:opacity-40';
+  'inline-flex h-9 min-w-9 items-center justify-center rounded-md border px-3 text-sm font-medium transition-colors duration-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-40';
 
 function buildPaginationItems(
   currentPage: number,
@@ -70,6 +70,8 @@ export default function AdminTablePagination({
   const visibleItems = buildPaginationItems(currentPage, totalPages);
   const startItem = (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(currentPage * pageSize, totalItems);
+  const isPreviousDisabled = disabled || currentPage === 1;
+  const isNextDisabled = disabled || currentPage === totalPages;
 
   return (
     <footer className="flex flex-col gap-4 border-t border-zinc-200 px-4 py-4 md:flex-row md:items-center md:justify-between">
@@ -105,12 +107,18 @@ export default function AdminTablePagination({
           <button
             type="button"
             aria-label="이전 페이지"
+            aria-disabled={isPreviousDisabled}
             className={cn(
               navigationButtonClass,
               'cursor-pointer border-zinc-200 bg-bg-white text-btn-text hover:bg-btn-basic',
             )}
-            disabled={disabled || currentPage === 1}
-            onClick={() => onPageChange(currentPage - 1)}
+            onClick={() => {
+              if (isPreviousDisabled) {
+                return;
+              }
+
+              onPageChange(currentPage - 1);
+            }}
           >
             <ChevronLeft className="size-4" />
           </button>
@@ -135,6 +143,7 @@ export default function AdminTablePagination({
                   key={item}
                   type="button"
                   aria-current={isActive ? 'page' : undefined}
+                  aria-disabled={disabled}
                   className={cn(
                     navigationButtonClass,
                     'cursor-pointer',
@@ -142,8 +151,13 @@ export default function AdminTablePagination({
                       ? 'border-btn-focus bg-btn-focus text-btn-focus-text'
                       : 'border-zinc-200 bg-bg-white text-btn-text hover:bg-btn-basic',
                   )}
-                  onClick={() => onPageChange(item)}
-                  disabled={disabled}
+                  onClick={() => {
+                    if (disabled) {
+                      return;
+                    }
+
+                    onPageChange(item);
+                  }}
                 >
                   {item}
                 </button>
@@ -154,12 +168,18 @@ export default function AdminTablePagination({
           <button
             type="button"
             aria-label="다음 페이지"
+            aria-disabled={isNextDisabled}
             className={cn(
               navigationButtonClass,
               'cursor-pointer border-zinc-200 bg-bg-white text-btn-text hover:bg-btn-basic',
             )}
-            disabled={disabled || currentPage === totalPages}
-            onClick={() => onPageChange(currentPage + 1)}
+            onClick={() => {
+              if (isNextDisabled) {
+                return;
+              }
+
+              onPageChange(currentPage + 1);
+            }}
           >
             <ChevronRight className="size-4" />
           </button>

@@ -47,12 +47,20 @@ export default function ErrorScreenActions({ variant, onRetry }: Props) {
       </Button>
 
       {isError ? (
-        <Button onClick={onRetry} className={cn(buttonBase, buttonHover)}>
+        <Button
+          type="button"
+          onClick={onRetry}
+          className={cn(buttonBase, buttonHover)}
+        >
           <RefreshCw className="size-4.5" />
           다시 시도
         </Button>
       ) : (
-        <Button onClick={handleBack} className={cn(buttonBase, buttonHover)}>
+        <Button
+          type="button"
+          onClick={handleBack}
+          className={cn(buttonBase, buttonHover)}
+        >
           <ArrowLeft className="size-4.5" />
           이전 페이지
         </Button>

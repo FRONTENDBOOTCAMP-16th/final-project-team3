@@ -31,6 +31,7 @@ export default function ScrollToTop() {
     <div className="fixed bottom-8 right-8 flex flex-col gap-2 z-50">
       {!isTop && (
         <button
+          type="button"
           onClick={scrollToTop}
           aria-label="맨 위로 이동"
           className="w-12 h-12 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-btn-focus hover:text-btn-focus-text transition-all"
@@ -40,6 +41,7 @@ export default function ScrollToTop() {
       )}
       {!isBottom && (
         <button
+          type="button"
           onClick={scrollToBottom}
           aria-label="맨 아래로 이동"
           className="w-12 h-12 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-btn-focus hover:text-btn-focus-text transition-all"

@@ -237,6 +237,7 @@ export default function PostDetailClient({
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
       <button
+        type="button"
         onClick={() => router.push('/community')}
         aria-label="커뮤니티 목록으로 이동"
         className="flex items-center gap-2 px-2.5 py-2 border-2 border-white bg-white text-black text-sm font-medium rounded-xl hover:bg-(--color-btn-focus) hover:text-white transition-colors duration-200 cursor-pointer"
@@ -269,6 +270,7 @@ export default function PostDetailClient({
             {canManagePost ? (
               <>
                 <button
+                  type="button"
                   title="수정하기"
                   aria-label="게시글 수정"
                   onClick={() =>
@@ -282,6 +284,7 @@ export default function PostDetailClient({
                   />
                 </button>
                 <button
+                  type="button"
                   title="삭제하기"
                   aria-label="게시글 삭제"
                   onClick={() => setDeletePostModalOpen(true)}
@@ -295,6 +298,7 @@ export default function PostDetailClient({
               </>
             ) : (
               <button
+                type="button"
                 title="신고하기"
                 aria-label="게시글 신고"
                 onClick={() => setReportModalOpen(true)}
@@ -304,6 +308,7 @@ export default function PostDetailClient({
               </button>
             )}
             <button
+              type="button"
               title="공유하기"
               aria-label="게시글 공유"
               onClick={handleShare}
@@ -349,6 +354,7 @@ export default function PostDetailClient({
               }}
             />
             <button
+              type="button"
               onClick={handleCommentSubmit}
               aria-label="댓글 전송"
               disabled={isSubmitting}
@@ -412,6 +418,7 @@ export default function PostDetailClient({
                       />
                       <button
                         onClick={() => handleEditComment(c.id)}
+                        type="button"
                         aria-label="댓글 저장"
                         className="text-xs text-blue-500 font-medium"
                       >
@@ -419,6 +426,7 @@ export default function PostDetailClient({
                       </button>
                       <button
                         onClick={() => setEditingCommentId(null)}
+                        type="button"
                         aria-label="댓글 수정 취소"
                         className="text-xs text-gray-400"
                       >
@@ -445,6 +453,7 @@ export default function PostDetailClient({
                     {userId === c.user_id && (
                       <>
                         <button
+                          type="button"
                           onClick={() => {
                             setEditingCommentId(c.id);
                             setEditingContent(c.content);
@@ -455,6 +464,7 @@ export default function PostDetailClient({
                           수정
                         </button>
                         <button
+                          type="button"
                           onClick={() => setDeleteCommentId(c.id)}
                           aria-label={`${c.nickname}의 댓글 삭제`}
                           className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors"

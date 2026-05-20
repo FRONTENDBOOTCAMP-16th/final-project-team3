@@ -70,6 +70,7 @@ export default function ReportModal({
               </p>
             </div>
             <button
+              type="button"
               onClick={onClose}
               className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400"
               aria-label="닫기"
@@ -88,6 +89,7 @@ export default function ReportModal({
           <div className="px-5 py-3 space-y-1.5">
             {REPORT_REASONS.map((reason) => (
               <button
+                type="button"
                 key={reason}
                 onClick={() => setSelected(reason)}
                 aria-pressed={selected === reason}
@@ -113,12 +115,14 @@ export default function ReportModal({
 
           <div className="px-5 pt-2 pb-6 flex gap-2">
             <button
+              type="button"
               onClick={onClose}
               className="flex-1 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors cursor-pointer"
             >
               취소
             </button>
             <button
+              type="button"
               onClick={handleSubmit}
               disabled={!selected || loading}
               aria-disabled={!selected || loading}
