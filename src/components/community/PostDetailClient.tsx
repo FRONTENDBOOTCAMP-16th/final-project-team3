@@ -269,6 +269,7 @@ export default function PostDetailClient({
             {canManagePost ? (
               <>
                 <button
+                  type="button"
                   title="수정하기"
                   aria-label="게시글 수정"
                   onClick={() =>
@@ -282,6 +283,7 @@ export default function PostDetailClient({
                   />
                 </button>
                 <button
+                  type="button"
                   title="삭제하기"
                   aria-label="게시글 삭제"
                   onClick={() => setDeletePostModalOpen(true)}
@@ -295,6 +297,7 @@ export default function PostDetailClient({
               </>
             ) : (
               <button
+                type="button"
                 title="신고하기"
                 aria-label="게시글 신고"
                 onClick={() => setReportModalOpen(true)}
@@ -304,6 +307,7 @@ export default function PostDetailClient({
               </button>
             )}
             <button
+              type="button"
               title="공유하기"
               aria-label="게시글 공유"
               onClick={handleShare}

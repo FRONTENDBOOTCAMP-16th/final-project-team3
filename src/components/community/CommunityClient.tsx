@@ -131,17 +131,9 @@ export default function CommunityClient({
                     key={post.id}
                     id={post.id}
                     role="listitem"
-                    className="cursor-pointer"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        sessionStorage.setItem('lastPostId', post.id);
-                      }
-                    }}
                     onClick={() =>
                       sessionStorage.setItem('lastPostId', post.id)
                     }
-                    aria-label={`${post.title} 게시글`}
                   >
                     <Postcard
                       post={{

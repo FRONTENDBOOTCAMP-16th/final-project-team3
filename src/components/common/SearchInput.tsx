@@ -34,9 +34,10 @@ export default function SearchInput({
         className="pointer-events-none absolute left-3 z-10"
         aria-hidden="true"
       >
-        <Image src="/glasses.svg" alt="검색" width={18} height={18} />
+        <Image src="/glasses.svg" alt="" width={18} height={18} />
       </span>
       <Input
+        type="search"
         placeholder={placeholder}
         aria-label={inputAriaLabel}
         className={cn('pl-9 flex-1 h-12 bg-input-bg', isPending && 'pr-10')}
