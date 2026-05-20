@@ -68,7 +68,6 @@ export default function CompetitionDetailClient({
       className="max-w-2xl mx-auto p-4 space-y-4"
       aria-label={`${competition.name} 대회 상세`}
     >
-      {/* ① button → Link로 교체 */}
       <Link
         href="/competitions"
         aria-label="대회일정 목록으로 돌아가기"
@@ -149,7 +148,6 @@ export default function CompetitionDetailClient({
           </>
         }
       />
-      {/* ② aria-label 제거, aria-disabled는 모집완료일 때만 */}
       href=
       {competition.apply_url?.startsWith('http')
         ? competition.apply_url
