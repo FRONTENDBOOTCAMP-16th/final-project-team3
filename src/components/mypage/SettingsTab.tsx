@@ -131,12 +131,14 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             {isEditing ? (
               <div className="flex gap-2">
                 <button
+                  type="button"
                   onClick={() => setShowCancelConfirm(true)}
                   className="px-4 py-2 bg-btn-basic text-btn-text rounded-lg text-sm font-bold hover:opacity-80 transition-all cursor-pointer"
                 >
                   취소
                 </button>
                 <button
+                  type="button"
                   onClick={handleOpenSaveConfirm}
                   disabled={isUpdating || !isChanged || Boolean(nicknameError)}
                   aria-busy={isUpdating}
@@ -148,6 +150,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
               </div>
             ) : (
               <button
+                type="button"
                 onClick={handleStartEditing}
                 className="flex items-center gap-2 px-4 py-2 bg-btn-focus text-btn-focus-text rounded-lg text-sm font-bold hover:opacity-80 transition-all cursor-pointer"
               >
@@ -277,6 +280,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
         </div>
         <p className="text-sm text-text-secondary">{deleteDescription}</p>
         <button
+          type="button"
           onClick={() => setShowDeleteConfirm(true)}
           className="w-fit bg-danger text-btn-focus-text px-10 py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
         >
@@ -291,12 +295,14 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             </DialogHeader>
             <div className="flex gap-2 mt-4">
               <button
+                type="button"
                 onClick={() => setShowSaveConfirm(false)}
                 className="flex-1 px-6 py-3 bg-btn-basic text-btn-text rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
               >
                 취소
               </button>
               <button
+                type="button"
                 onClick={() => {
                   handleUpdate();
                   setShowSaveConfirm(false);
@@ -319,12 +325,14 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             </DialogHeader>
             <div className="flex gap-2 mt-4">
               <button
+                type="button"
                 onClick={() => setShowCancelConfirm(false)}
                 className="flex-1 px-6 py-3 bg-btn-basic text-btn-text rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
               >
                 아니요
               </button>
               <button
+                type="button"
                 onClick={() => {
                   handleCancel();
                   setShowCancelConfirm(false);
@@ -349,12 +357,14 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
             </DialogHeader>
             <div className="flex gap-2 mt-4">
               <button
+                type="button"
                 onClick={() => setShowDeleteConfirm(false)}
                 className="flex-1 px-6 py-3 bg-btn-basic text-btn-text rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
               >
                 취소
               </button>
               <button
+                type="button"
                 onClick={() =>
                   deleteAccount(undefined, {
                     onSuccess: () => {
@@ -395,6 +405,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
               </DialogDescription>
             </DialogHeader>
             <button
+              type="button"
               onClick={() => router.push('/login')}
               className="w-full mt-4 px-6 py-3 bg-btn-focus text-btn-focus-text rounded-xl text-sm font-bold hover:opacity-90 transition-all cursor-pointer"
             >

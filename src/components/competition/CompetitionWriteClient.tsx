@@ -97,6 +97,7 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
 
       <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
         <button
+          type="button"
           onClick={() => setTab('write')}
           className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
             tab === 'write' ? 'bg-white text-black shadow-sm' : 'text-gray-500'
@@ -105,6 +106,7 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
           작성
         </button>
         <button
+          type="button"
           onClick={() => setTab('preview')}
           className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
             tab === 'preview'
