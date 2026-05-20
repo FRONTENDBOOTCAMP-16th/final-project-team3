@@ -79,7 +79,7 @@ export default function LoginClient() {
         </h1>
 
         <form
-          className="space-y-5"
+          className="flex flex-col gap-5"
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
@@ -141,16 +141,7 @@ export default function LoginClient() {
             </div>
           </div>
 
-          <div className="flex justify-end -mt-5 -mb-5">
-            <Link
-              href="/find-password"
-              className="text-sm font-bold hover:underline text-[#4f74e8]"
-            >
-              비밀번호 찾기
-            </Link>
-          </div>
-
-          <div className="h-5 text-center">
+          <div className="order-4 h-5 text-center">
             {errors.server && (
               <p className="text-danger text-sm" role="alert">
                 {errors.server}
@@ -162,12 +153,21 @@ export default function LoginClient() {
             type="submit"
             disabled={isLoading}
             aria-busy={isLoading}
-            className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="order-5 w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? '로그인 중...' : '로그인'}
           </button>
 
-          <p className="text-center text-sm text-text-secondary">
+          <div className="order-3 flex justify-end -mt-5 -mb-5">
+            <Link
+              href="/find-password"
+              className="text-sm font-bold hover:underline text-[#4f74e8]"
+            >
+              비밀번호 찾기
+            </Link>
+          </div>
+
+          <p className="order-6 text-center text-sm text-text-secondary">
             아직 회원이 아니신가요?{' '}
             <Link
               href="/register"
