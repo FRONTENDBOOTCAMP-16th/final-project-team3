@@ -40,6 +40,7 @@ export default function Step3Complete({ onReset }: Step3CompleteProps) {
         </p>
       </div>
       <button
+        type="button"
         onClick={handleClick}
         className="w-full bg-btn-focus text-btn-focus-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all text-center cursor-pointer"
       >

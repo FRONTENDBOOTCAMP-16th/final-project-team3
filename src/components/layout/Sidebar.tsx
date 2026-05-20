@@ -160,6 +160,7 @@ export default function Sidebar() {
               </div>
             </Link>
             <Button
+              type="button"
               variant="ghost"
               className="w-full h-10 gap-2 text-text-secondary hover:text-text-primary cursor-pointer"
               onClick={handleLogout}

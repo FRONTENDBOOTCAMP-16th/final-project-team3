@@ -18,6 +18,7 @@ export default function RegisterClient() {
     <>
       <div role="tablist" className="flex border-b border-gray-200 mb-6">
         <button
+          type="button"
           role="tab"
           aria-selected={tab === 'general'}
           onClick={() => setTab('general')}
@@ -30,6 +31,7 @@ export default function RegisterClient() {
           일반 회원
         </button>
         <button
+          type="button"
           role="tab"
           aria-selected={tab === 'dojang'}
           onClick={() => setTab('dojang')}

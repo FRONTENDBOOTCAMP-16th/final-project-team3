@@ -68,6 +68,7 @@ export default function CompetitionDetailClient({
       aria-label={`${competition.name} 대회 상세`}
     >
       <button
+        type="button"
         onClick={() => router.push('/competitions')}
         aria-label="대회일정 목록으로 돌아가기"
         className="flex items-center gap-2 px-2.5 py-2 border-2 border-white bg-white text-black text-sm font-medium rounded-xl hover:bg-(--color-btn-focus) hover:text-white transition-colors duration-200 cursor-pointer"
@@ -107,6 +108,7 @@ export default function CompetitionDetailClient({
             {canManageCompetition && (
               <>
                 <button
+                  type="button"
                   title="수정하기"
                   aria-label="대회 게시글 수정하기"
                   onClick={() =>
@@ -122,6 +124,7 @@ export default function CompetitionDetailClient({
                   />
                 </button>
                 <button
+                  type="button"
                   title="삭제하기"
                   aria-label="대회 게시글 삭제하기"
                   onClick={() => setDeleteModalOpen(true)}
@@ -135,6 +138,7 @@ export default function CompetitionDetailClient({
               </>
             )}
             <button
+              type="button"
               title="공유하기"
               aria-label="대회 게시글 링크 공유하기"
               onClick={() => handleShare()}

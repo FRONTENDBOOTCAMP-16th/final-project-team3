@@ -98,6 +98,7 @@ export default function Pageheader({
         >
           {tabs.map((tab) => (
             <button
+              type="button"
               key={tab}
               role="tab"
               aria-selected={activeTab === tab}
