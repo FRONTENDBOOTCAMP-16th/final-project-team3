@@ -256,15 +256,15 @@ export default function DojangClient() {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '10px',
+                gap: '8px',
                 background: '#1e1e1e',
                 borderRadius: '10px',
-                padding: '11px 16px',
+                padding: '8px 12px',
                 boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.04)',
-                width: 'clamp(180px, 40vw, 360px)',
+                width: 'clamp(120px, 35vw, 260px)',
               }}
             >
-              <Search size={16} style={{ color: '#6b7280', flexShrink: 0 }} aria-hidden="true" />
+              <Search size={13} style={{ color: '#6b7280', flexShrink: 0 }} aria-hidden="true" />
               <input
                 type="search"
                 value={searchQuery}
