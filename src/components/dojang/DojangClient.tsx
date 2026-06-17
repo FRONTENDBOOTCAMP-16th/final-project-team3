@@ -21,13 +21,13 @@ function parseTags(categoryName: string, placeName: string): string[] {
   const lower = (categoryName + ' ' + placeName).toLowerCase();
   if (lower.includes('주짓수') || lower.includes('bjj')) tags.push('BJJ');
   if (lower.includes('nogi') || lower.includes('노기')) tags.push('NOGI');
-  if (lower.includes('gi') || lower.includes('기')) {
-    if (!tags.includes('BJJ')) tags.push('GI');
-  }
-  if (lower.includes('mma')) tags.push('MMA');
-  if (lower.includes('레슬링')) tags.push('레슬링');
   if (lower.includes('유도')) tags.push('유도');
-  if (tags.length === 0) tags.push('주짓수');
+  if (lower.includes('레슬링')) tags.push('레슬링');
+  if (lower.includes('복싱') || lower.includes('boxing')) tags.push('복싱');
+  if (lower.includes('태권도')) tags.push('태권도');
+  if (lower.includes('mma') || lower.includes('종합격투')) tags.push('MMA');
+  if (lower.includes('무에타이') || lower.includes('킥복싱')) tags.push('무에타이');
+  if (tags.length === 0) tags.push('도장');
   return tags.slice(0, 3);
 }
 
@@ -121,7 +121,7 @@ export default function DojangClient() {
       setIsLoading(true);
       try {
         const res = await fetch(
-          `https://dapi.kakao.com/v2/local/search/keyword.json?query=주짓수&x=${lng}&y=${lat}&radius=5000&size=15`,
+          `https://dapi.kakao.com/v2/local/search/keyword.json?query=도장&x=${lng}&y=${lat}&radius=5000&size=15`,
           { headers: { Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_LOCAL_API_KEY}` } },
         );
         const data = await res.json();
@@ -186,7 +186,7 @@ export default function DojangClient() {
     setIsLoading(true);
     try {
       const res = await fetch(
-        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${debouncedSearch} 주짓수&size=15`,
+        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${debouncedSearch} 도장&size=15`,
         { headers: { Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_LOCAL_API_KEY}` } },
       );
       const data = await res.json();
