@@ -68,7 +68,6 @@ export default function AuthLayout({
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif",
-                filter: 'drop-shadow(0 2px 24px rgba(255,255,255,0.18))',
                 lineHeight: 1,
               }}
             >
