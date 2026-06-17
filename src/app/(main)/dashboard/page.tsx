@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { supabasePublic } from '@/lib/supabase/public';
 import { cacheTag, cacheLife } from 'next/cache';
@@ -49,16 +48,28 @@ async function getLatestNotice() {
 export default async function DashboardPage() {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect('/login');
 
-  const [profileRes, postCountRes, commentCountRes, competitions, notices] =
-    await Promise.all([
-      supabase.from('profiles').select('nickname, avatar_url, role, belt_level').eq('id', user.id).single(),
-      supabase.from('posts').select('id', { count: 'exact', head: true }).eq('user_id', user.id).is('deleted_at', null),
-      supabase.from('comments').select('id', { count: 'exact', head: true }).eq('user_id', user.id).is('deleted_at', null),
-      getUpcomingCompetitions(),
-      getLatestNotice(),
-    ]);
+  const [competitions, notices] = await Promise.all([
+    getUpcomingCompetitions(),
+    getLatestNotice(),
+  ]);
+
+  if (!user) {
+    return (
+      <DashboardClient
+        profile={null}
+        stats={null}
+        competitions={competitions}
+        notices={notices}
+      />
+    );
+  }
+
+  const [profileRes, postCountRes, commentCountRes] = await Promise.all([
+    supabase.from('profiles').select('nickname, avatar_url, role, belt_level').eq('id', user.id).single(),
+    supabase.from('posts').select('id', { count: 'exact', head: true }).eq('user_id', user.id).is('deleted_at', null),
+    supabase.from('comments').select('id', { count: 'exact', head: true }).eq('user_id', user.id).is('deleted_at', null),
+  ]);
 
   const profile = profileRes.data;
 

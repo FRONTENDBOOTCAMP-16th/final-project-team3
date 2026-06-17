@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function AuthLayout({
   children,
@@ -13,15 +12,19 @@ export default function AuthLayout({
           href="/"
           className="flex flex-col items-center mb-6 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg-page"
         >
-          <div className="relative w-40 h-20 mb-1">
-            <Image
-              src="/blackbelt.svg"
-              alt="Black Belt 홈"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
+          <span
+            style={{
+              fontSize: '28px',
+              fontWeight: 800,
+              letterSpacing: '0.08em',
+              background: 'linear-gradient(135deg, #6e6e6e, #c8c8c8)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif",
+            }}
+          >
+            ACTIVIO
+          </span>
         </Link>
       </header>
 

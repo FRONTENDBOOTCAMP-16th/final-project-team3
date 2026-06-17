@@ -15,11 +15,11 @@ async function AuthButtons() {
 
   return (
     <div className="land-btns">
-      <Link href="/login" className="land-cta">
+      <Link href="/dashboard" className="land-cta">
         시작하기
         <span className="land-cta-icon">→</span>
       </Link>
-      <Link href="/register" className="land-login-solo">
+      <Link href="/login" className="land-login-solo">
         로그인
       </Link>
     </div>

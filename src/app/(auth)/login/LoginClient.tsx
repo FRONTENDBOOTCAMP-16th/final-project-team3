@@ -71,7 +71,7 @@ export default function LoginClient() {
   return (
     <>
       <p className="text-text-secondary text-sm font-medium text-center mb-6">
-        주짓수 커뮤니티에 오신 것을 환영합니다
+        스포츠인 올인원 커뮤니티에 오신 것을 환영합니다
       </p>
 
       <div className="max-w-150 w-full bg-bg-white rounded-[32px] p-8 border border-white/[0.07] shadow-2xl">

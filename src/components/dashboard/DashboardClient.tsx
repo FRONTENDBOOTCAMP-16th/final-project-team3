@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, MapPin, Trophy, MessageSquare, FileText } from 'lucide-react';
+import { Search, MapPin, Trophy, MessageSquare, FileText, Lock } from 'lucide-react';
 import { SPORTS } from '@/constants/sports';
 import { formatDate } from '@/utils/formatDate';
 import { buildPostUrl } from '@/lib/slug';
@@ -15,11 +15,11 @@ interface Props {
     avatar_url: string | null;
     role: string;
     belt_level: string | null;
-  };
+  } | null;
   stats: {
     postCount: number;
     commentCount: number;
-  };
+  } | null;
   competitions: {
     id: string;
     name: string;
@@ -40,7 +40,8 @@ interface Props {
 export default function DashboardClient({ profile, stats, competitions, notices }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
-  const isAdmin = profile.role === 'admin';
+  const isGuest = profile === null;
+  const isAdmin = profile?.role === 'admin';
   const featured = notices[0] ?? null;
 
   const handleSearch = (e: React.FormEvent) => {
@@ -72,8 +73,14 @@ export default function DashboardClient({ profile, stats, competitions, notices 
         {/* ── Top bar ── */}
         <div className="flex items-center justify-between mb-7 gap-4">
           <h1 style={{ fontSize: '18px', fontWeight: 700, color: '#fff', whiteSpace: 'nowrap' }}>
-            안녕하세요,{' '}
-            <span style={{ color: '#60a5fa' }}>{profile.nickname}</span>님 🔥
+            {isGuest ? (
+              '안녕하세요'
+            ) : (
+              <>
+                안녕하세요,{' '}
+                <span style={{ color: '#60a5fa' }}>{profile!.nickname}</span>님 🔥
+              </>
+            )}
           </h1>
 
           <form onSubmit={handleSearch} className="flex items-center" style={{ maxWidth: '280px', width: '100%' }}>
@@ -349,99 +356,137 @@ export default function DashboardClient({ profile, stats, competitions, notices 
           <div style={cardStyle}>
             <div style={cardHeaderStyle}>
               <span style={{ fontSize: '13px', fontWeight: 700, color: '#fff' }}>내 활동</span>
-              <Link href="/mypage" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', textDecoration: 'none' }}>
-                마이페이지 →
-              </Link>
+              {!isGuest && (
+                <Link href="/mypage" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', textDecoration: 'none' }}>
+                  마이페이지 →
+                </Link>
+              )}
             </div>
-            <div style={{ padding: '20px 18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {/* Profile row */}
-              <div className="flex items-center gap-3">
+
+            {isGuest ? (
+              <div
+                style={{
+                  padding: '36px 20px',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px',
+                }}
+              >
                 <div
                   style={{
-                    width: '44px', height: '44px', borderRadius: '50%',
-                    background: 'rgba(37,99,235,0.2)', border: '2px solid rgba(37,99,235,0.35)',
-                    overflow: 'hidden', flexShrink: 0, position: 'relative',
+                    width: '52px', height: '52px', borderRadius: '50%',
+                    background: 'rgba(255,255,255,0.06)', border: '1.5px solid rgba(255,255,255,0.12)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                 >
-                  {profile.avatar_url ? (
-                    <Image src={profile.avatar_url} alt={profile.nickname} fill className="object-cover" />
-                  ) : (
-                    <span style={{ fontSize: '18px', fontWeight: 800, color: '#60a5fa' }}>
-                      {profile.nickname[0]?.toUpperCase()}
+                  <Lock size={22} style={{ color: 'rgba(255,255,255,0.35)' }} />
+                </div>
+                <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', textAlign: 'center', lineHeight: 1.6 }}>
+                  로그인하면 내 활동을<br />확인할 수 있습니다
+                </p>
+                <Link
+                  href="/login"
+                  style={{
+                    padding: '9px 24px', borderRadius: '8px',
+                    background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(37,99,235,0.3)',
+                    fontSize: '13px', fontWeight: 600, color: '#60a5fa',
+                    textDecoration: 'none', transition: 'background 0.15s',
+                  }}
+                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = 'rgba(37,99,235,0.25)')}
+                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = 'rgba(37,99,235,0.15)')}
+                >
+                  로그인
+                </Link>
+              </div>
+            ) : (
+              <div style={{ padding: '20px 18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {/* Profile row */}
+                <div className="flex items-center gap-3">
+                  <div
+                    style={{
+                      width: '44px', height: '44px', borderRadius: '50%',
+                      background: 'rgba(37,99,235,0.2)', border: '2px solid rgba(37,99,235,0.35)',
+                      overflow: 'hidden', flexShrink: 0, position: 'relative',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}
+                  >
+                    {profile!.avatar_url ? (
+                      <Image src={profile!.avatar_url} alt={profile!.nickname} fill className="object-cover" />
+                    ) : (
+                      <span style={{ fontSize: '18px', fontWeight: 800, color: '#60a5fa' }}>
+                        {profile!.nickname[0]?.toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>{profile!.nickname}</p>
+                    {profile!.belt_level && (
+                      <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>{profile!.belt_level}</p>
+                    )}
+                  </div>
+                  {isAdmin && (
+                    <span
+                      style={{
+                        fontSize: '10px', fontWeight: 700,
+                        color: '#f59e0b', background: 'rgba(245,158,11,0.15)',
+                        border: '1px solid rgba(245,158,11,0.3)',
+                        padding: '2px 7px', borderRadius: '999px',
+                        flexShrink: 0,
+                      }}
+                    >
+                      ADMIN
                     </span>
                   )}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>{profile.nickname}</p>
-                  {profile.belt_level && (
-                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>{profile.belt_level}</p>
-                  )}
-                </div>
-                {isAdmin && (
-                  <span
+
+                {/* Stats */}
+                <div className="flex gap-3">
+                  <div
                     style={{
-                      fontSize: '10px', fontWeight: 700,
-                      color: '#f59e0b', background: 'rgba(245,158,11,0.15)',
-                      border: '1px solid rgba(245,158,11,0.3)',
-                      padding: '2px 7px', borderRadius: '999px',
-                      flexShrink: 0,
+                      flex: 1, padding: '12px', borderRadius: '10px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.07)',
+                      textAlign: 'center',
                     }}
                   >
-                    ADMIN
-                  </span>
-                )}
-              </div>
-
-              {/* Stats */}
-              <div className="flex gap-3">
-                <div
-                  style={{
-                    flex: 1, padding: '12px', borderRadius: '10px',
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(255,255,255,0.07)',
-                    textAlign: 'center',
-                  }}
-                >
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <FileText size={12} style={{ color: '#60a5fa' }} />
-                    <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>게시글</span>
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <FileText size={12} style={{ color: '#60a5fa' }} />
+                      <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>게시글</span>
+                    </div>
+                    <p style={{ fontSize: '22px', fontWeight: 800, color: '#fff' }}>{stats!.postCount}</p>
                   </div>
-                  <p style={{ fontSize: '22px', fontWeight: 800, color: '#fff' }}>{stats.postCount}</p>
-                </div>
-                <div
-                  style={{
-                    flex: 1, padding: '12px', borderRadius: '10px',
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(255,255,255,0.07)',
-                    textAlign: 'center',
-                  }}
-                >
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <MessageSquare size={12} style={{ color: '#8b5cf6' }} />
-                    <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>댓글</span>
+                  <div
+                    style={{
+                      flex: 1, padding: '12px', borderRadius: '10px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.07)',
+                      textAlign: 'center',
+                    }}
+                  >
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <MessageSquare size={12} style={{ color: '#8b5cf6' }} />
+                      <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>댓글</span>
+                    </div>
+                    <p style={{ fontSize: '22px', fontWeight: 800, color: '#fff' }}>{stats!.commentCount}</p>
                   </div>
-                  <p style={{ fontSize: '22px', fontWeight: 800, color: '#fff' }}>{stats.commentCount}</p>
                 </div>
-              </div>
 
-              {/* Mypage link */}
-              <Link
-                href="/mypage"
-                style={{
-                  display: 'block', padding: '9px',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '8px', textAlign: 'center',
-                  fontSize: '12.5px', fontWeight: 600, color: 'rgba(255,255,255,0.6)',
-                  textDecoration: 'none', transition: 'background 0.15s',
-                }}
-                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.1)')}
-                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)')}
-              >
-                마이페이지 →
-              </Link>
-            </div>
+                {/* Mypage link */}
+                <Link
+                  href="/mypage"
+                  style={{
+                    display: 'block', padding: '9px',
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '8px', textAlign: 'center',
+                    fontSize: '12.5px', fontWeight: 600, color: 'rgba(255,255,255,0.6)',
+                    textDecoration: 'none', transition: 'background 0.15s',
+                  }}
+                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.1)')}
+                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)')}
+                >
+                  마이페이지 →
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 
