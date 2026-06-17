@@ -19,7 +19,7 @@ export default function AuthLayout({
       className="relative min-h-screen flex flex-col items-center justify-center px-10 py-8"
       style={{ background: '#111', overflow: 'hidden' }}
     >
-      {/* Slideshow backgrounds */}
+      {/* Slideshow backgrounds — fixed to viewport so size stays constant regardless of content height */}
       {BG_IMAGES.map(({ src, cls }) => (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -29,7 +29,7 @@ export default function AuthLayout({
           aria-hidden="true"
           className={cls}
           style={{
-            position: 'absolute',
+            position: 'fixed',
             inset: 0,
             width: '100%',
             height: '100%',
@@ -44,7 +44,7 @@ export default function AuthLayout({
       <div
         aria-hidden="true"
         style={{
-          position: 'absolute',
+          position: 'fixed',
           inset: 0,
           background: 'linear-gradient(to bottom, rgba(17,17,17,0.82) 0%, rgba(17,17,17,0.72) 40%, rgba(17,17,17,0.92) 100%)',
           pointerEvents: 'none',
