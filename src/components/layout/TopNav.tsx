@@ -74,21 +74,19 @@ export default function TopNav() {
 
       {/* 중앙 네비 링크 (데스크탑) */}
       <div className="hidden md:flex items-center gap-0.5 flex-1" role="list">
-        {!loading && user && (
-          <Link
-            href="/dashboard"
-            role="listitem"
-            aria-current={pathname === '/dashboard' ? 'page' : undefined}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200
-              ${
-                pathname === '/dashboard'
-                  ? 'text-white bg-white/10'
-                  : 'text-[#a1a1aa] hover:text-white hover:bg-white/[0.06]'
-              }`}
-          >
-            대시보드
-          </Link>
-        )}
+        <Link
+          href="/dashboard"
+          role="listitem"
+          aria-current={pathname === '/dashboard' ? 'page' : undefined}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200
+            ${
+              pathname === '/dashboard'
+                ? 'text-white bg-white/10'
+                : 'text-[#a1a1aa] hover:text-white hover:bg-white/[0.06]'
+            }`}
+        >
+          대시보드
+        </Link>
         {NAV_ITEMS.map((item) => {
           const isActive = pathname?.startsWith(item.href);
           return (
@@ -276,16 +274,14 @@ export default function TopNav() {
                 </Link>
               );
             })}
-            {!loading && user && (
-              <Link
-                href="/dashboard"
-                onClick={() => setMenuOpen(false)}
-                className={`px-5 py-4 rounded-xl text-base font-semibold transition-colors duration-200
-                  ${pathname === '/dashboard' ? 'text-white bg-white/10' : 'text-white/60 hover:text-white hover:bg-white/[0.06]'}`}
-              >
-                대시보드
-              </Link>
-            )}
+            <Link
+              href="/dashboard"
+              onClick={() => setMenuOpen(false)}
+              className={`px-5 py-4 rounded-xl text-base font-semibold transition-colors duration-200
+                ${pathname === '/dashboard' ? 'text-white bg-white/10' : 'text-white/60 hover:text-white hover:bg-white/[0.06]'}`}
+            >
+              대시보드
+            </Link>
             {!loading && user && user.role === 'admin' && (
               <Link
                 href="/admin"
