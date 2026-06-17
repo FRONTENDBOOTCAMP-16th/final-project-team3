@@ -1,5 +1,13 @@
 import Link from 'next/link';
-import Image from 'next/image';
+
+const BG_IMAGES = [
+  { src: '/images/activio-1.gif',  cls: 'home-bg-1' },
+  { src: '/images/activio-2.jpg',  cls: 'home-bg-2' },
+  { src: '/images/activio-3.webp', cls: 'home-bg-3' },
+  { src: '/images/activio-4.jpg',  cls: 'home-bg-4' },
+  { src: '/images/activio-5.jpeg', cls: 'home-bg-5' },
+  { src: '/images/activio-6.jpg',  cls: 'home-bg-6' },
+] as const;
 
 export default function AuthLayout({
   children,
@@ -7,22 +15,69 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-bg-page px-10 py-6">
-      <header>
-        <Link href="/" className="flex flex-col items-center mb-2">
-          <div className="relative w-40 h-20 mb-3">
-            <Image
-              src="/blackbelt.svg"
-              alt="Black Belt 홈"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
-        </Link>
-      </header>
+    <div
+      className="relative min-h-screen flex flex-col items-center justify-center px-10 py-8"
+      style={{ background: '#111', overflow: 'hidden' }}
+    >
+      {/* Slideshow backgrounds — fixed to viewport so size stays constant regardless of content height */}
+      {BG_IMAGES.map(({ src, cls }) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={src}
+          src={src}
+          alt=""
+          aria-hidden="true"
+          className={cls}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            pointerEvents: 'none',
+            zIndex: 0,
+          }}
+        />
+      ))}
 
-      <main className="flex w-full flex-col items-center">{children}</main>
+      {/* Dark overlay */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'linear-gradient(to bottom, rgba(17,17,17,0.82) 0%, rgba(17,17,17,0.72) 40%, rgba(17,17,17,0.92) 100%)',
+          pointerEvents: 'none',
+          zIndex: 1,
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative flex flex-col items-center w-full" style={{ zIndex: 10 }}>
+        <header>
+          <Link
+            href="/"
+            className="flex flex-col items-center mb-5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-focus focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+          >
+            <span
+              style={{
+                fontSize: '52px',
+                fontWeight: 900,
+                letterSpacing: '0.1em',
+                background: 'linear-gradient(135deg, #ffffff 0%, #c8c8c8 60%, #888 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif",
+                lineHeight: 1,
+              }}
+            >
+              ACTIVIO
+            </span>
+          </Link>
+        </header>
+
+        <main className="flex w-full flex-col items-center">{children}</main>
+      </div>
     </div>
   );
 }

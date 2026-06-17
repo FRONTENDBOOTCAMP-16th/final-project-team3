@@ -1,7 +1,6 @@
 'use client';
-import { useState, useRef, useEffect, useCallback } from 'react';
-import DojangCard from '@/components/dojang/DojangCard';
-import Pageheader from '@/components/layout/PageHeader';
+import { useState, useRef, useCallback } from 'react';
+import { Search, MapPin } from 'lucide-react';
 import { useDebounce } from '@/hooks/useDebounce';
 import Script from 'next/script';
 
@@ -14,6 +13,30 @@ interface KakaoPlace {
   category_name: string;
   x: string;
   y: string;
+  distance?: string;
+}
+
+function parseTags(categoryName: string, placeName: string): string[] {
+  const tags: string[] = [];
+  const lower = (categoryName + ' ' + placeName).toLowerCase();
+  if (lower.includes('주짓수') || lower.includes('bjj')) tags.push('BJJ');
+  if (lower.includes('nogi') || lower.includes('노기')) tags.push('NOGI');
+  if (lower.includes('유도')) tags.push('유도');
+  if (lower.includes('레슬링')) tags.push('레슬링');
+  if (lower.includes('복싱') || lower.includes('boxing')) tags.push('복싱');
+  if (lower.includes('태권도')) tags.push('태권도');
+  if (lower.includes('mma') || lower.includes('종합격투')) tags.push('MMA');
+  if (lower.includes('무에타이') || lower.includes('킥복싱')) tags.push('무에타이');
+  if (tags.length === 0) tags.push('도장');
+  return tags.slice(0, 3);
+}
+
+function formatDistance(dist?: string): string {
+  if (!dist) return '';
+  const m = parseInt(dist, 10);
+  if (isNaN(m)) return '';
+  if (m < 1000) return `${m}m`;
+  return `${(m / 1000).toFixed(1)}km`;
 }
 
 export default function DojangClient() {
@@ -22,312 +45,629 @@ export default function DojangClient() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
   const [locationDenied, setLocationDenied] = useState(false);
-  const [noLocationResults, setNoLocationResults] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [showDetail, setShowDetail] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(0);
-  const [selectedDojangId, setSelectedDojangId] = useState<string | null>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
+
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<naver.maps.Map | undefined>(undefined);
   const markersRef = useRef<naver.maps.Marker[]>([]);
-  const cardRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const infoWindowRef = useRef<any>(undefined);
+  const cardListRef = useRef<HTMLDivElement>(null);
   const debouncedSearch = useDebounce(searchQuery, 500);
 
-  useEffect(() => {
-    if (headerRef.current) {
-      setHeaderHeight(headerRef.current.offsetHeight);
-    }
+  const buildInfoWindowHTML = useCallback((place: KakaoPlace): string => {
+    const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const dist = formatDistance(place.distance);
+    const kakaoUrl = place.place_url || `https://place.map.kakao.com/${place.id}`;
+    return `<div style="background:#1e1e1e;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px 16px;min-width:180px;max-width:240px;box-shadow:0 8px 24px rgba(0,0,0,0.45);position:relative;font-family:inherit;">
+      <button onclick="if(window.__closeIW)window.__closeIW();" style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:50%;width:20px;height:20px;color:rgba(255,255,255,0.5);cursor:pointer;font-size:11px;line-height:20px;padding:0;">✕</button>
+      <div style="font-size:13px;font-weight:700;color:#f0f0f0;margin-bottom:4px;padding-right:24px;">${esc(place.place_name)}</div>
+      ${place.address_name ? `<div style="font-size:11px;color:#9ca3af;margin-bottom:2px;">${esc(place.address_name)}</div>` : ''}
+      ${dist ? `<div style="font-size:10px;color:#6b7280;margin-bottom:8px;">${dist}</div>` : '<div style="margin-bottom:8px;"></div>'}
+      <a href="${esc(kakaoUrl)}" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:#60a5fa;text-decoration:none;">카카오맵에서 보기 →</a>
+    </div>`;
   }, []);
 
   const clearMarkers = useCallback(() => {
-    markersRef.current.forEach((marker) => marker.setMap(null));
+    if (infoWindowRef.current) infoWindowRef.current.close();
+    markersRef.current.forEach((m) => m.setMap(null));
     markersRef.current = [];
   }, []);
 
   const displayMarkers = useCallback(
     (places: KakaoPlace[]) => {
       clearMarkers();
-      if (places.length > 0 && mapInstance.current) {
-        const firstPlace = places[0];
-        mapInstance.current.setCenter(
-          new window.naver.maps.LatLng(firstPlace.y, firstPlace.x),
-        );
-        mapInstance.current.setZoom(13);
+      if (!places.length || !mapInstance.current) return;
 
-        places.forEach((place) => {
-          const marker = new window.naver.maps.Marker({
-            position: new window.naver.maps.LatLng(
-              Number(place.y),
-              Number(place.x),
-            ),
-            map: mapInstance.current,
-            title: place.place_name,
-          });
+      mapInstance.current.setCenter(
+        new window.naver.maps.LatLng(Number(places[0].y), Number(places[0].x)),
+      );
+      mapInstance.current.setZoom(13);
 
-          window.naver.maps.Event.addListener(marker, 'click', () => {
-            setSelectedDojangId(place.id);
-            const card = cardRefs.current[place.id];
-            if (card) {
-              window.scrollTo({
-                top: card.offsetTop - headerHeight - 24,
-                behavior: 'smooth',
-              });
-            }
-          });
-
-          markersRef.current.push(marker);
+      places.forEach((place) => {
+        const marker = new window.naver.maps.Marker({
+          position: new window.naver.maps.LatLng(Number(place.y), Number(place.x)),
+          map: mapInstance.current,
+          title: place.place_name,
         });
-      }
+
+        window.naver.maps.Event.addListener(marker, 'click', () => {
+          if (infoWindowRef.current) infoWindowRef.current.close();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const NaverMaps = window.naver.maps as any;
+          const iw = new NaverMaps.InfoWindow({
+            content: buildInfoWindowHTML(place),
+            borderWidth: 0,
+            disableAnchor: false,
+            backgroundColor: 'transparent',
+            pixelOffset: new NaverMaps.Point(0, -6),
+          });
+          (window as typeof window & { __closeIW?: () => void }).__closeIW = () => iw.close();
+          iw.open(mapInstance.current!, marker);
+          infoWindowRef.current = iw;
+          setSelectedId(place.id);
+        });
+
+        markersRef.current.push(marker);
+      });
     },
-    [headerHeight, clearMarkers],
+    [clearMarkers, buildInfoWindowHTML],
   );
 
-  const fetchDojangsByLocation = useCallback(
+  const fetchByLocation = useCallback(
     async (lat: number, lng: number) => {
-      if (searchQuery.trim()) return;
-
       setIsLoading(true);
-      setNoLocationResults(false);
       try {
         const res = await fetch(
-          `https://dapi.kakao.com/v2/local/search/keyword.json?query=주짓수&x=${lng}&y=${lat}&radius=5000&size=15`,
-          {
-            headers: {
-              Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_LOCAL_API_KEY}`,
-            },
-          },
+          `https://dapi.kakao.com/v2/local/search/keyword.json?query=무술 체육관&x=${lng}&y=${lat}&radius=5000&size=15`,
+          { headers: { Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_LOCAL_API_KEY}` } },
         );
         const data = await res.json();
-        if (data.documents?.length === 0) {
-          setNoLocationResults(true);
-        }
-        setDojangs(data.documents ?? []);
-        setSelectedDojangId(null);
-        if (data.documents?.length > 0) {
-          displayMarkers(data.documents);
-        } else {
-          clearMarkers();
-        }
+        const docs: KakaoPlace[] = data.documents ?? [];
+        setDojangs(docs);
+        setSelectedId(null);
+        setShowDetail(false);
+        displayMarkers(docs);
       } catch {
+        // silent
       } finally {
         setIsLoading(false);
         setIsLocating(false);
       }
     },
-    [displayMarkers, clearMarkers, searchQuery],
+    [displayMarkers],
   );
 
   const initMap = useCallback(() => {
-    if (mapRef.current && window.naver) {
-      mapInstance.current = new window.naver.maps.Map(mapRef.current, {
-        center: new window.naver.maps.LatLng(37.5665, 126.978),
-        zoom: 12,
-      });
-      setMapLoaded(true);
-      setIsLocating(true);
-
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          mapInstance.current?.setCenter(
-            new window.naver.maps.LatLng(latitude, longitude),
-          );
-          fetchDojangsByLocation(latitude, longitude);
-        },
-        () => {
-          setLocationDenied(true);
-          setIsLocating(false);
-        },
-      );
-    }
-  }, [fetchDojangsByLocation]);
-
-  useEffect(() => {
-    if (window.naver && window.naver.maps) initMap();
-  }, [initMap]);
-
-  useEffect(() => {
-    if (debouncedSearch.trim()) return;
-    if (locationDenied) return;
+    if (!mapRef.current || !window.naver) return;
+    mapInstance.current = new window.naver.maps.Map(mapRef.current, {
+      center: new window.naver.maps.LatLng(37.5665, 126.978),
+      zoom: 12,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    window.naver.maps.Event.addListener(mapInstance.current as any, 'click', () => {
+      if (infoWindowRef.current) infoWindowRef.current.close();
+      setSelectedId(null);
+    });
+    setMapLoaded(true);
+    setIsLocating(true);
 
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        fetchDojangsByLocation(latitude, longitude);
+      ({ coords: { latitude, longitude } }) => {
+        mapInstance.current?.setCenter(new window.naver.maps.LatLng(latitude, longitude));
+        fetchByLocation(latitude, longitude);
       },
-      () => {},
+      () => {
+        setLocationDenied(true);
+        setIsLocating(false);
+      },
     );
-  }, [debouncedSearch, locationDenied, fetchDojangsByLocation]);
+  }, [fetchByLocation]);
 
-  useEffect(() => {
+  const handleUseMyLocation = () => {
+    setIsLocating(true);
+    setLocationDenied(false);
+    navigator.geolocation.getCurrentPosition(
+      ({ coords: { latitude, longitude } }) => {
+        mapInstance.current?.setCenter(new window.naver.maps.LatLng(latitude, longitude));
+        fetchByLocation(latitude, longitude);
+      },
+      () => {
+        setLocationDenied(true);
+        setIsLocating(false);
+      },
+    );
+  };
+
+  const handleSearch = async () => {
     if (!debouncedSearch.trim()) return;
+    setIsLoading(true);
+    try {
+      const res = await fetch(
+        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${debouncedSearch}&size=15`,
+        { headers: { Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_LOCAL_API_KEY}` } },
+      );
+      const data = await res.json();
+      const docs: KakaoPlace[] = data.documents ?? [];
+      setDojangs(docs);
+      setSelectedId(null);
+      setShowDetail(false);
+      displayMarkers(docs);
+    } catch {
+      // silent
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    const fetchDojangs = async () => {
-      setIsLoading(true);
-      setNoLocationResults(false);
-      try {
-        const res = await fetch(
-          `https://dapi.kakao.com/v2/local/search/keyword.json?query=${debouncedSearch} 주짓수&size=15`,
-          {
-            headers: {
-              Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_LOCAL_API_KEY}`,
-            },
-          },
-        );
-        const data = await res.json();
-        setDojangs(data.documents ?? []);
-        setSelectedDojangId(null);
-        if (data.documents?.length > 0) {
-          displayMarkers(data.documents);
-        } else {
-          clearMarkers();
-        }
-      } catch {
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchDojangs();
-  }, [debouncedSearch, displayMarkers, clearMarkers]);
+  const isSelected = (id: string) => selectedId === id;
+  const selectedDojang = dojangs.find((d) => d.id === selectedId) ?? null;
 
   return (
     <>
-      {/* ✅ strategy="lazyOnload" 추가 */}
       <Script
         src={`https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID}`}
         strategy="lazyOnload"
         onLoad={initMap}
       />
 
-      <div className="w-full min-h-screen">
+      <div
+        style={{
+          height: 'calc(100vh - 64px)',
+          display: 'flex',
+          flexDirection: 'column',
+          background: '#111',
+        }}
+      >
+        {/* ── Header bar ── */}
         <div
-          ref={headerRef}
-          className="fixed top-0 left-50 right-0 z-10 bg-bg-white shadow-md flex justify-center"
+          className="flex items-center gap-3 shrink-0 px-4 py-3 md:px-8 md:py-4"
+          style={{
+            background: '#111',
+            borderBottom: '1px solid rgba(255,255,255,0.06)',
+          }}
         >
-          <div className="w-full max-w-7xl px-6">
-            <Pageheader
-              title="도장찾기"
-              description="전국의 주짓수 도장"
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              searchPlaceholder={
-                isLocating
-                  ? '현재 위치를 확인하는 중...'
-                  : '도장 이름이나 지역으로 검색...'
-              }
+          <h1
+            style={{
+              fontSize: '17px',
+              fontWeight: 700,
+              color: '#f0f0f0',
+              letterSpacing: '-0.02em',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            도장 찾기
+          </h1>
+
+          <div style={{ flex: 1 }} />
+
+          {/* Search double-bezel */}
+          <div
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: '12px',
+              padding: '2px',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: '#1e1e1e',
+                borderRadius: '10px',
+                padding: '8px 12px',
+                boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.04)',
+                width: 'clamp(120px, 35vw, 260px)',
+              }}
+            >
+              <Search size={13} style={{ color: '#6b7280', flexShrink: 0 }} aria-hidden="true" />
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
+                placeholder={isLocating ? '현재 위치 확인 중...' : '지역 / 도장명 검색...'}
+                aria-label="도장 검색"
+                style={{
+                  flex: 1,
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  fontSize: '14px',
+                  color: '#d1d5db',
+                  fontFamily: 'inherit',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* My location button */}
+          <button
+            type="button"
+            onClick={handleUseMyLocation}
+            disabled={isLocating}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: isLocating ? 'rgba(37,99,235,0.1)' : 'rgba(255,255,255,0.04)',
+              border: `1px solid ${isLocating ? 'rgba(37,99,235,0.3)' : 'rgba(255,255,255,0.08)'}`,
+              borderRadius: '999px',
+              padding: '7px 16px',
+              fontSize: '12px',
+              fontWeight: 500,
+              color: isLocating ? '#60a5fa' : '#d1d5db',
+              cursor: isLocating ? 'default' : 'pointer',
+              fontFamily: 'inherit',
+              whiteSpace: 'nowrap',
+              transition: 'all 0.2s',
+            }}
+          >
+            <MapPin size={13} aria-hidden="true" />
+            <span className="hidden sm:inline">
+              {isLocating ? '위치 확인 중...' : '내 위치 사용'}
+            </span>
+          </button>
+        </div>
+
+        {/* ── Body: left list + right map ── */}
+        <div className="dojang-body">
+
+          {/* Left panel */}
+          <div
+            ref={cardListRef}
+            className="dojang-panel"
+          >
+            {/* ── Detail view ── */}
+            {showDetail && selectedDojang ? (() => {
+              const tags = parseTags(selectedDojang.category_name, selectedDojang.place_name);
+              const dist = formatDistance(selectedDojang.distance);
+              const kakaoUrl = selectedDojang.place_url;
+              return (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => { setShowDetail(false); setSelectedId(null); }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      background: 'none',
+                      border: 'none',
+                      color: 'rgba(255,255,255,0.5)',
+                      fontSize: '12px',
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
+                      marginBottom: '14px',
+                      padding: '4px 0',
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    목록으로
+                  </button>
+
+                  <div
+                    style={{
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.08)',
+                      borderRadius: '16px',
+                      padding: '2px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        background: '#262626',
+                        borderRadius: '14px',
+                        padding: '18px 16px',
+                        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
+                      }}
+                    >
+                      <h2
+                        style={{
+                          fontSize: '16px',
+                          fontWeight: 700,
+                          color: '#f0f0f0',
+                          marginBottom: '8px',
+                          letterSpacing: '-0.02em',
+                        }}
+                      >
+                        {selectedDojang.place_name}
+                      </h2>
+
+                      <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginBottom: '16px' }}>
+                        {tags.map((tag) => (
+                          <span
+                            key={tag}
+                            style={{
+                              background: 'rgba(37,99,235,0.12)',
+                              border: '1px solid rgba(37,99,235,0.25)',
+                              color: '#93c5fd',
+                              fontSize: '10px',
+                              fontWeight: 600,
+                              padding: '3px 9px',
+                              borderRadius: '5px',
+                            }}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div
+                        style={{
+                          borderTop: '1px solid rgba(255,255,255,0.06)',
+                          paddingTop: '14px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '10px',
+                        }}
+                      >
+                        <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                          <span style={{ fontSize: '13px', flexShrink: 0 }}>📍</span>
+                          <span style={{ fontSize: '11.5px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>
+                            {selectedDojang.address_name}
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                          <span style={{ fontSize: '13px', flexShrink: 0 }}>📞</span>
+                          <span style={{ fontSize: '11.5px', color: 'rgba(255,255,255,0.65)' }}>
+                            {selectedDojang.phone || '정보 없음'}
+                          </span>
+                        </div>
+                        {dist && (
+                          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                            <span style={{ fontSize: '13px', flexShrink: 0 }}>📏</span>
+                            <span style={{ fontSize: '11.5px', color: '#60a5fa', fontWeight: 700 }}>{dist}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <a
+                        href={kakaoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                          marginTop: '18px',
+                          background: '#2563eb',
+                          color: '#fff',
+                          borderRadius: '10px',
+                          padding: '11px 0',
+                          fontSize: '12.5px',
+                          fontWeight: 600,
+                          textDecoration: 'none',
+                          boxShadow: '0 4px 12px rgba(37,99,235,0.3)',
+                          transition: 'background 0.2s',
+                        }}
+                        onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = '#1d4ed8')}
+                        onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = '#2563eb')}
+                      >
+                        카카오맵에서 보기
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                          <path d="M2.5 9.5L9.5 2.5M9.5 2.5H4.5M9.5 2.5V7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              );
+            })() : (
+              <>
+                {/* Count */}
+                {dojangs.length > 0 && (
+                  <p
+                    style={{
+                      fontSize: '10.5px',
+                      color: '#9ca3af',
+                      marginBottom: '10px',
+                      fontWeight: 500,
+                    }}
+                  >
+                    내 위치 5km 이내 도장 {dojangs.length}곳
+                  </p>
+                )}
+
+                {/* States */}
+                {isLoading ? (
+                  <div
+                    style={{ display: 'flex', justifyContent: 'center', paddingTop: '60px' }}
+                  >
+                    <div
+                      style={{
+                        width: '28px',
+                        height: '28px',
+                        border: '3px solid rgba(255,255,255,0.1)',
+                        borderTopColor: '#2563eb',
+                        borderRadius: '50%',
+                        animation: 'spin 0.8s linear infinite',
+                      }}
+                      aria-label="검색 중"
+                    />
+                  </div>
+                ) : locationDenied && dojangs.length === 0 ? (
+                  <div style={{ padding: '24px 8px', color: '#9ca3af', fontSize: '12px', textAlign: 'center' }}>
+                    <MapPin size={24} style={{ margin: '0 auto 8px', opacity: 0.4 }} />
+                    <p>위치 접근이 거부되었습니다</p>
+                    <p style={{ marginTop: '4px', fontSize: '11px', opacity: 0.7 }}>검색어를 입력해주세요</p>
+                  </div>
+                ) : dojangs.length === 0 && !isLocating ? (
+                  <div style={{ padding: '24px 8px', color: '#9ca3af', fontSize: '12px', textAlign: 'center' }}>
+                    <MapPin size={24} style={{ margin: '0 auto 8px', opacity: 0.4 }} />
+                    <p>검색 결과가 없습니다</p>
+                  </div>
+                ) : (
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }} aria-label="도장 목록">
+                    {dojangs.map((dojang) => {
+                      const tags = parseTags(dojang.category_name, dojang.place_name);
+                      const dist = formatDistance(dojang.distance);
+                      const sel = isSelected(dojang.id);
+
+                      return (
+                        <li
+                          key={dojang.id}
+                          id={`dj-card-${dojang.id}`}
+                          style={{ marginBottom: '8px' }}
+                        >
+                          {/* double-bezel shell */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedId(dojang.id);
+                              setShowDetail(true);
+                            }}
+                            aria-pressed={sel}
+                            style={{
+                              width: '100%',
+                              textAlign: 'left',
+                              background: sel ? 'rgba(29,78,216,0.06)' : 'rgba(255,255,255,0.04)',
+                              border: `1px solid ${sel ? 'rgba(29,78,216,0.35)' : 'rgba(255,255,255,0.07)'}`,
+                              borderRadius: '14px',
+                              padding: '2px',
+                              cursor: 'pointer',
+                              transition: 'all 0.35s',
+                              fontFamily: 'inherit',
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!sel) {
+                                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(29,78,216,0.2)';
+                                (e.currentTarget as HTMLElement).style.transform = 'translateX(2px)';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!sel) {
+                                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.07)';
+                                (e.currentTarget as HTMLElement).style.transform = 'translateX(0)';
+                              }
+                            }}
+                          >
+                            {/* inner core */}
+                            <div
+                              style={{
+                                background: '#1e1e1e',
+                                borderRadius: '12px',
+                                padding: '12px 14px',
+                                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
+                              }}
+                            >
+                              <div
+                                style={{
+                                  fontSize: '13px',
+                                  fontWeight: 700,
+                                  color: '#f0f0f0',
+                                  marginBottom: '3px',
+                                }}
+                              >
+                                {dojang.place_name}
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: '10.5px',
+                                  color: '#9ca3af',
+                                  marginBottom: '7px',
+                                }}
+                              >
+                                {dojang.address_name}
+                              </div>
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                }}
+                              >
+                                <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                                  {tags.map((tag) => (
+                                    <span
+                                      key={tag}
+                                      style={{
+                                        background: 'rgba(255,255,255,0.05)',
+                                        border: '1px solid rgba(255,255,255,0.08)',
+                                        color: '#9ca3af',
+                                        fontSize: '9.5px',
+                                        fontWeight: 500,
+                                        padding: '2px 7px',
+                                        borderRadius: '5px',
+                                      }}
+                                    >
+                                      {tag}
+                                    </span>
+                                  ))}
+                                </div>
+                                {dist && (
+                                  <span
+                                    style={{
+                                      fontSize: '10px',
+                                      fontWeight: 700,
+                                      color: '#3b82f6',
+                                      flexShrink: 0,
+                                      marginLeft: '8px',
+                                    }}
+                                  >
+                                    {dist}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </>
+            )}
+          </div>
+
+          {/* Right: map */}
+          <div className="dojang-map">
+            {!mapLoaded && (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: '#1a2030',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 10,
+                }}
+                role="status"
+                aria-label="지도 불러오는 중"
+              >
+                <div
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    border: '3px solid rgba(255,255,255,0.1)',
+                    borderTopColor: '#2563eb',
+                    borderRadius: '50%',
+                    animation: 'spin 0.8s linear infinite',
+                  }}
+                />
+              </div>
+            )}
+            <div
+              ref={mapRef}
+              role="application"
+              aria-label="도장 위치 지도"
+              style={{ width: '100%', height: '100%' }}
             />
           </div>
         </div>
-
-        <main
-          style={{ paddingTop: `${headerHeight + 24}px` }}
-          className="pb-6 flex justify-center"
-          aria-label="도장 찾기"
-        >
-          <div className="w-full max-w-7xl px-6 flex flex-col gap-4 min-h-screen">
-            <div className="relative">
-              {!mapLoaded && (
-                <div
-                  className="absolute inset-0 bg-btn-basic rounded-lg flex items-center justify-center z-10"
-                  role="status"
-                  aria-label="지도 불러오는 중"
-                >
-                  <div
-                    className="w-8 h-8 border-4 border-gray-200 border-t-btn-focus rounded-full animate-spin"
-                    aria-hidden="true"
-                  />
-                </div>
-              )}
-              <div
-                ref={mapRef}
-                className="w-full rounded-lg overflow-hidden border border-gray-200"
-                style={{ zIndex: 0, height: '400px', minHeight: '400px' }}
-                role="application"
-                aria-label="도장 위치 지도"
-              />
-            </div>
-
-            {isLocating && !searchQuery.trim() && (
-              <div
-                className="flex items-center justify-center gap-2 py-4 text-text-secondary text-sm"
-                aria-live="polite"
-              >
-                <div className="w-4 h-4 border-2 border-gray-300 border-t-btn-focus rounded-full animate-spin" />
-                현재 위치를 확인하는 중입니다...
-              </div>
-            )}
-
-            {isLoading ? (
-              <div role="status" aria-label="도장 검색 중">
-                <div className="flex items-center justify-center py-20">
-                  <div
-                    className="w-8 h-8 border-4 border-gray-200 border-t-btn-focus rounded-full animate-spin"
-                    aria-hidden="true"
-                  />
-                </div>
-              </div>
-            ) : dojangs.length > 0 ? (
-              <ul
-                className="grid grid-cols-2 gap-4"
-                aria-label={`검색 결과 ${dojangs.length}개`}
-              >
-                {dojangs.map((dojang) => (
-                  <li
-                    key={dojang.id}
-                    ref={(el) => {
-                      cardRefs.current[dojang.id] = el;
-                    }}
-                  >
-                    <DojangCard
-                      dojang={dojang}
-                      isSelected={selectedDojangId === dojang.id}
-                    />
-                  </li>
-                ))}
-              </ul>
-            ) : dojangs.length === 0 && debouncedSearch.trim() ? (
-              <div
-                className="flex flex-col items-center justify-center py-20 text-text-secondary"
-                aria-live="polite"
-              >
-                <p className="text-lg">검색 결과가 없습니다</p>
-                <p className="text-sm mt-2">다른 검색어로 시도해보세요</p>
-              </div>
-            ) : locationDenied ? (
-              <div
-                className="flex flex-col items-center justify-center py-20 text-text-secondary"
-                aria-live="polite"
-              >
-                <p className="text-lg">위치 접근이 거부되었습니다</p>
-                <p className="text-sm mt-2">
-                  검색어를 입력하거나 브라우저 설정에서 위치 권한을 허용해주세요
-                </p>
-              </div>
-            ) : noLocationResults ? (
-              <div
-                className="flex flex-col items-center justify-center py-20 text-text-secondary"
-                aria-live="polite"
-              >
-                <p className="text-lg">주변 5km 내 도장이 없습니다</p>
-                <p className="text-sm mt-2">
-                  검색어를 입력해서 다른 지역을 찾아보세요
-                </p>
-              </div>
-            ) : !isLocating ? (
-              <div
-                className="flex flex-col items-center justify-center py-20 text-text-secondary"
-                aria-live="polite"
-              >
-                <p className="text-lg">검색어를 입력해주세요</p>
-                <p className="text-sm mt-2">
-                  지역명이나 도장 이름으로 검색해보세요
-                </p>
-              </div>
-            ) : null}
-          </div>
-        </main>
       </div>
+
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+      `}</style>
     </>
   );
 }

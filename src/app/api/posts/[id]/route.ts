@@ -27,7 +27,7 @@ export async function PUT(
   if (!user)
     return NextResponse.json({ error: '로그인 필요' }, { status: 401 });
 
-  const { title, content, image_url } = await req.json();
+  const { title, content, image_url, video_url } = await req.json();
 
   const [{ data: profile }, { data: post, error: postError }] =
     await Promise.all([
@@ -63,7 +63,7 @@ export async function PUT(
 
   const { error } = await supabase
     .from('posts')
-    .update({ title, content, image_url })
+    .update({ title, content, image_url, video_url })
     .eq('id', id);
 
   if (error)

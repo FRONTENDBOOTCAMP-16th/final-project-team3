@@ -9,10 +9,8 @@ interface AdminTableToolbarProps<TFilter extends string> {
     value: TFilter;
   }[];
   activeFilter: TFilter;
-  // eslint-disable-next-line no-unused-vars
   onFilterChange: (_value: TFilter) => void;
   searchQuery: string;
-  // eslint-disable-next-line no-unused-vars
   onSearchQueryChange: (_value: string) => void;
   onSearch?: () => void;
   searchPlaceholder?: string;

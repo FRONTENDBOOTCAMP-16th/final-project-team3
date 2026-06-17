@@ -196,3 +196,28 @@ export async function fetchMyCommentCount(): Promise<number> {
 
   return count ?? 0;
 }
+
+export async function fetchMyLikeCount(): Promise<number> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return 0;
+
+  const { data: posts } = await supabase
+    .from('posts')
+    .select('id')
+    .eq('user_id', user.id)
+    .is('deleted_at', null)
+    .eq('status', 'published');
+
+  if (!posts || posts.length === 0) return 0;
+
+  const postIds = posts.map((p) => p.id);
+
+  const { count } = await supabase
+    .from('likes')
+    .select('*', { count: 'exact', head: true })
+    .in('post_id', postIds);
+
+  return count ?? 0;
+}

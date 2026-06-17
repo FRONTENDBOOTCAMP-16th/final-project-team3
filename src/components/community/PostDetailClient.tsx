@@ -59,7 +59,6 @@ export default function PostDetailClient({
   const isSubmittingRef = useRef(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setComment('');
   }, [id]);
 
@@ -230,6 +229,7 @@ export default function PostDetailClient({
     created_at: initialPost.created_at,
     title: initialPost.title,
     image_url: initialPost.image_url,
+    video_url: initialPost.video_url,
     content: initialPost.content,
     commentCount: comments.length,
   };
@@ -240,7 +240,8 @@ export default function PostDetailClient({
         type="button"
         onClick={() => router.push('/community')}
         aria-label="커뮤니티 목록으로 이동"
-        className="flex items-center gap-2 px-2.5 py-2 border-2 border-white bg-white text-black text-sm font-medium rounded-xl hover:bg-(--color-btn-focus) hover:text-white transition-colors duration-200 cursor-pointer"
+        className="flex items-center gap-2 px-2.5 py-2 text-sm font-medium rounded-xl transition-colors duration-200 cursor-pointer"
+        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.85)' }}
       >
         <svg
           width="16"
@@ -280,7 +281,7 @@ export default function PostDetailClient({
                 >
                   <Pencil
                     size={20}
-                    className="text-gray-400 hover:text-gray-800"
+                    className="text-white/40 hover:text-white/80 transition-colors"
                   />
                 </button>
                 <button
@@ -292,7 +293,7 @@ export default function PostDetailClient({
                 >
                   <Trash2
                     size={20}
-                    className="text-gray-400 hover:text-red-500"
+                    className="text-white/40 hover:text-red-400 transition-colors"
                   />
                 </button>
               </>
@@ -304,7 +305,7 @@ export default function PostDetailClient({
                 onClick={() => setReportModalOpen(true)}
                 className="p-1"
               >
-                <Flag size={20} className="text-gray-400 hover:text-gray-800" />
+                <Flag size={20} className="text-white/40 hover:text-white/80 transition-colors" />
               </button>
             )}
             <button
@@ -314,14 +315,20 @@ export default function PostDetailClient({
               onClick={handleShare}
               className="p-1"
             >
-              <Share2 size={18} className="text-gray-400 hover:text-gray-800" />
+              <Share2 size={18} className="text-white/40 hover:text-white/80 transition-colors" />
             </button>
           </>
         }
       />
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-5 pt-5 pb-3 flex items-center gap-2 border-b border-gray-100">
+      <div
+        className="rounded-2xl overflow-hidden"
+        style={{ background: '#1e1e1e', border: '1px solid rgba(255,255,255,0.06)' }}
+      >
+        <div
+          className="px-5 pt-5 pb-3 flex items-center gap-2"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+        >
           <Image
             src="/postComment.svg"
             alt=""
@@ -330,7 +337,7 @@ export default function PostDetailClient({
             height={16}
             className="opacity-40"
           />
-          <h2 className="text-sm font-semibold text-gray-800">댓글</h2>
+          <h2 className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>댓글</h2>
         </div>
 
         <div className="px-5 py-4">
@@ -374,9 +381,9 @@ export default function PostDetailClient({
         <div className="px-5 pb-5 space-y-4">
           {comments.map((c, index) => (
             <div key={c.id}>
-              {index > 0 && <div className="border-t border-gray-50 mb-4" />}
+              {index > 0 && <div className="mb-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} />}
               <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-gray-200 shrink-0 overflow-hidden">
+                <div className="w-8 h-8 rounded-full shrink-0 overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
                   <Image
                     src={c.avatar_url || '/basic.svg'}
                     alt={`${c.nickname} 프로필 이미지`}
@@ -387,11 +394,11 @@ export default function PostDetailClient({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1">
-                    <span className="text-sm font-semibold text-gray-900">
+                    <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.9)' }}>
                       {c.nickname}
                     </span>
                     {c.belt_level && (
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
                         {c.belt_level}
                       </span>
                     )}
@@ -428,18 +435,19 @@ export default function PostDetailClient({
                         onClick={() => setEditingCommentId(null)}
                         type="button"
                         aria-label="댓글 수정 취소"
-                        className="text-xs text-gray-400"
+                        className="text-xs"
+                        style={{ color: 'rgba(255,255,255,0.4)' }}
                       >
                         취소
                       </button>
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-700 leading-relaxed">
+                    <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>
                       {c.content}
                     </p>
                   )}
                   <div className="flex items-center gap-3 mt-1.5">
-                    <span className="flex items-center gap-1 text-xs text-gray-400">
+                    <span className="flex items-center gap-1 text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
                       <Image
                         src="/postTime.svg"
                         alt=""
@@ -459,7 +467,10 @@ export default function PostDetailClient({
                             setEditingContent(c.content);
                           }}
                           aria-label={`${c.nickname}의 댓글 수정`}
-                          className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                          className="text-xs transition-colors"
+                          style={{ color: 'rgba(255,255,255,0.4)' }}
+                          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.75)')}
+                          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.4)')}
                         >
                           수정
                         </button>
@@ -467,7 +478,7 @@ export default function PostDetailClient({
                           type="button"
                           onClick={() => setDeleteCommentId(c.id)}
                           aria-label={`${c.nickname}의 댓글 삭제`}
-                          className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors"
+                          className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors"
                         >
                           삭제
                         </button>
@@ -479,7 +490,7 @@ export default function PostDetailClient({
             </div>
           ))}
           {comments.length === 0 && (
-            <p className="text-center text-sm text-gray-400 py-4">
+            <p className="text-center text-sm py-4" style={{ color: 'rgba(255,255,255,0.38)' }}>
               첫 번째 댓글을 남겨보세요!
             </p>
           )}

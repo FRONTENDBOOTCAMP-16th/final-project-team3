@@ -39,7 +39,7 @@ const dojangSchema = z
       .min(8, '비밀번호는 8자 이상이어야 합니다.')
       .regex(PASSWORD_REGEX, '영문, 숫자, 특수문자를 모두 포함해야 합니다.'),
     passwordCheck: z.string().min(1, '비밀번호 확인을 입력해주세요.'),
-    belt: z.string().min(1, '벨트를 선택해주세요.'),
+    sport: z.string().min(1, '운동 종목을 선택해주세요.'),
     licenseNumber: z
       .string()
       .min(1, '사업자등록번호를 입력해주세요.')
@@ -83,7 +83,7 @@ export default function DojangForm() {
       email: '',
       password: '',
       passwordCheck: '',
-      belt: '',
+      sport: '',
       licenseNumber: '',
       ownerName: '',
       phone: '',
@@ -98,7 +98,7 @@ export default function DojangForm() {
   }, [reset]);
 
   const nickname = watch('nickname');
-  const beltValue = watch('belt');
+  const sportValue = watch('sport');
   const password = watch('password');
   const { nicknameStatus } = useNicknameCheck(nickname);
 
@@ -131,7 +131,7 @@ export default function DojangForm() {
         password: data.password,
         name: data.name,
         nickname: data.nickname,
-        belt: data.belt,
+        belt: data.sport,
         licenseNumber: data.licenseNumber,
         ownerName: data.ownerName,
         phone: data.phone,
@@ -237,16 +237,16 @@ export default function DojangForm() {
           </div>
         </Field>
 
-        <Field label="벨트" htmlFor="dojang-belt">
+        <Field label="운동 종목" htmlFor="dojang-sport">
           <BeltSelect
-            id="dojang-belt"
-            value={beltValue}
-            {...register('belt')}
+            id="dojang-sport"
+            value={sportValue}
+            {...register('sport')}
           />
           <div className="h-5 mt-1">
-            {errors.belt && (
+            {errors.sport && (
               <p className="text-danger text-sm" role="alert">
-                {errors.belt.message}
+                {errors.sport.message}
               </p>
             )}
           </div>

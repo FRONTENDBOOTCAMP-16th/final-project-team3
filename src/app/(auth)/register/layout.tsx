@@ -5,7 +5,10 @@ export default function RegisterLayout({
 }) {
   return (
     <>
-      <p className="text-text-secondary text-sm font-medium text-center mb-6">
+      <p
+        className="text-center mb-6"
+        style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.01em' }}
+      >
         새로운 계정을 만들어보세요
       </p>
 

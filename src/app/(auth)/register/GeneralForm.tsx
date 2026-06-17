@@ -37,7 +37,7 @@ const generalSchema = z
       .min(8, '비밀번호는 8자 이상이어야 합니다.')
       .regex(PASSWORD_REGEX, '영문, 숫자, 특수문자를 모두 포함해야 합니다.'),
     passwordCheck: z.string().min(1, '비밀번호 확인을 입력해주세요.'),
-    belt: z.string().min(1, '벨트를 선택해주세요.'),
+    sport: z.string().min(1, '운동 종목을 선택해주세요.'),
   })
   .refine((data) => data.password === data.passwordCheck, {
     message: '비밀번호가 일치하지 않습니다.',
@@ -65,7 +65,7 @@ export default function GeneralForm() {
       email: '',
       password: '',
       passwordCheck: '',
-      belt: '',
+      sport: '',
     },
   });
 
@@ -75,7 +75,7 @@ export default function GeneralForm() {
   }, [reset]);
 
   const nickname = watch('nickname');
-  const beltValue = watch('belt');
+  const sportValue = watch('sport');
   const password = watch('password');
   const { nicknameStatus } = useNicknameCheck(nickname);
 
@@ -93,7 +93,7 @@ export default function GeneralForm() {
         password: data.password,
         name: data.name,
         nickname: data.nickname,
-        belt: data.belt,
+        belt: data.sport,
       });
       showSuccessToast('회원가입이 완료되었습니다! 로그인해주세요 🎉');
       router.push('/login');
@@ -188,12 +188,12 @@ export default function GeneralForm() {
         </div>
       </Field>
 
-      <Field label="벨트" htmlFor="belt">
-        <BeltSelect id="belt" value={beltValue} {...register('belt')} />
+      <Field label="운동 종목" htmlFor="sport">
+        <BeltSelect id="sport" value={sportValue} {...register('sport')} />
         <div className="h-5 mt-1">
-          {errors.belt && (
+          {errors.sport && (
             <p className="text-danger text-sm" role="alert">
-              {errors.belt.message}
+              {errors.sport.message}
             </p>
           )}
         </div>

@@ -7,7 +7,7 @@ export interface Profile {
   nickname: string;
   avatar_url?: string;
   bio?: string;
-  belt_level: BeltLevel | null;
+  belt_level: string | null;
   role: Role;
   phone_value?: string;
   email_value?: string;
@@ -23,5 +23,5 @@ export interface ProfileUpdateForm {
   nickname: string;
   bio: string;
   avatar_url: string | null;
-  belt_level: BeltLevel | null;
+  belt_level: string | null;
 }

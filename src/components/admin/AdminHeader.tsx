@@ -15,10 +15,17 @@ export default function AdminHeader() {
   const { title, description } = ADMIN_META[page];
 
   return (
-    <header className="fixed top-0 left-50 right-0 z-50 flex justify-center bg-white shadow-md">
+    <header
+      className="fixed top-0 left-50 right-0 z-50 flex justify-center"
+      style={{
+        background: '#1e1e1e',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+      }}
+    >
       <div className="w-full max-w-7xl px-6 py-6 space-y-2">
-        <h1 className="text-2xl font-bold text-zinc-950">{title}</h1>
-        <p className="text-sm text-zinc-500">{description}</p>
+        <h1 className="text-2xl font-bold" style={{ color: 'rgba(255,255,255,0.92)' }}>{title}</h1>
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>{description}</p>
       </div>
     </header>
   );

@@ -68,37 +68,37 @@ export function CommentForm({ postId, onCommentPosted }: CommentFormProps) {
           placeholder="댓글을 입력하세요... (Ctrl+Enter로 작성)"
           disabled={isPending}
           rows={3}
-          className="w-full resize-none rounded-lg border border-gray-200 px-3 py-2 text-sm
-                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                     disabled:opacity-50 disabled:bg-gray-50"
+          className="w-full resize-none rounded-lg bg-input-bg border border-white/[0.08] px-3 py-2 text-sm text-text-primary placeholder:text-text-secondary
+                     focus:outline-none focus:ring-2 focus:ring-btn-focus focus:border-transparent
+                     disabled:opacity-50"
         />
         <span
           className={`absolute bottom-2 right-3 text-xs
-            ${isOverLimit ? 'text-red-500 font-medium' : 'text-gray-400'}`}
+            ${isOverLimit ? 'text-danger font-medium' : 'text-text-secondary'}`}
         >
           {charCount} / {ABUSE_CONFIG.MAX_LENGTH}
         </span>
       </div>
 
       {status.type === 'error' && (
-        <p className="text-sm text-red-500 flex items-center gap-1">
+        <p className="text-sm text-danger flex items-center gap-1">
           <span>⚠️</span> {status.message}
         </p>
       )}
       {status.type === 'success' && (
-        <p className="text-sm text-green-600 flex items-center gap-1">
+        <p className="text-sm text-green-400 flex items-center gap-1">
           <span>✓</span> 댓글이 작성되었습니다.
         </p>
       )}
 
       <div className="flex items-center justify-between">
-        <p className="text-xs text-gray-400">Ctrl+Enter로 빠르게 작성</p>
+        <p className="text-xs text-text-secondary">Ctrl+Enter로 빠르게 작성</p>
         <button
           type="button"
           onClick={handleSubmit}
           disabled={!canSubmit}
-          className="px-4 py-1.5 rounded-lg bg-blue-600 text-white text-sm font-medium
-                     hover:bg-blue-700 active:scale-95 transition-all
+          className="px-4 py-1.5 rounded-lg bg-btn-focus text-white text-sm font-medium
+                     hover:opacity-90 active:scale-95 transition-all
                      disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
         >
           {isPending ? '작성 중...' : '작성'}

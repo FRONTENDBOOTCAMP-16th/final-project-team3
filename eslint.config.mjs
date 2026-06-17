@@ -6,12 +6,12 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
 
-  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
+  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', '**/*.d.ts']),
   {
     rules: {
       'no-console': 'warn',
 
-      'no-unused-vars': 'warn',
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
 
       'no-var': 'error',
 
@@ -28,6 +28,12 @@ const eslintConfig = defineConfig([
       '@typescript-eslint/no-empty-interface': 'warn',
 
       '@typescript-eslint/no-explicit-any': 'warn',
+
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
+
+      'react-hooks/set-state-in-effect': 'off',
+
+      'react-hooks/incompatible-library': 'off',
     },
   },
 ]);
