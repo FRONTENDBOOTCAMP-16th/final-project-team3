@@ -256,15 +256,15 @@ export default function DojangClient() {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '7px',
+                gap: '10px',
                 background: '#1e1e1e',
                 borderRadius: '10px',
-                padding: '8px 12px',
+                padding: '11px 16px',
                 boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.04)',
-                width: 'clamp(120px, 35vw, 260px)',
+                width: 'clamp(180px, 40vw, 360px)',
               }}
             >
-              <Search size={13} style={{ color: '#6b7280', flexShrink: 0 }} aria-hidden="true" />
+              <Search size={16} style={{ color: '#6b7280', flexShrink: 0 }} aria-hidden="true" />
               <input
                 type="search"
                 value={searchQuery}
@@ -277,8 +277,8 @@ export default function DojangClient() {
                   background: 'transparent',
                   border: 'none',
                   outline: 'none',
-                  fontSize: '12px',
-                  color: '#6b7280',
+                  fontSize: '14px',
+                  color: '#d1d5db',
                   fontFamily: 'inherit',
                 }}
               />
