@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Mail, Lock } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
@@ -22,6 +22,7 @@ export default function LoginClient() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{
     email?: string;
     password?: string;
@@ -54,7 +55,7 @@ export default function LoginClient() {
         role: profile?.role ?? '',
       });
 
-      const redirectPath = profile?.role === 'admin' ? '/admin' : '/community';
+      const redirectPath = profile?.role === 'admin' ? '/admin' : '/dashboard';
       router.push(redirectPath);
     } catch (error: unknown) {
       const message =
@@ -73,7 +74,7 @@ export default function LoginClient() {
         주짓수 커뮤니티에 오신 것을 환영합니다
       </p>
 
-      <div className="max-w-150 w-full bg-bg-white rounded-[32px] p-8 shadow-sm border-none">
+      <div className="max-w-150 w-full bg-bg-white rounded-[32px] p-8 border border-white/[0.07] shadow-2xl">
         <h1 className="text-2xl font-bold text-center text-text-primary mb-8">
           로그인
         </h1>
@@ -124,13 +125,22 @@ export default function LoginClient() {
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
               <input
                 id="password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 placeholder="비밀번호를 입력하세요"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 aria-invalid={!!errors.password}
-                className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-4 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
+                className="w-full bg-input-bg border-none rounded-2xl py-4 pl-12 pr-12 text-base text-input-text focus:ring-2 focus:ring-btn-focus outline-none transition-all"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                tabIndex={-1}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
             </div>
             <div className="h-5 mt-1">
               {errors.password && (

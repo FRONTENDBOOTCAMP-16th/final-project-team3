@@ -8,7 +8,8 @@ export interface Post {
   category: PostCategory;
   status?: 'published' | 'hidden' | string | null;
   deleted_at?: string | null;
-  image_url?: string;
+  image_url?: string | null;
+  video_url?: string | null;
   report_count: number;
   comment_count: number;
   created_at: string;

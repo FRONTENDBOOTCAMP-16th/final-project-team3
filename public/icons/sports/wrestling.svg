@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Attacker (double-leg takedown, shooting low) -->
+  <circle cx="14" cy="36" r="6" fill="white"/>
+  <path d="M14 42 L14 54" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path d="M14 30 C18 24 28 22 34 24" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path d="M14 30 L8 38" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M34 24 L42 30" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <!-- Defender (being taken down) -->
+  <circle cx="48" cy="12" r="6" fill="white"/>
+  <path d="M48 18 L46 30" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path d="M46 22 L38 18 M46 22 L56 20" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M46 30 L40 44" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path d="M46 30 L52 44" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+</svg>

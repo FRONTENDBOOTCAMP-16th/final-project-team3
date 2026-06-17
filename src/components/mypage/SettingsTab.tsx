@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useUpdateMyProfile, useDeleteMyAccount } from '@/hooks/useMyPage';
-import { Profile, BeltLevel } from '@/types/user';
+import { Profile } from '@/types/user';
 import { Pencil, User, Mail } from 'lucide-react';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
 import {
@@ -15,7 +15,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { LimitedInput } from '@/components/common/LimitedInput';
 import { LimitedTextarea } from '@/components/common/LimitedTextarea';
-import { BELTS, BELT_COLORS, normalizeBeltLevel } from '@/constants/belt';
+import { SPORTS } from '@/constants/sports';
 import {
   MIN_NICKNAME_LENGTH,
   NICKNAME_MIN_LENGTH_MESSAGE,
@@ -26,16 +26,15 @@ interface SettingsTabProps {
 }
 
 const isAdmin = (role: string | null) => role === 'admin';
-type SelectedBeltLevel = BeltLevel | '';
 
-const getProfileBeltValue = (beltLevel: Profile['belt_level']) =>
-  normalizeBeltLevel(beltLevel) ?? '';
+const getProfileSportValue = (beltLevel: Profile['belt_level']) =>
+  beltLevel ?? '';
 
 export default function SettingsTab({ profile }: SettingsTabProps) {
   const [nickname, setNickname] = useState(profile.nickname ?? '');
   const [bio, setBio] = useState(profile.bio ?? '');
-  const [beltLevel, setBeltLevel] = useState<SelectedBeltLevel>(
-    getProfileBeltValue(profile.belt_level),
+  const [sportSlug, setSportSlug] = useState(
+    getProfileSportValue(profile.belt_level),
   );
   const [formError, setFormError] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -55,12 +54,12 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
   }, [isEditing, trimmedNickname.length]);
   const hasNicknameWhitespace =
     isEditing && nickname.length > 0 && nickname !== trimmedNickname;
-  const profileBeltValue = getProfileBeltValue(profile.belt_level);
+  const profileSportValue = getProfileSportValue(profile.belt_level);
 
   const isChanged =
     trimmedNickname !== (profile.nickname ?? '') ||
     bio !== (profile.bio ?? '') ||
-    beltLevel !== profileBeltValue;
+    sportSlug !== profileSportValue;
 
   const router = useRouter();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateMyProfile();
@@ -71,7 +70,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
   const handleStartEditing = () => {
     setNickname(profile.nickname ?? '');
     setBio(profile.bio ?? '');
-    setBeltLevel(getProfileBeltValue(profile.belt_level));
+    setSportSlug(getProfileSportValue(profile.belt_level));
     setFormError('');
     setIsEditing(true);
   };
@@ -79,7 +78,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
   const handleCancel = () => {
     setNickname(profile.nickname ?? '');
     setBio(profile.bio ?? '');
-    setBeltLevel(getProfileBeltValue(profile.belt_level));
+    setSportSlug(getProfileSportValue(profile.belt_level));
     setFormError('');
     setIsEditing(false);
   };
@@ -101,7 +100,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
         avatar_url: profile.avatar_url ?? null,
         belt_level: isAdmin(profile.role)
           ? profile.belt_level
-          : beltLevel || null,
+          : sportSlug || null,
       },
       {
         onSuccess: () => {
@@ -225,32 +224,24 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
         {!isAdmin(profile.role) && (
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-text-primary">
-              벨트
+              운동 종목
             </label>
             <div
-              className={`relative flex items-center rounded-xl px-4 py-3 ${isEditing ? 'bg-white border border-btn-focus' : 'bg-input-bg'}`}
+              className={`relative flex items-center rounded-xl px-4 py-3 ${isEditing ? 'bg-input-bg border border-btn-focus' : 'bg-input-bg'}`}
             >
-              <span
-                className="w-3 h-3 rounded-full mr-2 shrink-0"
-                style={{
-                  backgroundColor: beltLevel
-                    ? BELT_COLORS[beltLevel]
-                    : 'transparent',
-                  border: '1px solid #d1d5db',
-                }}
-              />
+              <span className="mr-2 text-base shrink-0">
+                {SPORTS.find((s) => s.slug === sportSlug)?.icon ?? '🏅'}
+              </span>
               <select
                 disabled={!isEditing}
-                value={beltLevel}
-                onChange={(e) =>
-                  setBeltLevel(e.target.value as SelectedBeltLevel)
-                }
+                value={sportSlug}
+                onChange={(e) => setSportSlug(e.target.value)}
                 className="flex-1 bg-transparent text-sm text-input-text outline-none appearance-none cursor-pointer"
               >
-                <option value="">벨트를 선택하세요</option>
-                {BELTS.map((belt) => (
-                  <option key={belt} value={belt}>
-                    {belt}
+                <option value="">운동 종목을 선택하세요</option>
+                {SPORTS.map((s) => (
+                  <option key={s.slug} value={s.slug}>
+                    {s.icon} {s.name}
                   </option>
                 ))}
               </select>

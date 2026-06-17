@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils';
 
 interface SearchInputProps {
   searchQuery: string;
-  // eslint-disable-next-line no-unused-vars
   setSearchQuery: (_query: string) => void;
   onSearch?: () => void;
   placeholder?: string;

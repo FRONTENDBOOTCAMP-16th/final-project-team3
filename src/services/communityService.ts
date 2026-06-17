@@ -30,6 +30,51 @@ export async function getPosts(page = 0, pageSize = 10) {
   }));
 }
 
+export async function getSportPosts(sport: string, page = 0, pageSize = 10) {
+  const from = page * pageSize;
+  const to = from + pageSize - 1;
+
+  const { data, error } = await supabase
+    .from('posts')
+    .select('*, active_comment_counts(count), profiles(nickname, avatar_url)')
+    .is('deleted_at', null)
+    .eq('status', 'published')
+    .eq('sport', sport)
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  if (error) throw error;
+
+  return data.map((post) => ({
+    ...post,
+    comment_count:
+      (post.active_comment_counts as { count: number }[])[0]?.count ?? 0,
+    nickname: (post.profiles as ProfileBase | null)?.nickname,
+    avatar_url: (post.profiles as ProfileBase | null)?.avatar_url,
+    profiles: undefined,
+  }));
+}
+
+export async function getPromoPosts(limit = 20) {
+  const { data, error } = await supabase
+    .from('posts')
+    .select('id, title, content, profiles(nickname)')
+    .is('deleted_at', null)
+    .eq('status', 'published')
+    .eq('category', 'promo')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+
+  return (data ?? []).map((post) => ({
+    id: post.id as string,
+    title: post.title as string,
+    content: post.content as string,
+    nickname: (post.profiles as unknown as ProfileBase | null)?.nickname ?? '',
+  }));
+}
+
 export function isPublicPostVisible(
   post: Post | null | undefined,
 ): post is Post {
@@ -48,18 +93,22 @@ export async function createPost({
   title,
   content,
   image_url,
+  video_url,
+  sport,
   user_id,
 }: {
   category: PostCategory;
   title: string;
   content: string;
   image_url?: string;
+  video_url?: string;
+  sport?: string;
   user_id: string;
 }) {
   const res = await fetch('/api/posts', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ category, title, content, image_url, user_id }),
+    body: JSON.stringify({ category, title, content, image_url, video_url, sport, user_id }),
   });
   if (!res.ok) throw new Error('게시글 작성 실패');
   const { post } = await res.json();
@@ -68,7 +117,7 @@ export async function createPost({
 
 export async function updatePost(
   id: string,
-  fields: { title: string; content: string; image_url?: string },
+  fields: { title: string; content: string; image_url?: string | null; video_url?: string | null },
 ) {
   const res = await fetch(`/api/posts/${id}`, {
     method: 'PUT',
@@ -93,6 +142,20 @@ export async function uploadPostImage(file: File): Promise<string> {
     .upload(fileName, file);
   if (error) throw error;
   const { data } = supabase.storage.from('post-images').getPublicUrl(fileName);
+  return data.publicUrl;
+}
+
+export async function uploadPostVideo(file: File): Promise<string> {
+  const ext = file.name.split('.').pop();
+  const fileName = `${Date.now()}.${ext}`;
+  const { error } = await supabase.storage
+    .from('post-videos')
+    .upload(fileName, file, { contentType: file.type, cacheControl: '3600' });
+  if (error) {
+    console.error('[uploadPostVideo] Supabase error:', error);
+    throw error;
+  }
+  const { data } = supabase.storage.from('post-videos').getPublicUrl(fileName);
   return data.publicUrl;
 }
 

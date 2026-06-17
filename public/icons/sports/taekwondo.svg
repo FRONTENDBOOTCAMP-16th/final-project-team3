@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Taekwondo high kick (dollyo chagi) -->
+  <!-- Head -->
+  <circle cx="18" cy="8" r="6" fill="white"/>
+  <!-- Body -->
+  <path d="M18 14 L18 30" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <!-- Arms (raised for balance) -->
+  <path d="M18 20 L6 14" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M18 20 L28 14" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <!-- Standing leg (supporting) -->
+  <path d="M16 30 L12 46 L10 54" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <!-- Kicking leg (extended high to the right) -->
+  <path d="M20 30 L30 20 L52 14" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <!-- Foot at end of kick -->
+  <ellipse cx="54" cy="12" rx="7" ry="4" fill="white" transform="rotate(-20 54 12)"/>
+</svg>

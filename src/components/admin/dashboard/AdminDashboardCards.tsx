@@ -14,11 +14,11 @@ interface AdminDashboardCardsProps {
 }
 
 const iconToneClassMap: Record<DashboardCardTone, string> = {
-  slate: 'bg-zinc-100 text-zinc-700 ring-zinc-200',
-  blue: 'bg-blue-50 text-blue-600 ring-blue-100',
-  green: 'bg-emerald-50 text-emerald-600 ring-emerald-100',
-  amber: 'bg-amber-50 text-amber-600 ring-amber-100',
-  red: 'bg-red-50 text-red-500 ring-red-100',
+  slate: 'bg-white/[0.08] text-white/70 ring-white/[0.06]',
+  blue: 'bg-blue-500/[0.15] text-blue-400 ring-blue-500/[0.1]',
+  green: 'bg-emerald-500/[0.15] text-emerald-400 ring-emerald-500/[0.1]',
+  amber: 'bg-amber-500/[0.15] text-amber-400 ring-amber-500/[0.1]',
+  red: 'bg-red-500/[0.15] text-red-400 ring-red-500/[0.1]',
 };
 
 const topLineClassMap: Record<DashboardCardTone, string> = {
@@ -40,11 +40,14 @@ function DashboardMetricCard({
 }) {
   const Icon = config.icon;
   const cardClassName = cn(
-    'group relative overflow-hidden rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm transition-transform duration-200',
-    config.href ? 'block cursor-pointer hover:-translate-y-0.5 hover:shadow-md' : '',
+    'group relative overflow-hidden rounded-3xl p-6 transition-transform duration-200',
+    config.href ? 'block cursor-pointer hover:-translate-y-0.5' : '',
   );
   const cardContent = (
-    <article className={cardClassName}>
+    <article
+      className={cardClassName}
+      style={{ background: '#1e1e1e', border: '1px solid rgba(255,255,255,0.06)' }}
+    >
       <div
         className={cn(
           'mb-6 inline-flex rounded-2xl p-3 ring-1',
@@ -56,14 +59,14 @@ function DashboardMetricCard({
 
       <div className="space-y-3">
         <div className="space-y-1">
-          <p className="text-sm font-medium text-zinc-500">{config.label}</p>
+          <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>{config.label}</p>
         </div>
 
         <div className="flex items-end gap-2">
-          <strong className="text-4xl font-semibold tracking-tight text-zinc-950">
+          <strong className="text-4xl font-semibold tracking-tight" style={{ color: 'rgba(255,255,255,0.92)' }}>
             {numberFormatter.format(value)}
           </strong>
-          <span className="pb-1 text-sm font-medium text-zinc-500">
+          <span className="pb-1 text-sm font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>
             {config.suffix}
           </span>
         </div>
@@ -101,10 +104,10 @@ function DashboardSection({
   return (
     <section className="space-y-5">
       <div className="space-y-1 px-1">
-        <h2 className="text-xl font-semibold tracking-tight text-zinc-950">
+        <h2 className="text-xl font-semibold tracking-tight" style={{ color: 'rgba(255,255,255,0.9)' }}>
           {title}
         </h2>
-        <p className="text-sm text-zinc-500">{description}</p>
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>{description}</p>
       </div>
 
       <div className={cn('grid gap-4', columnsClassName)}>

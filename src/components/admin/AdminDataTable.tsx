@@ -10,7 +10,6 @@ export interface AdminTableColumn<T> {
   width?: string;
   align?: 'left' | 'center';
   truncate?: boolean;
-  // eslint-disable-next-line no-unused-vars
   render?: (_row: T) => React.ReactNode;
 }
 
@@ -25,9 +24,7 @@ interface AdminDataTableProps<T> {
   totalItems?: number;
   serverPagination?: boolean;
   isLoading?: boolean;
-  // eslint-disable-next-line no-unused-vars
   onPageChange?: (_page: number) => void;
-  // eslint-disable-next-line no-unused-vars
   getRowKey?: (_row: T, _index: number) => React.Key;
 }
 
@@ -66,14 +63,16 @@ export default function AdminDataTable<T>({
 
   return (
     <section
-      className="relative w-full max-w-7xl rounded-md border bg-white px-6 py-4 mb-8"
+      className="relative w-full max-w-7xl rounded-md px-6 py-4 mb-8"
+      style={{ background: '#1e1e1e', border: '1px solid rgba(255,255,255,0.06)' }}
       aria-busy={isLoading}
     >
       <table
         className={cn(
-          'w-full table-fixed border-collapse bg-white transition-opacity duration-150',
+          'w-full table-fixed border-collapse transition-opacity duration-150',
           isLoading && 'opacity-45',
         )}
+        style={{ background: '#1e1e1e' }}
         aria-label={caption}
       >
         {caption ? <caption className="sr-only">{caption}</caption> : null}
@@ -84,11 +83,16 @@ export default function AdminDataTable<T>({
                 key={String(column.key)}
                 scope="col"
                 className={cn(
-                  'border-b px-4 py-3 text-sm font-semibold',
+                  'px-4 py-3 text-sm font-semibold',
                   column.align === 'center' && 'text-center',
                   column.align === 'left' && 'text-left',
                 )}
-                style={{ width: column.width }}
+                style={{
+                  borderBottom: '1px solid rgba(255,255,255,0.08)',
+                  color: 'rgba(255,255,255,0.7)',
+                  background: 'rgba(255,255,255,0.03)',
+                  width: column.width,
+                }}
               >
                 {column.header}
               </th>
@@ -101,7 +105,8 @@ export default function AdminDataTable<T>({
             <tr>
               <td
                 colSpan={columns.length}
-                className="px-4 py-10 text-center text-sm text-zinc-500"
+                className="px-4 py-10 text-center text-sm"
+                style={{ color: 'rgba(255,255,255,0.38)' }}
               >
                 {emptyMessage}
               </td>
@@ -121,10 +126,14 @@ export default function AdminDataTable<T>({
                     <td
                       key={String(column.key)}
                       className={cn(
-                        'border-b px-4 py-3 text-sm text-zinc-700',
+                        'px-4 py-3 text-sm',
                         column.align === 'center' && 'text-center',
                         column.align === 'left' && 'text-left',
                       )}
+                      style={{
+                        borderBottom: '1px solid rgba(255,255,255,0.05)',
+                        color: 'rgba(255,255,255,0.75)',
+                      }}
                     >
                       <div
                         className={
@@ -160,11 +169,15 @@ export default function AdminDataTable<T>({
 
       {isLoading ? (
         <div
-          className="absolute inset-0 z-10 flex items-center justify-center rounded-md bg-white/55 backdrop-blur-[1px]"
+          className="absolute inset-0 z-10 flex items-center justify-center rounded-md backdrop-blur-[1px]"
+          style={{ background: 'rgba(0,0,0,0.45)' }}
           role="status"
           aria-live="polite"
         >
-          <div className="flex items-center gap-3 rounded-md border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-text-secondary shadow-sm">
+          <div
+            className="flex items-center gap-3 rounded-md px-4 py-3 text-sm font-medium"
+            style={{ background: '#2a2a2a', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.75)' }}
+          >
             <span
               className="size-5 rounded-full border-2 border-zinc-200 border-t-btn-focus animate-spin"
               aria-hidden="true"

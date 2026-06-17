@@ -95,24 +95,31 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
         <h1 className="text-lg font-semibold">대회 추가</h1>
       </div>
 
-      <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
+      <div
+        className="flex rounded-xl p-1 mb-6"
+        style={{ background: 'rgba(255,255,255,0.05)' }}
+      >
         <button
           type="button"
           onClick={() => setTab('write')}
-          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-            tab === 'write' ? 'bg-white text-black shadow-sm' : 'text-gray-500'
-          }`}
+          className="flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
+          style={
+            tab === 'write'
+              ? { background: '#2563eb', color: '#fff', boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }
+              : { color: 'rgba(255,255,255,0.4)' }
+          }
         >
           작성
         </button>
         <button
           type="button"
           onClick={() => setTab('preview')}
-          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+          className="flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
+          style={
             tab === 'preview'
-              ? 'bg-white text-black shadow-sm'
-              : 'text-gray-500'
-          }`}
+              ? { background: '#2563eb', color: '#fff', boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }
+              : { color: 'rgba(255,255,255,0.4)' }
+          }
         >
           미리보기
         </button>
@@ -124,7 +131,7 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
 
       {tab === 'preview' &&
         (!values.name && !values.description ? (
-          <div className="flex flex-col items-center justify-center py-16 text-gray-400 mb-6">
+          <div className="flex flex-col items-center justify-center py-16 mb-6" style={{ color: 'rgba(255,255,255,0.38)' }}>
             <p className="text-sm">작성 탭에서 내용을 입력하면</p>
             <p className="text-sm">여기서 미리볼 수 있어요.</p>
           </div>
