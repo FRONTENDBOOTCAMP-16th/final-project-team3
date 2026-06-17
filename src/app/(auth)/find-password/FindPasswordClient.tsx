@@ -20,7 +20,10 @@ export default function FindPasswordClient() {
 
   return (
     <>
-      <p className="text-text-secondary text-sm font-medium text-center mb-6">
+      <p
+        className="text-center mb-6"
+        style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.01em' }}
+      >
         스포츠인 올인원 커뮤니티에 오신 것을 환영합니다
       </p>
 

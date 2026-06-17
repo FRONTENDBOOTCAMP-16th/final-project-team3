@@ -57,17 +57,19 @@ export default function AuthLayout({
         <header>
           <Link
             href="/"
-            className="flex flex-col items-center mb-6 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-focus focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="flex flex-col items-center mb-5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-focus focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
           >
             <span
               style={{
-                fontSize: '28px',
-                fontWeight: 800,
-                letterSpacing: '0.08em',
-                background: 'linear-gradient(135deg, #6e6e6e, #c8c8c8)',
+                fontSize: '52px',
+                fontWeight: 900,
+                letterSpacing: '0.1em',
+                background: 'linear-gradient(135deg, #ffffff 0%, #c8c8c8 60%, #888 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif",
+                filter: 'drop-shadow(0 2px 24px rgba(255,255,255,0.18))',
+                lineHeight: 1,
               }}
             >
               ACTIVIO
