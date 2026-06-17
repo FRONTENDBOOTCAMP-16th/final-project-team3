@@ -121,7 +121,7 @@ export default function DojangClient() {
       setIsLoading(true);
       try {
         const res = await fetch(
-          `https://dapi.kakao.com/v2/local/search/keyword.json?query=도장&x=${lng}&y=${lat}&radius=5000&size=15`,
+          `https://dapi.kakao.com/v2/local/search/keyword.json?query=무술 체육관&x=${lng}&y=${lat}&radius=5000&size=15`,
           { headers: { Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_LOCAL_API_KEY}` } },
         );
         const data = await res.json();
@@ -186,7 +186,7 @@ export default function DojangClient() {
     setIsLoading(true);
     try {
       const res = await fetch(
-        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${debouncedSearch} 도장&size=15`,
+        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${debouncedSearch}&size=15`,
         { headers: { Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_LOCAL_API_KEY}` } },
       );
       const data = await res.json();
