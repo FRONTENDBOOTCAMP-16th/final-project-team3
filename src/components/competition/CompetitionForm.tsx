@@ -22,6 +22,35 @@ interface CompetitionFormProps {
   onChange: (values: CompetitionFormValues) => void;
 }
 
+const sectionStyle = {
+  background: '#1e1e1e',
+  border: '1px solid rgba(255,255,255,0.06)',
+  borderRadius: '12px',
+  padding: '16px',
+  marginBottom: '16px',
+} as const;
+
+const labelStyle = {
+  fontSize: '13px',
+  color: 'rgba(255,255,255,0.5)',
+  marginBottom: '8px',
+  display: 'block',
+} as const;
+
+const inputStyle = {
+  width: '100%',
+  background: 'rgba(255,255,255,0.05)',
+  border: '1px solid rgba(255,255,255,0.08)',
+  borderRadius: '8px',
+  paddingLeft: '36px',
+  paddingRight: '12px',
+  paddingTop: '8px',
+  paddingBottom: '8px',
+  fontSize: '13px',
+  outline: 'none',
+  color: 'rgba(255,255,255,0.85)',
+} as const;
+
 export default function CompetitionForm({
   values,
   onChange,
@@ -37,10 +66,10 @@ export default function CompetitionForm({
 
   return (
     <div role="form" aria-label="대회 정보 입력 폼">
-      <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
+      <div style={sectionStyle}>
         <label
           htmlFor="competition-name"
-          className="text-sm text-gray-500 mb-2 block"
+          style={labelStyle}
         >
           대회 제목{' '}
           <span aria-hidden="true" className="text-red-400">
@@ -66,10 +95,10 @@ export default function CompetitionForm({
         }}
       />
 
-      <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
+      <div style={sectionStyle}>
         <label
           htmlFor="event-date"
-          className="text-sm text-gray-500 mb-2 block"
+          style={labelStyle}
         >
           대회 날짜{' '}
           <span aria-hidden="true" className="text-red-400">
@@ -79,7 +108,7 @@ export default function CompetitionForm({
         </label>
         <div className="relative">
           <span
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2"
             aria-hidden="true"
           >
             📅
@@ -92,15 +121,15 @@ export default function CompetitionForm({
             onChange={(e) => update('eventDate', e.target.value)}
             onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
             aria-required="true"
-            className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none text-gray-700 cursor-pointer"
+            style={{ ...inputStyle, cursor: 'pointer' }}
           />
         </div>
       </div>
 
-      <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
+      <div style={sectionStyle}>
         <label
           htmlFor="apply-deadline"
-          className="text-sm text-gray-500 mb-2 block"
+          style={labelStyle}
         >
           신청 마감 날짜{' '}
           <span aria-hidden="true" className="text-red-400">
@@ -110,7 +139,7 @@ export default function CompetitionForm({
         </label>
         <div className="relative">
           <span
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2"
             aria-hidden="true"
           >
             📅
@@ -123,15 +152,15 @@ export default function CompetitionForm({
             onChange={(e) => update('applyDeadline', e.target.value)}
             onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
             aria-required="true"
-            className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none text-gray-700 cursor-pointer"
+            style={{ ...inputStyle, cursor: 'pointer' }}
           />
         </div>
       </div>
 
-      <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
+      <div style={sectionStyle}>
         <label
           htmlFor="competition-location"
-          className="text-sm text-gray-500 mb-2 block"
+          style={labelStyle}
         >
           대회 장소{' '}
           <span aria-hidden="true" className="text-red-400">
@@ -141,7 +170,7 @@ export default function CompetitionForm({
         </label>
         <div className="relative">
           <span
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2"
             aria-hidden="true"
           >
             📍
@@ -153,21 +182,21 @@ export default function CompetitionForm({
             value={values.location}
             onChange={(e) => update('location', e.target.value)}
             aria-required="true"
-            className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none"
+            style={inputStyle}
           />
         </div>
       </div>
 
-      <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
+      <div style={sectionStyle}>
         <label
           htmlFor="competition-participants"
-          className="text-sm text-gray-500 mb-2 block"
+          style={labelStyle}
         >
           모집 인원
         </label>
         <div className="relative">
           <span
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2"
             aria-hidden="true"
           >
             👥
@@ -179,18 +208,18 @@ export default function CompetitionForm({
             value={values.participants}
             onChange={(e) => update('participants', e.target.value)}
             min={1}
-            className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none"
+            style={inputStyle}
           />
         </div>
       </div>
 
-      <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-        <label htmlFor="apply-url" className="text-sm text-gray-500 mb-2 block">
+      <div style={sectionStyle}>
+        <label htmlFor="apply-url" style={labelStyle}>
           참가 신청 링크
         </label>
         <div className="relative">
           <span
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2"
             aria-hidden="true"
           >
             🔗
@@ -201,15 +230,15 @@ export default function CompetitionForm({
             placeholder="https://example.com/register"
             value={values.applyUrl}
             onChange={(e) => update('applyUrl', e.target.value)}
-            className="w-full bg-gray-50 rounded-lg pl-9 pr-3 py-2 text-sm outline-none"
+            style={inputStyle}
           />
         </div>
       </div>
 
-      <div className="bg-white rounded-xl p-4 mb-6 shadow-sm">
+      <div style={{ ...sectionStyle, marginBottom: '24px' }}>
         <label
           htmlFor="competition-description"
-          className="text-sm text-gray-500 mb-2 block"
+          style={labelStyle}
         >
           대회 설명
         </label>

@@ -1,26 +1,18 @@
 import { forwardRef } from 'react';
+import { SPORTS } from '@/constants/sports';
 
-const BELTS = [
-  { value: 'White', label: 'White  (입문자)', color: '#e8e8e8' },
-  { value: 'Blue', label: 'Blue   (파란띠)', color: '#2e6fdb' },
-  { value: 'Purple', label: 'Purple (보라띠)', color: '#7c4ddb' },
-  { value: 'Brown', label: 'Brown  (갈색띠)', color: '#8b5a2b' },
-  { value: 'Black', label: 'Black  (검은띠)', color: '#1a1a1a' },
-];
-
-const BeltSelect = forwardRef<
+const SportSelect = forwardRef<
   HTMLSelectElement,
   { id: string; value?: string } & React.SelectHTMLAttributes<HTMLSelectElement>
 >(({ id, value, ...rest }, ref) => {
-  const selectedColor = BELTS.find((b) => b.value === value)?.color;
+  const selectedSport = SPORTS.find((s) => s.slug === value);
 
   return (
     <div className="relative">
-      {selectedColor && (
-        <span
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full"
-          style={{ backgroundColor: selectedColor }}
-        />
+      {selectedSport && (
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base leading-none">
+          {selectedSport.icon}
+        </span>
       )}
       <select
         id={id}
@@ -28,18 +20,18 @@ const BeltSelect = forwardRef<
         value={value}
         {...rest}
         className="w-full bg-input-bg border-none rounded-2xl py-4 pr-4 text-base text-text-secondary focus:ring-2 focus:ring-btn-focus outline-none transition-all appearance-none"
-        style={{ paddingLeft: selectedColor ? '36px' : '16px' }}
+        style={{ paddingLeft: selectedSport ? '36px' : '16px' }}
       >
-        <option value="">벨트를 선택하세요</option>
-        {BELTS.map((b) => (
-          <option key={b.value} value={b.value}>
-            {b.label}
+        <option value="">운동 종목을 선택하세요</option>
+        {SPORTS.map((s) => (
+          <option key={s.slug} value={s.slug}>
+            {s.icon} {s.name}
           </option>
         ))}
       </select>
     </div>
   );
 });
-BeltSelect.displayName = 'BeltSelect';
+SportSelect.displayName = 'SportSelect';
 
-export default BeltSelect;
+export default SportSelect;

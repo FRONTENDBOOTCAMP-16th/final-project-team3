@@ -14,7 +14,7 @@ const slideUpStyle = `
 interface ReportModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (reason: ReportReason) => Promise<void>;
+  onSubmit: (_reason: ReportReason) => Promise<void>;
 }
 
 export default function ReportModal({

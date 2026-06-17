@@ -50,7 +50,7 @@ export default function ProfileCard({
         </p>
       )}
 
-      <div className="flex gap-12 pt-4 border-t border-gray-100 w-full justify-center">
+      <div className="flex gap-12 pt-4 border-t border-white/[0.06] w-full justify-center">
         <div className="flex flex-col items-center gap-1">
           <span className="text-2xl font-bold text-text-primary">
             {postCount}

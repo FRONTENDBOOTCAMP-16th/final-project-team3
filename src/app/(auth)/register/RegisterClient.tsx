@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import GeneralForm from './GeneralForm';
 import DojangForm from './DojangForm';
 
@@ -9,14 +9,9 @@ export type RegisterTab = 'general' | 'dojang';
 export default function RegisterClient() {
   const [tab, setTab] = useState<RegisterTab>('general');
 
-  useEffect(() => {
-    setTab('general');
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-  }, []);
-
   return (
     <>
-      <div role="tablist" className="flex border-b border-gray-200 mb-6">
+      <div role="tablist" className="flex border-b border-white/[0.08] mb-6">
         <button
           type="button"
           role="tab"

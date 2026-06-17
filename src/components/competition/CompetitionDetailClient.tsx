@@ -71,7 +71,8 @@ export default function CompetitionDetailClient({
       <Link
         href="/competitions"
         aria-label="대회일정 목록으로 돌아가기"
-        className="flex items-center gap-2 px-2.5 py-2 border-2 border-white bg-white text-black text-sm font-medium rounded-xl hover:bg-(--color-btn-focus) hover:text-white transition-colors duration-200 cursor-pointer"
+        className="flex items-center gap-2 px-2.5 py-2 text-sm font-medium rounded-xl transition-colors duration-200 cursor-pointer"
+        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.85)' }}
       >
         <svg
           width="16"
@@ -119,7 +120,7 @@ export default function CompetitionDetailClient({
                 >
                   <Pencil
                     size={20}
-                    className="text-gray-400 hover:text-gray-800"
+                    className="text-white/40 hover:text-white/80 transition-colors"
                   />
                 </button>
                 <button
@@ -131,7 +132,7 @@ export default function CompetitionDetailClient({
                 >
                   <Trash2
                     size={20}
-                    className="text-gray-400 hover:text-red-500"
+                    className="text-white/40 hover:text-red-400 transition-colors"
                   />
                 </button>
               </>
@@ -143,25 +144,35 @@ export default function CompetitionDetailClient({
               onClick={() => handleShare()}
               className="p-1 cursor-pointer"
             >
-              <Share2 size={18} className="text-gray-400 hover:text-gray-800" />
+              <Share2 size={18} className="text-white/40 hover:text-white/80 transition-colors" />
             </button>
           </>
         }
       />
-      href=
-      {competition.apply_url?.startsWith('http')
-        ? competition.apply_url
-        : `https://${competition.apply_url}`}
       <a
+        href={competition.apply_url?.startsWith('http')
+          ? competition.apply_url
+          : `https://${competition.apply_url}`}
         target="_blank"
         rel="noopener noreferrer"
         {...(status === '모집완료' && { 'aria-disabled': true })}
         className={`block w-full py-4 text-center text-sm font-bold text-white rounded-2xl transition-all
           ${
             status === '모집완료'
-              ? 'bg-gray-400 cursor-not-allowed pointer-events-none'
-              : 'bg-[#2c2c2c] hover:bg-black'
+              ? 'cursor-not-allowed pointer-events-none'
+              : ''
           }`}
+        style={
+          status === '모집완료'
+            ? { background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.35)' }
+            : { background: '#2563eb', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }
+        }
+        onMouseEnter={(e) => {
+          if (status !== '모집완료') (e.currentTarget as HTMLElement).style.background = '#1d4ed8';
+        }}
+        onMouseLeave={(e) => {
+          if (status !== '모집완료') (e.currentTarget as HTMLElement).style.background = '#2563eb';
+        }}
       >
         {status === '모집완료' ? '모집 완료' : '대회 신청하기'}
       </a>

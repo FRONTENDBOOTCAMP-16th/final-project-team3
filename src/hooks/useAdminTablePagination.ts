@@ -7,7 +7,6 @@ interface UseTablePaginationParams<T> {
   currentPage?: number;
   totalItems?: number;
   serverPagination?: boolean;
-  // eslint-disable-next-line no-unused-vars
   onPageChange?: (_page: number) => void;
 }
 

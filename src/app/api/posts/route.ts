@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   const role = profile?.role ?? 'user';
 
   const body = await req.json();
-  const { category, title, content, image_url } = body;
+  const { category, title, content, image_url, video_url, sport } = body;
 
   const allowedCategories: Record<string, string[]> = {
     admin: ['notice'],
@@ -39,6 +39,8 @@ export async function POST(req: Request) {
       title,
       content,
       image_url,
+      video_url,
+      sport: sport ?? null,
       category: finalCategory,
       user_id: user.id,
     })

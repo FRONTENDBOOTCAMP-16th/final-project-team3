@@ -9,6 +9,7 @@ export interface PostDetailCardData {
   created_at: string;
   title: string;
   image_url?: string | null;
+  video_url?: string | null;
   content: string;
   commentCount: number;
 }
@@ -27,10 +28,10 @@ export default function PostDetailCard({
   const badge = categoryMap[post.category ?? ''] ?? categoryMap.personal;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="bg-bg-white rounded-2xl border border-white/[0.06] overflow-hidden">
       <div className="flex items-center justify-between px-5 pt-5 pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden shrink-0">
+          <div className="w-10 h-10 rounded-full bg-white/[0.08] overflow-hidden shrink-0">
             <Image
               src={post.avatar_url || '/basic.svg'}
               alt={`${post.nickname} 프로필 이미지`}
@@ -41,7 +42,7 @@ export default function PostDetailCard({
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-sm font-semibold text-gray-900">
+              <span className="text-sm font-semibold text-text-primary">
                 {post.nickname}
               </span>
               <span
@@ -51,7 +52,7 @@ export default function PostDetailCard({
               </span>
             </div>
             <p
-              className="text-xs text-gray-400 mt-0.5 flex items-center gap-1"
+              className="text-xs text-text-secondary mt-0.5 flex items-center gap-1"
               suppressHydrationWarning
             >
               <Image
@@ -74,7 +75,7 @@ export default function PostDetailCard({
       </div>
 
       <div className="px-5 pb-3">
-        <h1 className="text-lg font-bold text-gray-900">{post.title}</h1>
+        <h1 className="text-lg font-bold text-text-primary">{post.title}</h1>
       </div>
 
       {post.image_url && (
@@ -91,16 +92,28 @@ export default function PostDetailCard({
         </div>
       )}
 
+      {post.video_url && (
+        <div className="px-5 pb-4">
+          <div className="rounded-xl overflow-hidden bg-black">
+            <video
+              src={post.video_url}
+              controls
+              className="w-full max-h-96"
+            />
+          </div>
+        </div>
+      )}
+
       <div className="px-5 pb-5">
-        <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">
+        <p className="text-sm text-text-primary whitespace-pre-line leading-relaxed">
           {post.content}
         </p>
       </div>
 
-      <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
+      <div className="px-5 py-3 border-t border-white/[0.06] flex items-center gap-4">
         {likeAction}
 
-        <div className="flex items-center gap-1.5 text-xs text-gray-500">
+        <div className="flex items-center gap-1.5 text-xs text-text-secondary">
           <Image
             src="/postComment.svg"
             alt=""

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- MMA fighter in orthodox stance -->
+  <!-- Head -->
+  <circle cx="30" cy="8" r="6" fill="white"/>
+  <!-- Body (slight forward lean) -->
+  <path d="M30 14 L28 30" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <!-- Lead hand (left, extended) -->
+  <path d="M28 20 L12 16" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <!-- Lead glove -->
+  <ellipse cx="9" cy="15" rx="6" ry="5" fill="white"/>
+  <!-- Rear hand (right, at chin) -->
+  <path d="M28 20 L40 16" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <!-- Rear glove -->
+  <ellipse cx="43" cy="15" rx="6" ry="5" fill="white"/>
+  <!-- Legs in fighting stance -->
+  <path d="M26 30 L18 46 L14 56" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path d="M30 30 L38 44 L44 54" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+</svg>

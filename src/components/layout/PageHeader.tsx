@@ -52,7 +52,7 @@ export default function Pageheader({
   };
 
   return (
-    <div className="flex flex-col gap-5 bg-white z-10 py-6">
+    <div className="flex flex-col gap-5 py-5">
       <div className="flex flex-col gap-1">
         <h1 className="text-4xl font-bold text-text-primary">{title}</h1>
         <p className="text-sm text-text-secondary" aria-label={description}>
@@ -98,8 +98,8 @@ export default function Pageheader({
         >
           {tabs.map((tab) => (
             <button
-              type="button"
               key={tab}
+              type="button"
               role="tab"
               aria-selected={activeTab === tab}
               aria-controls={`tabpanel-${tab}`}
@@ -107,7 +107,7 @@ export default function Pageheader({
               className={`cursor-pointer rounded-lg h-10 px-6 transition-all duration-200 font-medium text-sm ${
                 activeTab === tab
                   ? 'bg-btn-focus text-btn-focus-text'
-                  : 'bg-btn-basic text-btn-text hover:bg-gray-200'
+                  : 'bg-btn-basic text-btn-text hover:bg-white/[0.1]'
               }`}
             >
               {tab}

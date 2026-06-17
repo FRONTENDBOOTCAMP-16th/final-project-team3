@@ -1,9 +1,7 @@
-import { BeltLevel } from './user';
-
 export interface ProfileUpdateForm {
   nickname: string;
   bio: string;
-  belt_level: BeltLevel | null;
+  belt_level: string | null;
   avatar_url: string | null;
 }
 

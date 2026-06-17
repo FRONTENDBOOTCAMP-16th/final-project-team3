@@ -1,14 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-import { normalizeBeltLevel } from '@/constants/belt';
+import { SPORTS } from '@/constants/sports';
+
+const SPORT_SLUGS = SPORTS.map((s) => s.slug);
 
 export async function POST(req: NextRequest) {
   const { email, password, name, nickname, belt } = await req.json();
-  const beltLevel = normalizeBeltLevel(belt);
+  const sport = belt;
 
-  if (!beltLevel) {
+  if (!sport || !SPORT_SLUGS.includes(sport)) {
     return NextResponse.json(
-      { error: '벨트를 선택해주세요.' },
+      { error: '운동 종목을 선택해주세요.' },
       { status: 400 },
     );
   }
@@ -32,7 +34,7 @@ export async function POST(req: NextRequest) {
     id: data.user.id,
     name,
     nickname,
-    belt_level: beltLevel,
+    belt_level: sport,
     email_value: email,
     role: 'user',
   });

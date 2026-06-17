@@ -1,14 +1,15 @@
 'use client';
 
-import { useRef, useEffect, useMemo } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Pageheader from '@/components/layout/PageHeader';
+import { useRef, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { Search } from 'lucide-react';
 import Postcard from '@/components/community/Postcard';
+import PromoAdSidebar from '@/components/community/PromoAdSidebar';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { useDebounce } from '@/hooks/useDebounce';
 import { usePosts } from '@/hooks/useCommunity';
 import { useAuth } from '@/hooks/useAuth';
-import { useState } from 'react';
+import { SPORTS } from '@/constants/sports';
 import type { Post } from '@/types/community';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
@@ -16,52 +17,29 @@ interface CommunityClientProps {
   initialPosts: Post[];
 }
 
-export default function CommunityClient({
-  initialPosts,
-}: CommunityClientProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const activeTab = searchParams.get('tab') ?? '전체';
-
+export default function CommunityClient({ initialPosts }: CommunityClientProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [headerHeight, setHeaderHeight] = useState(160);
-  const headerRef = useRef<HTMLDivElement>(null);
+  const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
   const isScrollRestoredRef = useRef(false);
 
   const debouncedSearch = useDebounce(searchQuery, 300);
   const { user, loading } = useAuth();
+  const isAdmin = user?.role === 'admin';
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     usePosts(initialPosts);
 
   const posts = useMemo(() => data.pages.flatMap((page) => page), [data]);
 
-  useEffect(() => {
-    if (headerRef.current) {
-      setHeaderHeight(headerRef.current.offsetHeight);
-    }
-  }, []);
-
-  const handleTabChange = (tab: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('tab', tab);
-    router.replace(`?${params.toString()}`, { scroll: false });
-    window.scrollTo(0, 0);
-  };
-
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
-      const matchTab =
-        activeTab === '전체' ||
-        (activeTab === '공지' && post.category === 'notice') ||
-        (activeTab === '도장 홍보' && post.category === 'promo') ||
-        (activeTab === '일반 게시글' && post.category === 'personal');
+      const isNotice = post.category === 'notice';
       const matchSearch = post.title
         .toLowerCase()
         .includes(debouncedSearch.toLowerCase());
-      return matchTab && matchSearch;
+      return isNotice && matchSearch;
     });
-  }, [posts, activeTab, debouncedSearch]);
+  }, [posts, debouncedSearch]);
 
   useEffect(() => {
     const lastPostId = sessionStorage.getItem('lastPostId');
@@ -80,108 +58,255 @@ export default function CommunityClient({
   }, [filteredPosts]);
 
   const observerRef = useInfiniteScroll(() => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
+    if (hasNextPage && !isFetchingNextPage) fetchNextPage();
   });
 
   return (
-    <main className="w-full min-h-screen" aria-label="커뮤니티 게시글 목록">
-      <div
-        ref={headerRef}
-        className="fixed top-0 left-50 right-0 z-10 bg-white shadow-sm flex justify-center"
-      >
-        <div className="w-full max-w-7xl px-6">
-          <Pageheader
-            title="커뮤니티"
-            description="주짓수에 대한 모든 이야기"
-            tabs={['전체', '공지', '도장 홍보', '일반 게시글']}
-            activeTab={activeTab}
-            setActiveTab={handleTabChange}
-            searchQuery={searchQuery}
-            setSearchQuery={(query) => {
-              setSearchQuery(query);
-            }}
-            writeLink={
-              loading ? undefined : user ? '/community/write' : undefined
-            }
-          />
+    <main className="w-full min-h-screen" style={{ background: '#111' }} aria-label="커뮤니티 공지 목록">
+
+      {/* ── Hero ── */}
+      <div className="relative h-[320px] overflow-hidden flex items-end">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/bjj-2.webp"
+          alt=""
+          aria-hidden="true"
+          style={{
+            position: 'absolute', inset: 0, width: '100%', height: '100%',
+            objectFit: 'cover', opacity: 0.38, filter: 'grayscale(10%)',
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to top, rgba(17,17,17,0.96) 0%, rgba(17,17,17,0.45) 60%, rgba(17,17,17,0.2) 100%)' }}
+        />
+        <div className="relative z-10 px-6 pb-5">
+          <h1 className="font-extrabold text-white text-[38px] leading-none tracking-[-0.04em]">
+            공지
+          </h1>
         </div>
       </div>
 
-      <div
-        style={{ paddingTop: `${headerHeight + 24}px` }}
-        className="pb-20 flex justify-center"
-      >
-        <div className="w-full max-w-7xl px-6">
+      {/* ── 3-column layout ── */}
+      <div className="max-w-[1200px] mx-auto px-4 py-6 flex gap-5 items-start">
+
+        {/* ── Left sidebar: Promo Ad ── */}
+        <aside
+          className="hidden lg:flex flex-col shrink-0"
+          style={{
+            width: '220px',
+            position: 'sticky',
+            top: '80px',
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '12px',
+            overflow: 'hidden',
+          }}
+        >
+          <PromoAdSidebar />
+        </aside>
+
+        {/* ── Center: search/write + posts ── */}
+        <section className="flex-1 min-w-0">
+
+          {/* Search + write */}
+          <div
+            className="flex items-center gap-3 mb-4"
+            style={{
+              position: 'sticky',
+              top: '64px',
+              zIndex: 10,
+              background: '#111',
+              padding: '10px 0',
+              marginTop: '-10px',
+            }}
+          >
+            <div
+              className="flex items-center gap-2 flex-1 h-10"
+              style={{
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: '999px',
+                padding: '0 16px',
+              }}
+            >
+              <Search size={14} style={{ opacity: 0.4, flexShrink: 0 }} aria-hidden="true" />
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="공지 검색..."
+                aria-label="공지 검색"
+                className="flex-1 bg-transparent border-none outline-none text-white min-w-0"
+                style={{ fontSize: '13.5px' }}
+              />
+            </div>
+
+            {!loading && isAdmin && (
+              <Link
+                href="/community/write"
+                className="shrink-0 h-10 flex items-center rounded-full text-white text-[13px] font-semibold whitespace-nowrap transition-colors"
+                style={{ background: '#2563eb', padding: '0 20px' }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = '#1d4ed8')}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = '#2563eb')}
+              >
+                글쓰기
+              </Link>
+            )}
+          </div>
+
+          {/* Posts */}
           {isLoading ? (
             <div className="flex justify-center py-20">
               <LoadingSpinner />
             </div>
+          ) : filteredPosts.length > 0 ? (
+            <div
+              role="list"
+              aria-label="공지 목록"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1px',
+                background: 'rgba(255,255,255,0.05)',
+                borderRadius: '12px',
+                overflow: 'hidden',
+              }}
+            >
+              {filteredPosts.map((post) => (
+                <div
+                  key={post.id}
+                  id={post.id}
+                  role="listitem"
+                  onClick={() => sessionStorage.setItem('lastPostId', post.id)}
+                >
+                  <Postcard
+                    post={{
+                      ...post,
+                      nickname: post.nickname ?? '알 수 없음',
+                      avatar_url: post.avatar_url ?? '',
+                      image_url: post.image_url ?? null,
+                      video_url: post.video_url ?? null,
+                    }}
+                    userId={user?.id ?? ''}
+                  />
+                </div>
+              ))}
+            </div>
           ) : (
             <div
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
-              role="list"
-              aria-label="게시글 목록"
-              id={`tabpanel-${activeTab}`}
+              className="flex flex-col items-center justify-center py-32"
+              aria-live="polite"
+              aria-atomic="true"
+              style={{ color: 'rgba(255,255,255,0.38)' }}
             >
-              {filteredPosts.length > 0 ? (
-                filteredPosts.map((post) => (
-                  <div
-                    key={post.id}
-                    id={post.id}
-                    role="listitem"
-                    onClick={() =>
-                      sessionStorage.setItem('lastPostId', post.id)
-                    }
-                  >
-                    <Postcard
-                      post={{
-                        ...post,
-                        nickname: post.nickname ?? '알 수 없음',
-                        avatar_url: post.avatar_url ?? '',
-                        image_url: post.image_url ?? '',
-                      }}
-                      userId={user?.id ?? ''}
-                    />
-                  </div>
-                ))
-              ) : (
-                <div
-                  className="col-span-full flex flex-col items-center justify-center py-40 text-gray-400 font-light"
-                  aria-live="polite"
-                  aria-atomic="true"
-                >
-                  <p className="text-lg">조건에 맞는 게시글이 없습니다</p>
-                  <p className="text-sm mt-2">새로운 소식을 들려주세요!</p>
-                </div>
-              )}
+              <p style={{ fontSize: '15px' }}>등록된 공지가 없습니다</p>
             </div>
           )}
 
           {hasNextPage && (
-            <div
-              ref={observerRef}
-              className="h-20 flex items-center justify-center"
-            >
-              <div
-                role="status"
-                aria-live="polite"
-                aria-label={
-                  isFetchingNextPage ? '더 많은 게시글 불러오는 중' : ''
-                }
-              >
+            <div ref={observerRef} className="h-16 flex items-center justify-center">
+              <div role="status" aria-live="polite" aria-label={isFetchingNextPage ? '더 불러오는 중' : ''}>
                 {isFetchingNextPage && (
                   <div
-                    className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"
+                    className="w-6 h-6 border-2 rounded-full animate-spin"
+                    style={{ borderColor: '#2563eb', borderTopColor: 'transparent' }}
                     aria-hidden="true"
                   />
                 )}
               </div>
             </div>
           )}
-        </div>
+        </section>
+
+        {/* ── Right sidebar: Sport filters ── */}
+        <aside
+          className="hidden lg:flex flex-col shrink-0"
+          style={{
+            width: '260px',
+            position: 'sticky',
+            top: '80px',
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '12px',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              padding: '12px 16px',
+              borderBottom: '1px solid rgba(255,255,255,0.06)',
+              fontSize: '11px',
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              color: 'rgba(255,255,255,0.5)',
+              textTransform: 'uppercase',
+            }}
+          >
+            스포츠 커뮤니티
+          </div>
+
+          <div style={{ padding: '6px 0' }}>
+            {/* 공지 — 현재 활성 */}
+            <div
+              className="flex items-center gap-3"
+              style={{
+                padding: '10px 16px',
+                background: 'rgba(255,255,255,0.07)',
+                borderLeft: '3px solid #2563eb',
+              }}
+            >
+              <div
+                style={{
+                  width: '34px', height: '34px', borderRadius: '50%',
+                  background: 'rgba(37,99,235,0.15)', border: '1.5px solid rgba(37,99,235,0.4)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '17px', flexShrink: 0,
+                }}
+              >
+                📢
+              </div>
+              <span style={{ fontSize: '13px', fontWeight: 700, color: '#fff' }}>공지</span>
+              <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#2563eb', marginLeft: 'auto', flexShrink: 0 }} />
+            </div>
+
+            {SPORTS.map(({ slug, name, image, color }) => (
+              <Link
+                key={slug}
+                href={`/community/sport/${slug}`}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '10px 16px',
+                  background: hoveredSlug === slug ? 'rgba(255,255,255,0.04)' : 'transparent',
+                  borderLeft: `3px solid ${hoveredSlug === slug ? color : 'transparent'}`,
+                  textDecoration: 'none',
+                  transition: 'background 0.15s',
+                }}
+                onMouseEnter={() => setHoveredSlug(slug)}
+                onMouseLeave={() => setHoveredSlug(null)}
+              >
+                <div
+                  style={{
+                    width: '34px', height: '34px', borderRadius: '50%',
+                    background: color + '1a', border: `1.5px solid ${color}44`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <img src={image} alt={name} style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
+                </div>
+                <span style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255,255,255,0.8)' }}>
+                  {name}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </aside>
       </div>
+
+      <div style={{ paddingBottom: '64px' }} />
     </main>
   );
 }

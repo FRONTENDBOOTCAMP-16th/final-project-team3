@@ -78,13 +78,11 @@ export function useAdminTableQueryState<TFilter extends string>({
   const [searchInput, setSearchInput] = useState(appliedSearchQuery);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearchInput(appliedSearchQuery);
   }, [appliedSearchQuery]);
 
   useEffect(() => {
     if (!isPending) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setOptimisticFilter(appliedFilter);
     }
   }, [appliedFilter, isPending]);
