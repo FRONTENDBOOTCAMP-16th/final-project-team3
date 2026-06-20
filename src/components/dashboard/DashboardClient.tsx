@@ -67,7 +67,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
   };
 
   return (
-    <main className="w-full min-h-screen" style={{ background: '#111' }}>
+    <div className="w-full min-h-screen" style={{ background: '#111' }}>
       <div className="max-w-[1200px] mx-auto px-5 py-8">
 
         {/* ── Top bar ── */}
@@ -491,6 +491,6 @@ export default function DashboardClient({ profile, stats, competitions, notices 
         </div>
 
       </div>
-    </main>
+    </div>
   );
 }

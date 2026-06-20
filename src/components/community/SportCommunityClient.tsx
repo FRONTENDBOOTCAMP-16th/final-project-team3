@@ -55,7 +55,7 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
   });
 
   return (
-    <main
+    <section
       className="w-full min-h-screen"
       style={{ background: '#111' }}
       aria-label={`${sport.name} 커뮤니티`}
@@ -336,6 +336,6 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
       </div>
 
       <div style={{ paddingBottom: '64px' }} />
-    </main>
+    </section>
   );
 }

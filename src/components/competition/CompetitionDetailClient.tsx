@@ -64,7 +64,7 @@ export default function CompetitionDetailClient({
   };
 
   return (
-    <main
+    <section
       className="max-w-2xl mx-auto p-4 space-y-4"
       aria-label={`${competition.name} 대회 상세`}
     >
@@ -183,6 +183,6 @@ export default function CompetitionDetailClient({
         title="대회 게시글 삭제"
         description="정말 삭제하시겠습니까? 삭제된 게시글은 복구할 수 없습니다."
       />
-    </main>
+    </section>
   );
 }

@@ -99,7 +99,7 @@ export default function PostCard({ post, userId }: PostCardProps) {
             {post.avatar_url ? (
               <Image src={post.avatar_url} alt={post.nickname} fill className="object-cover" />
             ) : (
-              <span style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.45)' }}>
+              <span style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.75)' }}>
                 {post.nickname?.[0]?.toUpperCase() ?? '?'}
               </span>
             )}
@@ -124,7 +124,7 @@ export default function PostCard({ post, userId }: PostCardProps) {
 
           <time
             dateTime={post.created_at}
-            style={{ marginLeft: 'auto', fontSize: '11px', color: 'rgba(255,255,255,0.28)' }}
+            style={{ marginLeft: 'auto', fontSize: '11px', color: 'rgba(255,255,255,0.55)' }}
           >
             {formatDate(post.created_at)}
           </time>
@@ -151,7 +151,7 @@ export default function PostCard({ post, userId }: PostCardProps) {
             className={hasMedia ? 'line-clamp-2' : 'line-clamp-3'}
             style={{
               fontSize: '13px',
-              color: 'rgba(255,255,255,0.45)',
+              color: 'rgba(255,255,255,0.55)',
               lineHeight: 1.65,
               marginBottom: hasMedia ? '10px' : '0',
             }}
@@ -247,7 +247,7 @@ function ActionBtn({
         background: 'transparent',
         border: 'none',
         borderRadius: '999px',
-        color: active && activeColor ? activeColor : 'rgba(255,255,255,0.38)',
+        color: active && activeColor ? activeColor : 'rgba(255,255,255,0.55)',
         fontSize: '12px',
         fontWeight: 600,
         cursor: 'pointer',
@@ -262,7 +262,7 @@ function ActionBtn({
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLElement).style.background = 'transparent';
         (e.currentTarget as HTMLElement).style.color =
-          active && activeColor ? activeColor : 'rgba(255,255,255,0.38)';
+          active && activeColor ? activeColor : 'rgba(255,255,255,0.55)';
       }}
       {...(rest as React.ButtonHTMLAttributes<HTMLButtonElement>)}
     >

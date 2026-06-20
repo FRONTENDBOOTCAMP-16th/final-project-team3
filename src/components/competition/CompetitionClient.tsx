@@ -124,7 +124,7 @@ function MiniCalendar({ eventDates, selectedDate, onDateSelect }: MiniCalendarPr
         {/* Weekday labels */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: '2px', marginBottom: '4px' }}>
           {WEEKDAYS.map((w) => (
-            <div key={w} style={{ fontSize: '9px', fontWeight: 600, color: '#6b7280', textAlign: 'center', padding: '3px 0' }}>
+            <div key={w} style={{ fontSize: '9px', fontWeight: 600, color: '#b0b8c4', textAlign: 'center', padding: '3px 0' }}>
               {w}
             </div>
           ))}
@@ -289,7 +289,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
           <p
             style={{
               fontSize: '10.5px', fontWeight: 600, letterSpacing: '0.18em',
-              textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '14px',
+              textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginBottom: '14px',
             }}
           >
             COMPETITION
@@ -316,6 +316,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
       >
         {/* Row 1: 탭 */}
         <div
+          role="tablist"
           className="flex items-center overflow-x-auto no-scrollbar px-4 lg:px-12"
           style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
         >
@@ -332,7 +333,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
                 marginBottom: '-1px',
                 fontSize: '13.5px',
                 fontWeight: activeTab === tab ? 600 : 500,
-                color: activeTab === tab ? '#fff' : 'rgba(255,255,255,0.4)',
+                color: activeTab === tab ? '#fff' : 'rgba(255,255,255,0.6)',
                 background: 'none',
                 border: 'none',
                 borderBottomStyle: 'solid',
@@ -407,7 +408,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
         }}
       >
         {/* Competition list */}
-        <main aria-label="대회일정 목록">
+        <section aria-label="대회일정 목록">
           {isLoading ? (
             <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
               <LoadingSpinner label="대회 목록 불러오는 중" />
@@ -425,7 +426,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
               style={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center',
                 justifyContent: 'center', padding: '80px 0',
-                color: 'rgba(255,255,255,0.38)', fontSize: '15px',
+                color: 'rgba(255,255,255,0.6)', fontSize: '15px',
               }}
               aria-live="polite"
             >
@@ -450,7 +451,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
               </div>
             </div>
           )}
-        </main>
+        </section>
 
         {/* Right: calendar sidebar (lg+에서만 표시) */}
         <aside className="hidden lg:flex" style={{ flexDirection: 'column', gap: '14px' }}>
@@ -480,7 +481,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
               >
                 <p
                   style={{
-                    fontSize: '9px', fontWeight: 700, color: '#6b7280',
+                    fontSize: '9px', fontWeight: 700, color: '#b0b8c4',
                     letterSpacing: '0.12em', textTransform: 'uppercase',
                     marginBottom: '10px',
                   }}
@@ -496,7 +497,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
                     )
                   : filteredCompetitions
                 ).slice(0, 4).length === 0 ? (
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', textAlign: 'center', padding: '8px 0' }}>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', textAlign: 'center', padding: '8px 0' }}>
                     해당 날짜의 대회가 없습니다
                   </p>
                 ) : (selectedDate
@@ -541,7 +542,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
                       >
                         {c.name}
                       </p>
-                      <p style={{ fontSize: '10px', color: '#9ca3af' }}>{c.location}</p>
+                      <p style={{ fontSize: '10px', color: '#b0b8c4' }}>{c.location}</p>
                     </div>
                   </div>
                 ))}

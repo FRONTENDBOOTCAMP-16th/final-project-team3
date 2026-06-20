@@ -59,7 +59,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
   });
 
   return (
-    <main className="w-full min-h-screen" style={{ background: '#111' }} aria-label="커뮤니티 공지 목록">
+    <section className="w-full min-h-screen" style={{ background: '#111' }} aria-label="커뮤니티 공지 목록">
 
       {/* ── Hero ── */}
       <div className="relative h-[320px] overflow-hidden flex items-end">
@@ -195,7 +195,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
               className="flex flex-col items-center justify-center py-32"
               aria-live="polite"
               aria-atomic="true"
-              style={{ color: 'rgba(255,255,255,0.38)' }}
+              style={{ color: 'rgba(255,255,255,0.6)' }}
             >
               <p style={{ fontSize: '15px' }}>등록된 공지가 없습니다</p>
             </div>
@@ -236,7 +236,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
               fontSize: '11px',
               fontWeight: 700,
               letterSpacing: '0.08em',
-              color: 'rgba(255,255,255,0.5)',
+              color: 'rgba(255,255,255,0.7)',
               textTransform: 'uppercase',
             }}
           >
@@ -304,6 +304,6 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
       </div>
 
       <div style={{ paddingBottom: '64px' }} />
-    </main>
+    </section>
   );
 }

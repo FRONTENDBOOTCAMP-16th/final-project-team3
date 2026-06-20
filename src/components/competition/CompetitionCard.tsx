@@ -244,7 +244,7 @@ export default function CompetitionCard({
                   fontSize: '11.5px',
                   padding: '7px 14px',
                   background: 'rgba(255,255,255,0.05)',
-                  color: 'rgba(255,255,255,0.3)',
+                  color: 'rgba(255,255,255,0.55)',
                 }}
               >
                 모집 완료

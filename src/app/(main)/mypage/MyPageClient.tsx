@@ -55,7 +55,7 @@ export default function MyPageClient() {
   ];
 
   return (
-    <main className="w-full min-h-screen" style={{ background: '#111' }}>
+    <div className="w-full min-h-screen" style={{ background: '#111' }}>
       {/* ── Profile hero ── */}
       <section
         aria-label="프로필"
@@ -128,7 +128,7 @@ export default function MyPageClient() {
                   className="font-bold"
                   style={{
                     fontSize: '11px',
-                    color: 'rgba(255,255,255,0.42)',
+                    color: 'rgba(255,255,255,0.6)',
                     letterSpacing: '0.14em',
                   }}
                 >
@@ -172,7 +172,7 @@ export default function MyPageClient() {
                 {num}
               </div>
               <div
-                style={{ fontSize: '12.5px', color: 'rgba(255,255,255,0.38)' }}
+                style={{ fontSize: '12.5px', color: 'rgba(255,255,255,0.6)' }}
               >
                 {label}
               </div>
@@ -190,6 +190,7 @@ export default function MyPageClient() {
         }}
       >
         <div
+          role="tablist"
           className="flex mx-auto px-4 md:px-12"
           style={{ maxWidth: '980px', gap: '30px' }}
         >
@@ -209,7 +210,7 @@ export default function MyPageClient() {
                 padding: '15px 0',
                 fontSize: '13.5px',
                 fontWeight: tab === key ? 600 : 500,
-                color: tab === key ? '#fff' : 'rgba(255,255,255,0.38)',
+                color: tab === key ? '#fff' : 'rgba(255,255,255,0.55)',
                 borderBottom: `2px solid ${tab === key ? '#2563eb' : 'transparent'}`,
                 marginBottom: '-1px',
               }}
@@ -236,6 +237,6 @@ export default function MyPageClient() {
           </div>
         )}
       </div>
-    </main>
+    </div>
   );
 }
