@@ -67,11 +67,14 @@ export default function CompetitionFormBase({
 
       {tab !== undefined && onTabChange && (
         <div
+          role="tablist"
           className="flex rounded-xl p-1 mb-6"
           style={{ background: 'rgba(255,255,255,0.05)' }}
         >
           <button
             type="button"
+            role="tab"
+            aria-selected={tab === 'write'}
             onClick={() => onTabChange('write')}
             className="flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
             style={tab === 'write' ? tabActiveStyle : tabInactiveStyle}
@@ -80,6 +83,8 @@ export default function CompetitionFormBase({
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={tab === 'preview'}
             onClick={() => onTabChange('preview')}
             className="flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
             style={tab === 'preview' ? tabActiveStyle : tabInactiveStyle}
