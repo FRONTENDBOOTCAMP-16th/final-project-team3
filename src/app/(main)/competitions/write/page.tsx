@@ -4,7 +4,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '대회 추가 | Black Belt BJJ',
+  title: '대회 추가 | Activio',
   description: '새로운 주짓수 대회 일정을 등록하세요',
 };
 

@@ -91,7 +91,7 @@ export async function sendReportNotificationEmail(
     body: JSON.stringify({
       from,
       to: [to],
-      subject: `[Black Belt] 새 신고 접수: ${options.postTitle}`,
+      subject: `[Activio] 새 신고 접수: ${options.postTitle}`,
       html: buildReportNotificationHtml(options),
     }),
   });

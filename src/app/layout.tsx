@@ -10,8 +10,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Black Belt BJJ',
-  description: '주짓수 수련자를 위한 올인원 커뮤니티 플랫폼',
+  title: 'Activio',
+  description: '모든 스포츠 수련자를 위한 올인원 커뮤니티 플랫폼',
 };
 
 export default function RootLayout({

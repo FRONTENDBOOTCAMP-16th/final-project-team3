@@ -39,8 +39,8 @@ export const ADMIN_META: Record<AdminPageKey, AdminMeta> = {
 };
 
 export const ADMIN_LAYOUT_METADATA: Metadata = {
-  title: 'Black Belt BJJ',
-  description: 'Black Belt BJJ 관리자 페이지입니다.',
+  title: 'Activio',
+  description: 'Activio 관리자 페이지입니다.',
   robots: {
     index: false,
     follow: false,
@@ -51,7 +51,7 @@ export function getAdminPageMetadata(page: AdminPageKey): Metadata {
   const { title, description, metadataTitle } = ADMIN_META[page];
 
   return {
-    title: `${metadataTitle ?? title} | Black Belt BJJ`,
+    title: `${metadataTitle ?? title} | Activio`,
     description,
   };
 }

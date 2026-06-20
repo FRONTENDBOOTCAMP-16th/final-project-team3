@@ -4,10 +4,10 @@ import { cacheTag, cacheLife } from 'next/cache';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '대회일정 | Black Belt BJJ',
-  description: '전국 주짓수 대회 일정을 한눈에 확인하세요',
+  title: '대회일정 | Activio',
+  description: '전국 스포츠 대회 일정을 한눈에 확인하세요',
   openGraph: {
-    title: '대회일정 | Black Belt BJJ',
+    title: '대회일정 | Activio',
     description: '전국 주짓수 대회 일정을 한눈에 확인하세요',
   },
 };

@@ -55,7 +55,7 @@ export default function Sidebar() {
         <div className="flex items-center justify-center py-6 cursor-pointer">
           <Image
             src="/blackbelt.svg"
-            alt="Black Belt 로고"
+            alt="Activio 로고"
             width={95}
             height={37}
           />

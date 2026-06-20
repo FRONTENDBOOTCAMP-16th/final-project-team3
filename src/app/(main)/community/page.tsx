@@ -7,10 +7,10 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
-  title: '커뮤니티 | Black Belt BJJ',
-  description: '주짓수 수련자들의 이야기, 기술 분석, 도장 정보를 나누는 공간',
+  title: '커뮤니티 | Activio',
+  description: '스포츠 수련자들의 이야기, 기술 분석, 도장 정보를 나누는 공간',
   openGraph: {
-    title: '커뮤니티 | Black Belt BJJ',
+    title: '커뮤니티 | Activio',
     description: '주짓수 수련자들의 이야기, 기술 분석, 도장 정보를 나누는 공간',
   },
 };

@@ -6,13 +6,13 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Black Belt BJJ',
+  title: 'Activio',
   description:
-    '주짓수 수련자를 위한 올인원 커뮤니티. 커뮤니티, 대회일정, 도장찾기',
+    '모든 스포츠 수련자를 위한 올인원 커뮤니티. 커뮤니티, 대회일정, 도장찾기',
   openGraph: {
-    siteName: 'Black Belt BJJ',
-    title: 'Black Belt BJJ',
-    description: '주짓수 수련자를 위한 올인원 커뮤니티',
+    siteName: 'Activio',
+    title: 'Activio',
+    description: '모든 스포츠 수련자를 위한 올인원 커뮤니티',
     type: 'website',
   },
 };

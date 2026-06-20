@@ -11,11 +11,11 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const id = extractCompetitionId(slug);
-  if (!id) return { title: '대회를 찾을 수 없습니다 | Black Belt BJJ' };
+  if (!id) return { title: '대회를 찾을 수 없습니다 | Activio' };
 
   const competition = await getCompetition(id);
   return {
-    title: `${competition?.name ?? '대회'} 수정 | Black Belt BJJ`,
+    title: `${competition?.name ?? '대회'} 수정 | Activio`,
     description: `${competition?.name ?? '대회'} 정보를 수정합니다`,
   };
 }

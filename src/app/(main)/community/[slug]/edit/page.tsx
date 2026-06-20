@@ -11,13 +11,13 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const id = extractPostId(slug);
-  if (!id) return { title: '게시글을 찾을 수 없습니다 | Black Belt BJJ' };
+  if (!id) return { title: '게시글을 찾을 수 없습니다 | Activio' };
 
   const post = await getPost(id);
-  if (!post) return { title: '게시글을 찾을 수 없습니다 | Black Belt BJJ' };
+  if (!post) return { title: '게시글을 찾을 수 없습니다 | Activio' };
 
   return {
-    title: `${post.title} 수정 | Black Belt BJJ`,
+    title: `${post.title} 수정 | Activio`,
     description: `"${post.title}" 게시글을 수정합니다.`,
     robots: { index: false },
   };
