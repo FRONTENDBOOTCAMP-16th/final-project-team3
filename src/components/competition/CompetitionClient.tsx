@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -256,15 +257,14 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
           alignItems: 'flex-end',
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
+          fill
           src="/images/bjj-2.webp"
           alt=""
           aria-hidden="true"
-          style={{
-            position: 'absolute', inset: 0, width: '100%', height: '100%',
-            objectFit: 'cover', opacity: 0.38, filter: 'grayscale(10%)',
-          }}
+          style={{ objectFit: 'cover', opacity: 0.38, filter: 'grayscale(10%)' }}
+          priority
+          sizes="100vw"
         />
         <div
           style={{

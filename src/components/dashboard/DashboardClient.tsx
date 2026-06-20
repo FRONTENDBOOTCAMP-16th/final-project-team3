@@ -343,7 +343,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                     background: color + '1a', border: `1.5px solid ${color}44`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}>
-                    <img src={image} alt={name} style={{ width: '15px', height: '15px', objectFit: 'contain' }} />
+                    <Image src={image} alt={name} width={15} height={15} style={{ objectFit: 'contain' }} />
                   </div>
                   <span style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255,255,255,0.75)' }}>{name}</span>
                   <span style={{ marginLeft: 'auto', fontSize: '11px', color: 'rgba(255,255,255,0.2)' }}>→</span>

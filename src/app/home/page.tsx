@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
@@ -50,23 +51,17 @@ export default function Home() {
       <BfcacheRefresher />
 
       {/* Slideshow backgrounds */}
-      {BG_IMAGES.map(({ src, cls }) => (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+      {BG_IMAGES.map(({ src, cls }, idx) => (
+        <Image
           key={src}
+          fill
           src={src}
           alt=""
           aria-hidden="true"
           className={cls}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
+          style={{ objectFit: 'cover', pointerEvents: 'none', zIndex: 0 }}
+          priority={idx === 0}
+          sizes="100vw"
         />
       ))}
 

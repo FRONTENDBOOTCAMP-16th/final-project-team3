@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { BG_IMAGES } from '@/constants/bgImages';
 
@@ -12,24 +13,22 @@ export default function AuthLayout({
       style={{ background: '#111', overflow: 'hidden' }}
     >
       {/* Slideshow backgrounds — fixed to viewport so size stays constant regardless of content height */}
-      {BG_IMAGES.map(({ src, cls }) => (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+      {BG_IMAGES.map(({ src, cls }, idx) => (
+        <div
           key={src}
-          src={src}
-          alt=""
-          aria-hidden="true"
           className={cls}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
-        />
+          style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }}
+        >
+          <Image
+            fill
+            src={src}
+            alt=""
+            aria-hidden="true"
+            style={{ objectFit: 'cover' }}
+            priority={idx === 0}
+            sizes="100vw"
+          />
+        </div>
       ))}
 
       {/* Dark overlay */}

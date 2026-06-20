@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
@@ -63,15 +64,14 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
 
       {/* ── Hero ── */}
       <div className="relative h-[320px] overflow-hidden flex items-end">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
+          fill
           src="/images/bjj-2.webp"
           alt=""
           aria-hidden="true"
-          style={{
-            position: 'absolute', inset: 0, width: '100%', height: '100%',
-            objectFit: 'cover', opacity: 0.38, filter: 'grayscale(10%)',
-          }}
+          style={{ objectFit: 'cover', opacity: 0.38, filter: 'grayscale(10%)' }}
+          priority
+          sizes="100vw"
         />
         <div
           className="absolute inset-0"
@@ -292,7 +292,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
                     flexShrink: 0,
                   }}
                 >
-                  <img src={image} alt={name} style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
+                  <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} />
                 </div>
                 <span style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255,255,255,0.8)' }}>
                   {name}
