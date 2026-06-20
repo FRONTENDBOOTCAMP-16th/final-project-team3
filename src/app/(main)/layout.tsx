@@ -1,7 +1,6 @@
 import ScrollToTop from '@/components/common/ScrollToTop';
 import TopNav from '@/components/layout/TopNav';
 import Footer from '@/components/layout/Footer';
-import { Toaster } from 'sonner';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
@@ -40,7 +39,6 @@ export default function MainLayout({
         <Footer />
       </Suspense>
       <ScrollToTop />
-      <Toaster position="bottom-center" />
     </div>
   );
 }
