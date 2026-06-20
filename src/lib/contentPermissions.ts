@@ -1,4 +1,6 @@
-export type ContentUserRole = 'user' | 'manager' | 'pending' | 'admin' | string | null | undefined;
+import type { AppRole } from '@/types/role';
+
+export type ContentUserRole = AppRole | string | null | undefined;
 
 interface ContentPermissionParams {
   currentUserId: string | null | undefined;

@@ -1,11 +1,12 @@
 import { supabase } from './supabase/client';
+import type { AppRole } from '@/types/role';
 
-export type UserRole = 'user' | 'manager' | 'pending' | 'admin';
+export type { AppRole };
 
 export type AuthUser = {
   id: string;
   name: string;
-  role: UserRole;
+  role: AppRole;
   belt?: string;
   image?: string;
 } | null;
