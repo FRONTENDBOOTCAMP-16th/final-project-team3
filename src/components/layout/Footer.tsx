@@ -1,7 +1,4 @@
-'use client';
-
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 
 const NAV_LINKS = [
   { label: '대시보드', href: '/dashboard' },
@@ -12,9 +9,6 @@ const NAV_LINKS = [
 ];
 
 export default function Footer() {
-  const pathname = usePathname();
-  if (pathname === '/home') return null;
-
   return (
     <footer
       style={{
@@ -59,7 +53,7 @@ export default function Footer() {
             <p
               style={{
                 fontSize: '12.5px',
-                color: 'rgba(255,255,255,0.4)',
+                color: 'rgba(255,255,255,0.6)',
                 lineHeight: '1.7',
                 maxWidth: '220px',
               }}
@@ -80,7 +74,7 @@ export default function Footer() {
                   fontWeight: 700,
                   letterSpacing: '0.14em',
                   textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.28)',
+                  color: 'rgba(255,255,255,0.55)',
                   marginBottom: '14px',
                 }}
               >
@@ -91,15 +85,13 @@ export default function Footer() {
                   <li key={href}>
                     <Link
                       href={href}
+                      className="hover:!text-white transition-colors duration-200"
                       style={{
                         fontSize: '13.5px',
                         fontWeight: 500,
                         color: 'rgba(255,255,255,0.55)',
                         textDecoration: 'none',
-                        transition: 'color 0.2s',
                       }}
-                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = '#fff')}
-                      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.55)')}
                     >
                       {label}
                     </Link>
@@ -116,13 +108,13 @@ export default function Footer() {
                   fontWeight: 700,
                   letterSpacing: '0.14em',
                   textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.28)',
+                  color: 'rgba(255,255,255,0.55)',
                   marginBottom: '14px',
                 }}
               >
                 플랫폼
               </p>
-              <p style={{ fontSize: '12.5px', color: 'rgba(255,255,255,0.4)', lineHeight: '1.9' }}>
+              <p style={{ fontSize: '12.5px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.9' }}>
                 Next.js · Supabase<br />
                 Tailwind CSS · TypeScript<br />
                 Naver Maps API
@@ -142,10 +134,10 @@ export default function Footer() {
             justifyContent: 'space-between',
           }}
         >
-          <p style={{ fontSize: '11.5px', color: 'rgba(255,255,255,0.25)' }}>
+          <p style={{ fontSize: '11.5px', color: 'rgba(255,255,255,0.55)' }}>
             © 2025 Activio. All rights reserved.
           </p>
-          <p style={{ fontSize: '11.5px', color: 'rgba(255,255,255,0.2)' }}>
+          <p style={{ fontSize: '11.5px', color: 'rgba(255,255,255,0.5)' }}>
             프론트엔드 부트캠프 16기 Team 3
           </p>
         </div>

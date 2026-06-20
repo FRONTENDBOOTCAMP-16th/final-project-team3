@@ -47,7 +47,7 @@ export const useMyPosts = () => {
   return useInfiniteQuery({
     queryKey: myPageKeys.posts,
     queryFn: ({ pageParam = 0 }) => fetchMyPosts(pageParam),
-    staleTime: 0,
+    staleTime: 0, // 사용자 개인 데이터 — 항상 최신값 조회 (전역 5분 캐시 재정의)
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.length === 10 ? allPages.length : undefined;
     },
@@ -65,7 +65,7 @@ export const useMyPostCount = () => {
   return useQuery({
     queryKey: myPageKeys.postCount,
     queryFn: fetchMyPostCount,
-    staleTime: 0,
+    staleTime: 0, // 사용자 개인 데이터 — 항상 최신값 조회 (전역 5분 캐시 재정의)
   });
 };
 
@@ -73,7 +73,7 @@ export const useMyCommentCount = () => {
   return useQuery({
     queryKey: myPageKeys.commentCount,
     queryFn: fetchMyCommentCount,
-    staleTime: 0,
+    staleTime: 0, // 사용자 개인 데이터 — 항상 최신값 조회 (전역 5분 캐시 재정의)
   });
 };
 
@@ -81,7 +81,7 @@ export const useMyLikeCount = () => {
   return useQuery({
     queryKey: myPageKeys.likeCount,
     queryFn: fetchMyLikeCount,
-    staleTime: 0,
+    staleTime: 0, // 사용자 개인 데이터 — 항상 최신값 조회 (전역 5분 캐시 재정의)
   });
 };
 
@@ -89,7 +89,7 @@ export const useMyBookmarks = () => {
   return useInfiniteQuery({
     queryKey: myPageKeys.bookmarks,
     queryFn: ({ pageParam = 0 }) => fetchMyBookmarks(pageParam),
-    staleTime: 0,
+    staleTime: 0, // 사용자 개인 데이터 — 항상 최신값 조회 (전역 5분 캐시 재정의)
     getNextPageParam: (lastPage, allPages) =>
       lastPage.length === 10 ? allPages.length : undefined,
     initialPageParam: 0,
@@ -100,6 +100,6 @@ export const useMyBookmarkCount = () => {
   return useQuery({
     queryKey: myPageKeys.bookmarkCount,
     queryFn: fetchMyBookmarkCount,
-    staleTime: 0,
+    staleTime: 0, // 사용자 개인 데이터 — 항상 최신값 조회 (전역 5분 캐시 재정의)
   });
 };

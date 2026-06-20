@@ -9,7 +9,7 @@ function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 1000 * 60 * 5,
+        staleTime: 1000 * 60 * 5, // 공개 데이터 기본 캐시 5분 — 개인화 데이터는 각 훅에서 0으로 재정의
         retry: 1,
       },
     },

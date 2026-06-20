@@ -1,6 +1,7 @@
 import ScrollToTop from '@/components/common/ScrollToTop';
 import TopNav from '@/components/layout/TopNav';
 import Footer from '@/components/layout/Footer';
+import FooterWrapper from '@/components/layout/FooterWrapper';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
@@ -36,7 +37,9 @@ export default function MainLayout({
         <div className="w-full max-w-7xl">{children}</div>
       </main>
       <Suspense>
-        <Footer />
+        <FooterWrapper>
+          <Footer />
+        </FooterWrapper>
       </Suspense>
       <ScrollToTop />
     </div>

@@ -19,7 +19,7 @@ export function usePosts(initialPosts: Post[]) {
       if (lastPage.length < PAGE_SIZE) return undefined;
       return allPages.length;
     },
-    staleTime: 0,
+    staleTime: 0, // 글 작성/삭제 후 즉시 최신 목록 반영
   });
 }
 
@@ -27,7 +27,7 @@ export function usePromoPosts() {
   return useQuery({
     queryKey: ['posts', 'promo'],
     queryFn: () => getPromoPosts(20),
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 5, // 홍보 게시글은 자주 바뀌지 않으므로 5분 캐시
   });
 }
 
@@ -45,6 +45,6 @@ export function useSportPosts(sport: string, initialPosts: Post[]) {
       if (lastPage.length < PAGE_SIZE) return undefined;
       return allPages.length;
     },
-    staleTime: 0,
+    staleTime: 0, // 글 작성/삭제 후 즉시 최신 목록 반영
   });
 }
