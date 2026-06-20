@@ -1,28 +1,25 @@
 'use client';
 
-import { useRef, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
 import Postcard from '@/components/community/Postcard';
 import PromoAdSidebar from '@/components/community/PromoAdSidebar';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
-import { useDebounce } from '@/hooks/useDebounce';
 import { usePosts } from '@/hooks/useCommunity';
 import { useAuth } from '@/hooks/useAuth';
 import { SPORTS } from '@/constants/sports';
 import type { Post } from '@/types/community';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { useCommunityListState } from '@/hooks/useCommunityListState';
 
 interface CommunityClientProps {
   initialPosts: Post[];
 }
 
 export default function CommunityClient({ initialPosts }: CommunityClientProps) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
-  const isScrollRestoredRef = useRef(false);
-
-  const debouncedSearch = useDebounce(searchQuery, 300);
+  const { searchQuery, setSearchQuery, debouncedSearch, hoveredSlug, setHoveredSlug, isScrollRestoredRef } =
+    useCommunityListState();
   const { user, loading } = useAuth();
   const isAdmin = user?.role === 'admin';
 

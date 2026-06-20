@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import BfcacheRefresher from '@/components/common/BfcacheRefresher';
 import HomeLoggedInButtons from '@/components/home/HomeLoggedInButtons';
+import { BG_IMAGES } from '@/constants/bgImages';
 
 async function AuthButtons() {
   const supabase = await createSupabaseServerClient();
@@ -30,15 +31,6 @@ export const metadata: Metadata = {
   title: 'Activio | 스포츠인 올인원 네트워크',
   description: '스포츠인과 도장을 하나의 공간에서 연결하는 커뮤니티 플랫폼.',
 };
-
-const BG_IMAGES = [
-  { src: '/images/activio-1.gif',  cls: 'home-bg-1' },
-  { src: '/images/activio-2.jpg',  cls: 'home-bg-2' },
-  { src: '/images/activio-3.webp', cls: 'home-bg-3' },
-  { src: '/images/activio-4.jpg',  cls: 'home-bg-4' },
-  { src: '/images/activio-5.jpeg', cls: 'home-bg-5' },
-  { src: '/images/activio-6.jpg',  cls: 'home-bg-6' },
-] as const;
 
 export default function Home() {
   return (

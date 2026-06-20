@@ -228,7 +228,7 @@ export default function MyPageClient() {
         }}
         role="tabpanel"
       >
-        {tab === 'posts' && <PostList userId={profile.id} />}
+        {tab === 'posts' && <PostList />}
         {tab === 'bookmarks' && <BookmarkList />}
         {tab === 'settings' && (
           <div className="py-8">
