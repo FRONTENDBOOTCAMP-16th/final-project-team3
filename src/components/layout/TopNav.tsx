@@ -48,6 +48,7 @@ export default function TopNav() {
   }, []);
 
   return (
+    <>
     <nav
       className="sticky top-0 z-50 h-16 flex items-center px-8 md:px-12 border-b border-white/[0.06] light:border-black/[0.08]"
       style={{
@@ -248,16 +249,15 @@ export default function TopNav() {
           </div>
         )}
       </div>
-      {/* 모바일 드로어 */}
-      {menuOpen && (
-        <div
-          className="md:hidden fixed inset-0 top-16 z-40"
-          style={{
-            background: 'var(--color-bg-page)',
-          }}
-          role="dialog"
-          aria-label="모바일 메뉴"
-        >
+    </nav>
+    {/* 모바일 드로어 — nav 바깥에 위치: nav의 backdropFilter가 fixed 자식의 containing block을 바꾸는 문제 방지 */}
+    {menuOpen && (
+      <div
+        className="md:hidden fixed inset-0 top-16 z-40"
+        style={{ background: 'var(--color-bg-page)' }}
+        role="dialog"
+        aria-label="모바일 메뉴"
+      >
           <nav
             className="flex flex-col px-6 pt-8 gap-2"
             aria-label="모바일 내비게이션"
@@ -321,8 +321,8 @@ export default function TopNav() {
               </div>
             )}
           </nav>
-        </div>
-      )}
-    </nav>
+      </div>
+    )}
+    </>
   );
 }
