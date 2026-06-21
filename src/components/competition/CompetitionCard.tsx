@@ -67,12 +67,7 @@ export default function CompetitionCard({
         : 'rgba(255,255,255,0.38)';
 
   return (
-    <Link
-      href={buildCompetitionUrl(competition.name, competition.id)}
-      className="block"
-      aria-label={`${competition.name} 대회 상세보기`}
-      onClick={handleClick}
-    >
+    <div>
       {/* outer shell */}
       <div
         className="relative cursor-pointer transition-all duration-[400ms]"
@@ -96,6 +91,13 @@ export default function CompetitionCard({
         }}
         aria-busy={isPending}
       >
+        {/* stretched link — 카드 전체를 클릭 가능하게 하되 신청하기 <a>와 중첩 방지 */}
+        <Link
+          href={buildCompetitionUrl(competition.name, competition.id)}
+          className="absolute inset-0 z-0 rounded-[18px]"
+          aria-label={`${competition.name} 대회 상세보기`}
+          onClick={handleClick}
+        />
         {isPending && (
           <div
             className="absolute inset-0 z-10 flex items-center justify-center rounded-[16px]"
@@ -219,7 +221,7 @@ export default function CompetitionCard({
                 rel="noopener noreferrer"
                 aria-label={`${competition.name} 신청하기`}
                 onClick={(e) => e.stopPropagation()}
-                className="font-semibold text-white rounded-[8px] transition-all"
+                className="relative z-10 font-semibold text-white rounded-[8px] transition-all"
                 style={{
                   fontSize: '11.5px',
                   padding: '7px 14px',
@@ -253,6 +255,6 @@ export default function CompetitionCard({
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
