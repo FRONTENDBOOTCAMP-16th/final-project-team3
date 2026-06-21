@@ -269,7 +269,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
         <div
           style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(to top, rgba(var(--color-scrim-rgb),0.95) 0%, rgba(var(--color-scrim-rgb),0.4) 60%, rgba(var(--color-scrim-rgb),0.2) 100%)',
+            background: 'linear-gradient(to top, rgba(var(--color-hero-scrim-rgb),0.95) 0%, rgba(var(--color-hero-scrim-rgb),0.4) 60%, rgba(var(--color-hero-scrim-rgb),0.2) 100%)',
           }}
         />
         {/* Watermark */}
@@ -359,7 +359,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
             className="flex items-center gap-2 flex-1 h-9"
             style={{
               background: 'var(--color-bg-tint)',
-              border: '1px solid rgba(255,255,255,0.1)',
+              border: '1px solid var(--color-border-medium)',
               borderRadius: '5px',
               padding: '0 12px',
             }}
@@ -374,7 +374,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
               className="flex-1 min-w-0"
               style={{
                 background: 'none', border: 'none', outline: 'none',
-                fontFamily: 'inherit', fontSize: '13px', color: '#fff',
+                fontFamily: 'inherit', fontSize: '13px', color: 'var(--color-text-primary)',
               }}
             />
           </div>

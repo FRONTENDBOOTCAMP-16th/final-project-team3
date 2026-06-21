@@ -75,7 +75,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
         />
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(to top, rgba(var(--color-scrim-rgb),0.96) 0%, rgba(var(--color-scrim-rgb),0.45) 60%, rgba(var(--color-scrim-rgb),0.2) 100%)' }}
+          style={{ background: 'linear-gradient(to top, rgba(var(--color-hero-scrim-rgb),0.96) 0%, rgba(var(--color-hero-scrim-rgb),0.45) 60%, rgba(var(--color-hero-scrim-rgb),0.2) 100%)' }}
         />
         <div className="relative z-10 px-6 pb-5">
           <h1 className="font-extrabold text-white text-[38px] leading-none tracking-[-0.04em]">
@@ -134,7 +134,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="공지 검색..."
                 aria-label="공지 검색"
-                className="flex-1 bg-transparent border-none outline-none text-white min-w-0"
+                className="flex-1 bg-transparent border-none outline-none text-text-primary min-w-0"
                 style={{ fontSize: '13.5px' }}
               />
             </div>

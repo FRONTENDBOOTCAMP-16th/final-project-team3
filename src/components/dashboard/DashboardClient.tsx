@@ -99,7 +99,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="검색..."
-                className="flex-1 bg-transparent border-none outline-none text-white min-w-0"
+                className="flex-1 bg-transparent border-none outline-none text-text-primary min-w-0"
                 style={{ fontSize: '13px' }}
               />
             </div>
@@ -148,7 +148,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                   <div
                     style={{
                       position: 'absolute', inset: 0,
-                      background: 'linear-gradient(to top, rgba(var(--color-scrim-rgb),0.95) 0%, rgba(var(--color-scrim-rgb),0.3) 50%, transparent 100%)',
+                      background: 'linear-gradient(to top, rgba(var(--color-hero-scrim-rgb),0.95) 0%, rgba(var(--color-hero-scrim-rgb),0.3) 50%, transparent 100%)',
                     }}
                   />
                   <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px' }}>

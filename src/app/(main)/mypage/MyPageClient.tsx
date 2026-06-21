@@ -104,7 +104,7 @@ export default function MyPageClient() {
           {/* Info */}
           <div className="flex-1">
             <h1
-              className="font-extrabold text-white text-[32px] md:text-[50px]"
+              className="font-extrabold text-text-primary text-[32px] md:text-[50px]"
               style={{
                 letterSpacing: '-0.03em',
                 lineHeight: 1,

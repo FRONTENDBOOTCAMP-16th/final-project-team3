@@ -74,7 +74,7 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
         />
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(to top, rgba(var(--color-scrim-rgb),0.96) 0%, rgba(var(--color-scrim-rgb),0.45) 60%, rgba(var(--color-scrim-rgb),0.2) 100%)' }}
+          style={{ background: 'linear-gradient(to top, rgba(var(--color-hero-scrim-rgb),0.96) 0%, rgba(var(--color-hero-scrim-rgb),0.45) 60%, rgba(var(--color-hero-scrim-rgb),0.2) 100%)' }}
         />
         <div className="relative z-10 px-6 pb-5 flex items-end gap-3">
           <span style={{ fontSize: '36px', lineHeight: 1 }}>{sport.icon}</span>
@@ -133,7 +133,7 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={`${sport.name} 게시글 검색...`}
                 aria-label="게시글 검색"
-                className="flex-1 bg-transparent border-none outline-none text-white min-w-0"
+                className="flex-1 bg-transparent border-none outline-none text-text-primary min-w-0"
                 style={{ fontSize: '13.5px' }}
               />
             </div>

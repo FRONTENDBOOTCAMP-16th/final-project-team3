@@ -279,7 +279,7 @@ export default function DojangClient() {
                   border: 'none',
                   outline: 'none',
                   fontSize: '14px',
-                  color: '#d1d5db',
+                  color: 'var(--color-text-primary)',
                   fontFamily: 'inherit',
                 }}
               />
@@ -301,7 +301,7 @@ export default function DojangClient() {
               padding: '7px 16px',
               fontSize: '12px',
               fontWeight: 500,
-              color: isLocating ? '#60a5fa' : '#d1d5db',
+              color: isLocating ? '#60a5fa' : 'var(--color-text-secondary)',
               cursor: isLocating ? 'default' : 'pointer',
               fontFamily: 'inherit',
               whiteSpace: 'nowrap',
