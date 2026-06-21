@@ -269,7 +269,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
         <div
           style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(to top, rgba(var(--color-hero-scrim-rgb),0.95) 0%, rgba(var(--color-hero-scrim-rgb),0.4) 60%, rgba(var(--color-hero-scrim-rgb),0.2) 100%)',
+            background: 'linear-gradient(to top, rgba(var(--color-scrim-rgb),0.95) 0%, rgba(var(--color-scrim-rgb),0.4) 60%, rgba(var(--color-scrim-rgb),0.2) 100%)',
           }}
         />
         {/* Watermark */}
@@ -297,7 +297,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
           <h1
             className="text-[44px] md:text-[68px]"
             style={{
-              fontWeight: 800, color: '#fff',
+              fontWeight: 800, color: 'var(--color-text-primary)',
               lineHeight: 0.92, letterSpacing: '-0.04em',
             }}
           >

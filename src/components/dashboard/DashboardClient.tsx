@@ -148,7 +148,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                   <div
                     style={{
                       position: 'absolute', inset: 0,
-                      background: 'linear-gradient(to top, rgba(var(--color-hero-scrim-rgb),0.95) 0%, rgba(var(--color-hero-scrim-rgb),0.3) 50%, transparent 100%)',
+                      background: 'linear-gradient(to top, rgba(var(--color-scrim-rgb),0.95) 0%, rgba(var(--color-scrim-rgb),0.3) 50%, transparent 100%)',
                     }}
                   />
                   <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px' }}>

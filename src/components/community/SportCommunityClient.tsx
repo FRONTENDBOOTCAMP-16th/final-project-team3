@@ -74,11 +74,11 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
         />
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(to top, rgba(var(--color-hero-scrim-rgb),0.96) 0%, rgba(var(--color-hero-scrim-rgb),0.45) 60%, rgba(var(--color-hero-scrim-rgb),0.2) 100%)' }}
+          style={{ background: 'linear-gradient(to top, rgba(var(--color-scrim-rgb),0.96) 0%, rgba(var(--color-scrim-rgb),0.45) 60%, rgba(var(--color-scrim-rgb),0.2) 100%)' }}
         />
         <div className="relative z-10 px-6 pb-5 flex items-end gap-3">
           <span style={{ fontSize: '36px', lineHeight: 1 }}>{sport.icon}</span>
-          <h1 className="font-extrabold text-white text-[38px] leading-none tracking-[-0.04em]">
+          <h1 className="font-extrabold text-text-primary text-[38px] leading-none tracking-[-0.04em]">
             {sport.name}
           </h1>
         </div>
