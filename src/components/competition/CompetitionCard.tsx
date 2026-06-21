@@ -64,7 +64,7 @@ export default function CompetitionCard({
       ? '#ef4444'
       : dday.startsWith('D-')
         ? '#60a5fa'
-        : 'rgba(255,255,255,0.38)';
+        : 'var(--color-text-hint)';
 
   return (
     <div>
@@ -72,8 +72,8 @@ export default function CompetitionCard({
       <div
         className="relative cursor-pointer transition-all duration-[400ms]"
         style={{
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.07)',
+          background: 'var(--color-bg-tint)',
+          border: '1px solid var(--color-border)',
           borderRadius: '18px',
           padding: '2px',
         }}
@@ -85,7 +85,7 @@ export default function CompetitionCard({
         }}
         onMouseLeave={(e) => {
           const el = e.currentTarget as HTMLElement;
-          el.style.borderColor = 'rgba(255,255,255,0.07)';
+          el.style.borderColor = 'var(--color-border)';
           el.style.transform = 'translateX(0)';
           el.style.boxShadow = 'none';
         }}
@@ -101,7 +101,7 @@ export default function CompetitionCard({
         {isPending && (
           <div
             className="absolute inset-0 z-10 flex items-center justify-center rounded-[16px]"
-            style={{ background: 'rgba(0,0,0,0.5)' }}
+            style={{ background: 'var(--color-overlay)' }}
           >
             <LoadingSpinner label="대회 정보 불러오는 중" />
           </div>
@@ -111,9 +111,9 @@ export default function CompetitionCard({
         <div
           className="flex overflow-hidden"
           style={{
-            background: '#1e1e1e',
+            background: 'var(--color-bg-surface)',
             borderRadius: '16px',
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
+            boxShadow: 'inset 0 1px 0 var(--color-highlight-shadow)',
           }}
         >
           {/* Date column */}
@@ -122,7 +122,7 @@ export default function CompetitionCard({
             style={{
               width: '70px',
               padding: '16px 8px',
-              borderRight: '1px solid rgba(255,255,255,0.06)',
+              borderRight: '1px solid var(--color-border)',
             }}
           >
             <span
@@ -139,7 +139,7 @@ export default function CompetitionCard({
               className="font-extrabold leading-none"
               style={{
                 fontSize: '30px',
-                color: '#fff',
+                color: 'var(--color-text-primary)',
                 letterSpacing: '-0.04em',
               }}
             >
@@ -153,7 +153,7 @@ export default function CompetitionCard({
               className="font-bold mb-1.5"
               style={{
                 fontSize: '14.5px',
-                color: '#fff',
+                color: 'var(--color-text-primary)',
                 letterSpacing: '-0.01em',
               }}
             >
@@ -187,7 +187,7 @@ export default function CompetitionCard({
 
             <p
               className="line-clamp-1"
-              style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)' }}
+              style={{ fontSize: '11px', color: 'var(--color-text-tertiary)' }}
             >
               신청마감 {competition.apply_deadline}
               {actualStatus !== '모집완료' && (
@@ -245,8 +245,8 @@ export default function CompetitionCard({
                 style={{
                   fontSize: '11.5px',
                   padding: '7px 14px',
-                  background: 'rgba(255,255,255,0.05)',
-                  color: 'rgba(255,255,255,0.55)',
+                  background: 'var(--color-bg-tint)',
+                  color: 'var(--color-text-tertiary)',
                 }}
               >
                 모집 완료

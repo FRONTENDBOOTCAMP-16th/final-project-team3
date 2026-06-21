@@ -55,12 +55,12 @@ export default function MyPageClient() {
   ];
 
   return (
-    <div className="w-full min-h-screen" style={{ background: '#111' }}>
+    <div className="w-full min-h-screen" style={{ background: 'var(--color-bg-page)' }}>
       {/* ── Profile hero ── */}
       <section
         aria-label="프로필"
         className="px-4 pt-10 pb-8 md:px-12 md:pt-14 md:pb-12"
-        style={{ background: '#181818', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0 }}
+        style={{ background: 'var(--color-bg-surface-alt)', borderBottom: '1px solid var(--color-border)', flexShrink: 0 }}
       >
         <div
           className="flex flex-col md:flex-row items-center md:items-center gap-6 md:gap-11 mx-auto text-center md:text-left"
@@ -74,8 +74,8 @@ export default function MyPageClient() {
                 width: '108px',
                 height: '108px',
                 borderRadius: '50%',
-                background: 'rgba(255,255,255,0.05)',
-                border: '2px solid rgba(255,255,255,0.14)',
+                background: 'var(--color-bg-tint)',
+                border: '2px solid var(--color-border-medium)',
               }}
             >
               <Image
@@ -96,7 +96,7 @@ export default function MyPageClient() {
                 height: '20px',
                 background: '#2563eb',
                 borderRadius: '50%',
-                border: '3px solid #181818',
+                border: '3px solid var(--color-bg-surface-alt)',
               }}
             />
           </div>
@@ -128,7 +128,7 @@ export default function MyPageClient() {
                   className="font-bold"
                   style={{
                     fontSize: '11px',
-                    color: 'rgba(255,255,255,0.6)',
+                    color: 'var(--color-text-secondary)',
                     letterSpacing: '0.14em',
                   }}
                 >
@@ -143,36 +143,37 @@ export default function MyPageClient() {
       {/* ── Stats grid ── */}
       <section
         aria-label="활동 통계"
-        style={{ background: '#111', flexShrink: 0 }}
+        style={{ background: 'var(--color-bg-page)', flexShrink: 0 }}
       >
         <div
           className="grid grid-cols-2 md:grid-cols-4 mx-auto"
           style={{
             maxWidth: '980px',
             gap: '1px',
-            background: 'rgba(255,255,255,0.06)',
-            borderBottom: '1px solid rgba(255,255,255,0.06)',
+            background: 'var(--color-border)',
+            borderBottom: '1px solid var(--color-border)',
           }}
         >
           {STATS.map(({ num, label }) => (
             <div
               key={label}
               className="p-5 md:p-7"
-              style={{ background: '#111' }}
+              style={{ background: 'var(--color-bg-page)' }}
             >
               <div
-                className="font-extrabold text-white"
+                className="font-extrabold"
                 style={{
                   fontSize: '44px',
                   letterSpacing: '-0.04em',
                   lineHeight: 1,
                   marginBottom: '5px',
+                  color: 'var(--color-text-primary)',
                 }}
               >
                 {num}
               </div>
               <div
-                style={{ fontSize: '12.5px', color: 'rgba(255,255,255,0.6)' }}
+                style={{ fontSize: '12.5px', color: 'var(--color-text-secondary)' }}
               >
                 {label}
               </div>
@@ -185,8 +186,8 @@ export default function MyPageClient() {
       <div
         className="sticky top-16 z-40 flex-shrink-0"
         style={{
-          background: '#111',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          background: 'var(--color-bg-page)',
+          borderBottom: '1px solid var(--color-border)',
         }}
       >
         <div
@@ -210,7 +211,7 @@ export default function MyPageClient() {
                 padding: '15px 0',
                 fontSize: '13.5px',
                 fontWeight: tab === key ? 600 : 500,
-                color: tab === key ? '#fff' : 'rgba(255,255,255,0.55)',
+                color: tab === key ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)',
                 borderBottom: `2px solid ${tab === key ? '#2563eb' : 'transparent'}`,
                 marginBottom: '-1px',
               }}

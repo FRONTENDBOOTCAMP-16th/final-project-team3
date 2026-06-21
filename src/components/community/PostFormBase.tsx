@@ -46,7 +46,7 @@ const tabActiveStyle = {
   boxShadow: '0 2px 8px rgba(37,99,235,0.3)',
 } as const;
 
-const tabInactiveStyle = { color: 'rgba(255,255,255,0.4)' } as const;
+const tabInactiveStyle = { color: 'var(--color-text-hint)' } as const;
 
 export default function PostFormBase({
   pageTitle,
@@ -78,7 +78,7 @@ export default function PostFormBase({
   const showPreview = tab === 'preview';
 
   return (
-    <div className="max-w-5xl mx-auto p-6 min-h-screen" style={{ background: '#111' }}>
+    <div className="max-w-5xl mx-auto p-6 min-h-screen" style={{ background: 'var(--color-bg-page)' }}>
       <div className="w-full flex items-center mb-6">
         <h1 className="text-lg font-semibold mx-auto">{pageTitle}</h1>
       </div>
@@ -87,7 +87,7 @@ export default function PostFormBase({
         <div
           role="tablist"
           className="flex rounded-xl p-1 mb-6"
-          style={{ background: 'rgba(255,255,255,0.05)' }}
+          style={{ background: 'var(--color-bg-tint)' }}
         >
           <button
             type="button"
@@ -116,20 +116,20 @@ export default function PostFormBase({
         <>
           <div
             className="rounded-xl p-4 mb-4"
-            style={{ background: '#1e1e1e', border: '1px solid rgba(255,255,255,0.06)' }}
+            style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }}
           >
-            <p className="text-sm mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>게시글 유형</p>
+            <p className="text-sm mb-2" style={{ color: 'var(--color-text-tertiary)' }}>게시글 유형</p>
             {categorySection}
           </div>
 
           <div
             className="rounded-xl p-4 mb-4"
-            style={{ background: '#1e1e1e', border: '1px solid rgba(255,255,255,0.06)' }}
+            style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }}
           >
             <label
               htmlFor="post-title"
               className="text-sm mb-2 block"
-              style={{ color: 'rgba(255,255,255,0.5)' }}
+              style={{ color: 'var(--color-text-tertiary)' }}
             >
               제목
             </label>
@@ -156,12 +156,12 @@ export default function PostFormBase({
 
           <div
             className="rounded-xl p-4 mb-6"
-            style={{ background: '#1e1e1e', border: '1px solid rgba(255,255,255,0.06)' }}
+            style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }}
           >
             <label
               htmlFor="post-content"
               className="text-sm mb-2 block"
-              style={{ color: 'rgba(255,255,255,0.5)' }}
+              style={{ color: 'var(--color-text-tertiary)' }}
             >
               내용
             </label>
@@ -181,7 +181,7 @@ export default function PostFormBase({
         !title && !content ? (
           <div
             className="flex flex-col items-center justify-center py-16 mb-6"
-            style={{ color: 'rgba(255,255,255,0.38)' }}
+            style={{ color: 'var(--color-text-disabled)' }}
           >
             <p className="text-sm">작성 탭에서 내용을 입력하면</p>
             <p className="text-sm">여기서 미리볼 수 있어요.</p>

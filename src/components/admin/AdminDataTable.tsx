@@ -64,7 +64,7 @@ export default function AdminDataTable<T>({
   return (
     <section
       className="relative w-full max-w-7xl rounded-md px-6 py-4 mb-8"
-      style={{ background: '#1e1e1e', border: '1px solid rgba(255,255,255,0.06)' }}
+      style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }}
       aria-busy={isLoading}
     >
       <table
@@ -72,7 +72,7 @@ export default function AdminDataTable<T>({
           'w-full table-fixed border-collapse transition-opacity duration-150',
           isLoading && 'opacity-45',
         )}
-        style={{ background: '#1e1e1e' }}
+        style={{ background: 'var(--color-bg-surface)' }}
         aria-label={caption}
       >
         {caption ? <caption className="sr-only">{caption}</caption> : null}
@@ -88,9 +88,9 @@ export default function AdminDataTable<T>({
                   column.align === 'left' && 'text-left',
                 )}
                 style={{
-                  borderBottom: '1px solid rgba(255,255,255,0.08)',
-                  color: 'rgba(255,255,255,0.7)',
-                  background: 'rgba(255,255,255,0.03)',
+                  borderBottom: '1px solid var(--color-border-medium)',
+                  color: 'var(--color-text-secondary)',
+                  background: 'var(--color-bg-tint)',
                   width: column.width,
                 }}
               >
@@ -106,7 +106,7 @@ export default function AdminDataTable<T>({
               <td
                 colSpan={columns.length}
                 className="px-4 py-10 text-center text-sm"
-                style={{ color: 'rgba(255,255,255,0.38)' }}
+                style={{ color: 'var(--color-text-disabled)' }}
               >
                 {emptyMessage}
               </td>
@@ -131,8 +131,8 @@ export default function AdminDataTable<T>({
                         column.align === 'left' && 'text-left',
                       )}
                       style={{
-                        borderBottom: '1px solid rgba(255,255,255,0.05)',
-                        color: 'rgba(255,255,255,0.75)',
+                        borderBottom: '1px solid var(--color-bg-tint)',
+                        color: 'var(--color-text-high)',
                       }}
                     >
                       <div
@@ -170,13 +170,13 @@ export default function AdminDataTable<T>({
       {isLoading ? (
         <div
           className="absolute inset-0 z-10 flex items-center justify-center rounded-md backdrop-blur-[1px]"
-          style={{ background: 'rgba(0,0,0,0.45)' }}
+          style={{ background: 'var(--color-overlay)' }}
           role="status"
           aria-live="polite"
         >
           <div
             className="flex items-center gap-3 rounded-md px-4 py-3 text-sm font-medium"
-            style={{ background: '#2a2a2a', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.75)' }}
+            style={{ background: 'var(--color-bg-surface-alt)', border: '1px solid var(--color-border-medium)', color: 'var(--color-text-high)' }}
           >
             <span
               className="size-5 rounded-full border-2 border-zinc-200 border-t-btn-focus animate-spin"

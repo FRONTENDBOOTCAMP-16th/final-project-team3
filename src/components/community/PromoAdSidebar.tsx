@@ -34,11 +34,11 @@ export default function PromoAdSidebar() {
       <div
         style={{
           padding: '10px 14px',
-          borderBottom: '1px solid rgba(255,255,255,0.12)',
+          borderBottom: '1px solid var(--color-border-medium)',
           fontSize: '10px',
           fontWeight: 700,
           letterSpacing: '0.1em',
-          color: 'rgba(255,255,255,0.3)',
+          color: 'var(--color-text-disabled)',
           textTransform: 'uppercase',
         }}
       >
@@ -59,7 +59,7 @@ export default function PromoAdSidebar() {
             }}
           >
             <div style={{ fontSize: '32px', opacity: 0.2 }}>📢</div>
-            <p style={{ fontSize: '11px', textAlign: 'center', padding: '0 16px', lineHeight: 1.6, color: 'rgba(255,255,255,0.18)' }}>
+            <p style={{ fontSize: '11px', textAlign: 'center', padding: '0 16px', lineHeight: 1.6, color: 'var(--color-text-disabled)' }}>
               이 곳에 광고를<br />게재해보세요
             </p>
           </div>
@@ -70,7 +70,7 @@ export default function PromoAdSidebar() {
               style={{
                 height: `${ITEM_HEIGHT}px`,
                 flexShrink: 0,
-                borderBottom: idx < PAGE_SIZE - 1 ? '1px solid rgba(255,255,255,0.1)' : 'none',
+                borderBottom: idx < PAGE_SIZE - 1 ? '1px solid var(--color-bg-tint)' : 'none',
                 overflow: 'hidden',
               }}
             >
@@ -87,7 +87,7 @@ export default function PromoAdSidebar() {
                     transition: 'background 0.12s',
                   }}
                   onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)';
+                    (e.currentTarget as HTMLElement).style.background = 'var(--color-bg-tint)';
                   }}
                   onMouseLeave={(e) => {
                     (e.currentTarget as HTMLElement).style.background = 'transparent';
@@ -97,7 +97,7 @@ export default function PromoAdSidebar() {
                     <p
                       style={{
                         fontSize: '10px',
-                        color: 'rgba(255,255,255,0.35)',
+                        color: 'var(--color-text-hint)',
                         marginBottom: '2px',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
@@ -111,7 +111,7 @@ export default function PromoAdSidebar() {
                     style={{
                       fontSize: '12.5px',
                       fontWeight: 600,
-                      color: 'rgba(255,255,255,0.88)',
+                      color: 'var(--color-text-high)',
                       lineHeight: 1.35,
                       display: '-webkit-box',
                       WebkitLineClamp: 2,
@@ -125,7 +125,7 @@ export default function PromoAdSidebar() {
                   <p
                     style={{
                       fontSize: '10.5px',
-                      color: 'rgba(255,255,255,0.28)',
+                      color: 'var(--color-text-disabled)',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
@@ -151,7 +151,7 @@ export default function PromoAdSidebar() {
           alignItems: 'center',
           justifyContent: 'center',
           gap: '5px',
-          borderTop: '1px solid rgba(255,255,255,0.1)',
+          borderTop: '1px solid var(--color-bg-tint)',
         }}
       >
         {hasMultiplePages &&
@@ -177,7 +177,7 @@ export default function PromoAdSidebar() {
                   width: i === page ? '16px' : '6px',
                   height: '6px',
                   borderRadius: '3px',
-                  background: i === page ? '#2563eb' : 'rgba(255,255,255,0.2)',
+                  background: i === page ? '#2563eb' : 'var(--color-text-disabled)',
                   transition: 'all 0.3s',
                 }}
               />

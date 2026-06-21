@@ -56,7 +56,7 @@ export default function PostListBase({
     return (
       <div
         className="flex flex-col items-center justify-center py-20"
-        style={{ color: 'rgba(255,255,255,0.38)' }}
+        style={{ color: 'var(--color-text-disabled)' }}
       >
         <p style={{ fontSize: '15px' }}>{emptyMessage}</p>
       </div>
@@ -77,7 +77,7 @@ export default function PostListBase({
             <div
               className="cursor-pointer transition-colors"
               style={{
-                borderBottom: '1px solid rgba(255,255,255,0.06)',
+                borderBottom: '1px solid var(--color-border)',
                 padding: '18px 0',
               }}
             >
@@ -86,7 +86,7 @@ export default function PostListBase({
                 style={{
                   fontSize: '15.5px',
                   fontWeight: 600,
-                  color: '#fff',
+                  color: 'var(--color-text-primary)',
                   letterSpacing: '-0.01em',
                 }}
               >
@@ -96,22 +96,22 @@ export default function PostListBase({
                 className="flex gap-1.5"
                 style={{
                   fontSize: '11.5px',
-                  color: 'rgba(255,255,255,0.28)',
+                  color: 'var(--color-text-disabled)',
                 }}
               >
                 <span
                   className="font-semibold"
-                  style={{ color: 'rgba(255,255,255,0.45)' }}
+                  style={{ color: 'var(--color-text-hint)' }}
                 >
                   {categoryInfo.label}
                 </span>
-                <span style={{ color: 'rgba(255,255,255,0.16)' }}>·</span>
+                <span style={{ color: 'var(--color-text-disabled)' }}>·</span>
                 <time dateTime={post.created_at}>
                   {formatDate(post.created_at)}
                 </time>
                 {post.comment_count !== undefined && (
                   <>
-                    <span style={{ color: 'rgba(255,255,255,0.16)' }}>·</span>
+                    <span style={{ color: 'var(--color-text-disabled)' }}>·</span>
                     <span>댓글 {post.comment_count}</span>
                   </>
                 )}

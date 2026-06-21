@@ -51,7 +51,7 @@ export default function TopNav() {
     <nav
       className="sticky top-0 z-50 h-16 flex items-center px-8 md:px-12 border-b border-white/[0.06]"
       style={{
-        background: 'rgba(17,17,17,0.96)',
+        background: 'rgba(var(--color-scrim-rgb),0.96)',
         backdropFilter: 'blur(14px)',
       }}
       aria-label="주요 내비게이션"
@@ -65,7 +65,7 @@ export default function TopNav() {
           fontWeight: 800,
           fontSize: '15px',
           letterSpacing: '0.08em',
-          color: '#fff',
+          color: 'var(--color-text-primary)',
           textDecoration: 'none',
         }}
       >
@@ -180,7 +180,7 @@ export default function TopNav() {
               <div
                 className="absolute right-0 top-full mt-2 w-44 rounded-xl overflow-hidden
                            border border-white/10 shadow-2xl"
-                style={{ background: '#1e1e1e' }}
+                style={{ background: 'var(--color-bg-surface)' }}
               >
                 {user.role === 'admin' && (
                   <>
@@ -246,14 +246,14 @@ export default function TopNav() {
         <div
           className="md:hidden fixed inset-0 top-16 z-40"
           style={{
-            background: 'rgba(10,10,10,0.97)',
+            background: 'rgba(var(--color-scrim-rgb),0.97)',
             backdropFilter: 'blur(12px)',
           }}
           role="dialog"
           aria-label="모바일 메뉴"
         >
           <nav
-            className="flex flex-col px-6 pt-8 gap-2 bg-(--bg-color-rg) "
+            className="flex flex-col px-6 pt-8 gap-2"
             aria-label="모바일 내비게이션"
           >
             {NAV_ITEMS.map((item) => {
@@ -295,7 +295,7 @@ export default function TopNav() {
             {!loading && !user && (
               <div
                 className="flex gap-3 mt-4 pt-4"
-                style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
+                style={{ borderTop: '1px solid var(--color-border)' }}
               >
                 <Link
                   href="/login"

@@ -43,7 +43,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="fixed left-0 top-0 flex flex-col border-r w-50 h-screen bg-bg-white border-white/[0.06]"
+      className="fixed left-0 top-0 flex flex-col border-r w-50 h-screen bg-bg-surface border-white/[0.06]"
       style={{ boxShadow: '4px 0 10px rgba(0,0,0,0.08)' }}
       aria-label="사이드바 내비게이션"
     >
@@ -75,7 +75,7 @@ export default function Sidebar() {
               key={item.href}
               asChild
               variant="ghost"
-              className={`w-full h-12 justify-start gap-3 bg-bg-white text-btn-text hover:bg-btn-focus hover:text-btn-focus-text cursor-pointer
+              className={`w-full h-12 justify-start gap-3 bg-bg-surface text-btn-text hover:bg-btn-focus hover:text-btn-focus-text cursor-pointer
                 ${isActive ? 'bg-btn-focus text-btn-focus-text hover:bg-btn-focus hover:text-btn-focus-text' : ''}`}
             >
               <Link
@@ -110,7 +110,7 @@ export default function Sidebar() {
                   key={item.href}
                   asChild
                   variant="ghost"
-                  className={`w-full h-12 justify-start gap-3 cursor-pointer bg-bg-white text-btn-text hover:bg-btn-focus hover:text-btn-focus-text
+                  className={`w-full h-12 justify-start gap-3 cursor-pointer bg-bg-surface text-btn-text hover:bg-btn-focus hover:text-btn-focus-text
                     ${isActive ? 'bg-btn-focus text-btn-focus-text hover:bg-btn-focus hover:text-btn-focus-text' : ''}`}
                 >
                   <Link

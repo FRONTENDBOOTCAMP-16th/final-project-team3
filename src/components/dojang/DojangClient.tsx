@@ -61,6 +61,7 @@ export default function DojangClient() {
     const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const dist = formatDistance(place.distance);
     const kakaoUrl = place.place_url || `https://place.map.kakao.com/${place.id}`;
+    // 이 InfoWindow는 의도적으로 다크 고정 — CSS 변수 불가(JS template literal)
     return `<div style="background:#1e1e1e;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px 16px;min-width:180px;max-width:240px;box-shadow:0 8px 24px rgba(0,0,0,0.45);position:relative;font-family:inherit;">
       <button onclick="if(window.__closeIW)window.__closeIW();" style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:50%;width:20px;height:20px;color:rgba(255,255,255,0.5);cursor:pointer;font-size:11px;line-height:20px;padding:0;">✕</button>
       <div style="font-size:13px;font-weight:700;color:#f0f0f0;margin-bottom:4px;padding-right:24px;">${esc(place.place_name)}</div>
@@ -225,15 +226,15 @@ export default function DojangClient() {
         <div
           className="flex items-center gap-3 shrink-0 px-4 py-3 md:px-8 md:py-4"
           style={{
-            background: '#111',
-            borderBottom: '1px solid rgba(255,255,255,0.06)',
+            background: 'var(--color-bg-page)',
+            borderBottom: '1px solid var(--color-border)',
           }}
         >
           <h1
             style={{
               fontSize: '17px',
               fontWeight: 700,
-              color: '#f0f0f0',
+              color: 'var(--color-text-primary)',
               letterSpacing: '-0.02em',
               whiteSpace: 'nowrap',
             }}
@@ -246,8 +247,8 @@ export default function DojangClient() {
           {/* Search double-bezel */}
           <div
             style={{
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'var(--color-bg-tint)',
+              border: '1px solid var(--color-border-medium)',
               borderRadius: '12px',
               padding: '2px',
             }}
@@ -257,14 +258,14 @@ export default function DojangClient() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                background: '#1e1e1e',
+                background: 'var(--color-bg-surface)',
                 borderRadius: '10px',
                 padding: '8px 12px',
                 boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.04)',
                 width: 'clamp(120px, 35vw, 260px)',
               }}
             >
-              <Search size={13} style={{ color: '#6b7280', flexShrink: 0 }} aria-hidden="true" />
+              <Search size={13} style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }} aria-hidden="true" />
               <input
                 type="search"
                 value={searchQuery}
@@ -294,8 +295,8 @@ export default function DojangClient() {
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              background: isLocating ? 'rgba(37,99,235,0.1)' : 'rgba(255,255,255,0.04)',
-              border: `1px solid ${isLocating ? 'rgba(37,99,235,0.3)' : 'rgba(255,255,255,0.08)'}`,
+              background: isLocating ? 'rgba(37,99,235,0.1)' : 'var(--color-bg-tint)',
+              border: `1px solid ${isLocating ? 'rgba(37,99,235,0.3)' : 'var(--color-border-medium)'}`,
               borderRadius: '999px',
               padding: '7px 16px',
               fontSize: '12px',
@@ -338,7 +339,7 @@ export default function DojangClient() {
                       gap: '5px',
                       background: 'none',
                       border: 'none',
-                      color: 'rgba(255,255,255,0.5)',
+                      color: 'var(--color-text-tertiary)',
                       fontSize: '12px',
                       cursor: 'pointer',
                       fontFamily: 'inherit',
@@ -354,8 +355,8 @@ export default function DojangClient() {
 
                   <div
                     style={{
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.08)',
+                      background: 'var(--color-bg-tint)',
+                      border: '1px solid var(--color-border-medium)',
                       borderRadius: '16px',
                       padding: '2px',
                     }}
@@ -401,7 +402,7 @@ export default function DojangClient() {
 
                       <div
                         style={{
-                          borderTop: '1px solid rgba(255,255,255,0.06)',
+                          borderTop: '1px solid var(--color-border)',
                           paddingTop: '14px',
                           display: 'flex',
                           flexDirection: 'column',
@@ -410,13 +411,13 @@ export default function DojangClient() {
                       >
                         <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
                           <span style={{ fontSize: '13px', flexShrink: 0 }}>📍</span>
-                          <span style={{ fontSize: '11.5px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>
+                          <span style={{ fontSize: '11.5px', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
                             {selectedDojang.address_name}
                           </span>
                         </div>
                         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                           <span style={{ fontSize: '13px', flexShrink: 0 }}>📞</span>
-                          <span style={{ fontSize: '11.5px', color: 'rgba(255,255,255,0.65)' }}>
+                          <span style={{ fontSize: '11.5px', color: 'var(--color-text-secondary)' }}>
                             {selectedDojang.phone || '정보 없음'}
                           </span>
                         </div>
@@ -467,7 +468,7 @@ export default function DojangClient() {
                   <p
                     style={{
                       fontSize: '10.5px',
-                      color: '#9ca3af',
+                      color: 'var(--color-text-tertiary)',
                       marginBottom: '10px',
                       fontWeight: 500,
                     }}
@@ -485,7 +486,7 @@ export default function DojangClient() {
                       style={{
                         width: '28px',
                         height: '28px',
-                        border: '3px solid rgba(255,255,255,0.1)',
+                        border: '3px solid var(--color-border-medium)',
                         borderTopColor: '#2563eb',
                         borderRadius: '50%',
                         animation: 'spin 0.8s linear infinite',
@@ -494,13 +495,13 @@ export default function DojangClient() {
                     />
                   </div>
                 ) : locationDenied && dojangs.length === 0 ? (
-                  <div style={{ padding: '24px 8px', color: '#9ca3af', fontSize: '12px', textAlign: 'center' }}>
+                  <div style={{ padding: '24px 8px', color: 'var(--color-text-tertiary)', fontSize: '12px', textAlign: 'center' }}>
                     <MapPin size={24} style={{ margin: '0 auto 8px', opacity: 0.4 }} />
                     <p>위치 접근이 거부되었습니다</p>
                     <p style={{ marginTop: '4px', fontSize: '11px', opacity: 0.7 }}>검색어를 입력해주세요</p>
                   </div>
                 ) : dojangs.length === 0 && !isLocating ? (
-                  <div style={{ padding: '24px 8px', color: '#9ca3af', fontSize: '12px', textAlign: 'center' }}>
+                  <div style={{ padding: '24px 8px', color: 'var(--color-text-tertiary)', fontSize: '12px', textAlign: 'center' }}>
                     <MapPin size={24} style={{ margin: '0 auto 8px', opacity: 0.4 }} />
                     <p>검색 결과가 없습니다</p>
                   </div>
@@ -528,8 +529,8 @@ export default function DojangClient() {
                             style={{
                               width: '100%',
                               textAlign: 'left',
-                              background: sel ? 'rgba(29,78,216,0.06)' : 'rgba(255,255,255,0.04)',
-                              border: `1px solid ${sel ? 'rgba(29,78,216,0.35)' : 'rgba(255,255,255,0.07)'}`,
+                              background: sel ? 'rgba(29,78,216,0.06)' : 'var(--color-bg-tint)',
+                              border: `1px solid ${sel ? 'rgba(29,78,216,0.35)' : 'var(--color-border)'}`,
                               borderRadius: '14px',
                               padding: '2px',
                               cursor: 'pointer',
@@ -544,7 +545,7 @@ export default function DojangClient() {
                             }}
                             onMouseLeave={(e) => {
                               if (!sel) {
-                                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.07)';
+                                (e.currentTarget as HTMLElement).style.borderColor = 'var(--color-border)';
                                 (e.currentTarget as HTMLElement).style.transform = 'translateX(0)';
                               }
                             }}
@@ -552,17 +553,17 @@ export default function DojangClient() {
                             {/* inner core */}
                             <div
                               style={{
-                                background: '#1e1e1e',
+                                background: 'var(--color-bg-surface)',
                                 borderRadius: '12px',
                                 padding: '12px 14px',
-                                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
+                                boxShadow: 'inset 0 1px 0 var(--color-highlight-shadow)',
                               }}
                             >
                               <div
                                 style={{
                                   fontSize: '13px',
                                   fontWeight: 700,
-                                  color: '#f0f0f0',
+                                  color: 'var(--color-text-primary)',
                                   marginBottom: '3px',
                                 }}
                               >
@@ -571,7 +572,7 @@ export default function DojangClient() {
                               <div
                                 style={{
                                   fontSize: '10.5px',
-                                  color: '#9ca3af',
+                                  color: 'var(--color-text-tertiary)',
                                   marginBottom: '7px',
                                 }}
                               >
@@ -589,9 +590,9 @@ export default function DojangClient() {
                                     <span
                                       key={tag}
                                       style={{
-                                        background: 'rgba(255,255,255,0.05)',
-                                        border: '1px solid rgba(255,255,255,0.08)',
-                                        color: '#9ca3af',
+                                        background: 'var(--color-bg-tint)',
+                                        border: '1px solid var(--color-border-medium)',
+                                        color: 'var(--color-text-tertiary)',
                                         fontSize: '9.5px',
                                         fontWeight: 500,
                                         padding: '2px 7px',
@@ -647,7 +648,7 @@ export default function DojangClient() {
                   style={{
                     width: '36px',
                     height: '36px',
-                    border: '3px solid rgba(255,255,255,0.1)',
+                    border: '3px solid var(--color-border-medium)',
                     borderTopColor: '#2563eb',
                     borderRadius: '50%',
                     animation: 'spin 0.8s linear infinite',

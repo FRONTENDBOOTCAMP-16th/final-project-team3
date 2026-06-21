@@ -84,7 +84,7 @@ export default function AdminTablePagination({
           <label className="flex items-center gap-2 text-sm text-text-secondary">
             페이지당
             <select
-              className="h-9 cursor-pointer rounded-md border border-zinc-200 bg-bg-white px-3 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-btn-focus"
+              className="h-9 cursor-pointer rounded-md border border-zinc-200 bg-bg-surface px-3 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-btn-focus"
               value={pageSize}
               disabled={disabled}
               onChange={(event) => onPageSizeChange(Number(event.target.value))}
@@ -110,7 +110,7 @@ export default function AdminTablePagination({
             aria-disabled={isPreviousDisabled}
             className={cn(
               navigationButtonClass,
-              'cursor-pointer border-zinc-200 bg-bg-white text-btn-text hover:bg-btn-basic',
+              'cursor-pointer border-zinc-200 bg-bg-surface text-btn-text hover:bg-btn-basic',
             )}
             onClick={() => {
               if (isPreviousDisabled) {
@@ -149,7 +149,7 @@ export default function AdminTablePagination({
                     'cursor-pointer',
                     isActive
                       ? 'border-btn-focus bg-btn-focus text-btn-focus-text'
-                      : 'border-zinc-200 bg-bg-white text-btn-text hover:bg-btn-basic',
+                      : 'border-zinc-200 bg-bg-surface text-btn-text hover:bg-btn-basic',
                   )}
                   onClick={() => {
                     if (disabled) {
@@ -171,7 +171,7 @@ export default function AdminTablePagination({
             aria-disabled={isNextDisabled}
             className={cn(
               navigationButtonClass,
-              'cursor-pointer border-zinc-200 bg-bg-white text-btn-text hover:bg-btn-basic',
+              'cursor-pointer border-zinc-200 bg-bg-surface text-btn-text hover:bg-btn-basic',
             )}
             onClick={() => {
               if (isNextDisabled) {

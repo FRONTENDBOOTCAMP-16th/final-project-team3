@@ -16,7 +16,7 @@ export default function ProfileCard({
   const beltLevel = normalizeBeltLevel(profile.belt_level);
 
   return (
-    <div className="flex flex-col items-center gap-4 p-6 bg-bg-white rounded-2xl shadow-sm">
+    <div className="flex flex-col items-center gap-4 p-6 bg-bg-surface rounded-2xl shadow-sm">
       <div className="relative w-36 h-36">
         <Image
           src={profile.avatar_url ?? '/basic.svg'}

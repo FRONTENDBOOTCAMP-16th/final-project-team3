@@ -77,7 +77,7 @@ function MiniCalendar({ eventDates, selectedDate, onDateSelect }: MiniCalendarPr
     /* outer shell */
     <div
       style={{
-        background: 'rgba(255,255,255,0.05)',
+        background: 'var(--color-bg-tint)',
         border: '1px solid rgba(255,255,255,0.07)',
         borderRadius: '20px',
         padding: '2px',
@@ -89,12 +89,12 @@ function MiniCalendar({ eventDates, selectedDate, onDateSelect }: MiniCalendarPr
           background: '#1e1e1e',
           borderRadius: '18px',
           padding: '18px',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
+          boxShadow: 'inset 0 1px 0 var(--color-bg-tint)',
         }}
       >
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-          <span style={{ fontSize: '13px', fontWeight: 700, color: '#f0f0f0', letterSpacing: '-0.01em' }}>
+          <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)', letterSpacing: '-0.01em' }}>
             {viewYear} {MONTH_KR[viewMonth]}
           </span>
           <div style={{ display: 'flex', gap: '4px' }}>
@@ -108,7 +108,7 @@ function MiniCalendar({ eventDates, selectedDate, onDateSelect }: MiniCalendarPr
                 onClick={action}
                 style={{
                   width: '24px', height: '24px',
-                  background: 'rgba(255,255,255,0.05)',
+                  background: 'var(--color-bg-tint)',
                   border: '1px solid rgba(255,255,255,0.07)',
                   borderRadius: '7px',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -125,7 +125,7 @@ function MiniCalendar({ eventDates, selectedDate, onDateSelect }: MiniCalendarPr
         {/* Weekday labels */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: '2px', marginBottom: '4px' }}>
           {WEEKDAYS.map((w) => (
-            <div key={w} style={{ fontSize: '9px', fontWeight: 600, color: '#b0b8c4', textAlign: 'center', padding: '3px 0' }}>
+            <div key={w} style={{ fontSize: '9px', fontWeight: 600, color: 'var(--color-text-tertiary)', textAlign: 'center', padding: '3px 0' }}>
               {w}
             </div>
           ))}
@@ -246,7 +246,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
   });
 
   return (
-    <div style={{ background: '#111', minHeight: '100vh' }}>
+    <div style={{ background: 'var(--color-bg-page)', minHeight: '100vh' }}>
       {/* ── Hero ── */}
       <div
         style={{
@@ -269,7 +269,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
         <div
           style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(to top, rgba(17,17,17,0.95) 0%, rgba(17,17,17,0.4) 60%, rgba(17,17,17,0.2) 100%)',
+            background: 'linear-gradient(to top, rgba(var(--color-scrim-rgb),0.95) 0%, rgba(var(--color-scrim-rgb),0.4) 60%, rgba(var(--color-scrim-rgb),0.2) 100%)',
           }}
         />
         {/* Watermark */}
@@ -289,7 +289,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
           <p
             style={{
               fontSize: '10.5px', fontWeight: 600, letterSpacing: '0.18em',
-              textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginBottom: '14px',
+              textTransform: 'uppercase', color: 'var(--color-text-secondary)', marginBottom: '14px',
             }}
           >
             COMPETITION
@@ -310,15 +310,15 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
       <div
         className="sticky top-16 z-40 shrink-0"
         style={{
-          background: '#111',
-          borderTop: '1px solid rgba(255,255,255,0.06)',
+          background: 'var(--color-bg-page)',
+          borderTop: '1px solid var(--color-border)',
         }}
       >
         {/* Row 1: 탭 */}
         <div
           role="tablist"
           className="flex items-center overflow-x-auto no-scrollbar px-4 lg:px-12"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+          style={{ borderBottom: '1px solid var(--color-border)' }}
         >
           {TABS.map((tab) => (
             <button
@@ -333,7 +333,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
                 marginBottom: '-1px',
                 fontSize: '13.5px',
                 fontWeight: activeTab === tab ? 600 : 500,
-                color: activeTab === tab ? '#fff' : 'rgba(255,255,255,0.6)',
+                color: activeTab === tab ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
                 background: 'none',
                 border: 'none',
                 borderBottomStyle: 'solid',
@@ -353,12 +353,12 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
         {/* Row 2: 검색 + 일정추가 */}
         <div
           className="flex items-center gap-2 px-4 lg:px-12 py-2"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+          style={{ borderBottom: '1px solid var(--color-border)' }}
         >
           <div
             className="flex items-center gap-2 flex-1 h-9"
             style={{
-              background: 'rgba(255,255,255,0.05)',
+              background: 'var(--color-bg-tint)',
               border: '1px solid rgba(255,255,255,0.1)',
               borderRadius: '5px',
               padding: '0 12px',
@@ -426,7 +426,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
               style={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center',
                 justifyContent: 'center', padding: '80px 0',
-                color: 'rgba(255,255,255,0.6)', fontSize: '15px',
+                color: 'var(--color-text-secondary)', fontSize: '15px',
               }}
               aria-live="polite"
             >
@@ -476,7 +476,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
                   background: '#1e1e1e',
                   borderRadius: '14px',
                   padding: '14px',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
+                  boxShadow: 'inset 0 1px 0 var(--color-bg-tint)',
                 }}
               >
                 <p
@@ -497,7 +497,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
                     )
                   : filteredCompetitions
                 ).slice(0, 4).length === 0 ? (
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', textAlign: 'center', padding: '8px 0' }}>
+                  <p style={{ fontSize: '11px', color: 'var(--color-text-secondary)', textAlign: 'center', padding: '8px 0' }}>
                     해당 날짜의 대회가 없습니다
                   </p>
                 ) : (selectedDate
@@ -512,7 +512,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
                     style={{
                       display: 'flex', alignItems: 'center', gap: '10px',
                       padding: '7px 0',
-                      borderBottom: '1px solid rgba(255,255,255,0.05)',
+                      borderBottom: '1px solid var(--color-bg-tint)',
                     }}
                   >
                     <div
@@ -529,20 +529,20 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
                       <span style={{ fontSize: '8px', fontWeight: 700, color: '#60a5fa', lineHeight: 1 }}>
                         {c.event_data?.slice(5, 7) ?? '--'}월
                       </span>
-                      <span style={{ fontSize: '14px', fontWeight: 800, color: '#fff', lineHeight: 1 }}>
+                      <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--color-text-primary)', lineHeight: 1 }}>
                         {c.event_data?.slice(8, 10) ?? '--'}
                       </span>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p
                         style={{
-                          fontSize: '11.5px', fontWeight: 600, color: '#f0f0f0',
+                          fontSize: '11.5px', fontWeight: 600, color: 'var(--color-text-primary)',
                           whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                         }}
                       >
                         {c.name}
                       </p>
-                      <p style={{ fontSize: '10px', color: '#b0b8c4' }}>{c.location}</p>
+                      <p style={{ fontSize: '10px', color: 'var(--color-text-tertiary)' }}>{c.location}</p>
                     </div>
                   </div>
                 ))}
