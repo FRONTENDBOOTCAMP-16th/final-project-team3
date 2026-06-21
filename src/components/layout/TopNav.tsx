@@ -253,15 +253,23 @@ export default function TopNav() {
     {/* 모바일 드로어 — nav 바깥에 위치: nav의 backdropFilter가 fixed 자식의 containing block을 바꾸는 문제 방지 */}
     {menuOpen && (
       <div
-        className="md:hidden fixed inset-0 top-16 z-40"
-        style={{ background: 'var(--color-bg-page)' }}
+        className="md:hidden fixed top-16 inset-x-0 z-40"
+        style={{ background: 'var(--color-bg-page)', borderBottom: '1px solid var(--color-border)' }}
         role="dialog"
         aria-label="모바일 메뉴"
       >
           <nav
-            className="flex flex-col px-6 pt-8 gap-2"
+            className="flex flex-col px-6 pt-6 pb-6 gap-2"
             aria-label="모바일 내비게이션"
           >
+            <Link
+              href="/dashboard"
+              onClick={() => setMenuOpen(false)}
+              className={`px-5 py-4 rounded-xl text-base font-semibold transition-colors duration-200
+                ${pathname === '/dashboard' ? 'text-white bg-white/10 light:text-[#0f1117] light:bg-black/[0.06]' : 'text-white/60 hover:text-white hover:bg-white/[0.06] light:text-[#6b7280] light:hover:text-[#0f1117] light:hover:bg-black/[0.06]'}`}
+            >
+              대시보드
+            </Link>
             {NAV_ITEMS.map((item) => {
               const isActive = pathname?.startsWith(item.href);
               return (
@@ -280,14 +288,6 @@ export default function TopNav() {
                 </Link>
               );
             })}
-            <Link
-              href="/dashboard"
-              onClick={() => setMenuOpen(false)}
-              className={`px-5 py-4 rounded-xl text-base font-semibold transition-colors duration-200
-                ${pathname === '/dashboard' ? 'text-white bg-white/10 light:text-[#0f1117] light:bg-black/[0.06]' : 'text-white/60 hover:text-white hover:bg-white/[0.06] light:text-[#6b7280] light:hover:text-[#0f1117] light:hover:bg-black/[0.06]'}`}
-            >
-              대시보드
-            </Link>
             {!loading && user && user.role === 'admin' && (
               <Link
                 href="/admin"
