@@ -477,11 +477,6 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
               </div>
             </div>
 
-            {/* Divider */}
-            <div style={{ borderTop: '1px solid var(--color-border-medium)' }} />
-
-            {/* Promo */}
-            <PromoAdSidebar />
           </div>
 
           {/* Backdrop */}

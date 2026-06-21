@@ -548,11 +548,6 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
               </div>
             </div>
 
-            {/* Divider */}
-            <div style={{ borderTop: '1px solid var(--color-border-medium)' }} />
-
-            {/* Promo */}
-            <PromoAdSidebar />
           </div>
 
           {/* Backdrop */}
