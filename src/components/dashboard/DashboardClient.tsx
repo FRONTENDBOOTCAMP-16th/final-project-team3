@@ -107,10 +107,10 @@ export default function DashboardClient({ profile, stats, competitions, notices 
         </div>
 
         {/* ── Row 1: Notice + Competitions ── */}
-        <div className="flex gap-5 items-start mb-5">
+        <div className="grid grid-cols-1 lg:grid-cols-[65%_1fr] gap-5 mb-5">
 
           {/* Notice card (~65%) */}
-          <div style={{ flex: '0 0 65%', minWidth: 0, ...cardStyle }}>
+          <div style={{ minWidth: 0, ...cardStyle }}>
             {/* Header */}
             <div style={cardHeaderStyle}>
               <div className="flex items-center gap-2">
@@ -199,7 +199,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
           </div>
 
           {/* Competitions card (~35%) */}
-          <div style={{ flex: '0 0 calc(35% - 10px)', minWidth: 0, ...cardStyle }}>
+          <div style={{ minWidth: 0, ...cardStyle }}>
             <div style={cardHeaderStyle}>
               <div className="flex items-center gap-2">
                 <Trophy size={14} style={{ color: '#f59e0b' }} />
@@ -265,7 +265,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
         </div>
 
         {/* ── Row 2: 도장찾기 | 스포츠커뮤니티 | 마이페이지 (equal 1/3 each) ── */}
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 
           {/* 도장찾기 */}
           <div style={cardStyle}>
