@@ -253,8 +253,7 @@ export default function TopNav() {
         <div
           className="md:hidden fixed inset-0 top-16 z-40"
           style={{
-            background: 'var(--color-nav-bg)',
-            backdropFilter: 'blur(12px)',
+            background: 'var(--color-bg-page)',
           }}
           role="dialog"
           aria-label="모바일 메뉴"
