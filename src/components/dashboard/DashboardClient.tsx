@@ -52,7 +52,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
   };
 
   const cardStyle: React.CSSProperties = {
-    background: 'var(--color-bg-tint)',
+    background: 'var(--color-bg-surface)',
     border: '1px solid var(--color-border-medium)',
     borderRadius: '14px',
     overflow: 'hidden',

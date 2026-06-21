@@ -219,7 +219,7 @@ export default function DojangClient() {
           height: 'calc(100vh - 64px)',
           display: 'flex',
           flexDirection: 'column',
-          background: '#111',
+          background: 'var(--color-bg-page)',
         }}
       >
         {/* ── Header bar ── */}
@@ -363,17 +363,17 @@ export default function DojangClient() {
                   >
                     <div
                       style={{
-                        background: '#262626',
+                        background: 'var(--color-bg-surface)',
                         borderRadius: '14px',
                         padding: '18px 16px',
-                        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
+                        boxShadow: 'inset 0 1px 0 var(--color-highlight-shadow)',
                       }}
                     >
                       <h2
                         style={{
                           fontSize: '16px',
                           fontWeight: 700,
-                          color: '#f0f0f0',
+                          color: 'var(--color-text-primary)',
                           marginBottom: '8px',
                           letterSpacing: '-0.02em',
                         }}
@@ -635,7 +635,7 @@ export default function DojangClient() {
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  background: '#1a2030',
+                  background: 'var(--color-bg-surface)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',

@@ -49,9 +49,9 @@ export default function TopNav() {
 
   return (
     <nav
-      className="sticky top-0 z-50 h-16 flex items-center px-8 md:px-12 border-b border-white/[0.06]"
+      className="sticky top-0 z-50 h-16 flex items-center px-8 md:px-12 border-b border-white/[0.06] light:border-black/[0.08]"
       style={{
-        background: 'rgba(var(--color-scrim-rgb),0.96)',
+        background: 'var(--color-nav-bg)',
         backdropFilter: 'blur(14px)',
       }}
       aria-label="주요 내비게이션"
@@ -81,8 +81,8 @@ export default function TopNav() {
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200
             ${
               pathname === '/dashboard'
-                ? 'text-white bg-white/10'
-                : 'text-[#a1a1aa] hover:text-white hover:bg-white/[0.06]'
+                ? 'text-white bg-white/10 light:text-[#0f1117] light:bg-black/[0.06]'
+                : 'text-[#a1a1aa] hover:text-white hover:bg-white/[0.06] light:text-[#6b7280] light:hover:text-[#0f1117] light:hover:bg-black/[0.06]'
             }`}
         >
           대시보드
@@ -98,8 +98,8 @@ export default function TopNav() {
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200
                 ${
                   isActive
-                    ? 'text-white bg-white/10'
-                    : 'text-[#a1a1aa] hover:text-white hover:bg-white/[0.06]'
+                    ? 'text-white bg-white/10 light:text-[#0f1117] light:bg-black/[0.06]'
+                    : 'text-[#a1a1aa] hover:text-white hover:bg-white/[0.06] light:text-[#6b7280] light:hover:text-[#0f1117] light:hover:bg-black/[0.06]'
                 }`}
             >
               {item.label}
@@ -116,7 +116,9 @@ export default function TopNav() {
         type="button"
         className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg
                    text-white bg-white/[0.1] border border-white/[0.18]
-                   hover:bg-white/[0.18] hover:border-white/[0.3] transition-colors mr-1"
+                   hover:bg-white/[0.18] hover:border-white/[0.3] transition-colors mr-1
+                   light:text-[#374151] light:bg-black/[0.06] light:border-black/[0.12]
+                   light:hover:bg-black/[0.1] light:hover:border-black/[0.2]"
         onClick={() => setMenuOpen((v) => !v)}
         aria-label={menuOpen ? '메뉴 닫기' : '메뉴 열기'}
         aria-expanded={menuOpen}
@@ -134,14 +136,15 @@ export default function TopNav() {
               theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'
             }
             className="w-9 h-9 flex items-center justify-center rounded-lg
-                       text-white/60 hover:text-white hover:bg-white/[0.06] transition-colors"
+                       text-white/60 hover:text-white hover:bg-white/[0.06] transition-colors
+                       light:text-[#6b7280] light:hover:text-[#0f1117] light:hover:bg-black/[0.06]"
           >
             {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
           </button>
         )}
         {loading ? (
           <div
-            className="w-9 h-9 rounded-full bg-white/10 animate-pulse"
+            className="w-9 h-9 rounded-full bg-white/10 light:bg-black/[0.1] animate-pulse"
             aria-hidden="true"
           />
         ) : user ? (
@@ -151,12 +154,13 @@ export default function TopNav() {
               onClick={() => setDropdownOpen((v) => !v)}
               className="flex items-center gap-2.5 px-3 py-1.5 rounded-full border border-white/10
                          bg-white/[0.05] hover:bg-white/[0.09] hover:border-white/20
-                         transition-all duration-200 cursor-pointer"
+                         transition-all duration-200 cursor-pointer
+                         light:border-black/[0.1] light:bg-black/[0.04] light:hover:bg-black/[0.08] light:hover:border-black/[0.15]"
               aria-expanded={dropdownOpen}
               aria-haspopup="true"
               aria-label="계정 메뉴 열기"
             >
-              <div className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center overflow-hidden shrink-0">
+              <div className="w-7 h-7 rounded-full bg-white/15 light:bg-black/[0.08] flex items-center justify-center overflow-hidden shrink-0">
                 {user.image ? (
                   <Image
                     src={user.image}
@@ -166,12 +170,12 @@ export default function TopNav() {
                     className="object-cover"
                   />
                 ) : (
-                  <span className="text-xs font-semibold text-white select-none">
+                  <span className="text-xs font-semibold text-white light:text-[#0f1117] select-none">
                     {user.name?.[0] ?? '?'}
                   </span>
                 )}
               </div>
-              <span className="text-sm font-medium text-white max-w-[96px] truncate hidden sm:block">
+              <span className="text-sm font-medium text-white light:text-[#0f1117] max-w-[96px] truncate hidden sm:block">
                 {user.name ?? '사용자'}
               </span>
             </button>
@@ -179,7 +183,7 @@ export default function TopNav() {
             {dropdownOpen && (
               <div
                 className="absolute right-0 top-full mt-2 w-44 rounded-xl overflow-hidden
-                           border border-white/10 shadow-2xl"
+                           border border-white/10 light:border-black/[0.1] shadow-2xl"
                 style={{ background: 'var(--color-bg-surface)' }}
               >
                 {user.role === 'admin' && (
@@ -188,11 +192,12 @@ export default function TopNav() {
                       href="/admin"
                       onClick={() => setDropdownOpen(false)}
                       className="flex items-center gap-3 px-4 py-3 text-sm text-[#d1d5db]
-                                 hover:bg-white/[0.06] hover:text-white transition-colors"
+                                 hover:bg-white/[0.06] hover:text-white transition-colors
+                                 light:text-[#374151] light:hover:bg-black/[0.05] light:hover:text-[#0f1117]"
                     >
                       관리자 대시보드
                     </Link>
-                    <div className="h-px bg-white/[0.06]" />
+                    <div className="h-px bg-white/[0.06] light:bg-black/[0.08]" />
                   </>
                 )}
                 <Link
@@ -204,7 +209,7 @@ export default function TopNav() {
                   <UserCircle size={15} aria-hidden="true" />
                   마이페이지
                 </Link>
-                <div className="h-px bg-white/[0.06]" />
+                <div className="h-px bg-white/[0.06] light:bg-black/[0.08]" />
                 <button
                   type="button"
                   onClick={() => {
@@ -212,7 +217,8 @@ export default function TopNav() {
                     setDropdownOpen(false);
                   }}
                   className="w-full flex items-center gap-3 px-4 py-3 text-sm text-[#d1d5db]
-                             hover:bg-white/[0.06] hover:text-white transition-colors cursor-pointer"
+                             hover:bg-white/[0.06] hover:text-white transition-colors cursor-pointer
+                             light:text-[#374151] light:hover:bg-black/[0.05] light:hover:text-[#0f1117]"
                 >
                   <LogOut size={15} aria-hidden="true" />
                   로그아웃
@@ -225,7 +231,8 @@ export default function TopNav() {
             <Link
               href="/login"
               className="px-4 py-2 rounded-lg text-sm font-medium text-[#a1a1aa]
-                         hover:text-white hover:bg-white/[0.06] transition-colors duration-200"
+                         hover:text-white hover:bg-white/[0.06] transition-colors duration-200
+                         light:text-[#6b7280] light:hover:text-[#0f1117] light:hover:bg-black/[0.06]"
             >
               로그인
             </Link>
@@ -246,7 +253,7 @@ export default function TopNav() {
         <div
           className="md:hidden fixed inset-0 top-16 z-40"
           style={{
-            background: 'rgba(var(--color-scrim-rgb),0.97)',
+            background: 'var(--color-nav-bg)',
             backdropFilter: 'blur(12px)',
           }}
           role="dialog"
@@ -266,8 +273,8 @@ export default function TopNav() {
                   className={`px-5 py-4 rounded-xl text-base font-semibold transition-colors duration-200
                     ${
                       isActive
-                        ? 'text-white bg-white/10'
-                        : 'text-white/60 hover:text-white hover:bg-white/[0.06]'
+                        ? 'text-white bg-white/10 light:text-[#0f1117] light:bg-black/[0.06]'
+                        : 'text-white/60 hover:text-white hover:bg-white/[0.06] light:text-[#6b7280] light:hover:text-[#0f1117] light:hover:bg-black/[0.06]'
                     }`}
                 >
                   {item.label}
@@ -278,7 +285,7 @@ export default function TopNav() {
               href="/dashboard"
               onClick={() => setMenuOpen(false)}
               className={`px-5 py-4 rounded-xl text-base font-semibold transition-colors duration-200
-                ${pathname === '/dashboard' ? 'text-white bg-white/10' : 'text-white/60 hover:text-white hover:bg-white/[0.06]'}`}
+                ${pathname === '/dashboard' ? 'text-white bg-white/10 light:text-[#0f1117] light:bg-black/[0.06]' : 'text-white/60 hover:text-white hover:bg-white/[0.06] light:text-[#6b7280] light:hover:text-[#0f1117] light:hover:bg-black/[0.06]'}`}
             >
               대시보드
             </Link>
@@ -287,7 +294,8 @@ export default function TopNav() {
                 href="/admin"
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-3 px-5 py-4 rounded-xl text-base font-semibold
-                           text-white/60 hover:text-white hover:bg-black transition-colors"
+                           text-white/60 hover:text-white hover:bg-black transition-colors
+                           light:text-[#6b7280] light:hover:text-[#0f1117] light:hover:bg-black/[0.06]"
               >
                 관리자 대시보드
               </Link>
@@ -300,7 +308,7 @@ export default function TopNav() {
                 <Link
                   href="/login"
                   onClick={() => setMenuOpen(false)}
-                  className="flex-1 py-3 text-center rounded-xl text-sm font-medium text-white/70 hover:text-white bg-white/[0.06] hover:bg-white/[0.1] transition-colors"
+                  className="flex-1 py-3 text-center rounded-xl text-sm font-medium text-white/70 hover:text-white bg-white/[0.06] hover:bg-white/[0.1] transition-colors light:text-[#6b7280] light:hover:text-[#0f1117] light:bg-black/[0.06] light:hover:bg-black/[0.1]"
                 >
                   로그인
                 </Link>
