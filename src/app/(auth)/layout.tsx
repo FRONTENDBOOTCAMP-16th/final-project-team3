@@ -1,13 +1,6 @@
+import Image from 'next/image';
 import Link from 'next/link';
-
-const BG_IMAGES = [
-  { src: '/images/activio-1.gif',  cls: 'home-bg-1' },
-  { src: '/images/activio-2.jpg',  cls: 'home-bg-2' },
-  { src: '/images/activio-3.webp', cls: 'home-bg-3' },
-  { src: '/images/activio-4.jpg',  cls: 'home-bg-4' },
-  { src: '/images/activio-5.jpeg', cls: 'home-bg-5' },
-  { src: '/images/activio-6.jpg',  cls: 'home-bg-6' },
-] as const;
+import { BG_IMAGES } from '@/constants/bgImages';
 
 export default function AuthLayout({
   children,
@@ -17,36 +10,34 @@ export default function AuthLayout({
   return (
     <div
       className="relative min-h-screen flex flex-col items-center justify-center px-10 py-8"
-      style={{ background: '#111', overflow: 'hidden' }}
+      style={{ background: 'var(--color-bg-page)', overflow: 'hidden' }}
     >
       {/* Slideshow backgrounds — fixed to viewport so size stays constant regardless of content height */}
-      {BG_IMAGES.map(({ src, cls }) => (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+      {BG_IMAGES.map(({ src, cls }, idx) => (
+        <div
           key={src}
-          src={src}
-          alt=""
-          aria-hidden="true"
           className={cls}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
-        />
+          style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }}
+        >
+          <Image
+            fill
+            src={src}
+            alt=""
+            aria-hidden="true"
+            style={{ objectFit: 'cover' }}
+            priority={idx === 0}
+            sizes="100vw"
+          />
+        </div>
       ))}
 
-      {/* Dark overlay */}
+      {/* Scrim overlay */}
       <div
         aria-hidden="true"
         style={{
           position: 'fixed',
           inset: 0,
-          background: 'linear-gradient(to bottom, rgba(17,17,17,0.82) 0%, rgba(17,17,17,0.72) 40%, rgba(17,17,17,0.92) 100%)',
+          background: 'linear-gradient(to bottom, rgba(var(--color-scrim-rgb),0.82) 0%, rgba(var(--color-scrim-rgb),0.72) 40%, rgba(var(--color-scrim-rgb),0.92) 100%)',
           pointerEvents: 'none',
           zIndex: 1,
         }}
@@ -64,7 +55,7 @@ export default function AuthLayout({
                 fontSize: '52px',
                 fontWeight: 900,
                 letterSpacing: '0.1em',
-                background: 'linear-gradient(135deg, #ffffff 0%, #c8c8c8 60%, #888 100%)',
+                background: 'linear-gradient(135deg, var(--color-brand-grad-start) 0%, var(--color-brand-grad-mid) 60%, var(--color-brand-grad-end) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif",

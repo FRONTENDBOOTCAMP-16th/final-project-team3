@@ -1,4 +1,6 @@
-export type Role = 'user' | 'manager' | 'dojang' | 'admin';
+import type { AppRole } from './role';
+
+export type { AppRole };
 
 export type BeltLevel = 'White' | 'Blue' | 'Purple' | 'Brown' | 'Black';
 
@@ -8,7 +10,7 @@ export interface Profile {
   avatar_url?: string;
   bio?: string;
   belt_level: string | null;
-  role: Role;
+  role: AppRole;
   phone_value?: string;
   email_value?: string;
   created_at: string;
@@ -19,9 +21,4 @@ export interface Profile {
   address?: string;
   business_file_url?: string;
 }
-export interface ProfileUpdateForm {
-  nickname: string;
-  bio: string;
-  avatar_url: string | null;
-  belt_level: string | null;
-}
+

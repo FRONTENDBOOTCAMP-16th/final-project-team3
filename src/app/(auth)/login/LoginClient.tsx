@@ -77,7 +77,7 @@ export default function LoginClient() {
         스포츠인 올인원 커뮤니티에 오신 것을 환영합니다
       </p>
 
-      <div className="max-w-150 w-full bg-bg-white rounded-[32px] p-8 border border-white/[0.07] shadow-2xl">
+      <div className="max-w-150 w-full bg-bg-surface rounded-[32px] p-8 border border-white/[0.07] shadow-2xl">
         <h1 className="text-2xl font-bold text-center text-text-primary mb-8">
           로그인
         </h1>

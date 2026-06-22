@@ -20,7 +20,7 @@ export default function TabButton({
       className={`px-4 py-2.5 rounded-lg text-sm font-bold transition-all shadow-sm border cursor-pointer ${
         isActive
           ? 'bg-btn-focus text-btn-focus-text border-btn-focus'
-          : 'bg-bg-white text-text-secondary border-gray-100 hover:text-text-primary'
+          : 'bg-bg-surface text-text-secondary border-gray-100 hover:text-text-primary'
       }`}
     >
       {label}

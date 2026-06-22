@@ -2,20 +2,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  createCompetition,
-  uploadCompetitionImage,
-} from '@/services/competitionService';
+import { createCompetition, uploadCompetitionImage } from '@/services/competitionService';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
-import PostFormActions from '@/components/community/PostFormActions';
 import { useQueryClient } from '@tanstack/react-query';
-import CompetitionForm, {
-  CompetitionFormValues,
-} from '@/components/competition/CompetitionForm';
+import type { CompetitionFormValues } from '@/components/competition/CompetitionForm';
 import CompetitionDetailCard from '@/components/competition/CompetitionDetailCard';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
-import ConfirmModal from '@/components/common/ConfirmModal';
 import { revalidateCompetitions } from '@/actions/competition/competitions';
+import CompetitionFormBase from '@/components/competition/CompetitionFormBase';
 
 const defaultValues: CompetitionFormValues = {
   name: '',
@@ -90,91 +84,45 @@ export default function CompetitionWriteClient({ userId }: { userId: string }) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <div className="relative w-full flex items-center justify-center mb-6">
-        <h1 className="text-lg font-semibold">대회 추가</h1>
-      </div>
-
-      <div
-        className="flex rounded-xl p-1 mb-6"
-        style={{ background: 'rgba(255,255,255,0.05)' }}
-      >
-        <button
-          type="button"
-          onClick={() => setTab('write')}
-          className="flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
-          style={
-            tab === 'write'
-              ? { background: '#2563eb', color: '#fff', boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }
-              : { color: 'rgba(255,255,255,0.4)' }
-          }
-        >
-          작성
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab('preview')}
-          className="flex-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
-          style={
-            tab === 'preview'
-              ? { background: '#2563eb', color: '#fff', boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }
-              : { color: 'rgba(255,255,255,0.4)' }
-          }
-        >
-          미리보기
-        </button>
-      </div>
-
-      {tab === 'write' && (
-        <CompetitionForm values={values} onChange={setValues} />
-      )}
-
-      {tab === 'preview' &&
-        (!values.name && !values.description ? (
-          <div className="flex flex-col items-center justify-center py-16 mb-6" style={{ color: 'rgba(255,255,255,0.38)' }}>
-            <p className="text-sm">작성 탭에서 내용을 입력하면</p>
-            <p className="text-sm">여기서 미리볼 수 있어요.</p>
-          </div>
-        ) : (
-          <div className="mb-6">
-            <CompetitionDetailCard
-              data={{
-                name: values.name,
-                image_url: values.preview,
-                description: values.description,
-                event_data: values.eventDate,
-                location: values.location,
-                apply_deadline: values.applyDeadline,
-              }}
-            />
-          </div>
-        ))}
-
-      <PostFormActions
-        onCancel={() => {
-          if (isDirty) {
-            setCancelModalOpen(true);
-          } else {
-            showErrorToast('작성된 내용이 없습니다.');
-            router.push('/competitions');
-          }
-        }}
-        onSubmit={handleSubmit}
-        submitLabel="추가하기"
-        isLoading={isLoading}
-      />
-
-      <ConfirmModal
-        isOpen={cancelModalOpen}
-        onClose={() => setCancelModalOpen(false)}
-        onConfirm={() => {
-          setValues(defaultValues);
-          setTab('write');
+    <CompetitionFormBase
+      pageTitle="대회 추가"
+      values={values}
+      onChange={setValues}
+      tab={tab}
+      onTabChange={setTab}
+      showEmptyPreview={!values.name && !values.description}
+      previewContent={
+        <CompetitionDetailCard
+          data={{
+            name: values.name,
+            image_url: values.preview,
+            description: values.description,
+            event_data: values.eventDate,
+            location: values.location,
+            apply_deadline: values.applyDeadline,
+          }}
+        />
+      }
+      onCancel={() => {
+        if (isDirty) {
+          setCancelModalOpen(true);
+        } else {
+          showErrorToast('작성된 내용이 없습니다.');
           router.push('/competitions');
-        }}
-        title="작성 취소"
-        description="작성 중인 내용이 있습니다. 정말 나가시겠습니까?"
-      />
-    </div>
+        }
+      }}
+      onSubmit={handleSubmit}
+      submitLabel="추가하기"
+      isLoading={isLoading}
+      cancelModalOpen={cancelModalOpen}
+      onCancelModalClose={() => setCancelModalOpen(false)}
+      onCancelConfirm={() => {
+        setValues(defaultValues);
+        setTab('write');
+        router.push('/competitions');
+      }}
+      cancelModalTitle="작성 취소"
+      cancelModalDescription="작성 중인 내용이 있습니다. 정말 나가시겠습니까?"
+    />
   );
 }

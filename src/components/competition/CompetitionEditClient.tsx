@@ -2,32 +2,21 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  updateCompetition,
-  uploadCompetitionImage,
-} from '@/services/competitionService';
+import { updateCompetition, uploadCompetitionImage } from '@/services/competitionService';
 import { showErrorToast, showSuccessToast } from '@/lib/toast';
-import PostFormActions from '@/components/community/PostFormActions';
 import { useQueryClient } from '@tanstack/react-query';
-import CompetitionForm, {
-  CompetitionFormValues,
-} from '@/components/competition/CompetitionForm';
+import type { CompetitionFormValues } from '@/components/competition/CompetitionForm';
 import type { Competition } from '@/types/competition';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
-import ConfirmModal from '../common/ConfirmModal';
 import { buildCompetitionUrl } from '@/lib/slug';
-import {
-  revalidateCompetitions,
-  revalidateCompetition,
-} from '@/actions/competition/competitions';
+import { revalidateCompetitions, revalidateCompetition } from '@/actions/competition/competitions';
+import CompetitionFormBase from '@/components/competition/CompetitionFormBase';
 
 interface CompetitionEditClientProps {
   competition: Competition;
 }
 
-export default function CompetitionEditClient({
-  competition,
-}: CompetitionEditClientProps) {
+export default function CompetitionEditClient({ competition }: CompetitionEditClientProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -40,9 +29,7 @@ export default function CompetitionEditClient({
     applyDeadline: competition.apply_deadline ?? '',
     applyUrl: competition.apply_url ?? '',
     description: competition.description ?? '',
-    participants: competition.participants
-      ? String(competition.participants)
-      : '',
+    participants: competition.participants ? String(competition.participants) : '',
     preview: competition.image_url ?? null,
     imageFile: null,
   });
@@ -54,8 +41,7 @@ export default function CompetitionEditClient({
     values.applyDeadline !== (competition.apply_deadline ?? '') ||
     values.applyUrl !== (competition.apply_url ?? '') ||
     values.description !== (competition.description ?? '') ||
-    values.participants !==
-      (competition.participants ? String(competition.participants) : '') ||
+    values.participants !== (competition.participants ? String(competition.participants) : '') ||
     values.imageFile !== null;
 
   useBeforeUnload(isDirty);
@@ -120,47 +106,39 @@ export default function CompetitionEditClient({
   };
 
   return (
-    <main className="max-w-2xl mx-auto p-6" aria-label="대회 수정">
-      <div className="relative w-full flex items-center justify-center mb-6">
-        <h1 className="text-lg font-semibold">대회 수정</h1>
-      </div>
-      <CompetitionForm values={values} onChange={setValues} />
-      <PostFormActions
-        onCancel={() => {
-          if (isDirty) {
-            setCancelModalOpen(true);
-          } else {
-            showErrorToast('수정된 내용이 없습니다.');
-            router.push(buildCompetitionUrl(values.name, competition.id));
-          }
-        }}
-        onSubmit={handleSubmit}
-        submitLabel="수정하기"
-        isLoading={isLoading}
-      />
-
-      <ConfirmModal
-        isOpen={cancelModalOpen}
-        onClose={() => setCancelModalOpen(false)}
-        onConfirm={() => {
-          setValues({
-            name: competition.name ?? '',
-            location: competition.location ?? '',
-            eventDate: competition.event_data ?? '',
-            applyDeadline: competition.apply_deadline ?? '',
-            applyUrl: competition.apply_url ?? '',
-            description: competition.description ?? '',
-            participants: competition.participants
-              ? String(competition.participants)
-              : '',
-            preview: competition.image_url ?? null,
-            imageFile: null,
-          });
-          router.push(buildCompetitionUrl(competition.name, competition.id));
-        }}
-        title="수정 취소"
-        description="수정 중인 내용이 있습니다. 정말 나가시겠습니까?"
-      />
-    </main>
+    <CompetitionFormBase
+      pageTitle="대회 수정"
+      values={values}
+      onChange={setValues}
+      onCancel={() => {
+        if (isDirty) {
+          setCancelModalOpen(true);
+        } else {
+          showErrorToast('수정된 내용이 없습니다.');
+          router.push(buildCompetitionUrl(values.name, competition.id));
+        }
+      }}
+      onSubmit={handleSubmit}
+      submitLabel="수정하기"
+      isLoading={isLoading}
+      cancelModalOpen={cancelModalOpen}
+      onCancelModalClose={() => setCancelModalOpen(false)}
+      onCancelConfirm={() => {
+        setValues({
+          name: competition.name ?? '',
+          location: competition.location ?? '',
+          eventDate: competition.event_data ?? '',
+          applyDeadline: competition.apply_deadline ?? '',
+          applyUrl: competition.apply_url ?? '',
+          description: competition.description ?? '',
+          participants: competition.participants ? String(competition.participants) : '',
+          preview: competition.image_url ?? null,
+          imageFile: null,
+        });
+        router.push(buildCompetitionUrl(competition.name, competition.id));
+      }}
+      cancelModalTitle="수정 취소"
+      cancelModalDescription="수정 중인 내용이 있습니다. 정말 나가시겠습니까?"
+    />
   );
 }

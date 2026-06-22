@@ -37,7 +37,7 @@ export default function CompetitionDetailCard({
 
   return (
     <article
-      className="bg-bg-white rounded-2xl border border-white/[0.06] overflow-hidden"
+      className="bg-bg-surface rounded-2xl border border-white/[0.06] overflow-hidden"
       aria-label={`${data.name} 대회 상세`}
     >
       <div className="flex items-center justify-between px-5 pt-5 pb-3">

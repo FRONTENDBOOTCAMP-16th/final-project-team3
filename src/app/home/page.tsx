@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import BfcacheRefresher from '@/components/common/BfcacheRefresher';
 import HomeLoggedInButtons from '@/components/home/HomeLoggedInButtons';
+import { BG_IMAGES } from '@/constants/bgImages';
 
 async function AuthButtons() {
   const supabase = await createSupabaseServerClient();
@@ -31,22 +33,13 @@ export const metadata: Metadata = {
   description: '스포츠인과 도장을 하나의 공간에서 연결하는 커뮤니티 플랫폼.',
 };
 
-const BG_IMAGES = [
-  { src: '/images/activio-1.gif',  cls: 'home-bg-1' },
-  { src: '/images/activio-2.jpg',  cls: 'home-bg-2' },
-  { src: '/images/activio-3.webp', cls: 'home-bg-3' },
-  { src: '/images/activio-4.jpg',  cls: 'home-bg-4' },
-  { src: '/images/activio-5.jpeg', cls: 'home-bg-5' },
-  { src: '/images/activio-6.jpg',  cls: 'home-bg-6' },
-] as const;
-
 export default function Home() {
   return (
     <main
       aria-label="Activio 홈"
       style={{
         minHeight: '100vh',
-        background: '#111',
+        background: 'var(--color-bg-page)',
         position: 'relative',
         overflow: 'hidden',
         display: 'flex',
@@ -58,33 +51,27 @@ export default function Home() {
       <BfcacheRefresher />
 
       {/* Slideshow backgrounds */}
-      {BG_IMAGES.map(({ src, cls }) => (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+      {BG_IMAGES.map(({ src, cls }, idx) => (
+        <Image
           key={src}
+          fill
           src={src}
           alt=""
           aria-hidden="true"
           className={cls}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
+          style={{ objectFit: 'cover', pointerEvents: 'none', zIndex: 0 }}
+          priority={idx === 0}
+          sizes="100vw"
         />
       ))}
 
-      {/* Dark overlay */}
+      {/* Scrim overlay — rgba(var(--color-scrim-rgb), opacity) 로 테마 전환 */}
       <div
         aria-hidden="true"
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(to bottom, rgba(17,17,17,0.82) 0%, rgba(17,17,17,0.72) 40%, rgba(17,17,17,0.92) 100%)',
+          background: 'linear-gradient(to bottom, rgba(var(--color-scrim-rgb),0.82) 0%, rgba(var(--color-scrim-rgb),0.72) 40%, rgba(var(--color-scrim-rgb),0.92) 100%)',
           pointerEvents: 'none',
           zIndex: 1,
         }}
@@ -106,7 +93,7 @@ export default function Home() {
           className="text-[28px] sm:text-[42px]"
           style={{
             fontWeight: 800,
-            color: '#fff',
+            color: 'var(--color-text-primary)',
             lineHeight: 1.2,
             letterSpacing: '0.04em',
             marginBottom: '16px',
@@ -119,7 +106,7 @@ export default function Home() {
           <em
             style={{
               fontStyle: 'normal',
-              background: 'linear-gradient(135deg, #6e6e6e, #c8c8c8)',
+              background: 'linear-gradient(135deg, var(--color-brand-grad-end), var(--color-brand-grad-mid))',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               letterSpacing: '0.08em',
@@ -133,7 +120,7 @@ export default function Home() {
         <p
           style={{
             fontSize: '15px',
-            color: 'rgba(255,255,255,0.55)',
+            color: 'var(--color-text-tertiary)',
             lineHeight: 1.7,
             marginBottom: '36px',
             fontWeight: 400,
@@ -175,14 +162,14 @@ export default function Home() {
           display: inline-flex; align-items: center; justify-content: center;
           height: 50px; padding: 0 28px;
           border-radius: 999px;
-          border: 1.5px solid rgba(255,255,255,0.55);
-          background: rgba(255,255,255,0.18);
-          color: #fff; font-size: 15px; font-weight: 700;
+          border: 1.5px solid var(--color-text-tertiary);
+          background: var(--color-border-medium);
+          color: var(--color-text-primary); font-size: 15px; font-weight: 700;
           transition: all 0.3s;
         }
         .land-login-solo:hover {
-          background: rgba(255,255,255,0.28);
-          border-color: rgba(255,255,255,0.8);
+          background: var(--color-border-strong);
+          border-color: var(--color-text-secondary);
           transform: translateY(-2px);
         }
       `}</style>

@@ -52,27 +52,27 @@ export default function DashboardClient({ profile, stats, competitions, notices 
   };
 
   const cardStyle: React.CSSProperties = {
-    background: 'rgba(255,255,255,0.04)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--color-bg-surface)',
+    border: '1px solid var(--color-border-medium)',
     borderRadius: '14px',
     overflow: 'hidden',
   };
 
   const cardHeaderStyle: React.CSSProperties = {
     padding: '14px 18px',
-    borderBottom: '1px solid rgba(255,255,255,0.06)',
+    borderBottom: '1px solid var(--color-border)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
   };
 
   return (
-    <main className="w-full min-h-screen" style={{ background: '#111' }}>
+    <div className="w-full min-h-screen" style={{ background: 'var(--color-bg-page)' }}>
       <div className="max-w-[1200px] mx-auto px-5 py-8">
 
         {/* ── Top bar ── */}
         <div className="flex items-center justify-between mb-7 gap-4">
-          <h1 style={{ fontSize: '18px', fontWeight: 700, color: '#fff', whiteSpace: 'nowrap' }}>
+          <h1 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--color-text-primary)', whiteSpace: 'nowrap' }}>
             {isGuest ? (
               '안녕하세요'
             ) : (
@@ -87,19 +87,19 @@ export default function DashboardClient({ profile, stats, competitions, notices 
             <div
               className="flex items-center gap-2 w-full h-9"
               style={{
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.1)',
+                background: 'var(--color-bg-tint)',
+                border: '1px solid var(--color-border-medium)',
                 borderRadius: '8px',
                 padding: '0 12px',
               }}
             >
-              <Search size={13} style={{ color: 'rgba(255,255,255,0.35)', flexShrink: 0 }} />
+              <Search size={13} style={{ color: 'var(--color-text-hint)', flexShrink: 0 }} />
               <input
                 type="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="검색..."
-                className="flex-1 bg-transparent border-none outline-none text-white min-w-0"
+                className="flex-1 bg-transparent border-none outline-none text-text-primary min-w-0"
                 style={{ fontSize: '13px' }}
               />
             </div>
@@ -107,17 +107,17 @@ export default function DashboardClient({ profile, stats, competitions, notices 
         </div>
 
         {/* ── Row 1: Notice + Competitions ── */}
-        <div className="flex gap-5 items-start mb-5">
+        <div className="grid grid-cols-1 lg:grid-cols-[65%_1fr] gap-5 mb-5">
 
           {/* Notice card (~65%) */}
-          <div style={{ flex: '0 0 65%', minWidth: 0, ...cardStyle }}>
+          <div style={{ minWidth: 0, ...cardStyle }}>
             {/* Header */}
             <div style={cardHeaderStyle}>
               <div className="flex items-center gap-2">
                 <span style={{ fontSize: '13px' }}>📢</span>
-                <span style={{ fontSize: '13px', fontWeight: 700, color: '#fff' }}>공지</span>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>공지</span>
               </div>
-              <Link href="/community" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', textDecoration: 'none' }}>
+              <Link href="/community" style={{ fontSize: '11px', color: 'var(--color-text-hint)', textDecoration: 'none' }}>
                 전체보기
               </Link>
             </div>
@@ -131,7 +131,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                 onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = '1')}
               >
                 {/* Image area */}
-                <div style={{ position: 'relative', height: '220px', background: '#1a1a1a', overflow: 'hidden' }}>
+                <div style={{ position: 'relative', height: '220px', background: 'var(--color-bg-surface-alt)', overflow: 'hidden' }}>
                   {featured.image_url ? (
                     <Image src={featured.image_url} alt={featured.title} fill className="object-cover" style={{ opacity: 0.75 }} />
                   ) : (
@@ -148,7 +148,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                   <div
                     style={{
                       position: 'absolute', inset: 0,
-                      background: 'linear-gradient(to top, rgba(17,17,17,0.95) 0%, rgba(17,17,17,0.3) 50%, transparent 100%)',
+                      background: 'linear-gradient(to top, rgba(var(--color-scrim-rgb),0.95) 0%, rgba(var(--color-scrim-rgb),0.3) 50%, transparent 100%)',
                     }}
                   />
                   <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px' }}>
@@ -165,12 +165,12 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                       공지
                     </span>
                     <h2
-                      style={{ fontSize: '18px', fontWeight: 800, color: '#fff', lineHeight: 1.3, letterSpacing: '-0.02em' }}
+                      style={{ fontSize: '18px', fontWeight: 800, color: 'var(--color-text-primary)', lineHeight: 1.3, letterSpacing: '-0.02em' }}
                       className="line-clamp-2"
                     >
                       {featured.title}
                     </h2>
-                    <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', marginTop: '6px' }}>
+                    <p style={{ fontSize: '12px', color: 'var(--color-text-tertiary)', marginTop: '6px' }}>
                       {featured.nickname} · {formatDate(featured.created_at)}
                     </p>
                   </div>
@@ -178,7 +178,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
 
                 {/* Body text */}
                 <div style={{ padding: '16px 20px' }}>
-                  <p className="line-clamp-2" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.65 }}>
+                  <p className="line-clamp-2" style={{ fontSize: '13px', color: 'var(--color-text-tertiary)', lineHeight: 1.65 }}>
                     {featured.content}
                   </p>
                 </div>
@@ -189,7 +189,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                   height: '220px',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   flexDirection: 'column', gap: '8px',
-                  color: 'rgba(255,255,255,0.2)',
+                  color: 'var(--color-text-disabled)',
                 }}
               >
                 <span style={{ fontSize: '32px' }}>📢</span>
@@ -199,13 +199,13 @@ export default function DashboardClient({ profile, stats, competitions, notices 
           </div>
 
           {/* Competitions card (~35%) */}
-          <div style={{ flex: '0 0 calc(35% - 10px)', minWidth: 0, ...cardStyle }}>
+          <div style={{ minWidth: 0, ...cardStyle }}>
             <div style={cardHeaderStyle}>
               <div className="flex items-center gap-2">
                 <Trophy size={14} style={{ color: '#f59e0b' }} />
-                <span style={{ fontSize: '13px', fontWeight: 700, color: '#fff' }}>다가오는 대회</span>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>다가오는 대회</span>
               </div>
-              <Link href="/competitions" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', textDecoration: 'none' }}>
+              <Link href="/competitions" style={{ fontSize: '11px', color: 'var(--color-text-hint)', textDecoration: 'none' }}>
                 전체보기
               </Link>
             </div>
@@ -217,7 +217,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                     key={comp.id}
                     style={{
                       padding: '12px 18px',
-                      borderBottom: i < competitions.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                      borderBottom: i < competitions.length - 1 ? '1px solid var(--color-border)' : 'none',
                       display: 'flex', alignItems: 'center', gap: '12px',
                     }}
                   >
@@ -244,11 +244,11 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="line-clamp-1" style={{ fontSize: '12.5px', fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>
+                      <p className="line-clamp-1" style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--color-text-high)' }}>
                         {comp.name}
                       </p>
                       {comp.location && (
-                        <p className="line-clamp-1" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', marginTop: '2px' }}>
+                        <p className="line-clamp-1" style={{ fontSize: '11px', color: 'var(--color-text-hint)', marginTop: '2px' }}>
                           📍 {comp.location}
                         </p>
                       )}
@@ -257,7 +257,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                 ))}
               </div>
             ) : (
-              <div style={{ padding: '40px 24px', textAlign: 'center', color: 'rgba(255,255,255,0.25)', fontSize: '13px' }}>
+              <div style={{ padding: '40px 24px', textAlign: 'center', color: 'var(--color-text-disabled)', fontSize: '13px' }}>
                 예정된 대회가 없습니다
               </div>
             )}
@@ -265,16 +265,16 @@ export default function DashboardClient({ profile, stats, competitions, notices 
         </div>
 
         {/* ── Row 2: 도장찾기 | 스포츠커뮤니티 | 마이페이지 (equal 1/3 each) ── */}
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 
           {/* 도장찾기 */}
           <div style={cardStyle}>
             <div style={cardHeaderStyle}>
               <div className="flex items-center gap-2">
                 <MapPin size={14} style={{ color: '#10b981' }} />
-                <span style={{ fontSize: '13px', fontWeight: 700, color: '#fff' }}>도장 찾기</span>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>도장 찾기</span>
               </div>
-              <Link href="/dojangs" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', textDecoration: 'none' }}>
+              <Link href="/dojangs" style={{ fontSize: '11px', color: 'var(--color-text-hint)', textDecoration: 'none' }}>
                 전체보기
               </Link>
             </div>
@@ -289,8 +289,8 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                 <MapPin size={28} style={{ color: '#10b981' }} />
               </div>
               <div style={{ textAlign: 'center' }}>
-                <p style={{ fontSize: '14px', fontWeight: 700, color: '#fff', marginBottom: '6px' }}>내 근처 도장 찾기</p>
-                <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>
+                <p style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '6px' }}>내 근처 도장 찾기</p>
+                <p style={{ fontSize: '12px', color: 'var(--color-text-tertiary)', lineHeight: 1.6 }}>
                   위치 기반으로<br />가까운 도장을 검색해보세요
                 </p>
               </div>
@@ -313,8 +313,8 @@ export default function DashboardClient({ profile, stats, competitions, notices 
           {/* 스포츠 커뮤니티 */}
           <div style={cardStyle}>
             <div style={cardHeaderStyle}>
-              <span style={{ fontSize: '13px', fontWeight: 700, color: '#fff' }}>스포츠 커뮤니티</span>
-              <Link href="/community" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', textDecoration: 'none' }}>
+              <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>스포츠 커뮤니티</span>
+              <Link href="/community" style={{ fontSize: '11px', color: 'var(--color-text-hint)', textDecoration: 'none' }}>
                 전체보기
               </Link>
             </div>
@@ -330,7 +330,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                     textDecoration: 'none', transition: 'background 0.15s',
                   }}
                   onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.04)';
+                    (e.currentTarget as HTMLElement).style.background = 'var(--color-bg-tint)';
                     (e.currentTarget as HTMLElement).style.borderLeftColor = color;
                   }}
                   onMouseLeave={(e) => {
@@ -343,10 +343,10 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                     background: color + '1a', border: `1.5px solid ${color}44`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}>
-                    <img src={image} alt={name} style={{ width: '15px', height: '15px', objectFit: 'contain' }} />
+                    <Image src={image} alt={name} width={15} height={15} style={{ objectFit: 'contain' }} />
                   </div>
-                  <span style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255,255,255,0.75)' }}>{name}</span>
-                  <span style={{ marginLeft: 'auto', fontSize: '11px', color: 'rgba(255,255,255,0.2)' }}>→</span>
+                  <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-high)' }}>{name}</span>
+                  <span style={{ marginLeft: 'auto', fontSize: '11px', color: 'var(--color-text-disabled)' }}>→</span>
                 </Link>
               ))}
             </div>
@@ -355,9 +355,9 @@ export default function DashboardClient({ profile, stats, competitions, notices 
           {/* 마이페이지 */}
           <div style={cardStyle}>
             <div style={cardHeaderStyle}>
-              <span style={{ fontSize: '13px', fontWeight: 700, color: '#fff' }}>내 활동</span>
+              <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>내 활동</span>
               {!isGuest && (
-                <Link href="/mypage" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', textDecoration: 'none' }}>
+                <Link href="/mypage" style={{ fontSize: '11px', color: 'var(--color-text-hint)', textDecoration: 'none' }}>
                   마이페이지 →
                 </Link>
               )}
@@ -373,13 +373,13 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                 <div
                   style={{
                     width: '52px', height: '52px', borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.06)', border: '1.5px solid rgba(255,255,255,0.12)',
+                    background: 'var(--color-bg-tint)', border: '1.5px solid var(--color-border-medium)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                 >
-                  <Lock size={22} style={{ color: 'rgba(255,255,255,0.35)' }} />
+                  <Lock size={22} style={{ color: 'var(--color-text-hint)' }} />
                 </div>
-                <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', textAlign: 'center', lineHeight: 1.6 }}>
+                <p style={{ fontSize: '13px', color: 'var(--color-text-tertiary)', textAlign: 'center', lineHeight: 1.6 }}>
                   로그인하면 내 활동을<br />확인할 수 있습니다
                 </p>
                 <Link
@@ -417,9 +417,9 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>{profile!.nickname}</p>
+                    <p style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)' }}>{profile!.nickname}</p>
                     {profile!.belt_level && (
-                      <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>{profile!.belt_level}</p>
+                      <p style={{ fontSize: '11px', color: 'var(--color-text-tertiary)' }}>{profile!.belt_level}</p>
                     )}
                   </div>
                   {isAdmin && (
@@ -442,30 +442,30 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                   <div
                     style={{
                       flex: 1, padding: '12px', borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.07)',
+                      background: 'var(--color-bg-tint)',
+                      border: '1px solid var(--color-border)',
                       textAlign: 'center',
                     }}
                   >
                     <div className="flex items-center justify-center gap-1 mb-1">
                       <FileText size={12} style={{ color: '#60a5fa' }} />
-                      <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>게시글</span>
+                      <span style={{ fontSize: '10px', color: 'var(--color-text-tertiary)', fontWeight: 600 }}>게시글</span>
                     </div>
-                    <p style={{ fontSize: '22px', fontWeight: 800, color: '#fff' }}>{stats!.postCount}</p>
+                    <p style={{ fontSize: '22px', fontWeight: 800, color: 'var(--color-text-primary)' }}>{stats!.postCount}</p>
                   </div>
                   <div
                     style={{
                       flex: 1, padding: '12px', borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.07)',
+                      background: 'var(--color-bg-tint)',
+                      border: '1px solid var(--color-border)',
                       textAlign: 'center',
                     }}
                   >
                     <div className="flex items-center justify-center gap-1 mb-1">
                       <MessageSquare size={12} style={{ color: '#8b5cf6' }} />
-                      <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>댓글</span>
+                      <span style={{ fontSize: '10px', color: 'var(--color-text-tertiary)', fontWeight: 600 }}>댓글</span>
                     </div>
-                    <p style={{ fontSize: '22px', fontWeight: 800, color: '#fff' }}>{stats!.commentCount}</p>
+                    <p style={{ fontSize: '22px', fontWeight: 800, color: 'var(--color-text-primary)' }}>{stats!.commentCount}</p>
                   </div>
                 </div>
 
@@ -474,14 +474,14 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                   href="/mypage"
                   style={{
                     display: 'block', padding: '9px',
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    background: 'var(--color-bg-tint)',
+                    border: '1px solid var(--color-border-medium)',
                     borderRadius: '8px', textAlign: 'center',
-                    fontSize: '12.5px', fontWeight: 600, color: 'rgba(255,255,255,0.6)',
+                    fontSize: '12.5px', fontWeight: 600, color: 'var(--color-text-secondary)',
                     textDecoration: 'none', transition: 'background 0.15s',
                   }}
-                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.1)')}
-                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)')}
+                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = 'var(--color-border-medium)')}
+                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = 'var(--color-bg-tint)')}
                 >
                   마이페이지 →
                 </Link>
@@ -491,6 +491,6 @@ export default function DashboardClient({ profile, stats, competitions, notices 
         </div>
 
       </div>
-    </main>
+    </div>
   );
 }

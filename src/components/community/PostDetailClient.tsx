@@ -241,7 +241,7 @@ export default function PostDetailClient({
         onClick={() => router.push('/community')}
         aria-label="커뮤니티 목록으로 이동"
         className="flex items-center gap-2 px-2.5 py-2 text-sm font-medium rounded-xl transition-colors duration-200 cursor-pointer"
-        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.85)' }}
+        style={{ background: 'var(--color-border-medium)', border: '1px solid var(--color-border-strong)', color: 'var(--color-text-high)' }}
       >
         <svg
           width="16"
@@ -323,11 +323,11 @@ export default function PostDetailClient({
 
       <div
         className="rounded-2xl overflow-hidden"
-        style={{ background: '#1e1e1e', border: '1px solid rgba(255,255,255,0.06)' }}
+        style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }}
       >
         <div
           className="px-5 pt-5 pb-3 flex items-center gap-2"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+          style={{ borderBottom: '1px solid var(--color-border)' }}
         >
           <Image
             src="/postComment.svg"
@@ -337,7 +337,7 @@ export default function PostDetailClient({
             height={16}
             className="opacity-40"
           />
-          <h2 className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>댓글</h2>
+          <h2 className="text-sm font-semibold" style={{ color: 'var(--color-text-high)' }}>댓글</h2>
         </div>
 
         <div className="px-5 py-4">
@@ -381,9 +381,9 @@ export default function PostDetailClient({
         <div className="px-5 pb-5 space-y-4">
           {comments.map((c, index) => (
             <div key={c.id}>
-              {index > 0 && <div className="mb-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} />}
+              {index > 0 && <div className="mb-4" style={{ borderTop: '1px solid var(--color-border)' }} />}
               <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full shrink-0 overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                <div className="w-8 h-8 rounded-full shrink-0 overflow-hidden" style={{ background: 'var(--color-border-medium)' }}>
                   <Image
                     src={c.avatar_url || '/basic.svg'}
                     alt={`${c.nickname} 프로필 이미지`}
@@ -394,11 +394,11 @@ export default function PostDetailClient({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1">
-                    <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.9)' }}>
+                    <span className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>
                       {c.nickname}
                     </span>
                     {c.belt_level && (
-                      <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                      <span className="text-xs" style={{ color: 'var(--color-text-hint)' }}>
                         {c.belt_level}
                       </span>
                     )}
@@ -436,18 +436,18 @@ export default function PostDetailClient({
                         type="button"
                         aria-label="댓글 수정 취소"
                         className="text-xs"
-                        style={{ color: 'rgba(255,255,255,0.4)' }}
+                        style={{ color: 'var(--color-text-hint)' }}
                       >
                         취소
                       </button>
                     </div>
                   ) : (
-                    <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                    <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-high)' }}>
                       {c.content}
                     </p>
                   )}
                   <div className="flex items-center gap-3 mt-1.5">
-                    <span className="flex items-center gap-1 text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                    <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--color-text-hint)' }}>
                       <Image
                         src="/postTime.svg"
                         alt=""
@@ -468,9 +468,9 @@ export default function PostDetailClient({
                           }}
                           aria-label={`${c.nickname}의 댓글 수정`}
                           className="text-xs transition-colors"
-                          style={{ color: 'rgba(255,255,255,0.4)' }}
-                          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.75)')}
-                          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.4)')}
+                          style={{ color: 'var(--color-text-hint)' }}
+                          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--color-text-secondary)')}
+                          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--color-text-hint)')}
                         >
                           수정
                         </button>
@@ -490,7 +490,7 @@ export default function PostDetailClient({
             </div>
           ))}
           {comments.length === 0 && (
-            <p className="text-center text-sm py-4" style={{ color: 'rgba(255,255,255,0.38)' }}>
+            <p className="text-center text-sm py-4" style={{ color: 'var(--color-text-disabled)' }}>
               첫 번째 댓글을 남겨보세요!
             </p>
           )}

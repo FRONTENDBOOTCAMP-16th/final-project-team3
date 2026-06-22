@@ -13,18 +13,18 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const id = extractCompetitionId(slug);
-  if (!id) return { title: '대회를 찾을 수 없습니다 | Black Belt BJJ' };
+  if (!id) return { title: '대회를 찾을 수 없습니다 | Activio' };
 
   const competition = await getCompetition(id);
   if (!isPublicCompetitionVisible(competition)) {
-    return { title: '대회를 찾을 수 없습니다 | Black Belt BJJ' };
+    return { title: '대회를 찾을 수 없습니다 | Activio' };
   }
 
   return {
-    title: `${competition.name} | Black Belt BJJ`,
-    description: competition.description ?? '주짓수 대회 상세 정보',
+    title: `${competition.name} | Activio`,
+    description: competition.description ?? '대회 상세 정보',
     openGraph: {
-      title: `${competition.name} | Black Belt BJJ`,
+      title: `${competition.name} | Activio`,
       description: competition.description ?? '주짓수 대회 상세 정보',
       images: competition.image_url ? [{ url: competition.image_url }] : [],
     },

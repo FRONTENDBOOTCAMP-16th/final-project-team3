@@ -28,7 +28,7 @@ export default function PostDetailCard({
   const badge = categoryMap[post.category ?? ''] ?? categoryMap.personal;
 
   return (
-    <div className="bg-bg-white rounded-2xl border border-white/[0.06] overflow-hidden">
+    <div className="bg-bg-surface rounded-2xl border border-white/[0.06] overflow-hidden">
       <div className="flex items-center justify-between px-5 pt-5 pb-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-white/[0.08] overflow-hidden shrink-0">

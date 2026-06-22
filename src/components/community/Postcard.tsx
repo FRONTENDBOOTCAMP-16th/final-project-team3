@@ -54,19 +54,19 @@ export default function PostCard({ post, userId }: PostCardProps) {
   return (
     <article
       style={{
-        background: '#161616',
-        borderBottom: '1px solid rgba(255,255,255,0.05)',
+        background: 'var(--color-bg-surface-alt)',
+        borderBottom: '1px solid var(--color-bg-tint)',
         position: 'relative',
         transition: 'background 0.15s',
       }}
-      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = '#1c1c1c')}
-      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = '#161616')}
+      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = 'var(--color-bg-surface)')}
+      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = 'var(--color-bg-surface-alt)')}
       aria-busy={isPending}
     >
       {isPending && (
         <div
           className="absolute inset-0 z-10 flex items-center justify-center"
-          style={{ background: 'rgba(0,0,0,0.55)' }}
+          style={{ background: 'var(--color-overlay)' }}
         >
           <LoadingSpinner label="게시글 불러오는 중" />
         </div>
@@ -87,7 +87,7 @@ export default function PostCard({ post, userId }: PostCardProps) {
               width: '22px',
               height: '22px',
               borderRadius: '50%',
-              background: 'rgba(255,255,255,0.1)',
+              background: 'var(--color-border-medium)',
               overflow: 'hidden',
               flexShrink: 0,
               position: 'relative',
@@ -99,13 +99,13 @@ export default function PostCard({ post, userId }: PostCardProps) {
             {post.avatar_url ? (
               <Image src={post.avatar_url} alt={post.nickname} fill className="object-cover" />
             ) : (
-              <span style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.45)' }}>
+              <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--color-text-high)' }}>
                 {post.nickname?.[0]?.toUpperCase() ?? '?'}
               </span>
             )}
           </div>
 
-          <span style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)' }}>
+          <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)' }}>
             {post.nickname}
           </span>
 
@@ -124,7 +124,7 @@ export default function PostCard({ post, userId }: PostCardProps) {
 
           <time
             dateTime={post.created_at}
-            style={{ marginLeft: 'auto', fontSize: '11px', color: 'rgba(255,255,255,0.28)' }}
+            style={{ marginLeft: 'auto', fontSize: '11px', color: 'var(--color-text-tertiary)' }}
           >
             {formatDate(post.created_at)}
           </time>
@@ -136,7 +136,7 @@ export default function PostCard({ post, userId }: PostCardProps) {
           style={{
             fontSize: '15px',
             fontWeight: 700,
-            color: '#f5f5f5',
+            color: 'var(--color-text-primary)',
             lineHeight: 1.4,
             letterSpacing: '-0.01em',
             marginBottom: '6px',
@@ -151,7 +151,7 @@ export default function PostCard({ post, userId }: PostCardProps) {
             className={hasMedia ? 'line-clamp-2' : 'line-clamp-3'}
             style={{
               fontSize: '13px',
-              color: 'rgba(255,255,255,0.45)',
+              color: 'var(--color-text-tertiary)',
               lineHeight: 1.65,
               marginBottom: hasMedia ? '10px' : '0',
             }}
@@ -247,7 +247,7 @@ function ActionBtn({
         background: 'transparent',
         border: 'none',
         borderRadius: '999px',
-        color: active && activeColor ? activeColor : 'rgba(255,255,255,0.38)',
+        color: active && activeColor ? activeColor : 'var(--color-text-tertiary)',
         fontSize: '12px',
         fontWeight: 600,
         cursor: 'pointer',
@@ -256,13 +256,13 @@ function ActionBtn({
         ...extraStyle,
       }}
       onMouseEnter={(e) => {
-        (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)';
-        if (!active) (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.75)';
+        (e.currentTarget as HTMLElement).style.background = 'var(--color-bg-tint)';
+        if (!active) (e.currentTarget as HTMLElement).style.color = 'var(--color-text-secondary)';
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLElement).style.background = 'transparent';
         (e.currentTarget as HTMLElement).style.color =
-          active && activeColor ? activeColor : 'rgba(255,255,255,0.38)';
+          active && activeColor ? activeColor : 'var(--color-text-tertiary)';
       }}
       {...(rest as React.ButtonHTMLAttributes<HTMLButtonElement>)}
     >

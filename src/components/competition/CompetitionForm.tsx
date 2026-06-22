@@ -23,8 +23,8 @@ interface CompetitionFormProps {
 }
 
 const sectionStyle = {
-  background: '#1e1e1e',
-  border: '1px solid rgba(255,255,255,0.06)',
+  background: 'var(--color-bg-surface)',
+  border: '1px solid var(--color-border)',
   borderRadius: '12px',
   padding: '16px',
   marginBottom: '16px',
@@ -32,15 +32,15 @@ const sectionStyle = {
 
 const labelStyle = {
   fontSize: '13px',
-  color: 'rgba(255,255,255,0.5)',
+  color: 'var(--color-text-tertiary)',
   marginBottom: '8px',
   display: 'block',
 } as const;
 
 const inputStyle = {
   width: '100%',
-  background: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(255,255,255,0.08)',
+  background: 'var(--color-bg-tint)',
+  border: '1px solid var(--color-border-medium)',
   borderRadius: '8px',
   paddingLeft: '36px',
   paddingRight: '12px',
@@ -48,7 +48,7 @@ const inputStyle = {
   paddingBottom: '8px',
   fontSize: '13px',
   outline: 'none',
-  color: 'rgba(255,255,255,0.85)',
+  color: 'var(--color-text-high)',
 } as const;
 
 export default function CompetitionForm({

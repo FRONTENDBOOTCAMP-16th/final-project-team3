@@ -123,7 +123,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-4 p-6 bg-bg-white rounded-2xl shadow-sm">
+      <div className="flex flex-col gap-4 p-6 bg-bg-surface rounded-2xl shadow-sm">
         <div className="flex flex-col gap-1">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-text-primary">프로필 설정</h3>
@@ -260,7 +260,7 @@ export default function SettingsTab({ profile }: SettingsTabProps) {
         />
       </div>
 
-      <div className="flex flex-col gap-3 p-6 bg-bg-white rounded-2xl shadow-sm">
+      <div className="flex flex-col gap-3 p-6 bg-bg-surface rounded-2xl shadow-sm">
         <div className="flex items-center gap-2">
           <span className="text-danger" aria-hidden="true">
             ⚠️

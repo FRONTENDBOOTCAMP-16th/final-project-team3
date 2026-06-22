@@ -33,6 +33,6 @@ export function useCompetition(initialCompetitions: Competition[]) {
       if (lastPage.length < PAGE_SIZE) return undefined;
       return allPages.length;
     },
-    staleTime: 0,
+    staleTime: 0, // 대회 등록/수정 후 즉시 최신 목록 반영
   });
 }

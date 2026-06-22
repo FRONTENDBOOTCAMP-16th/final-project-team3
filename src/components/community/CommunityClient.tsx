@@ -1,28 +1,27 @@
 'use client';
 
-import { useRef, useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { Search } from 'lucide-react';
+import { Search, Menu, X } from 'lucide-react';
 import Postcard from '@/components/community/Postcard';
 import PromoAdSidebar from '@/components/community/PromoAdSidebar';
+import PromoAdBannerMobile from '@/components/community/PromoAdBannerMobile';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
-import { useDebounce } from '@/hooks/useDebounce';
 import { usePosts } from '@/hooks/useCommunity';
 import { useAuth } from '@/hooks/useAuth';
 import { SPORTS } from '@/constants/sports';
 import type { Post } from '@/types/community';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { useCommunityListState } from '@/hooks/useCommunityListState';
 
 interface CommunityClientProps {
   initialPosts: Post[];
 }
 
 export default function CommunityClient({ initialPosts }: CommunityClientProps) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
-  const isScrollRestoredRef = useRef(false);
-
-  const debouncedSearch = useDebounce(searchQuery, 300);
+  const { searchQuery, setSearchQuery, debouncedSearch, hoveredSlug, setHoveredSlug, isScrollRestoredRef } =
+    useCommunityListState();
   const { user, loading } = useAuth();
   const isAdmin = user?.role === 'admin';
 
@@ -61,27 +60,63 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
     if (hasNextPage && !isFetchingNextPage) fetchNextPage();
   });
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+
+  const closeDrawer = useCallback(() => {
+    setDrawerOpen(false);
+    triggerRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    if (drawerOpen && drawerRef.current) {
+      const first = drawerRef.current.querySelector<HTMLElement>('a[href], button:not([disabled])');
+      first?.focus();
+    }
+  }, [drawerOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!drawerOpen) return;
+      if (e.key === 'Escape') { closeDrawer(); return; }
+      if (e.key !== 'Tab' || !drawerRef.current) return;
+      const focusable = Array.from(
+        drawerRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled])')
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [drawerOpen, closeDrawer]);
+
   return (
-    <main className="w-full min-h-screen" style={{ background: '#111' }} aria-label="커뮤니티 공지 목록">
+    <section className="w-full min-h-screen" style={{ background: 'var(--color-bg-page)' }} aria-label="커뮤니티 공지 목록">
 
       {/* ── Hero ── */}
       <div className="relative h-[320px] overflow-hidden flex items-end">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
+          fill
           src="/images/bjj-2.webp"
           alt=""
           aria-hidden="true"
-          style={{
-            position: 'absolute', inset: 0, width: '100%', height: '100%',
-            objectFit: 'cover', opacity: 0.38, filter: 'grayscale(10%)',
-          }}
+          style={{ objectFit: 'cover', opacity: 0.38, filter: 'grayscale(10%)' }}
+          priority
+          sizes="100vw"
         />
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(to top, rgba(17,17,17,0.96) 0%, rgba(17,17,17,0.45) 60%, rgba(17,17,17,0.2) 100%)' }}
+          style={{ background: 'linear-gradient(to top, rgba(var(--color-scrim-rgb),0.96) 0%, rgba(var(--color-scrim-rgb),0.45) 60%, rgba(var(--color-scrim-rgb),0.2) 100%)' }}
         />
         <div className="relative z-10 px-6 pb-5">
-          <h1 className="font-extrabold text-white text-[38px] leading-none tracking-[-0.04em]">
+          <h1 className="font-extrabold text-text-primary text-[38px] leading-none tracking-[-0.04em]">
             공지
           </h1>
         </div>
@@ -97,8 +132,8 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
             width: '220px',
             position: 'sticky',
             top: '80px',
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            background: 'var(--color-bg-surface)',
+            border: '1px solid var(--color-border-medium)',
             borderRadius: '12px',
             overflow: 'hidden',
           }}
@@ -116,16 +151,28 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
               position: 'sticky',
               top: '64px',
               zIndex: 10,
-              background: '#111',
+              background: 'var(--color-bg-page)',
               padding: '10px 0',
               marginTop: '-10px',
             }}
           >
+            {/* Mobile sidebar trigger */}
+            <button
+              ref={triggerRef}
+              className="lg:hidden shrink-0 w-10 h-10 flex items-center justify-center rounded-full"
+              onClick={() => setDrawerOpen(true)}
+              aria-expanded={drawerOpen}
+              aria-label="사이드바 열기"
+              style={{ background: 'var(--color-bg-tint)', border: '1px solid var(--color-border-medium)' }}
+            >
+              <Menu size={16} aria-hidden="true" />
+            </button>
+
             <div
               className="flex items-center gap-2 flex-1 h-10"
               style={{
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.12)',
+                background: 'var(--color-bg-tint)',
+                border: '1px solid var(--color-border-medium)',
                 borderRadius: '999px',
                 padding: '0 16px',
               }}
@@ -137,7 +184,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="공지 검색..."
                 aria-label="공지 검색"
-                className="flex-1 bg-transparent border-none outline-none text-white min-w-0"
+                className="flex-1 bg-transparent border-none outline-none text-text-primary min-w-0"
                 style={{ fontSize: '13.5px' }}
               />
             </div>
@@ -155,6 +202,9 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
             )}
           </div>
 
+          {/* Mobile promo banner (lg 이상에서는 좌측 사이드바에만 있으므로 숨김) */}
+          <PromoAdBannerMobile />
+
           {/* Posts */}
           {isLoading ? (
             <div className="flex justify-center py-20">
@@ -168,7 +218,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '1px',
-                background: 'rgba(255,255,255,0.05)',
+                background: 'var(--color-bg-tint)',
                 borderRadius: '12px',
                 overflow: 'hidden',
               }}
@@ -198,7 +248,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
               className="flex flex-col items-center justify-center py-32"
               aria-live="polite"
               aria-atomic="true"
-              style={{ color: 'rgba(255,255,255,0.38)' }}
+              style={{ color: 'var(--color-text-secondary)' }}
             >
               <p style={{ fontSize: '15px' }}>등록된 공지가 없습니다</p>
             </div>
@@ -226,8 +276,8 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
             width: '260px',
             position: 'sticky',
             top: '80px',
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            background: 'var(--color-bg-surface)',
+            border: '1px solid var(--color-border-medium)',
             borderRadius: '12px',
             overflow: 'hidden',
           }}
@@ -235,11 +285,11 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
           <div
             style={{
               padding: '12px 16px',
-              borderBottom: '1px solid rgba(255,255,255,0.06)',
+              borderBottom: '1px solid var(--color-border)',
               fontSize: '11px',
               fontWeight: 700,
               letterSpacing: '0.08em',
-              color: 'rgba(255,255,255,0.5)',
+              color: 'var(--color-text-secondary)',
               textTransform: 'uppercase',
             }}
           >
@@ -252,7 +302,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
               className="flex items-center gap-3"
               style={{
                 padding: '10px 16px',
-                background: 'rgba(255,255,255,0.07)',
+                background: 'var(--color-btn-basic)',
                 borderLeft: '3px solid #2563eb',
               }}
             >
@@ -266,7 +316,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
               >
                 📢
               </div>
-              <span style={{ fontSize: '13px', fontWeight: 700, color: '#fff' }}>공지</span>
+              <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>공지</span>
               <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#2563eb', marginLeft: 'auto', flexShrink: 0 }} />
             </div>
 
@@ -279,7 +329,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
                   alignItems: 'center',
                   gap: '12px',
                   padding: '10px 16px',
-                  background: hoveredSlug === slug ? 'rgba(255,255,255,0.04)' : 'transparent',
+                  background: hoveredSlug === slug ? 'var(--color-bg-tint)' : 'transparent',
                   borderLeft: `3px solid ${hoveredSlug === slug ? color : 'transparent'}`,
                   textDecoration: 'none',
                   transition: 'background 0.15s',
@@ -295,9 +345,9 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
                     flexShrink: 0,
                   }}
                 >
-                  <img src={image} alt={name} style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
+                  <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} />
                 </div>
-                <span style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255,255,255,0.8)' }}>
+                <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-high)' }}>
                   {name}
                 </span>
               </Link>
@@ -307,6 +357,136 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
       </div>
 
       <div style={{ paddingBottom: '64px' }} />
-    </main>
+
+      {/* ── Mobile drawer (lg 미만에서만 렌더) ── */}
+      {drawerOpen && (
+        <div
+          ref={drawerRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="커뮤니티 메뉴"
+          className="lg:hidden fixed inset-0 z-50 flex"
+        >
+          {/* Panel */}
+          <div
+            style={{
+              width: '300px',
+              height: '100%',
+              overflowY: 'auto',
+              background: 'var(--color-bg-surface)',
+              borderRight: '1px solid var(--color-border-medium)',
+              display: 'flex',
+              flexDirection: 'column',
+              flexShrink: 0,
+            }}
+          >
+            {/* Header */}
+            <div
+              style={{
+                padding: '14px 16px',
+                borderBottom: '1px solid var(--color-border-medium)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                position: 'sticky',
+                top: 0,
+                zIndex: 1,
+                background: 'var(--color-bg-surface)',
+              }}
+            >
+              <span style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
+                커뮤니티 메뉴
+              </span>
+              <button
+                onClick={closeDrawer}
+                aria-label="메뉴 닫기"
+                style={{ padding: '6px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-tertiary)', display: 'flex', alignItems: 'center' }}
+              >
+                <X size={18} aria-hidden="true" />
+              </button>
+            </div>
+
+            {/* Sports nav */}
+            <div>
+              <div
+                style={{
+                  padding: '12px 16px',
+                  borderBottom: '1px solid var(--color-border)',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  color: 'var(--color-text-secondary)',
+                  textTransform: 'uppercase',
+                }}
+              >
+                스포츠 커뮤니티
+              </div>
+              <div style={{ padding: '6px 0' }}>
+                {/* 공지 — 현재 활성 */}
+                <div
+                  className="flex items-center gap-3"
+                  style={{ padding: '10px 16px', background: 'var(--color-btn-basic)', borderLeft: '3px solid #2563eb' }}
+                >
+                  <div
+                    style={{
+                      width: '34px', height: '34px', borderRadius: '50%',
+                      background: 'rgba(37,99,235,0.15)', border: '1.5px solid rgba(37,99,235,0.4)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '17px', flexShrink: 0,
+                    }}
+                  >
+                    📢
+                  </div>
+                  <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>공지</span>
+                  <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#2563eb', marginLeft: 'auto', flexShrink: 0 }} />
+                </div>
+                {SPORTS.map(({ slug, name, image, color }) => (
+                  <Link
+                    key={slug}
+                    href={`/community/sport/${slug}`}
+                    onClick={closeDrawer}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '12px',
+                      padding: '10px 16px', textDecoration: 'none',
+                      transition: 'background 0.15s', borderLeft: '3px solid transparent',
+                    }}
+                    onMouseEnter={(e) => {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.background = 'var(--color-bg-tint)';
+                      el.style.borderLeftColor = color;
+                    }}
+                    onMouseLeave={(e) => {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.background = 'transparent';
+                      el.style.borderLeftColor = 'transparent';
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '34px', height: '34px', borderRadius: '50%',
+                        background: color + '1a', border: `1.5px solid ${color}44`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} />
+                    </div>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-high)' }}>{name}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Backdrop */}
+          <div
+            style={{ flex: 1, background: 'rgba(0,0,0,0.5)' }}
+            onClick={closeDrawer}
+            aria-hidden="true"
+          />
+        </div>
+      )}
+    </section>
   );
 }

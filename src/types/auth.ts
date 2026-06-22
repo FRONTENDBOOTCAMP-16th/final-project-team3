@@ -1,4 +1,4 @@
-import type { Role, BeltLevel } from './user';
+import type { AppRole, BeltLevel } from './user';
 
 export interface SignInForm {
   email: string;
@@ -6,7 +6,7 @@ export interface SignInForm {
 }
 
 export interface SignUpForm {
-  role: Role;
+  role: AppRole;
   name: string;
   email: string;
   password: string;

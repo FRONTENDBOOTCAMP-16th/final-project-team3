@@ -46,7 +46,7 @@ function DashboardMetricCard({
   const cardContent = (
     <article
       className={cardClassName}
-      style={{ background: '#1e1e1e', border: '1px solid rgba(255,255,255,0.06)' }}
+      style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }}
     >
       <div
         className={cn(
@@ -59,14 +59,14 @@ function DashboardMetricCard({
 
       <div className="space-y-3">
         <div className="space-y-1">
-          <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>{config.label}</p>
+          <p className="text-sm font-medium" style={{ color: 'var(--color-text-tertiary)' }}>{config.label}</p>
         </div>
 
         <div className="flex items-end gap-2">
-          <strong className="text-4xl font-semibold tracking-tight" style={{ color: 'rgba(255,255,255,0.92)' }}>
+          <strong className="text-4xl font-semibold tracking-tight" style={{ color: 'var(--color-text-high)' }}>
             {numberFormatter.format(value)}
           </strong>
-          <span className="pb-1 text-sm font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>
+          <span className="pb-1 text-sm font-medium" style={{ color: 'var(--color-text-hint)' }}>
             {config.suffix}
           </span>
         </div>
@@ -104,10 +104,10 @@ function DashboardSection({
   return (
     <section className="space-y-5">
       <div className="space-y-1 px-1">
-        <h2 className="text-xl font-semibold tracking-tight" style={{ color: 'rgba(255,255,255,0.9)' }}>
+        <h2 className="text-xl font-semibold tracking-tight" style={{ color: 'var(--color-text-secondary)' }}>
           {title}
         </h2>
-        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>{description}</p>
+        <p className="text-sm" style={{ color: 'var(--color-text-hint)' }}>{description}</p>
       </div>
 
       <div className={cn('grid gap-4', columnsClassName)}>

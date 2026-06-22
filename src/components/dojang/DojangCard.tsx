@@ -17,7 +17,7 @@ interface DojangCardProps {
 export default function DojangCard({ dojang, isSelected }: DojangCardProps) {
   return (
     <article
-      className={`p-4 border rounded-xl bg-bg-white hover:shadow-xl transition-all cursor-pointer h-full flex flex-col
+      className={`p-4 border rounded-xl bg-bg-surface hover:shadow-xl transition-all cursor-pointer h-full flex flex-col
         ${isSelected ? 'border-btn-focus border-2 shadow-lg shadow-btn-focus/20' : 'border-white/[0.07] hover:border-white/[0.14]'}`}
       aria-label={`${dojang.place_name} 도장${isSelected ? ', 선택됨' : ''}`}
       aria-current={isSelected}
