@@ -253,7 +253,7 @@ export default function TopNav() {
     {/* 모바일 드로어 — nav 바깥에 위치: nav의 backdropFilter가 fixed 자식의 containing block을 바꾸는 문제 방지 */}
     {menuOpen && (
       <div
-        className="md:hidden fixed top-16 inset-x-0 z-40"
+        className="md:hidden fixed top-16 inset-x-0 z-50"
         style={{ background: 'var(--color-bg-page)', borderBottom: '1px solid var(--color-border)' }}
         role="dialog"
         aria-label="모바일 메뉴"

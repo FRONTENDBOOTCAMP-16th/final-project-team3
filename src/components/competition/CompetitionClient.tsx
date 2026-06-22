@@ -77,21 +77,14 @@ function MiniCalendar({ eventDates, selectedDate, onDateSelect }: MiniCalendarPr
     /* outer shell */
     <div
       style={{
-        background: 'var(--color-bg-tint)',
-        border: '1px solid rgba(255,255,255,0.07)',
+        background: 'var(--color-bg-surface)',
+        border: '1px solid var(--color-border)',
         borderRadius: '20px',
-        padding: '2px',
+        padding: '18px',
       }}
     >
       {/* inner core */}
-      <div
-        style={{
-          background: '#1e1e1e',
-          borderRadius: '18px',
-          padding: '18px',
-          boxShadow: 'inset 0 1px 0 var(--color-bg-tint)',
-        }}
-      >
+      <div>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
           <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)', letterSpacing: '-0.01em' }}>
@@ -109,10 +102,10 @@ function MiniCalendar({ eventDates, selectedDate, onDateSelect }: MiniCalendarPr
                 style={{
                   width: '24px', height: '24px',
                   background: 'var(--color-bg-tint)',
-                  border: '1px solid rgba(255,255,255,0.07)',
+                  border: '1px solid var(--color-border)',
                   borderRadius: '7px',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'pointer', color: '#9ca3af',
+                  cursor: 'pointer', color: 'var(--color-text-hint)',
                   transition: 'all 0.2s',
                 }}
               >
@@ -149,8 +142,8 @@ function MiniCalendar({ eventDates, selectedDate, onDateSelect }: MiniCalendarPr
                   textAlign: 'center',
                   padding: highlighted ? '0' : '5px 2px',
                   borderRadius: highlighted ? '50%' : '7px',
-                  color: highlighted ? '#fff' : '#d1d5db',
-                  background: sel ? '#2563eb' : today_ ? 'rgba(255,255,255,0.15)' : 'transparent',
+                  color: sel ? '#fff' : today_ ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
+                  background: sel ? '#2563eb' : today_ ? 'var(--color-border-medium)' : 'transparent',
                   width: highlighted ? '24px' : undefined,
                   height: highlighted ? '24px' : undefined,
                   display: 'flex',
@@ -465,23 +458,16 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
           {competitions.length > 0 && (
             <div
               style={{
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.07)',
+                background: 'var(--color-bg-surface)',
+                border: '1px solid var(--color-border)',
                 borderRadius: '16px',
-                padding: '2px',
+                padding: '14px',
               }}
             >
-              <div
-                style={{
-                  background: '#1e1e1e',
-                  borderRadius: '14px',
-                  padding: '14px',
-                  boxShadow: 'inset 0 1px 0 var(--color-bg-tint)',
-                }}
-              >
+              <div>
                 <p
                   style={{
-                    fontSize: '9px', fontWeight: 700, color: '#b0b8c4',
+                    fontSize: '9px', fontWeight: 700, color: 'var(--color-text-secondary)',
                     letterSpacing: '0.12em', textTransform: 'uppercase',
                     marginBottom: '10px',
                   }}
@@ -526,7 +512,7 @@ export default function CompetitionClient({ initialCompetitions }: CompetitionCl
                         flexShrink: 0,
                       }}
                     >
-                      <span style={{ fontSize: '8px', fontWeight: 700, color: '#60a5fa', lineHeight: 1 }}>
+                      <span style={{ fontSize: '8px', fontWeight: 700, color: '#2563eb', lineHeight: 1 }}>
                         {c.event_data?.slice(5, 7) ?? '--'}월
                       </span>
                       <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--color-text-primary)', lineHeight: 1 }}>
