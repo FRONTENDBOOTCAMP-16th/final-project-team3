@@ -136,7 +136,7 @@ export async function deletePost(id: string) {
 
 export async function uploadPostImage(file: File): Promise<string> {
   const ext = file.name.split('.').pop();
-  const fileName = `${Date.now()}.${ext}`;
+  const fileName = `${Date.now()}-${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage
     .from('post-images')
     .upload(fileName, file);
@@ -147,7 +147,7 @@ export async function uploadPostImage(file: File): Promise<string> {
 
 export async function uploadPostVideo(file: File): Promise<string> {
   const ext = file.name.split('.').pop();
-  const fileName = `${Date.now()}.${ext}`;
+  const fileName = `${Date.now()}-${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage
     .from('post-videos')
     .upload(fileName, file, { contentType: file.type, cacheControl: '3600' });
