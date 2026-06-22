@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const description = post.content.slice(0, 120).replace(/\n/g, ' ');
+  const description = (post.content ?? '').slice(0, 120).replace(/\n/g, ' ');
   return {
     title: `${post.title} | Activio`,
     description: description ?? 'Activio 커뮤니티 게시글 상세 정보',
