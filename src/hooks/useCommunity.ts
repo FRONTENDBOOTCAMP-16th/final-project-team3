@@ -3,7 +3,6 @@ import { getPosts, getSportPosts, getPromoPosts } from '@/services/communityServ
 import type { Post } from '@/types/community';
 
 const PAGE_SIZE = 10;
-const INITIAL_DATA_UPDATED_AT = Date.now();
 
 export function usePosts(initialPosts: Post[]) {
   return useInfiniteQuery({
@@ -13,7 +12,7 @@ export function usePosts(initialPosts: Post[]) {
       pages: [initialPosts],
       pageParams: [0],
     },
-    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
+    initialDataUpdatedAt: Date.now(),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
       if (lastPage.length < PAGE_SIZE) return undefined;
@@ -39,7 +38,7 @@ export function useSportPosts(sport: string, initialPosts: Post[]) {
       pages: [initialPosts],
       pageParams: [0],
     },
-    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
+    initialDataUpdatedAt: Date.now(),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
       if (lastPage.length < PAGE_SIZE) return undefined;
