@@ -9,21 +9,10 @@ interface ContentPermissionParams {
   authorRole: ContentUserRole;
 }
 
-export function canAdminManageAdminAuthoredContent(
-  currentUserRole: ContentUserRole,
-  authorRole: ContentUserRole,
-) {
-  return currentUserRole === 'admin' && authorRole === 'admin';
-}
-
 export function canManageContent({
   currentUserId,
   authorUserId,
   currentUserRole,
-  authorRole,
 }: ContentPermissionParams) {
-  return (
-    currentUserId === authorUserId ||
-    canAdminManageAdminAuthoredContent(currentUserRole, authorRole)
-  );
+  return currentUserRole === 'admin' || currentUserId === authorUserId;
 }

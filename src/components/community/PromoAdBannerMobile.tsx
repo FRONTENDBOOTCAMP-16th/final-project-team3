@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { usePromoPosts } from '@/hooks/useCommunity';
 import { buildPostUrl } from '@/lib/slug';
 
@@ -9,17 +9,28 @@ export default function PromoAdBannerMobile() {
   const { data: posts = [] } = usePromoPosts();
   const [activeGroup, setActiveGroup] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | null>(null);
 
   const totalGroups = Math.ceil(posts.length / 2);
   const groups = Array.from({ length: totalGroups }, (_, i) =>
     posts.slice(i * 2, (i + 1) * 2),
   );
 
+  useEffect(() => {
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
   const handleScroll = useCallback(() => {
-    if (!scrollRef.current) return;
-    const { scrollLeft, clientWidth } = scrollRef.current;
-    if (clientWidth === 0) return;
-    setActiveGroup(Math.round(scrollLeft / clientWidth));
+    if (rafRef.current !== null) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      if (!scrollRef.current) return;
+      const { scrollLeft, clientWidth } = scrollRef.current;
+      if (clientWidth === 0) return;
+      setActiveGroup(Math.round(scrollLeft / clientWidth));
+    });
   }, []);
 
   const scrollToGroup = useCallback((i: number) => {

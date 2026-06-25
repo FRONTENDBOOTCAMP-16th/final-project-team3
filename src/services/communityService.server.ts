@@ -12,6 +12,7 @@ export async function getPost(id: string): Promise<Post | null> {
     .from('posts')
     .select('*, profiles(nickname, avatar_url, belt_level, role)')
     .eq('id', id)
+    .is('deleted_at', null)
     .maybeSingle();
 
   if (error) throw error;

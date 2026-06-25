@@ -79,6 +79,7 @@ export async function GET(req: NextRequest) {
     .from('comments')
     .select('id, content, created_at, user_id')
     .eq('post_id', postId)
+    .is('deleted_at', null)
     .order('created_at', { ascending: false })
     .limit(50);
 
